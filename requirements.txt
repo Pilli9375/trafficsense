@@ -1,0 +1,21 @@
+# === WINDOWS NATIVE (YOLO + Dashboard + Local LLM) ===
+# torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+# ultralytics
+# streamlit
+# plotly
+# pandas
+# opencv-python
+# boxmot
+# llama-cpp-python
+# transformers
+# numpy
+
+# === WSL2 UBUNTU (CityFlow + CoLLMLight) ===
+# cityflow
+# tensorflow-cpu==2.8.0
+# torch==2.2.2
+# transformers==4.48.2
+# trl==0.9.2
+# vllm
+# lmdeploy
+# openai

@@ -1,0 +1,37 @@
+# Python cache
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Virtual environments
+venv/
+env/
+.env
+
+# Large model files
+*.pt
+*.pth
+*.gguf
+*.onnx
+*.engine
+
+# Dataset folders (keep folder, ignore contents)
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# Output videos
+outputs/detection_videos/*.mp4
+outputs/detection_videos/*.avi
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
