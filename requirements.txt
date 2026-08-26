@@ -1,16 +1,23 @@
 # === WINDOWS NATIVE (YOLO + Dashboard + Local LLM) ===
-# torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-# ultralytics
-# streamlit
-# plotly
-# pandas
-# opencv-python
-# boxmot
-# llama-cpp-python
-# transformers
-# numpy
+# Install command: pip install -r requirements.txt
+torch>=2.3.0
+torchvision>=0.18.0
+torchaudio>=2.3.0
+ultralytics>=8.2.0
+streamlit>=1.38.0
+plotly>=5.24.0
+pandas>=2.2.0
+opencv-python>=4.10.0
+numpy>=1.26.0
+pillow>=10.4.0
+boxmot>=12.0.0
+llama-cpp-python>=0.3.0
+transformers>=4.44.0
+scipy>=1.14.0
+tqdm>=4.66.0
 
 # === WSL2 UBUNTU (CityFlow + CoLLMLight) ===
+# DO NOT INSTALL THESE ON WINDOWS. Use inside WSL only.
 # cityflow
 # tensorflow-cpu==2.8.0
 # torch==2.2.2
