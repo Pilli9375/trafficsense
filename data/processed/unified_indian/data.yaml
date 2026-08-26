@@ -1,0 +1,31 @@
+path: C:/Pilli/trafficsense/data/processed/unified_indian
+train: train/images
+val: valid/images
+test: test/images
+
+nc: 24
+names:
+  0: car
+  1: motorcycle
+  2: bus
+  3: truck
+  4: autorickshaw
+  5: bicycle
+  6: ambulance
+  7: police_vehicle
+  8: tractor
+  9: pedestrian
+  10: traffic_light
+  11: traffic_sign
+  12: scooter
+  13: e-rickshaw
+  14: van
+  15: tempo
+  16: animal
+  17: pushcart
+  18: water_tanker
+  19: excavator
+  20: crane
+  21: jeep
+  22: mini_bus
+  23: fire_engine
