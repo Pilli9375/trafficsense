@@ -1,0 +1,506 @@
+[
+  {
+    "step": 0,
+    "intersection": "I0",
+    "decision": {
+      "recommended_phase": 2,
+      "green_duration_seconds": 45,
+      "reasoning": "Cooperative green phase recommended to alleviate severe congestion and prevent gridlock with neighbor intersections.",
+      "cooperation_needed": true,
+      "neighbor_coordination": "I1",
+      "sr_raw": "{\"recommended_phase\": 2, \"green_duration_seconds\": 45, \"reasoning\": \"Cooperative green phase recommended to alleviate severe congestion and prevent gridlock with neighbor intersections.\", \"cooperation"
+    },
+    "state": {
+      "intersection_id": "I0",
+      "phase": 0,
+      "n_queue": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "n_move": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "occupancy": 0.06,
+      "tau": 5,
+      "rho": 5.0,
+      "vehicle_mix": {
+        "car": 1,
+        "autorickshaw": 0,
+        "motorcycle": 0,
+        "bus": 0,
+        "truck": 0
+      },
+      "congestion_level": "low",
+      "density_veh_per_100m": 6.0,
+      "source": "TrafficSense_Perception",
+      "perception_frame": 0
+    }
+  },
+  {
+    "step": 0,
+    "intersection": "I1",
+    "decision": {
+      "recommended_phase": 2,
+      "green_duration_seconds": 45,
+      "reasoning": "Cooperative green phase recommended to alleviate severe congestion and prevent gridlock with neighbor intersections.",
+      "cooperation_needed": true,
+      "neighbor_coordination": "I1",
+      "sr_raw": "{\"recommended_phase\": 2, \"green_duration_seconds\": 45, \"reasoning\": \"Cooperative green phase recommended to alleviate severe congestion and prevent gridlock with neighbor intersections.\", \"cooperation"
+    },
+    "state": {
+      "intersection_id": "I1",
+      "phase": 0,
+      "n_queue": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "n_move": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "occupancy": 0.08,
+      "tau": 5,
+      "rho": 10.0,
+      "vehicle_mix": {
+        "car": 1,
+        "autorickshaw": 1,
+        "motorcycle": 0,
+        "bus": 0,
+        "truck": 0
+      },
+      "congestion_level": "low",
+      "density_veh_per_100m": 8.0,
+      "source": "TrafficSense_Perception",
+      "perception_frame": 1
+    }
+  },
+  {
+    "step": 0,
+    "intersection": "I2",
+    "decision": {
+      "recommended_phase": 2,
+      "green_duration_seconds": 45,
+      "reasoning": "Cooperative green phase recommended to alleviate severe congestion and prevent gridlock with neighbor intersections.",
+      "cooperation_needed": true,
+      "neighbor_coordination": "I1",
+      "sr_raw": "{\"recommended_phase\": 2, \"green_duration_seconds\": 45, \"reasoning\": \"Cooperative green phase recommended to alleviate severe congestion and prevent gridlock with neighbor intersections.\", \"cooperation"
+    },
+    "state": {
+      "intersection_id": "I2",
+      "phase": 0,
+      "n_queue": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "n_move": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "occupancy": 0.1,
+      "tau": 5,
+      "rho": 15.0,
+      "vehicle_mix": {
+        "car": 2,
+        "autorickshaw": 1,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "congestion_level": "low",
+      "density_veh_per_100m": 10.0,
+      "source": "TrafficSense_Perception",
+      "perception_frame": 2
+    }
+  },
+  {
+    "step": 0,
+    "intersection": "I3",
+    "decision": {
+      "recommended_phase": 2,
+      "green_duration_seconds": 45,
+      "reasoning": "Cooperative green phase recommended to alleviate severe congestion and prevent gridlock with neighbor intersections.",
+      "cooperation_needed": true,
+      "neighbor_coordination": "I1",
+      "sr_raw": "{\"recommended_phase\": 2, \"green_duration_seconds\": 45, \"reasoning\": \"Cooperative green phase recommended to alleviate severe congestion and prevent gridlock with neighbor intersections.\", \"cooperation"
+    },
+    "state": {
+      "intersection_id": "I3",
+      "phase": 0,
+      "n_queue": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "n_move": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "occupancy": 0.12,
+      "tau": 5,
+      "rho": 10.0,
+      "vehicle_mix": {
+        "car": 2,
+        "autorickshaw": 1,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "congestion_level": "low",
+      "density_veh_per_100m": 12.0,
+      "source": "TrafficSense_Perception",
+      "perception_frame": 3
+    }
+  },
+  {
+    "step": 20,
+    "intersection": "I0",
+    "decision": {
+      "recommended_phase": 2,
+      "green_duration_seconds": 45,
+      "reasoning": "Cooperative green phase recommended to alleviate severe congestion and prevent gridlock with neighbor intersections.",
+      "cooperation_needed": true,
+      "neighbor_coordination": "I1",
+      "sr_raw": "{\"recommended_phase\": 2, \"green_duration_seconds\": 45, \"reasoning\": \"Cooperative green phase recommended to alleviate severe congestion and prevent gridlock with neighbor intersections.\", \"cooperation"
+    },
+    "state": {
+      "intersection_id": "I0",
+      "phase": 2,
+      "n_queue": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "n_move": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "occupancy": 0.14,
+      "tau": 5,
+      "rho": 13.33,
+      "vehicle_mix": {
+        "car": 2,
+        "autorickshaw": 1,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "congestion_level": "low",
+      "density_veh_per_100m": 14.0,
+      "source": "TrafficSense_Perception",
+      "perception_frame": 4
+    }
+  },
+  {
+    "step": 20,
+    "intersection": "I1",
+    "decision": {
+      "recommended_phase": 2,
+      "green_duration_seconds": 45,
+      "reasoning": "Cooperative green phase recommended to alleviate severe congestion and prevent gridlock with neighbor intersections.",
+      "cooperation_needed": true,
+      "neighbor_coordination": "I1",
+      "sr_raw": "{\"recommended_phase\": 2, \"green_duration_seconds\": 45, \"reasoning\": \"Cooperative green phase recommended to alleviate severe congestion and prevent gridlock with neighbor intersections.\", \"cooperation"
+    },
+    "state": {
+      "intersection_id": "I1",
+      "phase": 2,
+      "n_queue": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "n_move": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "occupancy": 0.16,
+      "tau": 5,
+      "rho": 10.0,
+      "vehicle_mix": {
+        "car": 3,
+        "autorickshaw": 2,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "congestion_level": "low",
+      "density_veh_per_100m": 16.0,
+      "source": "TrafficSense_Perception",
+      "perception_frame": 5
+    }
+  },
+  {
+    "step": 20,
+    "intersection": "I2",
+    "decision": {
+      "recommended_phase": 2,
+      "green_duration_seconds": 45,
+      "reasoning": "Cooperative green phase recommended to alleviate severe congestion and prevent gridlock with neighbor intersections.",
+      "cooperation_needed": true,
+      "neighbor_coordination": "I1",
+      "sr_raw": "{\"recommended_phase\": 2, \"green_duration_seconds\": 45, \"reasoning\": \"Cooperative green phase recommended to alleviate severe congestion and prevent gridlock with neighbor intersections.\", \"cooperation"
+    },
+    "state": {
+      "intersection_id": "I2",
+      "phase": 2,
+      "n_queue": [
+        2,
+        1,
+        1,
+        1
+      ],
+      "n_move": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "occupancy": 0.18,
+      "tau": 5,
+      "rho": 12.5,
+      "vehicle_mix": {
+        "car": 3,
+        "autorickshaw": 2,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "congestion_level": "low",
+      "density_veh_per_100m": 18.0,
+      "source": "TrafficSense_Perception",
+      "perception_frame": 6
+    }
+  },
+  {
+    "step": 20,
+    "intersection": "I3",
+    "decision": {
+      "recommended_phase": 2,
+      "green_duration_seconds": 45,
+      "reasoning": "Cooperative green phase recommended to alleviate severe congestion and prevent gridlock with neighbor intersections.",
+      "cooperation_needed": true,
+      "neighbor_coordination": "I1",
+      "sr_raw": "{\"recommended_phase\": 2, \"green_duration_seconds\": 45, \"reasoning\": \"Cooperative green phase recommended to alleviate severe congestion and prevent gridlock with neighbor intersections.\", \"cooperation"
+    },
+    "state": {
+      "intersection_id": "I3",
+      "phase": 2,
+      "n_queue": [
+        2,
+        2,
+        1,
+        1
+      ],
+      "n_move": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "occupancy": 0.2,
+      "tau": 5,
+      "rho": 15.0,
+      "vehicle_mix": {
+        "car": 4,
+        "autorickshaw": 2,
+        "motorcycle": 2,
+        "bus": 1,
+        "truck": 0
+      },
+      "congestion_level": "low",
+      "density_veh_per_100m": 20.0,
+      "source": "TrafficSense_Perception",
+      "perception_frame": 7
+    }
+  },
+  {
+    "step": 40,
+    "intersection": "I0",
+    "decision": {
+      "recommended_phase": 2,
+      "green_duration_seconds": 45,
+      "reasoning": "Cooperative green phase recommended to alleviate severe congestion and prevent gridlock with neighbor intersections.",
+      "cooperation_needed": true,
+      "neighbor_coordination": "I1",
+      "sr_raw": "{\"recommended_phase\": 2, \"green_duration_seconds\": 45, \"reasoning\": \"Cooperative green phase recommended to alleviate severe congestion and prevent gridlock with neighbor intersections.\", \"cooperation"
+    },
+    "state": {
+      "intersection_id": "I0",
+      "phase": 2,
+      "n_queue": [
+        2,
+        2,
+        1,
+        1
+      ],
+      "n_move": [
+        2,
+        1,
+        1,
+        1
+      ],
+      "occupancy": 0.22,
+      "tau": 5,
+      "rho": 12.0,
+      "vehicle_mix": {
+        "car": 4,
+        "autorickshaw": 2,
+        "motorcycle": 2,
+        "bus": 1,
+        "truck": 0
+      },
+      "congestion_level": "low",
+      "density_veh_per_100m": 22.0,
+      "source": "TrafficSense_Perception",
+      "perception_frame": 8
+    }
+  },
+  {
+    "step": 40,
+    "intersection": "I1",
+    "decision": {
+      "recommended_phase": 2,
+      "green_duration_seconds": 45,
+      "reasoning": "Cooperative green phase recommended to alleviate severe congestion and prevent gridlock with neighbor intersections.",
+      "cooperation_needed": true,
+      "neighbor_coordination": "I1",
+      "sr_raw": "{\"recommended_phase\": 2, \"green_duration_seconds\": 45, \"reasoning\": \"Cooperative green phase recommended to alleviate severe congestion and prevent gridlock with neighbor intersections.\", \"cooperation"
+    },
+    "state": {
+      "intersection_id": "I1",
+      "phase": 2,
+      "n_queue": [
+        2,
+        2,
+        2,
+        1
+      ],
+      "n_move": [
+        2,
+        1,
+        1,
+        1
+      ],
+      "occupancy": 0.24,
+      "tau": 5,
+      "rho": 14.0,
+      "vehicle_mix": {
+        "car": 4,
+        "autorickshaw": 3,
+        "motorcycle": 2,
+        "bus": 1,
+        "truck": 0
+      },
+      "congestion_level": "low",
+      "density_veh_per_100m": 24.0,
+      "source": "TrafficSense_Perception",
+      "perception_frame": 9
+    }
+  },
+  {
+    "step": 40,
+    "intersection": "I2",
+    "decision": {
+      "recommended_phase": 2,
+      "green_duration_seconds": 45,
+      "reasoning": "Cooperative green phase recommended to alleviate severe congestion and prevent gridlock with neighbor intersections.",
+      "cooperation_needed": true,
+      "neighbor_coordination": "I1",
+      "sr_raw": "{\"recommended_phase\": 2, \"green_duration_seconds\": 45, \"reasoning\": \"Cooperative green phase recommended to alleviate severe congestion and prevent gridlock with neighbor intersections.\", \"cooperation"
+    },
+    "state": {
+      "intersection_id": "I2",
+      "phase": 2,
+      "n_queue": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "n_move": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "occupancy": 0.06,
+      "tau": 5,
+      "rho": 5.0,
+      "vehicle_mix": {
+        "car": 1,
+        "autorickshaw": 0,
+        "motorcycle": 0,
+        "bus": 0,
+        "truck": 0
+      },
+      "congestion_level": "low",
+      "density_veh_per_100m": 6.0,
+      "source": "TrafficSense_Perception",
+      "perception_frame": 10
+    }
+  },
+  {
+    "step": 40,
+    "intersection": "I3",
+    "decision": {
+      "recommended_phase": 2,
+      "green_duration_seconds": 45,
+      "reasoning": "Cooperative green phase recommended to alleviate severe congestion and prevent gridlock with neighbor intersections.",
+      "cooperation_needed": true,
+      "neighbor_coordination": "I1",
+      "sr_raw": "{\"recommended_phase\": 2, \"green_duration_seconds\": 45, \"reasoning\": \"Cooperative green phase recommended to alleviate severe congestion and prevent gridlock with neighbor intersections.\", \"cooperation"
+    },
+    "state": {
+      "intersection_id": "I3",
+      "phase": 2,
+      "n_queue": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "n_move": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "occupancy": 0.08,
+      "tau": 5,
+      "rho": 10.0,
+      "vehicle_mix": {
+        "car": 1,
+        "autorickshaw": 1,
+        "motorcycle": 0,
+        "bus": 0,
+        "truck": 0
+      },
+      "congestion_level": "low",
+      "density_veh_per_100m": 8.0,
+      "source": "TrafficSense_Perception",
+      "perception_frame": 11
+    }
+  }
+]

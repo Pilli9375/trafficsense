@@ -118,6 +118,6 @@ if passed == total:
     print("  3. Record demo video (Step 5.3)")
     print("  4. Prepare for faculty Q&A")
 else:
-    print(f"\n⚠️ {total - passed} checks failed. Review failures above.")
+    print(f"\n[WARN] {total - passed} checks failed. Review failures above.")
 
 print("=" * 70)

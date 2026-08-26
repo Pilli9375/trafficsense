@@ -1,0 +1,182 @@
+[
+  {
+    "timestamp": "2026-08-26T14:00:00",
+    "frame_idx": 0,
+    "analysis": {
+      "vehicle_count": 3,
+      "density_veh_per_100m": 6.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 1,
+        "autorickshaw": 0,
+        "motorcycle": 0,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 1
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:01",
+    "frame_idx": 1,
+    "analysis": {
+      "vehicle_count": 4,
+      "density_veh_per_100m": 8.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 1,
+        "autorickshaw": 1,
+        "motorcycle": 0,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 2
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:02",
+    "frame_idx": 2,
+    "analysis": {
+      "vehicle_count": 5,
+      "density_veh_per_100m": 10.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 2,
+        "autorickshaw": 1,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 3
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:03",
+    "frame_idx": 3,
+    "analysis": {
+      "vehicle_count": 6,
+      "density_veh_per_100m": 12.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 2,
+        "autorickshaw": 1,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 3
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:04",
+    "frame_idx": 4,
+    "analysis": {
+      "vehicle_count": 7,
+      "density_veh_per_100m": 14.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 2,
+        "autorickshaw": 1,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 4
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:05",
+    "frame_idx": 5,
+    "analysis": {
+      "vehicle_count": 8,
+      "density_veh_per_100m": 16.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 3,
+        "autorickshaw": 2,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 4
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:06",
+    "frame_idx": 6,
+    "analysis": {
+      "vehicle_count": 9,
+      "density_veh_per_100m": 18.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 3,
+        "autorickshaw": 2,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 5
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:07",
+    "frame_idx": 7,
+    "analysis": {
+      "vehicle_count": 10,
+      "density_veh_per_100m": 20.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 4,
+        "autorickshaw": 2,
+        "motorcycle": 2,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 6
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:08",
+    "frame_idx": 8,
+    "analysis": {
+      "vehicle_count": 11,
+      "density_veh_per_100m": 22.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 4,
+        "autorickshaw": 2,
+        "motorcycle": 2,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 6
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:09",
+    "frame_idx": 9,
+    "analysis": {
+      "vehicle_count": 12,
+      "density_veh_per_100m": 24.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 4,
+        "autorickshaw": 3,
+        "motorcycle": 2,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 7
+    }
+  }
+]

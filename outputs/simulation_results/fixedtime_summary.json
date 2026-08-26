@@ -1,0 +1,6 @@
+{
+  "controller": "fixedtime",
+  "avg_queue_length": 20.75,
+  "avg_wait_time": 11.7,
+  "total_steps": 24
+}

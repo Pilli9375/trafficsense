@@ -1,0 +1,3602 @@
+[
+  {
+    "timestamp": "2026-08-26T14:00:00",
+    "frame_idx": 0,
+    "analysis": {
+      "vehicle_count": 3,
+      "density_veh_per_100m": 6.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 1,
+        "autorickshaw": 0,
+        "motorcycle": 0,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 1
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:01",
+    "frame_idx": 1,
+    "analysis": {
+      "vehicle_count": 4,
+      "density_veh_per_100m": 8.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 1,
+        "autorickshaw": 1,
+        "motorcycle": 0,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 2
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:02",
+    "frame_idx": 2,
+    "analysis": {
+      "vehicle_count": 5,
+      "density_veh_per_100m": 10.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 2,
+        "autorickshaw": 1,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 3
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:03",
+    "frame_idx": 3,
+    "analysis": {
+      "vehicle_count": 6,
+      "density_veh_per_100m": 12.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 2,
+        "autorickshaw": 1,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 3
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:04",
+    "frame_idx": 4,
+    "analysis": {
+      "vehicle_count": 7,
+      "density_veh_per_100m": 14.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 2,
+        "autorickshaw": 1,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 4
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:05",
+    "frame_idx": 5,
+    "analysis": {
+      "vehicle_count": 8,
+      "density_veh_per_100m": 16.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 3,
+        "autorickshaw": 2,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 4
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:06",
+    "frame_idx": 6,
+    "analysis": {
+      "vehicle_count": 9,
+      "density_veh_per_100m": 18.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 3,
+        "autorickshaw": 2,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 5
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:07",
+    "frame_idx": 7,
+    "analysis": {
+      "vehicle_count": 10,
+      "density_veh_per_100m": 20.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 4,
+        "autorickshaw": 2,
+        "motorcycle": 2,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 6
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:08",
+    "frame_idx": 8,
+    "analysis": {
+      "vehicle_count": 11,
+      "density_veh_per_100m": 22.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 4,
+        "autorickshaw": 2,
+        "motorcycle": 2,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 6
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:09",
+    "frame_idx": 9,
+    "analysis": {
+      "vehicle_count": 12,
+      "density_veh_per_100m": 24.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 4,
+        "autorickshaw": 3,
+        "motorcycle": 2,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 7
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:10",
+    "frame_idx": 10,
+    "analysis": {
+      "vehicle_count": 3,
+      "density_veh_per_100m": 6.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 1,
+        "autorickshaw": 0,
+        "motorcycle": 0,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 1
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:11",
+    "frame_idx": 11,
+    "analysis": {
+      "vehicle_count": 4,
+      "density_veh_per_100m": 8.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 1,
+        "autorickshaw": 1,
+        "motorcycle": 0,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 2
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:12",
+    "frame_idx": 12,
+    "analysis": {
+      "vehicle_count": 5,
+      "density_veh_per_100m": 10.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 2,
+        "autorickshaw": 1,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 3
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:13",
+    "frame_idx": 13,
+    "analysis": {
+      "vehicle_count": 6,
+      "density_veh_per_100m": 12.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 2,
+        "autorickshaw": 1,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 3
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:14",
+    "frame_idx": 14,
+    "analysis": {
+      "vehicle_count": 7,
+      "density_veh_per_100m": 14.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 2,
+        "autorickshaw": 1,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 4
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:15",
+    "frame_idx": 15,
+    "analysis": {
+      "vehicle_count": 8,
+      "density_veh_per_100m": 16.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 3,
+        "autorickshaw": 2,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 4
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:16",
+    "frame_idx": 16,
+    "analysis": {
+      "vehicle_count": 9,
+      "density_veh_per_100m": 18.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 3,
+        "autorickshaw": 2,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 5
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:17",
+    "frame_idx": 17,
+    "analysis": {
+      "vehicle_count": 10,
+      "density_veh_per_100m": 20.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 4,
+        "autorickshaw": 2,
+        "motorcycle": 2,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 6
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:18",
+    "frame_idx": 18,
+    "analysis": {
+      "vehicle_count": 11,
+      "density_veh_per_100m": 22.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 4,
+        "autorickshaw": 2,
+        "motorcycle": 2,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 6
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:19",
+    "frame_idx": 19,
+    "analysis": {
+      "vehicle_count": 12,
+      "density_veh_per_100m": 24.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 4,
+        "autorickshaw": 3,
+        "motorcycle": 2,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 7
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:20",
+    "frame_idx": 20,
+    "analysis": {
+      "vehicle_count": 3,
+      "density_veh_per_100m": 6.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 1,
+        "autorickshaw": 0,
+        "motorcycle": 0,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 1
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:21",
+    "frame_idx": 21,
+    "analysis": {
+      "vehicle_count": 4,
+      "density_veh_per_100m": 8.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 1,
+        "autorickshaw": 1,
+        "motorcycle": 0,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 2
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:22",
+    "frame_idx": 22,
+    "analysis": {
+      "vehicle_count": 5,
+      "density_veh_per_100m": 10.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 2,
+        "autorickshaw": 1,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 3
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:23",
+    "frame_idx": 23,
+    "analysis": {
+      "vehicle_count": 6,
+      "density_veh_per_100m": 12.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 2,
+        "autorickshaw": 1,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 3
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:24",
+    "frame_idx": 24,
+    "analysis": {
+      "vehicle_count": 7,
+      "density_veh_per_100m": 14.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 2,
+        "autorickshaw": 1,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 4
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:25",
+    "frame_idx": 25,
+    "analysis": {
+      "vehicle_count": 8,
+      "density_veh_per_100m": 16.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 3,
+        "autorickshaw": 2,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 4
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:26",
+    "frame_idx": 26,
+    "analysis": {
+      "vehicle_count": 9,
+      "density_veh_per_100m": 18.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 3,
+        "autorickshaw": 2,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 5
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:27",
+    "frame_idx": 27,
+    "analysis": {
+      "vehicle_count": 10,
+      "density_veh_per_100m": 20.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 4,
+        "autorickshaw": 2,
+        "motorcycle": 2,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 6
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:28",
+    "frame_idx": 28,
+    "analysis": {
+      "vehicle_count": 11,
+      "density_veh_per_100m": 22.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 4,
+        "autorickshaw": 2,
+        "motorcycle": 2,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 6
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:29",
+    "frame_idx": 29,
+    "analysis": {
+      "vehicle_count": 12,
+      "density_veh_per_100m": 24.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 4,
+        "autorickshaw": 3,
+        "motorcycle": 2,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 7
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:30",
+    "frame_idx": 30,
+    "analysis": {
+      "vehicle_count": 3,
+      "density_veh_per_100m": 6.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 1,
+        "autorickshaw": 0,
+        "motorcycle": 0,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 1
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:31",
+    "frame_idx": 31,
+    "analysis": {
+      "vehicle_count": 4,
+      "density_veh_per_100m": 8.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 1,
+        "autorickshaw": 1,
+        "motorcycle": 0,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 2
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:32",
+    "frame_idx": 32,
+    "analysis": {
+      "vehicle_count": 5,
+      "density_veh_per_100m": 10.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 2,
+        "autorickshaw": 1,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 3
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:33",
+    "frame_idx": 33,
+    "analysis": {
+      "vehicle_count": 6,
+      "density_veh_per_100m": 12.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 2,
+        "autorickshaw": 1,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 3
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:34",
+    "frame_idx": 34,
+    "analysis": {
+      "vehicle_count": 7,
+      "density_veh_per_100m": 14.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 2,
+        "autorickshaw": 1,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 4
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:35",
+    "frame_idx": 35,
+    "analysis": {
+      "vehicle_count": 8,
+      "density_veh_per_100m": 16.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 3,
+        "autorickshaw": 2,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 4
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:36",
+    "frame_idx": 36,
+    "analysis": {
+      "vehicle_count": 9,
+      "density_veh_per_100m": 18.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 3,
+        "autorickshaw": 2,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 5
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:37",
+    "frame_idx": 37,
+    "analysis": {
+      "vehicle_count": 10,
+      "density_veh_per_100m": 20.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 4,
+        "autorickshaw": 2,
+        "motorcycle": 2,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 6
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:38",
+    "frame_idx": 38,
+    "analysis": {
+      "vehicle_count": 11,
+      "density_veh_per_100m": 22.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 4,
+        "autorickshaw": 2,
+        "motorcycle": 2,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 6
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:39",
+    "frame_idx": 39,
+    "analysis": {
+      "vehicle_count": 12,
+      "density_veh_per_100m": 24.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 4,
+        "autorickshaw": 3,
+        "motorcycle": 2,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 7
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:40",
+    "frame_idx": 40,
+    "analysis": {
+      "vehicle_count": 3,
+      "density_veh_per_100m": 6.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 1,
+        "autorickshaw": 0,
+        "motorcycle": 0,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 1
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:41",
+    "frame_idx": 41,
+    "analysis": {
+      "vehicle_count": 4,
+      "density_veh_per_100m": 8.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 1,
+        "autorickshaw": 1,
+        "motorcycle": 0,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 2
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:42",
+    "frame_idx": 42,
+    "analysis": {
+      "vehicle_count": 5,
+      "density_veh_per_100m": 10.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 2,
+        "autorickshaw": 1,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 3
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:43",
+    "frame_idx": 43,
+    "analysis": {
+      "vehicle_count": 6,
+      "density_veh_per_100m": 12.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 2,
+        "autorickshaw": 1,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 3
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:44",
+    "frame_idx": 44,
+    "analysis": {
+      "vehicle_count": 7,
+      "density_veh_per_100m": 14.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 2,
+        "autorickshaw": 1,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 4
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:45",
+    "frame_idx": 45,
+    "analysis": {
+      "vehicle_count": 8,
+      "density_veh_per_100m": 16.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 3,
+        "autorickshaw": 2,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 4
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:46",
+    "frame_idx": 46,
+    "analysis": {
+      "vehicle_count": 9,
+      "density_veh_per_100m": 18.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 3,
+        "autorickshaw": 2,
+        "motorcycle": 1,
+        "bus": 0,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 5
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:47",
+    "frame_idx": 47,
+    "analysis": {
+      "vehicle_count": 10,
+      "density_veh_per_100m": 20.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 4,
+        "autorickshaw": 2,
+        "motorcycle": 2,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 6
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:48",
+    "frame_idx": 48,
+    "analysis": {
+      "vehicle_count": 11,
+      "density_veh_per_100m": 22.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 4,
+        "autorickshaw": 2,
+        "motorcycle": 2,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 6
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:49",
+    "frame_idx": 49,
+    "analysis": {
+      "vehicle_count": 12,
+      "density_veh_per_100m": 24.0,
+      "congestion_severity": "low",
+      "class_distribution": {
+        "car": 4,
+        "autorickshaw": 3,
+        "motorcycle": 2,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 7
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:50",
+    "frame_idx": 50,
+    "analysis": {
+      "vehicle_count": 15,
+      "density_veh_per_100m": 30.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 6,
+        "autorickshaw": 3,
+        "motorcycle": 3,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 9
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:51",
+    "frame_idx": 51,
+    "analysis": {
+      "vehicle_count": 16,
+      "density_veh_per_100m": 32.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 6,
+        "autorickshaw": 4,
+        "motorcycle": 3,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 9
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:52",
+    "frame_idx": 52,
+    "analysis": {
+      "vehicle_count": 17,
+      "density_veh_per_100m": 34.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 6,
+        "autorickshaw": 4,
+        "motorcycle": 3,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 10
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:53",
+    "frame_idx": 53,
+    "analysis": {
+      "vehicle_count": 18,
+      "density_veh_per_100m": 36.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 7,
+        "autorickshaw": 4,
+        "motorcycle": 3,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 10
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:54",
+    "frame_idx": 54,
+    "analysis": {
+      "vehicle_count": 19,
+      "density_veh_per_100m": 38.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 7,
+        "autorickshaw": 4,
+        "motorcycle": 3,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 11
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:55",
+    "frame_idx": 55,
+    "analysis": {
+      "vehicle_count": 20,
+      "density_veh_per_100m": 40.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 8,
+        "autorickshaw": 5,
+        "motorcycle": 4,
+        "bus": 2,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 12
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:56",
+    "frame_idx": 56,
+    "analysis": {
+      "vehicle_count": 21,
+      "density_veh_per_100m": 42.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 8,
+        "autorickshaw": 5,
+        "motorcycle": 4,
+        "bus": 2,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 12
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:57",
+    "frame_idx": 57,
+    "analysis": {
+      "vehicle_count": 22,
+      "density_veh_per_100m": 44.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 8,
+        "autorickshaw": 5,
+        "motorcycle": 4,
+        "bus": 2,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 13
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:58",
+    "frame_idx": 58,
+    "analysis": {
+      "vehicle_count": 23,
+      "density_veh_per_100m": 46.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 9,
+        "autorickshaw": 5,
+        "motorcycle": 4,
+        "bus": 2,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 13
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:00:59",
+    "frame_idx": 59,
+    "analysis": {
+      "vehicle_count": 24,
+      "density_veh_per_100m": 48.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 9,
+        "autorickshaw": 6,
+        "motorcycle": 4,
+        "bus": 2,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 14
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:00",
+    "frame_idx": 60,
+    "analysis": {
+      "vehicle_count": 15,
+      "density_veh_per_100m": 30.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 6,
+        "autorickshaw": 3,
+        "motorcycle": 3,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 9
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:01",
+    "frame_idx": 61,
+    "analysis": {
+      "vehicle_count": 16,
+      "density_veh_per_100m": 32.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 6,
+        "autorickshaw": 4,
+        "motorcycle": 3,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 9
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:02",
+    "frame_idx": 62,
+    "analysis": {
+      "vehicle_count": 17,
+      "density_veh_per_100m": 34.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 6,
+        "autorickshaw": 4,
+        "motorcycle": 3,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 10
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:03",
+    "frame_idx": 63,
+    "analysis": {
+      "vehicle_count": 18,
+      "density_veh_per_100m": 36.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 7,
+        "autorickshaw": 4,
+        "motorcycle": 3,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 10
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:04",
+    "frame_idx": 64,
+    "analysis": {
+      "vehicle_count": 19,
+      "density_veh_per_100m": 38.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 7,
+        "autorickshaw": 4,
+        "motorcycle": 3,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 11
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:05",
+    "frame_idx": 65,
+    "analysis": {
+      "vehicle_count": 20,
+      "density_veh_per_100m": 40.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 8,
+        "autorickshaw": 5,
+        "motorcycle": 4,
+        "bus": 2,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 12
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:06",
+    "frame_idx": 66,
+    "analysis": {
+      "vehicle_count": 21,
+      "density_veh_per_100m": 42.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 8,
+        "autorickshaw": 5,
+        "motorcycle": 4,
+        "bus": 2,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 12
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:07",
+    "frame_idx": 67,
+    "analysis": {
+      "vehicle_count": 22,
+      "density_veh_per_100m": 44.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 8,
+        "autorickshaw": 5,
+        "motorcycle": 4,
+        "bus": 2,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 13
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:08",
+    "frame_idx": 68,
+    "analysis": {
+      "vehicle_count": 23,
+      "density_veh_per_100m": 46.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 9,
+        "autorickshaw": 5,
+        "motorcycle": 4,
+        "bus": 2,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 13
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:09",
+    "frame_idx": 69,
+    "analysis": {
+      "vehicle_count": 24,
+      "density_veh_per_100m": 48.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 9,
+        "autorickshaw": 6,
+        "motorcycle": 4,
+        "bus": 2,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 14
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:10",
+    "frame_idx": 70,
+    "analysis": {
+      "vehicle_count": 15,
+      "density_veh_per_100m": 30.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 6,
+        "autorickshaw": 3,
+        "motorcycle": 3,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 9
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:11",
+    "frame_idx": 71,
+    "analysis": {
+      "vehicle_count": 16,
+      "density_veh_per_100m": 32.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 6,
+        "autorickshaw": 4,
+        "motorcycle": 3,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 9
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:12",
+    "frame_idx": 72,
+    "analysis": {
+      "vehicle_count": 17,
+      "density_veh_per_100m": 34.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 6,
+        "autorickshaw": 4,
+        "motorcycle": 3,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 10
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:13",
+    "frame_idx": 73,
+    "analysis": {
+      "vehicle_count": 18,
+      "density_veh_per_100m": 36.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 7,
+        "autorickshaw": 4,
+        "motorcycle": 3,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 10
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:14",
+    "frame_idx": 74,
+    "analysis": {
+      "vehicle_count": 19,
+      "density_veh_per_100m": 38.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 7,
+        "autorickshaw": 4,
+        "motorcycle": 3,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 11
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:15",
+    "frame_idx": 75,
+    "analysis": {
+      "vehicle_count": 20,
+      "density_veh_per_100m": 40.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 8,
+        "autorickshaw": 5,
+        "motorcycle": 4,
+        "bus": 2,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 12
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:16",
+    "frame_idx": 76,
+    "analysis": {
+      "vehicle_count": 21,
+      "density_veh_per_100m": 42.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 8,
+        "autorickshaw": 5,
+        "motorcycle": 4,
+        "bus": 2,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 12
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:17",
+    "frame_idx": 77,
+    "analysis": {
+      "vehicle_count": 22,
+      "density_veh_per_100m": 44.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 8,
+        "autorickshaw": 5,
+        "motorcycle": 4,
+        "bus": 2,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 13
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:18",
+    "frame_idx": 78,
+    "analysis": {
+      "vehicle_count": 23,
+      "density_veh_per_100m": 46.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 9,
+        "autorickshaw": 5,
+        "motorcycle": 4,
+        "bus": 2,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 13
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:19",
+    "frame_idx": 79,
+    "analysis": {
+      "vehicle_count": 24,
+      "density_veh_per_100m": 48.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 9,
+        "autorickshaw": 6,
+        "motorcycle": 4,
+        "bus": 2,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 14
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:20",
+    "frame_idx": 80,
+    "analysis": {
+      "vehicle_count": 15,
+      "density_veh_per_100m": 30.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 6,
+        "autorickshaw": 3,
+        "motorcycle": 3,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 9
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:21",
+    "frame_idx": 81,
+    "analysis": {
+      "vehicle_count": 16,
+      "density_veh_per_100m": 32.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 6,
+        "autorickshaw": 4,
+        "motorcycle": 3,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 9
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:22",
+    "frame_idx": 82,
+    "analysis": {
+      "vehicle_count": 17,
+      "density_veh_per_100m": 34.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 6,
+        "autorickshaw": 4,
+        "motorcycle": 3,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 10
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:23",
+    "frame_idx": 83,
+    "analysis": {
+      "vehicle_count": 18,
+      "density_veh_per_100m": 36.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 7,
+        "autorickshaw": 4,
+        "motorcycle": 3,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 10
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:24",
+    "frame_idx": 84,
+    "analysis": {
+      "vehicle_count": 19,
+      "density_veh_per_100m": 38.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 7,
+        "autorickshaw": 4,
+        "motorcycle": 3,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 11
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:25",
+    "frame_idx": 85,
+    "analysis": {
+      "vehicle_count": 20,
+      "density_veh_per_100m": 40.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 8,
+        "autorickshaw": 5,
+        "motorcycle": 4,
+        "bus": 2,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 12
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:26",
+    "frame_idx": 86,
+    "analysis": {
+      "vehicle_count": 21,
+      "density_veh_per_100m": 42.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 8,
+        "autorickshaw": 5,
+        "motorcycle": 4,
+        "bus": 2,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 12
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:27",
+    "frame_idx": 87,
+    "analysis": {
+      "vehicle_count": 22,
+      "density_veh_per_100m": 44.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 8,
+        "autorickshaw": 5,
+        "motorcycle": 4,
+        "bus": 2,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 13
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:28",
+    "frame_idx": 88,
+    "analysis": {
+      "vehicle_count": 23,
+      "density_veh_per_100m": 46.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 9,
+        "autorickshaw": 5,
+        "motorcycle": 4,
+        "bus": 2,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 13
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:29",
+    "frame_idx": 89,
+    "analysis": {
+      "vehicle_count": 24,
+      "density_veh_per_100m": 48.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 9,
+        "autorickshaw": 6,
+        "motorcycle": 4,
+        "bus": 2,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 14
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:30",
+    "frame_idx": 90,
+    "analysis": {
+      "vehicle_count": 15,
+      "density_veh_per_100m": 30.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 6,
+        "autorickshaw": 3,
+        "motorcycle": 3,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 9
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:31",
+    "frame_idx": 91,
+    "analysis": {
+      "vehicle_count": 16,
+      "density_veh_per_100m": 32.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 6,
+        "autorickshaw": 4,
+        "motorcycle": 3,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 9
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:32",
+    "frame_idx": 92,
+    "analysis": {
+      "vehicle_count": 17,
+      "density_veh_per_100m": 34.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 6,
+        "autorickshaw": 4,
+        "motorcycle": 3,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 10
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:33",
+    "frame_idx": 93,
+    "analysis": {
+      "vehicle_count": 18,
+      "density_veh_per_100m": 36.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 7,
+        "autorickshaw": 4,
+        "motorcycle": 3,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 10
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:34",
+    "frame_idx": 94,
+    "analysis": {
+      "vehicle_count": 19,
+      "density_veh_per_100m": 38.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 7,
+        "autorickshaw": 4,
+        "motorcycle": 3,
+        "bus": 1,
+        "truck": 0
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 11
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:35",
+    "frame_idx": 95,
+    "analysis": {
+      "vehicle_count": 20,
+      "density_veh_per_100m": 40.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 8,
+        "autorickshaw": 5,
+        "motorcycle": 4,
+        "bus": 2,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 12
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:36",
+    "frame_idx": 96,
+    "analysis": {
+      "vehicle_count": 21,
+      "density_veh_per_100m": 42.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 8,
+        "autorickshaw": 5,
+        "motorcycle": 4,
+        "bus": 2,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 12
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:37",
+    "frame_idx": 97,
+    "analysis": {
+      "vehicle_count": 22,
+      "density_veh_per_100m": 44.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 8,
+        "autorickshaw": 5,
+        "motorcycle": 4,
+        "bus": 2,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 13
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:38",
+    "frame_idx": 98,
+    "analysis": {
+      "vehicle_count": 23,
+      "density_veh_per_100m": 46.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 9,
+        "autorickshaw": 5,
+        "motorcycle": 4,
+        "bus": 2,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 13
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:39",
+    "frame_idx": 99,
+    "analysis": {
+      "vehicle_count": 24,
+      "density_veh_per_100m": 48.0,
+      "congestion_severity": "moderate",
+      "class_distribution": {
+        "car": 9,
+        "autorickshaw": 6,
+        "motorcycle": 4,
+        "bus": 2,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 14
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:40",
+    "frame_idx": 100,
+    "analysis": {
+      "vehicle_count": 30,
+      "density_veh_per_100m": 60.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 12,
+        "autorickshaw": 7,
+        "motorcycle": 6,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 18
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:41",
+    "frame_idx": 101,
+    "analysis": {
+      "vehicle_count": 31,
+      "density_veh_per_100m": 62.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 12,
+        "autorickshaw": 7,
+        "motorcycle": 6,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 18
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:42",
+    "frame_idx": 102,
+    "analysis": {
+      "vehicle_count": 32,
+      "density_veh_per_100m": 64.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 12,
+        "autorickshaw": 8,
+        "motorcycle": 6,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 19
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:43",
+    "frame_idx": 103,
+    "analysis": {
+      "vehicle_count": 33,
+      "density_veh_per_100m": 66.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 13,
+        "autorickshaw": 8,
+        "motorcycle": 6,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 19
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:44",
+    "frame_idx": 104,
+    "analysis": {
+      "vehicle_count": 34,
+      "density_veh_per_100m": 68.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 13,
+        "autorickshaw": 8,
+        "motorcycle": 6,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 20
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:45",
+    "frame_idx": 105,
+    "analysis": {
+      "vehicle_count": 35,
+      "density_veh_per_100m": 70.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 14,
+        "autorickshaw": 8,
+        "motorcycle": 7,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 21
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:46",
+    "frame_idx": 106,
+    "analysis": {
+      "vehicle_count": 36,
+      "density_veh_per_100m": 72.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 14,
+        "autorickshaw": 9,
+        "motorcycle": 7,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 21
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:47",
+    "frame_idx": 107,
+    "analysis": {
+      "vehicle_count": 37,
+      "density_veh_per_100m": 74.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 14,
+        "autorickshaw": 9,
+        "motorcycle": 7,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 22
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:48",
+    "frame_idx": 108,
+    "analysis": {
+      "vehicle_count": 38,
+      "density_veh_per_100m": 76.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 15,
+        "autorickshaw": 9,
+        "motorcycle": 7,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 22
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:49",
+    "frame_idx": 109,
+    "analysis": {
+      "vehicle_count": 39,
+      "density_veh_per_100m": 78.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 15,
+        "autorickshaw": 9,
+        "motorcycle": 7,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 23
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:50",
+    "frame_idx": 110,
+    "analysis": {
+      "vehicle_count": 30,
+      "density_veh_per_100m": 60.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 12,
+        "autorickshaw": 7,
+        "motorcycle": 6,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 18
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:51",
+    "frame_idx": 111,
+    "analysis": {
+      "vehicle_count": 31,
+      "density_veh_per_100m": 62.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 12,
+        "autorickshaw": 7,
+        "motorcycle": 6,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 18
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:52",
+    "frame_idx": 112,
+    "analysis": {
+      "vehicle_count": 32,
+      "density_veh_per_100m": 64.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 12,
+        "autorickshaw": 8,
+        "motorcycle": 6,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 19
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:53",
+    "frame_idx": 113,
+    "analysis": {
+      "vehicle_count": 33,
+      "density_veh_per_100m": 66.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 13,
+        "autorickshaw": 8,
+        "motorcycle": 6,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 19
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:54",
+    "frame_idx": 114,
+    "analysis": {
+      "vehicle_count": 34,
+      "density_veh_per_100m": 68.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 13,
+        "autorickshaw": 8,
+        "motorcycle": 6,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 20
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:55",
+    "frame_idx": 115,
+    "analysis": {
+      "vehicle_count": 35,
+      "density_veh_per_100m": 70.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 14,
+        "autorickshaw": 8,
+        "motorcycle": 7,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 21
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:56",
+    "frame_idx": 116,
+    "analysis": {
+      "vehicle_count": 36,
+      "density_veh_per_100m": 72.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 14,
+        "autorickshaw": 9,
+        "motorcycle": 7,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 21
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:57",
+    "frame_idx": 117,
+    "analysis": {
+      "vehicle_count": 37,
+      "density_veh_per_100m": 74.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 14,
+        "autorickshaw": 9,
+        "motorcycle": 7,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 22
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:58",
+    "frame_idx": 118,
+    "analysis": {
+      "vehicle_count": 38,
+      "density_veh_per_100m": 76.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 15,
+        "autorickshaw": 9,
+        "motorcycle": 7,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 22
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:01:59",
+    "frame_idx": 119,
+    "analysis": {
+      "vehicle_count": 39,
+      "density_veh_per_100m": 78.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 15,
+        "autorickshaw": 9,
+        "motorcycle": 7,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 23
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:00",
+    "frame_idx": 120,
+    "analysis": {
+      "vehicle_count": 30,
+      "density_veh_per_100m": 60.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 12,
+        "autorickshaw": 7,
+        "motorcycle": 6,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 18
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:01",
+    "frame_idx": 121,
+    "analysis": {
+      "vehicle_count": 31,
+      "density_veh_per_100m": 62.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 12,
+        "autorickshaw": 7,
+        "motorcycle": 6,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 18
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:02",
+    "frame_idx": 122,
+    "analysis": {
+      "vehicle_count": 32,
+      "density_veh_per_100m": 64.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 12,
+        "autorickshaw": 8,
+        "motorcycle": 6,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 19
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:03",
+    "frame_idx": 123,
+    "analysis": {
+      "vehicle_count": 33,
+      "density_veh_per_100m": 66.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 13,
+        "autorickshaw": 8,
+        "motorcycle": 6,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 19
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:04",
+    "frame_idx": 124,
+    "analysis": {
+      "vehicle_count": 34,
+      "density_veh_per_100m": 68.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 13,
+        "autorickshaw": 8,
+        "motorcycle": 6,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 20
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:05",
+    "frame_idx": 125,
+    "analysis": {
+      "vehicle_count": 35,
+      "density_veh_per_100m": 70.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 14,
+        "autorickshaw": 8,
+        "motorcycle": 7,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 21
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:06",
+    "frame_idx": 126,
+    "analysis": {
+      "vehicle_count": 36,
+      "density_veh_per_100m": 72.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 14,
+        "autorickshaw": 9,
+        "motorcycle": 7,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 21
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:07",
+    "frame_idx": 127,
+    "analysis": {
+      "vehicle_count": 37,
+      "density_veh_per_100m": 74.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 14,
+        "autorickshaw": 9,
+        "motorcycle": 7,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 22
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:08",
+    "frame_idx": 128,
+    "analysis": {
+      "vehicle_count": 38,
+      "density_veh_per_100m": 76.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 15,
+        "autorickshaw": 9,
+        "motorcycle": 7,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 22
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:09",
+    "frame_idx": 129,
+    "analysis": {
+      "vehicle_count": 39,
+      "density_veh_per_100m": 78.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 15,
+        "autorickshaw": 9,
+        "motorcycle": 7,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 23
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:10",
+    "frame_idx": 130,
+    "analysis": {
+      "vehicle_count": 30,
+      "density_veh_per_100m": 60.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 12,
+        "autorickshaw": 7,
+        "motorcycle": 6,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 18
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:11",
+    "frame_idx": 131,
+    "analysis": {
+      "vehicle_count": 31,
+      "density_veh_per_100m": 62.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 12,
+        "autorickshaw": 7,
+        "motorcycle": 6,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 18
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:12",
+    "frame_idx": 132,
+    "analysis": {
+      "vehicle_count": 32,
+      "density_veh_per_100m": 64.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 12,
+        "autorickshaw": 8,
+        "motorcycle": 6,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 19
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:13",
+    "frame_idx": 133,
+    "analysis": {
+      "vehicle_count": 33,
+      "density_veh_per_100m": 66.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 13,
+        "autorickshaw": 8,
+        "motorcycle": 6,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 19
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:14",
+    "frame_idx": 134,
+    "analysis": {
+      "vehicle_count": 34,
+      "density_veh_per_100m": 68.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 13,
+        "autorickshaw": 8,
+        "motorcycle": 6,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 20
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:15",
+    "frame_idx": 135,
+    "analysis": {
+      "vehicle_count": 35,
+      "density_veh_per_100m": 70.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 14,
+        "autorickshaw": 8,
+        "motorcycle": 7,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 21
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:16",
+    "frame_idx": 136,
+    "analysis": {
+      "vehicle_count": 36,
+      "density_veh_per_100m": 72.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 14,
+        "autorickshaw": 9,
+        "motorcycle": 7,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 21
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:17",
+    "frame_idx": 137,
+    "analysis": {
+      "vehicle_count": 37,
+      "density_veh_per_100m": 74.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 14,
+        "autorickshaw": 9,
+        "motorcycle": 7,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 22
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:18",
+    "frame_idx": 138,
+    "analysis": {
+      "vehicle_count": 38,
+      "density_veh_per_100m": 76.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 15,
+        "autorickshaw": 9,
+        "motorcycle": 7,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 22
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:19",
+    "frame_idx": 139,
+    "analysis": {
+      "vehicle_count": 39,
+      "density_veh_per_100m": 78.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 15,
+        "autorickshaw": 9,
+        "motorcycle": 7,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 23
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:20",
+    "frame_idx": 140,
+    "analysis": {
+      "vehicle_count": 30,
+      "density_veh_per_100m": 60.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 12,
+        "autorickshaw": 7,
+        "motorcycle": 6,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 18
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:21",
+    "frame_idx": 141,
+    "analysis": {
+      "vehicle_count": 31,
+      "density_veh_per_100m": 62.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 12,
+        "autorickshaw": 7,
+        "motorcycle": 6,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 18
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:22",
+    "frame_idx": 142,
+    "analysis": {
+      "vehicle_count": 32,
+      "density_veh_per_100m": 64.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 12,
+        "autorickshaw": 8,
+        "motorcycle": 6,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 19
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:23",
+    "frame_idx": 143,
+    "analysis": {
+      "vehicle_count": 33,
+      "density_veh_per_100m": 66.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 13,
+        "autorickshaw": 8,
+        "motorcycle": 6,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 19
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:24",
+    "frame_idx": 144,
+    "analysis": {
+      "vehicle_count": 34,
+      "density_veh_per_100m": 68.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 13,
+        "autorickshaw": 8,
+        "motorcycle": 6,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 20
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:25",
+    "frame_idx": 145,
+    "analysis": {
+      "vehicle_count": 35,
+      "density_veh_per_100m": 70.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 14,
+        "autorickshaw": 8,
+        "motorcycle": 7,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 21
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:26",
+    "frame_idx": 146,
+    "analysis": {
+      "vehicle_count": 36,
+      "density_veh_per_100m": 72.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 14,
+        "autorickshaw": 9,
+        "motorcycle": 7,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 21
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:27",
+    "frame_idx": 147,
+    "analysis": {
+      "vehicle_count": 37,
+      "density_veh_per_100m": 74.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 14,
+        "autorickshaw": 9,
+        "motorcycle": 7,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 22
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:28",
+    "frame_idx": 148,
+    "analysis": {
+      "vehicle_count": 38,
+      "density_veh_per_100m": 76.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 15,
+        "autorickshaw": 9,
+        "motorcycle": 7,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 22
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:29",
+    "frame_idx": 149,
+    "analysis": {
+      "vehicle_count": 39,
+      "density_veh_per_100m": 78.0,
+      "congestion_severity": "high",
+      "class_distribution": {
+        "car": 15,
+        "autorickshaw": 9,
+        "motorcycle": 7,
+        "bus": 3,
+        "truck": 1
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 23
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:30",
+    "frame_idx": 150,
+    "analysis": {
+      "vehicle_count": 50,
+      "density_veh_per_100m": 100.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 20,
+        "autorickshaw": 12,
+        "motorcycle": 10,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 30
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:31",
+    "frame_idx": 151,
+    "analysis": {
+      "vehicle_count": 51,
+      "density_veh_per_100m": 102.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 20,
+        "autorickshaw": 12,
+        "motorcycle": 10,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 30
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:32",
+    "frame_idx": 152,
+    "analysis": {
+      "vehicle_count": 52,
+      "density_veh_per_100m": 104.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 20,
+        "autorickshaw": 13,
+        "motorcycle": 10,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 31
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:33",
+    "frame_idx": 153,
+    "analysis": {
+      "vehicle_count": 53,
+      "density_veh_per_100m": 106.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 21,
+        "autorickshaw": 13,
+        "motorcycle": 10,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 31
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:34",
+    "frame_idx": 154,
+    "analysis": {
+      "vehicle_count": 54,
+      "density_veh_per_100m": 108.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 21,
+        "autorickshaw": 13,
+        "motorcycle": 10,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 32
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:35",
+    "frame_idx": 155,
+    "analysis": {
+      "vehicle_count": 55,
+      "density_veh_per_100m": 110.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 22,
+        "autorickshaw": 13,
+        "motorcycle": 11,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 33
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:36",
+    "frame_idx": 156,
+    "analysis": {
+      "vehicle_count": 56,
+      "density_veh_per_100m": 112.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 22,
+        "autorickshaw": 14,
+        "motorcycle": 11,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 33
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:37",
+    "frame_idx": 157,
+    "analysis": {
+      "vehicle_count": 57,
+      "density_veh_per_100m": 114.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 22,
+        "autorickshaw": 14,
+        "motorcycle": 11,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 34
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:38",
+    "frame_idx": 158,
+    "analysis": {
+      "vehicle_count": 58,
+      "density_veh_per_100m": 116.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 23,
+        "autorickshaw": 14,
+        "motorcycle": 11,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 34
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:39",
+    "frame_idx": 159,
+    "analysis": {
+      "vehicle_count": 59,
+      "density_veh_per_100m": 118.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 23,
+        "autorickshaw": 14,
+        "motorcycle": 11,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 35
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:40",
+    "frame_idx": 160,
+    "analysis": {
+      "vehicle_count": 50,
+      "density_veh_per_100m": 100.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 20,
+        "autorickshaw": 12,
+        "motorcycle": 10,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 30
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:41",
+    "frame_idx": 161,
+    "analysis": {
+      "vehicle_count": 51,
+      "density_veh_per_100m": 102.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 20,
+        "autorickshaw": 12,
+        "motorcycle": 10,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 30
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:42",
+    "frame_idx": 162,
+    "analysis": {
+      "vehicle_count": 52,
+      "density_veh_per_100m": 104.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 20,
+        "autorickshaw": 13,
+        "motorcycle": 10,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 31
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:43",
+    "frame_idx": 163,
+    "analysis": {
+      "vehicle_count": 53,
+      "density_veh_per_100m": 106.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 21,
+        "autorickshaw": 13,
+        "motorcycle": 10,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 31
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:44",
+    "frame_idx": 164,
+    "analysis": {
+      "vehicle_count": 54,
+      "density_veh_per_100m": 108.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 21,
+        "autorickshaw": 13,
+        "motorcycle": 10,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 32
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:45",
+    "frame_idx": 165,
+    "analysis": {
+      "vehicle_count": 55,
+      "density_veh_per_100m": 110.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 22,
+        "autorickshaw": 13,
+        "motorcycle": 11,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 33
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:46",
+    "frame_idx": 166,
+    "analysis": {
+      "vehicle_count": 56,
+      "density_veh_per_100m": 112.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 22,
+        "autorickshaw": 14,
+        "motorcycle": 11,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 33
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:47",
+    "frame_idx": 167,
+    "analysis": {
+      "vehicle_count": 57,
+      "density_veh_per_100m": 114.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 22,
+        "autorickshaw": 14,
+        "motorcycle": 11,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 34
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:48",
+    "frame_idx": 168,
+    "analysis": {
+      "vehicle_count": 58,
+      "density_veh_per_100m": 116.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 23,
+        "autorickshaw": 14,
+        "motorcycle": 11,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 34
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:49",
+    "frame_idx": 169,
+    "analysis": {
+      "vehicle_count": 59,
+      "density_veh_per_100m": 118.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 23,
+        "autorickshaw": 14,
+        "motorcycle": 11,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 35
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:50",
+    "frame_idx": 170,
+    "analysis": {
+      "vehicle_count": 50,
+      "density_veh_per_100m": 100.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 20,
+        "autorickshaw": 12,
+        "motorcycle": 10,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 30
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:51",
+    "frame_idx": 171,
+    "analysis": {
+      "vehicle_count": 51,
+      "density_veh_per_100m": 102.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 20,
+        "autorickshaw": 12,
+        "motorcycle": 10,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 30
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:52",
+    "frame_idx": 172,
+    "analysis": {
+      "vehicle_count": 52,
+      "density_veh_per_100m": 104.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 20,
+        "autorickshaw": 13,
+        "motorcycle": 10,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 31
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:53",
+    "frame_idx": 173,
+    "analysis": {
+      "vehicle_count": 53,
+      "density_veh_per_100m": 106.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 21,
+        "autorickshaw": 13,
+        "motorcycle": 10,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 31
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:54",
+    "frame_idx": 174,
+    "analysis": {
+      "vehicle_count": 54,
+      "density_veh_per_100m": 108.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 21,
+        "autorickshaw": 13,
+        "motorcycle": 10,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 32
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:55",
+    "frame_idx": 175,
+    "analysis": {
+      "vehicle_count": 55,
+      "density_veh_per_100m": 110.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 22,
+        "autorickshaw": 13,
+        "motorcycle": 11,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 33
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:56",
+    "frame_idx": 176,
+    "analysis": {
+      "vehicle_count": 56,
+      "density_veh_per_100m": 112.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 22,
+        "autorickshaw": 14,
+        "motorcycle": 11,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 33
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:57",
+    "frame_idx": 177,
+    "analysis": {
+      "vehicle_count": 57,
+      "density_veh_per_100m": 114.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 22,
+        "autorickshaw": 14,
+        "motorcycle": 11,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 34
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:58",
+    "frame_idx": 178,
+    "analysis": {
+      "vehicle_count": 58,
+      "density_veh_per_100m": 116.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 23,
+        "autorickshaw": 14,
+        "motorcycle": 11,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 34
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:02:59",
+    "frame_idx": 179,
+    "analysis": {
+      "vehicle_count": 59,
+      "density_veh_per_100m": 118.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 23,
+        "autorickshaw": 14,
+        "motorcycle": 11,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 35
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:03:00",
+    "frame_idx": 180,
+    "analysis": {
+      "vehicle_count": 50,
+      "density_veh_per_100m": 100.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 20,
+        "autorickshaw": 12,
+        "motorcycle": 10,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 30
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:03:01",
+    "frame_idx": 181,
+    "analysis": {
+      "vehicle_count": 51,
+      "density_veh_per_100m": 102.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 20,
+        "autorickshaw": 12,
+        "motorcycle": 10,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 30
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:03:02",
+    "frame_idx": 182,
+    "analysis": {
+      "vehicle_count": 52,
+      "density_veh_per_100m": 104.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 20,
+        "autorickshaw": 13,
+        "motorcycle": 10,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 31
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:03:03",
+    "frame_idx": 183,
+    "analysis": {
+      "vehicle_count": 53,
+      "density_veh_per_100m": 106.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 21,
+        "autorickshaw": 13,
+        "motorcycle": 10,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 31
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:03:04",
+    "frame_idx": 184,
+    "analysis": {
+      "vehicle_count": 54,
+      "density_veh_per_100m": 108.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 21,
+        "autorickshaw": 13,
+        "motorcycle": 10,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 32
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:03:05",
+    "frame_idx": 185,
+    "analysis": {
+      "vehicle_count": 55,
+      "density_veh_per_100m": 110.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 22,
+        "autorickshaw": 13,
+        "motorcycle": 11,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 33
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:03:06",
+    "frame_idx": 186,
+    "analysis": {
+      "vehicle_count": 56,
+      "density_veh_per_100m": 112.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 22,
+        "autorickshaw": 14,
+        "motorcycle": 11,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 33
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:03:07",
+    "frame_idx": 187,
+    "analysis": {
+      "vehicle_count": 57,
+      "density_veh_per_100m": 114.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 22,
+        "autorickshaw": 14,
+        "motorcycle": 11,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 34
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:03:08",
+    "frame_idx": 188,
+    "analysis": {
+      "vehicle_count": 58,
+      "density_veh_per_100m": 116.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 23,
+        "autorickshaw": 14,
+        "motorcycle": 11,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 34
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:03:09",
+    "frame_idx": 189,
+    "analysis": {
+      "vehicle_count": 59,
+      "density_veh_per_100m": 118.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 23,
+        "autorickshaw": 14,
+        "motorcycle": 11,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 35
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:03:10",
+    "frame_idx": 190,
+    "analysis": {
+      "vehicle_count": 50,
+      "density_veh_per_100m": 100.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 20,
+        "autorickshaw": 12,
+        "motorcycle": 10,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 30
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:03:11",
+    "frame_idx": 191,
+    "analysis": {
+      "vehicle_count": 51,
+      "density_veh_per_100m": 102.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 20,
+        "autorickshaw": 12,
+        "motorcycle": 10,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 30
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:03:12",
+    "frame_idx": 192,
+    "analysis": {
+      "vehicle_count": 52,
+      "density_veh_per_100m": 104.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 20,
+        "autorickshaw": 13,
+        "motorcycle": 10,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 31
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:03:13",
+    "frame_idx": 193,
+    "analysis": {
+      "vehicle_count": 53,
+      "density_veh_per_100m": 106.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 21,
+        "autorickshaw": 13,
+        "motorcycle": 10,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 31
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:03:14",
+    "frame_idx": 194,
+    "analysis": {
+      "vehicle_count": 54,
+      "density_veh_per_100m": 108.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 21,
+        "autorickshaw": 13,
+        "motorcycle": 10,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 32
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:03:15",
+    "frame_idx": 195,
+    "analysis": {
+      "vehicle_count": 55,
+      "density_veh_per_100m": 110.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 22,
+        "autorickshaw": 13,
+        "motorcycle": 11,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 33
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:03:16",
+    "frame_idx": 196,
+    "analysis": {
+      "vehicle_count": 56,
+      "density_veh_per_100m": 112.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 22,
+        "autorickshaw": 14,
+        "motorcycle": 11,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 33
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:03:17",
+    "frame_idx": 197,
+    "analysis": {
+      "vehicle_count": 57,
+      "density_veh_per_100m": 114.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 22,
+        "autorickshaw": 14,
+        "motorcycle": 11,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 34
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:03:18",
+    "frame_idx": 198,
+    "analysis": {
+      "vehicle_count": 58,
+      "density_veh_per_100m": 116.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 23,
+        "autorickshaw": 14,
+        "motorcycle": 11,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 34
+    }
+  },
+  {
+    "timestamp": "2026-08-26T14:03:19",
+    "frame_idx": 199,
+    "analysis": {
+      "vehicle_count": 59,
+      "density_veh_per_100m": 118.0,
+      "congestion_severity": "critical",
+      "class_distribution": {
+        "car": 23,
+        "autorickshaw": 14,
+        "motorcycle": 11,
+        "bus": 5,
+        "truck": 2
+      },
+      "avg_confidence": 0.82,
+      "queue_estimate": 35
+    }
+  }
+]

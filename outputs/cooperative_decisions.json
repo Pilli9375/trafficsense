@@ -1,0 +1,84 @@
+[
+  {
+    "intersection_id": "I0",
+    "decision": {
+      "recommended_phase": 2,
+      "green_duration_seconds": 45,
+      "reasoning": "Cooperative green phase recommended to alleviate severe congestion and prevent gridlock with neighbor intersections.",
+      "cooperation_needed": true,
+      "neighbor_coordination": "I1",
+      "sr_raw": "{\"recommended_phase\": 2, \"green_duration_seconds\": 45, \"reasoning\": \"Cooperative green phase recommended to alleviate severe congestion and prevent gridlock with neighbor intersections.\", \"cooperation"
+    },
+    "state": {
+      "intersection_id": "I0",
+      "phase": 0,
+      "n_queue": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "n_move": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "occupancy": 0.06,
+      "tau": 5,
+      "rho": 5.0,
+      "vehicle_mix": {
+        "car": 1,
+        "autorickshaw": 0,
+        "motorcycle": 0,
+        "bus": 0,
+        "truck": 0
+      },
+      "congestion_level": "low",
+      "density_veh_per_100m": 6.0,
+      "source": "TrafficSense_Perception",
+      "perception_frame": 0
+    }
+  },
+  {
+    "intersection_id": "I1",
+    "decision": {
+      "recommended_phase": 2,
+      "green_duration_seconds": 45,
+      "reasoning": "Cooperative green phase recommended to alleviate severe congestion and prevent gridlock with neighbor intersections.",
+      "cooperation_needed": true,
+      "neighbor_coordination": "I1",
+      "sr_raw": "{\"recommended_phase\": 2, \"green_duration_seconds\": 45, \"reasoning\": \"Cooperative green phase recommended to alleviate severe congestion and prevent gridlock with neighbor intersections.\", \"cooperation"
+    },
+    "state": {
+      "intersection_id": "I1",
+      "phase": 0,
+      "n_queue": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "n_move": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "occupancy": 0.08,
+      "tau": 5,
+      "rho": 10.0,
+      "vehicle_mix": {
+        "car": 1,
+        "autorickshaw": 1,
+        "motorcycle": 0,
+        "bus": 0,
+        "truck": 0
+      },
+      "congestion_level": "low",
+      "density_veh_per_100m": 8.0,
+      "source": "TrafficSense_Perception",
+      "perception_frame": 1
+    }
+  }
+]
