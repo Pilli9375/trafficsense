@@ -1,0 +1,11 @@
+{
+  "interval": 1.0,
+  "seed": 42,
+  "dir": "/mnt/c/Pilli/trafficsense/data/synthetic/",
+  "roadnetFile": "indian_2x2_roadnet.json",
+  "flowFile": "indian_2x2_flow.json",
+  "rlTrafficLight": true,
+  "saveReplay": true,
+  "roadnetLogFile": "indian_2x2_roadnet_replay.json",
+  "replayLogFile": "indian_2x2_replay.txt"
+}
