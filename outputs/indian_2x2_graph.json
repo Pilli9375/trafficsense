@@ -1,0 +1,73 @@
+{
+  "network_type": "indian_2x2",
+  "nodes": {
+    "I0": {
+      "position": [
+        0.0,
+        0.0
+      ],
+      "lane_count": 4,
+      "road_width_m": 8.0,
+      "has_auto_rickshaw_stand": true,
+      "has_pedestrian_crossing": true
+    },
+    "I1": {
+      "position": [
+        200.0,
+        0.0
+      ],
+      "lane_count": 4,
+      "road_width_m": 10.0,
+      "has_auto_rickshaw_stand": false,
+      "has_pedestrian_crossing": true
+    },
+    "I2": {
+      "position": [
+        0.0,
+        200.0
+      ],
+      "lane_count": 4,
+      "road_width_m": 10.0,
+      "has_auto_rickshaw_stand": false,
+      "has_pedestrian_crossing": true
+    },
+    "I3": {
+      "position": [
+        200.0,
+        200.0
+      ],
+      "lane_count": 4,
+      "road_width_m": 10.0,
+      "has_auto_rickshaw_stand": true,
+      "has_pedestrian_crossing": true
+    }
+  },
+  "edges": {
+    "I0": [
+      "I1",
+      "I2"
+    ],
+    "I1": [
+      "I0",
+      "I3"
+    ],
+    "I2": [
+      "I0",
+      "I3"
+    ],
+    "I3": [
+      "I1",
+      "I2"
+    ]
+  },
+  "edge_weights": {
+    "I0->I1": 200.0,
+    "I1->I0": 200.0,
+    "I0->I2": 200.0,
+    "I2->I0": 200.0,
+    "I1->I3": 200.0,
+    "I3->I1": 200.0,
+    "I2->I3": 200.0,
+    "I3->I2": 200.0
+  }
+}

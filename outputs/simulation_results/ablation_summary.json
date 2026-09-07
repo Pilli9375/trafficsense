@@ -1,0 +1,47 @@
+{
+  "fixedtime": {
+    "avg_att": 91.89,
+    "avg_aql": 0.68,
+    "avg_awt": 1.69,
+    "final_throughput": 0,
+    "total_steps": 360,
+    "controller": "FixedTime",
+    "simulation_time_sec": 1.4
+  },
+  "maxpressure": {
+    "avg_att": 93.74,
+    "avg_aql": 0.78,
+    "avg_awt": 1.95,
+    "final_throughput": 0,
+    "total_steps": 360,
+    "controller": "MaxPressure",
+    "simulation_time_sec": 1.4
+  },
+  "isolated": {
+    "avg_att": 93.32,
+    "avg_aql": 0.78,
+    "avg_awt": 1.96,
+    "final_throughput": 0,
+    "total_steps": 360,
+    "controller": "isolated",
+    "simulation_time_sec": 6.2
+  },
+  "simulatoronly": {
+    "avg_att": 93.09,
+    "avg_aql": 0.8,
+    "avg_awt": 2.0,
+    "final_throughput": 0,
+    "total_steps": 360,
+    "controller": "simulatoronly",
+    "simulation_time_sec": 11.0
+  },
+  "trafficsense": {
+    "avg_att": 93.33,
+    "avg_aql": 0.78,
+    "avg_awt": 1.95,
+    "final_throughput": 0,
+    "total_steps": 360,
+    "controller": "TrafficSense",
+    "simulation_time_sec": 9.2
+  }
+}

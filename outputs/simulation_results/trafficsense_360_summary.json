@@ -1,0 +1,9 @@
+{
+  "avg_att": 93.33,
+  "avg_aql": 0.78,
+  "avg_awt": 1.95,
+  "final_throughput": 0,
+  "total_steps": 360,
+  "controller": "TrafficSense",
+  "simulation_time_sec": 9.2
+}

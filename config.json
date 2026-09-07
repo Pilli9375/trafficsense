@@ -1,0 +1,11 @@
+{
+  "interval": 1.0,
+  "seed": 0,
+  "dir": "/home/pilli/trafficsense/CoLLMLight/data/Synthetic/4_4/",
+  "roadnetFile": "roadnet_4_4.json",
+  "flowFile": "anon_4_4_synthetic_8000.json",
+  "rlTrafficLight": true,
+  "saveReplay": false,
+  "roadnetLogFile": "frontend/web/roadnetLogFile.json",
+  "replayLogFile": "frontend/web/replayLogFile.txt"
+}

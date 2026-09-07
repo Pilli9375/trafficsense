@@ -1,0 +1,9 @@
+{
+  "avg_att": 93.32,
+  "avg_aql": 0.78,
+  "avg_awt": 1.96,
+  "final_throughput": 0,
+  "total_steps": 360,
+  "controller": "isolated",
+  "simulation_time_sec": 6.2
+}
