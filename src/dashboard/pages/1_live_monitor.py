@@ -91,7 +91,7 @@ else:
     fps = cap.get(cv2.CAP_PROP_FPS)
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     
-    st.markdown(f"""
+    st.html(f"""
     <div style="display: flex; gap: 15px; margin-bottom: 20px; font-size: 13px; color: #94a3b8;">
         <span style="background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 6px;"><b>Resolution:</b> {width}×{height}</span>
         <span style="background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 6px;"><b>FPS:</b> {fps:.1f}</span>
