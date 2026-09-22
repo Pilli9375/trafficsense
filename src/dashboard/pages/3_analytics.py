@@ -297,63 +297,156 @@ if not fixed_df.empty and not ts_df.empty:
                 legend_bgcolor="#161b22"
             )
             st.plotly_chart(fig_wait, use_container_width=True)
-    
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+import os
+import sys
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+from src import config
+from src.dashboard.utils import apply_theme, render_metric_card
+
+st.set_page_config(page_title="Analytics | TrafficSense", layout="wide", page_icon="📈")
+apply_theme()
+
+st.title("📈 Performance Analytics")
+st.markdown("<p style='color: #94a3b8; font-size: 1.1rem; margin-bottom: 2rem;'>Comprehensive performance comparison of TrafficSense cooperative control versus traditional baselines.</p>", unsafe_allow_html=True)
+
+# Load data
+@st.cache_data
+def load_metrics(controller):
+    path = config.SIMULATION_RESULTS_DIR / f'{controller}_360_metrics.csv'
+    if not path.exists():
+        path = config.SIMULATION_RESULTS_DIR / f'{controller}_metrics.csv'
+    if path.exists():
+        return pd.read_csv(str(path))
+    return pd.DataFrame()
+
+@st.cache_data
+def load_summary(controller):
+    path = config.SIMULATION_RESULTS_DIR / f'{controller}_360_summary.json'
+    if not path.exists():
+        path = config.SIMULATION_RESULTS_DIR / f'{controller}_summary.json'
+    if path.exists():
+        import json
+        with open(str(path), 'r', encoding='utf-8') as f:
+            return json.load(f)
+    return {}
+
+fixed_df = load_metrics('fixedtime')
+ts_df = load_metrics('trafficsense')
+mp_df = load_metrics('maxpressure')
+fixed_summary = load_summary('fixedtime')
+ts_summary = load_summary('trafficsense')
+mp_summary = load_summary('maxpressure')
+
+has_data = not ts_df.empty
+has_mp = not mp_df.empty
+
+# Sidebar
+with st.sidebar:
+    st.markdown("### 📊 Chart Options")
+    smoothing = st.slider("Smoothing Factor", 1, 20, 5)
     st.markdown("---")
+    st.markdown("### 📋 Baselines")
+    st.checkbox("FixedTime (Static)", value=True, disabled=True)
+    st.checkbox("MaxPressure", value=has_mp, disabled=True)
+    st.checkbox("TrafficSense", value=True, disabled=True)
+
+if not has_data:
+    st.warning("No analytics data found. Please run the simulation first.")
+    st.stop()
+
+# Summary report
+st.markdown("### 📊 Executive Summary")
+
+fixed_avg_queue = fixed_summary.get('avg_queue_length', 0)
+ts_avg_queue = ts_summary.get('avg_queue_length', 0)
+fixed_avg_wait = fixed_summary.get('avg_wait_time', 0)
+ts_avg_wait = ts_summary.get('avg_wait_time', 0)
+mp_avg_queue = mp_summary.get('avg_queue_length', 0) if has_mp else 0
+mp_avg_wait = mp_summary.get('avg_wait_time', 0) if has_mp else 0
+
+queue_improvement = ((fixed_avg_queue - ts_avg_queue) / fixed_avg_queue * 100) if fixed_avg_queue > 0 else 0
+wait_improvement = ((fixed_avg_wait - ts_avg_wait) / fixed_avg_wait * 100) if fixed_avg_wait > 0 else 0
+
+col1, col2 = st.columns(2)
+with col1:
+    render_metric_card("Queue Reduction (vs Fixed)", f"{abs(queue_improvement):.1f}%", queue_improvement, icon="📉", color_theme="green")
+with col2:
+    render_metric_card("Wait Time Reduction (vs Fixed)", f"{abs(wait_improvement):.1f}%", wait_improvement, icon="⏱️", color_theme="green")
+
+st.markdown("---")
+st.markdown("### 📈 Time-Series Analysis")
+
+tab1, tab2 = st.tabs(["Queue Length", "Wait Time"])
+
+with tab1:
+    fig_q = go.Figure()
     
-    # Detailed metrics table
-    st.subheader("Detailed Metrics")
+    if not fixed_df.empty:
+        y_smooth = fixed_df['avg_queue_length'].rolling(window=smoothing, min_periods=1).mean()
+        fig_q.add_trace(go.Scatter(x=fixed_df['step'], y=y_smooth, mode='lines', name='FixedTime', line=dict(color='#94a3b8', width=2)))
+        
+    if has_mp:
+        y_smooth = mp_df['avg_queue_length'].rolling(window=smoothing, min_periods=1).mean()
+        fig_q.add_trace(go.Scatter(x=mp_df['step'], y=y_smooth, mode='lines', name='MaxPressure', line=dict(color='#f59e0b', width=2)))
+        
+    if not ts_df.empty:
+        y_smooth = ts_df['avg_queue_length'].rolling(window=smoothing, min_periods=1).mean()
+        fig_q.add_trace(go.Scatter(x=ts_df['step'], y=y_smooth, mode='lines', name='TrafficSense', line=dict(color='#10b981', width=3)))
     
-    tabs = st.tabs(["FixedTime", "MaxPressure", "TrafficSense"] if has_mp else ["FixedTime", "TrafficSense"])
+    fig_q.update_layout(
+        title="Average Queue Length Over Time",
+        xaxis_title="Simulation Step",
+        yaxis_title="Vehicles in Queue",
+        template="plotly_dark",
+        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(0,0,0,0)',
+        legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01),
+        margin=dict(l=40, r=40, t=40, b=40)
+    )
+    st.plotly_chart(fig_q, use_container_width=True)
+
+with tab2:
+    fig_w = go.Figure()
     
+    if not fixed_df.empty:
+        y_smooth = fixed_df['avg_wait_time'].rolling(window=smoothing, min_periods=1).mean()
+        fig_w.add_trace(go.Scatter(x=fixed_df['step'], y=y_smooth, mode='lines', name='FixedTime', line=dict(color='#94a3b8', width=2)))
+        
+    if has_mp:
+        y_smooth = mp_df['avg_wait_time'].rolling(window=smoothing, min_periods=1).mean()
+        fig_w.add_trace(go.Scatter(x=mp_df['step'], y=y_smooth, mode='lines', name='MaxPressure', line=dict(color='#f59e0b', width=2)))
+        
+    if not ts_df.empty:
+        y_smooth = ts_df['avg_wait_time'].rolling(window=smoothing, min_periods=1).mean()
+        fig_w.add_trace(go.Scatter(x=ts_df['step'], y=y_smooth, mode='lines', name='TrafficSense', line=dict(color='#10b981', width=3)))
+    
+    fig_w.update_layout(
+        title="Average Wait Time Over Time",
+        xaxis_title="Simulation Step",
+        yaxis_title="Wait Time (seconds)",
+        template="plotly_dark",
+        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(0,0,0,0)',
+        legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01),
+        margin=dict(l=40, r=40, t=40, b=40)
+    )
+    st.plotly_chart(fig_w, use_container_width=True)
+
+st.markdown("---")
+st.markdown("### 🗃️ Raw Metric Data")
+
+tabs = st.tabs(["FixedTime", "MaxPressure", "TrafficSense"] if has_mp else ["FixedTime", "TrafficSense"])
+if not fixed_df.empty:
     with tabs[0]:
         st.dataframe(fixed_df, use_container_width=True)
-    
-    if has_mp:
-        with tabs[1]:
-            st.dataframe(mp_df, use_container_width=True)
-        with tabs[2]:
-            st.dataframe(ts_df, use_container_width=True)
-    else:
-        with tabs[1]:
-            st.dataframe(ts_df, use_container_width=True)
-    
-    st.markdown("---")
-    
-    # Summary report
-    st.subheader("📋 Executive Summary")
-    
-    summary_html = f"""
-    <div style="background-color: #1c2128; border-radius: 12px; padding: 25px; border-left: 4px solid #58a6ff;">
-        <h4 style="color: #e6edf3; margin-top: 0;">TrafficSense vs Baselines</h4>
-        <table style="width: 100%; color: #c9d1d9; border-collapse: collapse;">
-            <tr style="border-bottom: 1px solid #30363d;">
-                <th style="text-align: left; padding: 10px; color: #8b949e;">Metric</th>
-                <th style="text-align: center; padding: 10px; color: #8b949e;">FixedTime</th>
-                {"<th style='text-align: center; padding: 10px; color: #8b949e;'>MaxPressure</th>" if has_mp else ""}
-                <th style="text-align: center; padding: 10px; color: #8b949e;">TrafficSense</th>
-                <th style="text-align: center; padding: 10px; color: #8b949e;">Improvement (vs FT)</th>
-            </tr>
-            <tr style="border-bottom: 1px solid #30363d;">
-                <td style="padding: 10px;">Average Queue Length</td>
-                <td style="text-align: center; padding: 10px;">{fixed_avg_queue:.2f}</td>
-                {"<td style='text-align: center; padding: 10px;'>" + f"{mp_avg_queue:.2f}" + "</td>" if has_mp else ""}
-                <td style="text-align: center; padding: 10px; color: #58a6ff; font-weight: bold;">{ts_avg_queue:.2f}</td>
-                <td style="text-align: center; padding: 10px; color: {'#3fb950' if queue_improvement > 0 else '#f85149'};">{queue_improvement:+.1f}%</td>
-            </tr>
-            <tr style="border-bottom: 1px solid #30363d;">
-                <td style="padding: 10px;">Average Wait Time</td>
-                <td style="text-align: center; padding: 10px;">{fixed_avg_wait:.2f}s</td>
-                {"<td style='text-align: center; padding: 10px;'>" + f"{mp_avg_wait:.2f}s" + "</td>" if has_mp else ""}
-                <td style="text-align: center; padding: 10px; color: #58a6ff; font-weight: bold;">{ts_avg_wait:.2f}s</td>
-                <td style="text-align: center; padding: 10px; color: {'#3fb950' if wait_improvement > 0 else '#f85149'};">{wait_improvement:+.1f}%</td>
-            </tr>
-            <tr style="border-bottom: 1px solid #30363d;">
-                <td style="padding: 10px;">Average Occupancy</td>
-                <td style="text-align: center; padding: 10px;">{fixed_avg_occ:.3f}</td>
-                {"<td style='text-align: center; padding: 10px;'>" + f"{mp_avg_occ:.3f}" + "</td>" if has_mp else ""}
-                <td style="text-align: center; padding: 10px; color: #58a6ff; font-weight: bold;">{ts_avg_occ:.3f}</td>
-                <td style="text-align: center; padding: 10px;">{((fixed_avg_occ - ts_avg_occ) / fixed_avg_occ * 100):+.1f}%</td>
-            </tr>
             <tr>
                 <td style="padding: 10px;">Peak Queue</td>
                 <td style="text-align: center; padding: 10px;">{int(fixed_peak_queue)}</td>

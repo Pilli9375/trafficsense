@@ -1,12 +1,19 @@
+import os
+import sys
+import time
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from src import config
 from ultralytics import YOLO
 import torch
 import yaml
-import os
-import time
 
 def main():
     print("=" * 60)
-    print("TrafficSense: YOLOv8n Training on Unified Indian Dataset")
+    print("TrafficSense: Upgraded YOLOv8s Training on Unified Indian Dataset")
     print("=" * 60)
     
     # Verify GPU
@@ -17,27 +24,28 @@ def main():
         print(f"VRAM: {torch.cuda.get_device_properties(0).total_memory / 1e9:.2f} GB")
     
     # Load data config
-    data_yaml = r'C:\Pilli\trafficsense\data\processed\unified_indian\data.yaml'
+    data_yaml = str(config.DATA_DIR / 'processed' / 'unified_indian' / 'data.yaml')
     with open(data_yaml, 'r') as f:
-        config = yaml.safe_load(f)
+        data_config = yaml.safe_load(f)
     print(f"\nDataset: {data_yaml}")
-    print(f"Classes: {config.get('nc', 'unknown')}")
-    print(f"Class names: {config.get('names', [])}")
+    print(f"Classes: {data_config.get('nc', 'unknown')}")
+    print(f"Class names: {data_config.get('names', [])}")
     
-    # Load model
-    model = YOLO('yolov8n.pt')
-    print("\nModel: YOLOv8n (pre-trained on COCO)")
+    # UPGRADE: Use YOLOv8s (Small) instead of YOLOv8n (Nano) for much better accuracy
+    # It still easily fits in 6GB VRAM.
+    model = YOLO('yolov8s.pt')
+    print("\nModel: YOLOv8s (pre-trained on COCO)")
     
-    # Training config optimized for RTX 4050 6GB
+    # Training config optimized for RTX 4050 6GB - High Accuracy
     train_args = {
         'data': data_yaml,
-        'epochs': 50,
+        'epochs': 150,                # UPGRADE: 150 epochs
         'imgsz': 640,
-        'batch': 8,           # Safe for 6GB VRAM
-        'device': 0 if torch.cuda.is_available() else 'cpu',          # GPU
-        'workers': 4,         # Data loading threads
-        'project': r'C:\Pilli\trafficsense\outputs',
-        'name': 'yolo_training',
+        'batch': 16,                  # UPGRADE: 16 batch size fits in 6GB for v8s
+        'device': 0 if torch.cuda.is_available() else 'cpu',
+        'workers': 4,
+        'project': str(config.OUTPUTS_DIR),
+        'name': 'yolo_training_v8s',  # New output folder
         'exist_ok': True,
         'pretrained': True,
         'optimizer': 'AdamW',
@@ -49,10 +57,16 @@ def main():
         'box': 7.5,
         'cls': 0.5,
         'dfl': 1.5,
-        'patience': 10,       # Early stopping if no improvement
+        'patience': 30,               # UPGRADE: Increased from 10 to 30
         'save': True,
-        'save_period': 10,    # Save checkpoint every 10 epochs
-        'plots': True,        # Generate training curves
+        'save_period': 10,
+        'plots': True,
+        # Data Augmentations
+        'mosaic': 1.0,
+        'mixup': 0.1,
+        'hsv_h': 0.015,
+        'hsv_s': 0.7,
+        'hsv_v': 0.4
     }
     
     print(f"\nTraining config:")
@@ -73,19 +87,20 @@ def main():
     print(f"Final mAP50: {results.results_dict.get('metrics/mAP50(B)', 'N/A')}")
     print(f"Final mAP50-95: {results.results_dict.get('metrics/mAP50-95(B)', 'N/A')}")
     
-    # Copy best model to models/yolo/
-    os.makedirs(r'C:\Pilli\trafficsense\models\yolo', exist_ok=True)
+    # Auto-copy the new best model to models/yolo/best.pt
+    best_dest = str(config.MODELS_DIR / 'yolo' / 'best.pt')
     import shutil
-    best_dst = r'C:\Pilli\trafficsense\models\yolo\best.pt'
-    shutil.copy2(best_src, best_dst)
-    print(f"\nCopied best model to: {best_dst}")
-    
-    # Also copy last.pt
-    last_src = os.path.join(os.path.dirname(best_src), 'last.pt')
+    if os.path.exists(best_src):
+        os.makedirs(os.path.dirname(best_dest), exist_ok=True)
+        shutil.copy2(best_src, best_dest)
+        print(f"\n[INFO] Auto-copied upgraded model to {best_dest}")
+        print("The dashboard will now automatically use this improved model!")
+        
+    last_src = os.path.join(train_args['project'], train_args['name'], 'weights', 'last.pt')
     if os.path.exists(last_src):
-        last_dst = r'C:\Pilli\trafficsense\models\yolo\last.pt'
-        shutil.copy2(last_src, last_dst)
-        print(f"Copied last model to: {last_dst}")
+        last_dest = str(config.MODELS_DIR / 'yolo' / 'last.pt')
+        shutil.copy2(last_src, last_dest)
+        print(f"[INFO] Auto-copied last model to {last_dest}")
 
 if __name__ == '__main__':
     main()
