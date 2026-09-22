@@ -8,7 +8,7 @@ from pathlib import Path
 from collections import Counter, deque
 import pandas as pd
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 from src import config
 from src.dashboard.utils import apply_theme, render_metric_card
