@@ -11,9 +11,15 @@ import csv
 from collections import defaultdict
 from pathlib import Path
 
+# Add project root to sys.path
+PROJECT_ROOT = Path(__file__).resolve().parent
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from src import config
+
 # Add Windows src paths so we can import orchestration code
-sys.path.insert(0, '/mnt/c/Pilli/trafficsense/src/orchestration')
-sys.path.insert(0, '/mnt/c/Pilli/trafficsense/src/perception')
+sys.path.insert(0, str(config.SRC_DIR / 'orchestration'))
+sys.path.insert(0, str(config.SRC_DIR / 'perception'))
 
 import cityflow
 
@@ -50,8 +56,18 @@ class ProperCityFlowEnv:
         
         self.intersection_ids = [
             node['id'] for node in roadnet.get('intersections', [])
-            if node.get('trafficLight', None) is not None
+            if node.get('trafficLight', None) is not None and not node.get('virtual', False)
         ]
+        
+        # Build intersection -> incoming lanes mapping
+        self.incoming_lanes = defaultdict(list)
+        for road in roadnet.get('roads', []):
+            end_node = road.get('endIntersection')
+            if end_node in self.intersection_ids:
+                road_id = road['id']
+                num_lanes = len(road.get('lanes', []))
+                for l in range(num_lanes):
+                    self.incoming_lanes[end_node].append(f"{road_id}_{l}")
         
         self.lane_count_per_intersection = 4  # standard for 4-way
         
@@ -81,10 +97,9 @@ class ProperCityFlowEnv:
         lane_vehicles = self.engine.get_lane_vehicle_count()
         lane_waiting = self.engine.get_lane_waiting_vehicle_count()
         
-        # For simplicity, aggregate all lanes (in real implementation, 
-        # you'd map lanes to specific intersections)
-        total_vehicles = sum(lane_vehicles.values()) if lane_vehicles else 0
-        total_waiting = sum(lane_waiting.values()) if lane_waiting else 0
+        my_lanes = self.incoming_lanes.get(intersection_id, [])
+        total_vehicles = sum(lane_vehicles.get(l, 0) for l in my_lanes)
+        total_waiting = sum(lane_waiting.get(l, 0) for l in my_lanes)
         total_moving = max(0, total_vehicles - total_waiting)
         
         # Distribute across 4 approaches
@@ -229,10 +244,15 @@ class TrafficSenseController:
             return self.current_phases.get(intersection_id, 0)
 
 
-def run_simulation(controller_name, controller, env, total_steps=360, output_dir='/mnt/c/Pilli/trafficsense/outputs/simulation_results'):
+def run_simulation(controller_name, controller, env, total_steps=360, output_dir=None):
     """
-    Run a full simulation and save metrics.
+    Run the simulation for a specific controller.
     """
+    if output_dir is None:
+        from src import config
+        output_dir = str(config.SIMULATION_RESULTS_DIR)
+        
+    os.makedirs(output_dir, exist_ok=True)
     print(f"\n{'='*70}")
     print(f"Running {controller_name} Simulation ({total_steps} steps)")
     print(f"{'='*70}")
@@ -320,25 +340,12 @@ def main():
     print("TrafficSense Proper Simulation Runner")
     print("=" * 70)
     
-    # Config path
-    config_path = '/home/pilli/trafficsense/CoLLMLight/data/Synthetic/4_4/config.json'
-    
-    # Check if config exists
-    if not os.path.exists(config_path):
-        print(f"[ERROR] Config not found: {config_path}")
-        print("[INFO] Searching for config...")
-        # Try to find it
-        for root, dirs, files in os.walk('/home/pilli/trafficsense/CoLLMLight/data'):
-            for f in files:
-                if f == 'config.json':
-                    config_path = os.path.join(root, f)
-                    print(f"[INFO] Found: {config_path}")
-                    break
-            if os.path.exists(config_path):
-                break
+    from src import config
+    config_path = str(config.INDIAN_CONFIG)
     
     if not os.path.exists(config_path):
-        print("[FATAL] Could not find CityFlow config.json")
+        print(f"[FATAL] Could not find CityFlow config: {config_path}")
+        print("Please run scripts/gen_indian_roadnet.py first.")
         sys.exit(1)
     
     # Initialize environment
@@ -347,13 +354,13 @@ def main():
     print(f"Intersections: {env.intersection_ids}")
     
     # Generate perception data if needed
-    perception_path = '/mnt/c/Pilli/trafficsense/outputs/synthetic_perception.json'
+    perception_path = str(config.OUTPUTS_DIR / 'synthetic_perception.json')
     if not os.path.exists(perception_path):
         print("Generating synthetic perception data...")
         if TRAFFICSENSE_AVAILABLE:
             PerceptionStateGenerator.generate_for_network((2, 2), 400, perception_path)
         else:
-            print("[ERROR] Cannot generate perception data")
+            print("[WARN] TrafficSense modules not available, cannot generate perception data")
             sys.exit(1)
     
     # Run FixedTime baseline

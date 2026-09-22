@@ -3,27 +3,27 @@
 """
 
 import sys
-sys.path.insert(0, '/mnt/c/Pilli/trafficsense/src/simulation')
+import os
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parent
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from src import config
+sys.path.insert(0, str(config.SRC_DIR / 'simulation'))
 
 from run_proper_sim import ProperCityFlowEnv, run_simulation
 from maxpressure_controller import MaxPressureController
-import os
 
 def main():
     print("TrafficSense MaxPressure Baseline Simulation")
     print("=" * 60)
     
     # Config path
-    config_path = '/home/pilli/trafficsense/CoLLMLight/data/Synthetic/4_4/config.json'
+    config_path = str(config.INDIAN_CONFIG)
     
     if not os.path.exists(config_path):
-        for root, dirs, files in os.walk('/home/pilli/trafficsense/CoLLMLight/data'):
-            for f in files:
-                if f == 'config.json':
-                    config_path = os.path.join(root, f)
-                    break
-            if os.path.exists(config_path):
-                break
+        print(f"Error: {config_path} not found.")
     
     print(f"Using config: {config_path}")
     

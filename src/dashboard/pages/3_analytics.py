@@ -33,7 +33,7 @@ def load_summary(controller):
         path = r'C:\Pilli\trafficsense\outputs\simulation_results\{}_summary.json'.format(controller)
     if os.path.exists(path):
         import json
-        with open(path, 'r') as f:
+        with open(path, 'r', encoding='utf-8') as f:
             return json.load(f)
     return {}
 
@@ -76,21 +76,39 @@ if not fixed_df.empty and not ts_df.empty:
     has_mp = not mp_df.empty
     
     # Calculate aggregates
-    fixed_avg_queue = fixed_df['total_queued'].mean()
-    ts_avg_queue = ts_df['total_queued'].mean()
-    mp_avg_queue = mp_df['total_queued'].mean() if has_mp else 0
-    
-    fixed_avg_wait = fixed_df['tau'].mean()
-    ts_avg_wait = ts_df['tau'].mean()
-    mp_avg_wait = mp_df['tau'].mean() if has_mp else 0
-    
-    fixed_avg_occ = fixed_df['occupancy'].mean()
-    ts_avg_occ = ts_df['occupancy'].mean()
-    mp_avg_occ = mp_df['occupancy'].mean() if has_mp else 0
-    
-    fixed_peak_queue = fixed_df['total_queued'].max()
-    ts_peak_queue = ts_df['total_queued'].max()
-    mp_peak_queue = mp_df['total_queued'].max() if has_mp else 0
+    if 'total_queued' in fixed_df.columns:
+        fixed_avg_queue = fixed_df['total_queued'].mean()
+        ts_avg_queue = ts_df['total_queued'].mean()
+        mp_avg_queue = mp_df['total_queued'].mean() if has_mp else 0
+        
+        fixed_avg_wait = fixed_df['tau'].mean()
+        ts_avg_wait = ts_df['tau'].mean()
+        mp_avg_wait = mp_df['tau'].mean() if has_mp else 0
+        
+        fixed_avg_occ = fixed_df['occupancy'].mean()
+        ts_avg_occ = ts_df['occupancy'].mean()
+        mp_avg_occ = mp_df['occupancy'].mean() if has_mp else 0
+        
+        fixed_peak_queue = fixed_df['total_queued'].max()
+        ts_peak_queue = ts_df['total_queued'].max()
+        mp_peak_queue = mp_df['total_queued'].max() if has_mp else 0
+    else:
+        # Fallback to the new 360-step Native CityFlow metrics
+        fixed_avg_queue = fixed_df['aql'].mean() if 'aql' in fixed_df.columns else 0
+        ts_avg_queue = ts_df['aql'].mean() if 'aql' in ts_df.columns else 0
+        mp_avg_queue = mp_df['aql'].mean() if (has_mp and 'aql' in mp_df.columns) else 0
+        
+        fixed_avg_wait = fixed_df['awt'].mean() if 'awt' in fixed_df.columns else 0
+        ts_avg_wait = ts_df['awt'].mean() if 'awt' in ts_df.columns else 0
+        mp_avg_wait = mp_df['awt'].mean() if (has_mp and 'awt' in mp_df.columns) else 0
+        
+        fixed_avg_occ = fixed_df['att'].mean() if 'att' in fixed_df.columns else 0 # Using ATT as proxy for third stat
+        ts_avg_occ = ts_df['att'].mean() if 'att' in ts_df.columns else 0
+        mp_avg_occ = mp_df['att'].mean() if (has_mp and 'att' in mp_df.columns) else 0
+        
+        fixed_peak_queue = fixed_df['aql'].max() if 'aql' in fixed_df.columns else 0
+        ts_peak_queue = ts_df['aql'].max() if 'aql' in ts_df.columns else 0
+        mp_peak_queue = mp_df['aql'].max() if (has_mp and 'aql' in mp_df.columns) else 0
     
     queue_improvement = ((fixed_avg_queue - ts_avg_queue) / fixed_avg_queue * 100) if fixed_avg_queue > 0 else 0
     wait_improvement = ((fixed_avg_wait - ts_avg_wait) / fixed_avg_wait * 100) if fixed_avg_wait > 0 else 0
@@ -144,13 +162,22 @@ if not fixed_df.empty and not ts_df.empty:
     if plot_data:
         combined_df = pd.concat(plot_data, ignore_index=True)
         
-        metric_col_map = {
-            "Queue Length": "total_queued",
-            "Wait Time": "tau",
-            "Occupancy": "occupancy",
-            "Pressure": "rho"
-        }
-        y_col = metric_col_map.get(metric_choice, "total_queued")
+        if 'total_queued' in combined_df.columns:
+            metric_col_map = {
+                "Queue Length": "total_queued",
+                "Wait Time": "tau",
+                "Occupancy": "occupancy",
+                "Pressure": "rho"
+            }
+        else:
+            metric_col_map = {
+                "Queue Length": "aql",
+                "Wait Time": "awt",
+                "Occupancy": "att", # Proxy
+                "Pressure": "throughput" # Proxy
+            }
+        
+        y_col = metric_col_map.get(metric_choice, "total_queued" if 'total_queued' in combined_df.columns else "aql")
         
         # Create plot
         if chart_type == "Line":
@@ -208,23 +235,24 @@ if not fixed_df.empty and not ts_df.empty:
     
     with dist_col1:
         st.markdown("#### Queue Length Distribution")
+        queue_col = 'total_queued' if 'total_queued' in fixed_df.columns else 'aql'
         if not fixed_df.empty and not ts_df.empty:
             fig_dist = go.Figure()
             fig_dist.add_trace(go.Histogram(
-                x=fixed_df['total_queued'],
+                x=fixed_df[queue_col],
                 name='FixedTime',
                 opacity=0.7,
                 marker_color='#8b949e'
             ))
             if has_mp:
                 fig_dist.add_trace(go.Histogram(
-                    x=mp_df['total_queued'],
+                    x=mp_df[queue_col],
                     name='MaxPressure',
                     opacity=0.7,
                     marker_color='#d29922'
                 ))
             fig_dist.add_trace(go.Histogram(
-                x=ts_df['total_queued'],
+                x=ts_df[queue_col],
                 name='TrafficSense',
                 opacity=0.7,
                 marker_color='#58a6ff'
@@ -242,21 +270,22 @@ if not fixed_df.empty and not ts_df.empty:
     
     with dist_col2:
         st.markdown("#### Wait Time Distribution")
+        wait_col = 'tau' if 'tau' in fixed_df.columns else 'awt'
         if not fixed_df.empty and not ts_df.empty:
             fig_wait = go.Figure()
             fig_wait.add_trace(go.Box(
-                y=fixed_df['tau'],
+                y=fixed_df[wait_col],
                 name='FixedTime',
                 marker_color='#8b949e'
             ))
             if has_mp:
                 fig_wait.add_trace(go.Box(
-                    y=mp_df['tau'],
+                    y=mp_df[wait_col],
                     name='MaxPressure',
                     marker_color='#d29922'
                 ))
             fig_wait.add_trace(go.Box(
-                y=ts_df['tau'],
+                y=ts_df[wait_col],
                 name='TrafficSense',
                 marker_color='#58a6ff'
             ))

@@ -43,7 +43,7 @@ print(f"\n[INFO] Found {len(key_files)} Python files")
 
 # Check docs were created
 # Adjust base path for Windows script execution logic
-docs_base = r'C:\Pilli\trafficsense\docs' if os.name == 'nt' else os.path.expanduser('~/trafficsense/docs')
+docs_base = base + r'\docs' if os.name == 'nt' else os.path.expanduser('~/trafficsense/docs')
 # If run inside WSL, docs_base might not exist because docs are on C:\
 if not os.path.exists(docs_base) and not os.name == 'nt':
     docs_base = '/mnt/c/Pilli/trafficsense/docs'

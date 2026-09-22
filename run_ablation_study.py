@@ -4,13 +4,19 @@ Runs 4 configurations: FixedTime, MaxPressure, Isolated, Simulator-Only, Full
 """
 
 import sys
-sys.path.insert(0, '/mnt/c/Pilli/trafficsense/src/simulation')
+import os
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parent
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from src import config
+sys.path.insert(0, str(config.SRC_DIR / 'simulation'))
 
 from run_proper_sim import ProperCityFlowEnv, run_simulation
 from maxpressure_controller import MaxPressureController
 from isolated_controller import IsolatedController
 from simulator_only_controller import SimulatorOnlyController
-import os
 
 
 def main():
@@ -39,16 +45,16 @@ def main():
     print(f"Intersections: {env.intersection_ids}")
     
     # Perception data path
-    perception_path = '/mnt/c/Pilli/trafficsense/outputs/synthetic_perception.json'
+    perception_path = str(config.OUTPUTS_DIR) + '//synthetic_perception.json'
     
     results = {}
     
     # 1. FixedTime (skip if already exists)
-    fixed_csv = '/mnt/c/Pilli/trafficsense/outputs/simulation_results/fixedtime_360_metrics.csv'
+    fixed_csv = str(config.SIMULATION_RESULTS_DIR) + '//fixedtime_360_metrics.csv'
     if os.path.exists(fixed_csv):
         print("\n[SKIP] FixedTime already exists")
         import json
-        with open('/mnt/c/Pilli/trafficsense/outputs/simulation_results/fixedtime_360_summary.json', 'r') as f:
+        with open(str(config.SIMULATION_RESULTS_DIR) + '//fixedtime_360_summary.json', 'r') as f:
             results['fixedtime'] = json.load(f)
     else:
         print("\n[RUN] FixedTime")
@@ -57,11 +63,11 @@ def main():
         results['fixedtime'] = summary
     
     # 2. MaxPressure (skip if already exists)
-    mp_csv = '/mnt/c/Pilli/trafficsense/outputs/simulation_results/maxpressure_360_metrics.csv'
+    mp_csv = str(config.SIMULATION_RESULTS_DIR) + '//maxpressure_360_metrics.csv'
     if os.path.exists(mp_csv):
         print("\n[SKIP] MaxPressure already exists")
         import json
-        with open('/mnt/c/Pilli/trafficsense/outputs/simulation_results/maxpressure_360_summary.json', 'r') as f:
+        with open(str(config.SIMULATION_RESULTS_DIR) + '//maxpressure_360_summary.json', 'r') as f:
             results['maxpressure'] = json.load(f)
     else:
         print("\n[RUN] MaxPressure")
@@ -82,15 +88,15 @@ def main():
     results['simulatoronly'] = summary
     
     # 5. TrafficSense Full (skip if already exists)
-    ts_csv = '/mnt/c/Pilli/trafficsense/outputs/simulation_results/trafficsense_360_metrics.csv'
+    ts_csv = str(config.SIMULATION_RESULTS_DIR) + '//trafficsense_360_metrics.csv'
     if os.path.exists(ts_csv):
         print("\n[SKIP] TrafficSense Full already exists")
         import json
-        with open('/mnt/c/Pilli/trafficsense/outputs/simulation_results/trafficsense_360_summary.json', 'r') as f:
+        with open(str(config.SIMULATION_RESULTS_DIR) + '//trafficsense_360_summary.json', 'r') as f:
             results['trafficsense'] = json.load(f)
     else:
         print("\n[RUN] TrafficSense Full")
-        sys.path.insert(0, '/mnt/c/Pilli/trafficsense/src/orchestration')
+        sys.path.insert(0, str(config.SRC_DIR / 'orchestration'))
         from cooperative_reasoning import CooperativeReasoningEngine
         from perception_adapter import CoLLMLightPerceptionAdapter
         
@@ -121,7 +127,7 @@ def main():
     
     # Save ablation summary
     import json
-    ablation_path = '/mnt/c/Pilli/trafficsense/outputs/simulation_results/ablation_summary.json'
+    ablation_path = str(config.SIMULATION_RESULTS_DIR) + '//ablation_summary.json'
     with open(ablation_path, 'w') as f:
         json.dump(results, f, indent=2)
     

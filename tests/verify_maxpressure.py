@@ -4,7 +4,7 @@ import json
 
 print("=== TrafficSense MaxPressure + Three-Way Comparison Verification ===")
 
-base = r'C:\Pilli\trafficsense'
+import sys, os; sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__)))); from src import config; base = str(config.PROJECT_ROOT)
 out_dir = os.path.join(base, 'outputs', 'simulation_results')
 
 controllers = ['fixedtime', 'maxpressure', 'trafficsense']

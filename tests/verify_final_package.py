@@ -7,7 +7,7 @@ print("TRAFFICSENSE — FINAL PACKAGE VERIFICATION")
 print("Second Review Readiness Check")
 print("=" * 70)
 
-base = r'C:\Pilli\trafficsense'
+import sys, os; sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__)))); from src import config; base = str(config.PROJECT_ROOT)
 checks = {}
 critical_failures = []
 

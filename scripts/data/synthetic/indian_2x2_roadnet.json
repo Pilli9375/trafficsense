@@ -8,14 +8,14 @@
       },
       "width": 8,
       "roads": [
+        "road_I0_I1",
+        "road_W_I0",
+        "road_I2_I0",
         "road_I1_I0",
-        "road_I0_I2",
         "road_I0_W",
         "road_I0_N",
-        "road_W_I0",
-        "road_N_I0",
-        "road_I0_I1",
-        "road_I2_I0"
+        "road_I0_I2",
+        "road_N_I0"
       ],
       "roadLinks": [
         {
@@ -400,14 +400,14 @@
       },
       "width": 10,
       "roads": [
-        "road_I1_I0",
-        "road_I3_I1",
-        "road_E_I1",
+        "road_I0_I1",
         "road_N_I1",
         "road_I1_E",
+        "road_I1_I0",
+        "road_E_I1",
         "road_I1_N",
-        "road_I0_I1",
-        "road_I1_I3"
+        "road_I1_I3",
+        "road_I3_I1"
       ],
       "roadLinks": [
         {
@@ -792,14 +792,14 @@
       },
       "width": 8,
       "roads": [
-        "road_I2_W",
+        "road_I2_I0",
         "road_I3_I2",
+        "road_S_I2",
         "road_I2_S",
         "road_I2_I3",
-        "road_S_I2",
         "road_W_I2",
-        "road_I2_I0",
-        "road_I0_I2"
+        "road_I0_I2",
+        "road_I2_W"
       ],
       "roadLinks": [
         {
@@ -1184,14 +1184,14 @@
       },
       "width": 10,
       "roads": [
-        "road_S_I3",
-        "road_I3_I1",
-        "road_I2_I3",
         "road_I3_I2",
-        "road_I3_S",
+        "road_I2_I3",
         "road_I3_E",
         "road_I1_I3",
-        "road_E_I3"
+        "road_E_I3",
+        "road_I3_I1",
+        "road_S_I3",
+        "road_I3_S"
       ],
       "roadLinks": [
         {
@@ -1576,8 +1576,8 @@
       },
       "width": 0,
       "roads": [
-        "road_N_I0",
-        "road_I0_N"
+        "road_I0_N",
+        "road_N_I0"
       ],
       "roadLinks": [],
       "trafficLight": {
@@ -1622,8 +1622,8 @@
       },
       "width": 0,
       "roads": [
-        "road_I1_E",
-        "road_E_I1"
+        "road_E_I1",
+        "road_I1_E"
       ],
       "roadLinks": [],
       "trafficLight": {
@@ -1668,8 +1668,8 @@
       },
       "width": 0,
       "roads": [
-        "road_S_I2",
-        "road_I2_S"
+        "road_I2_S",
+        "road_S_I2"
       ],
       "roadLinks": [],
       "trafficLight": {
@@ -1691,8 +1691,8 @@
       },
       "width": 0,
       "roads": [
-        "road_I3_S",
-        "road_S_I3"
+        "road_S_I3",
+        "road_I3_S"
       ],
       "roadLinks": [],
       "trafficLight": {
@@ -1737,8 +1737,8 @@
       },
       "width": 0,
       "roads": [
-        "road_I2_W",
-        "road_W_I2"
+        "road_W_I2",
+        "road_I2_W"
       ],
       "roadLinks": [],
       "trafficLight": {

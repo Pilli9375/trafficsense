@@ -22,7 +22,7 @@ def load_perception_states():
     """Load perception states JSON."""
     path = r'C:\Pilli\trafficsense\outputs\perception_demo\perception_states.json'
     if os.path.exists(path):
-        with open(path, 'r') as f:
+        with open(path, 'r', encoding='utf-8') as f:
             return json.load(f)
     return []
 
@@ -33,7 +33,10 @@ def load_simulation_metrics(controller='trafficsense'):
     import pandas as pd
     path = r'C:\Pilli\trafficsense\outputs\simulation_results\{}_metrics.csv'.format(controller)
     if os.path.exists(path):
-        return pd.read_csv(path)
+        try:
+            return pd.read_csv(path)
+        except Exception:
+            return pd.DataFrame()
     return None
 
 
@@ -42,7 +45,7 @@ def load_decisions():
     """Load cooperative decisions JSON."""
     path = r'C:\Pilli\trafficsense\outputs\simulation_results\trafficsense_decisions.json'
     if os.path.exists(path):
-        with open(path, 'r') as f:
+        with open(path, 'r', encoding='utf-8') as f:
             return json.load(f)
     return []
 

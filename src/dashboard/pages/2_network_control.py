@@ -19,7 +19,7 @@ st.markdown("Multi-agent cooperative signal control with LLM reasoning traces.")
 def load_decisions():
     path = r'C:\Pilli\trafficsense\outputs\simulation_results\trafficsense_decisions.json'
     if os.path.exists(path):
-        with open(path, 'r') as f:
+        with open(path, 'r', encoding='utf-8') as f:
             return json.load(f)
     return []
 

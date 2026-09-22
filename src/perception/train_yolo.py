@@ -34,7 +34,7 @@ def main():
         'epochs': 50,
         'imgsz': 640,
         'batch': 8,           # Safe for 6GB VRAM
-        'device': 0,          # GPU
+        'device': 0 if torch.cuda.is_available() else 'cpu',          # GPU
         'workers': 4,         # Data loading threads
         'project': r'C:\Pilli\trafficsense\outputs',
         'name': 'yolo_training',

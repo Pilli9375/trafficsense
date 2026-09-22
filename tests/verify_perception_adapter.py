@@ -4,7 +4,7 @@ import sys
 
 print("=== TrafficSense Perception Adapter Verification ===")
 
-base = r'C:\Pilli\trafficsense'
+import sys, os; sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__)))); from src import config; base = str(config.PROJECT_ROOT)
 checks = {}
 
 # Check files

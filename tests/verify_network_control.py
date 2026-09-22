@@ -3,7 +3,7 @@ import sys
 
 print("=== TrafficSense Network Control Verification ===")
 
-base = r'C:\Pilli\trafficsense'
+import sys, os; sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__)))); from src import config; base = str(config.PROJECT_ROOT)
 checks = {}
 
 # Check page file

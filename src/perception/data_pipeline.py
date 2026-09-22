@@ -93,7 +93,9 @@ def merge_datasets(driveindia_path, dats_path, output_path):
             dst_dir = os.path.join(output_path, split, dtype)
             os.makedirs(dst_dir, exist_ok=True)
             if os.path.exists(src_dir):
-                files = glob.glob(os.path.join(src_dir, "*.*"))
+                files = []
+                for ext in ['.jpg', '.png', '.xml', '.txt']:
+                    files.extend(glob.glob(os.path.join(src_dir, f"*{ext}")))
                 for f in files:
                     shutil.copy2(f, dst_dir)
                     

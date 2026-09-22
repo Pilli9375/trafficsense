@@ -9,6 +9,9 @@ import time
 from datetime import datetime
 from pathlib import Path
 
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from tracker import VehicleTracker
 from congestion_analyzer import CongestionAnalyzer
 
@@ -47,7 +50,7 @@ class TrafficSensePerception:
         # Setup output video writer (with bounding boxes)
         out_video_path = self.output_dir / 'detected_output.mp4'
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        out_writer = cv2.VideoWriter(str(out_video_path), fourcc, fps, (width, height))
+        out_writer = cv2.VideoWriter(str(out_video_path), fourcc, fps / sample_every_n_frames, (width, height))
         
         start_time = time.time()
         frame_idx = 0

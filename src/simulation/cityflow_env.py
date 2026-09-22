@@ -46,10 +46,20 @@ class CityFlowEnv:
                 roadnet = json.load(f)
             self.intersection_ids = [
                 node['id'] for node in roadnet.get('intersections', [])
-                if node.get('trafficLight', None) is not None
+                if node.get('trafficLight', None) is not None and not node.get('virtual', False)
             ]
+            # Build intersection -> incoming lanes mapping
+            self.incoming_lanes = __import__('collections').defaultdict(list)
+            for road in roadnet.get('roads', []):
+                end_node = road.get('endIntersection')
+                if end_node in self.intersection_ids:
+                    road_id = road['id']
+                    num_lanes = len(road.get('lanes', []))
+                    for l in range(num_lanes):
+                        self.incoming_lanes[end_node].append(f"{road_id}_{l}")
         else:
             self.intersection_ids = ['I0', 'I1', 'I2', 'I3']
+            self.incoming_lanes = {}
     
     def reset(self):
         """Reset simulation."""
@@ -85,14 +95,18 @@ class CityFlowEnv:
         # CityFlow API: get_lane_vehicle_count(), get_lane_waiting_vehicle_count()
         # We approximate n_queue and n_move from lane data
         
-        # Get all lane vehicle counts
         lane_vehicles = self.engine.get_lane_vehicle_count()
         lane_waiting = self.engine.get_lane_waiting_vehicle_count()
         
-        # For simplicity, aggregate across all lanes connected to this intersection
-        # In a real implementation, you'd map lanes to intersection approaches
-        total_vehicles = sum(lane_vehicles.values()) if lane_vehicles else 0
-        total_waiting = sum(lane_waiting.values()) if lane_waiting else 0
+        my_lanes = getattr(self, 'incoming_lanes', {}).get(intersection_id, [])
+        if my_lanes:
+            total_vehicles = sum(lane_vehicles.get(l, 0) for l in my_lanes)
+            total_waiting = sum(lane_waiting.get(l, 0) for l in my_lanes)
+        else:
+            # Fallback if no mapping exists
+            total_vehicles = sum(lane_vehicles.values()) if lane_vehicles else 0
+            total_waiting = sum(lane_waiting.values()) if lane_waiting else 0
+            
         total_moving = max(0, total_vehicles - total_waiting)
         
         # Distribute across 4 approaches

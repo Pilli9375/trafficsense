@@ -1,9 +1,16 @@
 import json
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from state_exporter import PerceptionToCoLLMLight
 
 # Load perception states
-with open(r'C:\Pilli\trafficsense\outputs\perception_demo\perception_states.json', 'r') as f:
-    states = json.load(f)
+try:
+    with open(r'C:\Pilli\trafficsense\outputs\perception_demo\perception_states.json', 'r') as f:
+        states = json.load(f)
+except FileNotFoundError:
+    print("Perception states file not found. Please run inference_pipeline.py first.")
+    sys.exit(0)
 
 if states:
     last_state = states[-1]

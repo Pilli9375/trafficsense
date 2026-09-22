@@ -21,22 +21,31 @@ st.markdown("Real-time vehicle detection, tracking, and congestion analysis usin
 
 # Load model
 @st.cache_resource
-def get_model():
+def get_model(model_type):
     from ultralytics import YOLO
-    model_path = r'C:\Pilli\trafficsense\models\yolo\best.pt'
-    if os.path.exists(model_path):
-        return YOLO(model_path)
+    if model_type == "Custom Indian (24 classes)":
+        model_path = r'C:\Pilli\trafficsense\models\yolo\best.pt'
+    else:
+        model_path = 'yolov8n.pt'
+    
+    if os.path.exists(model_path) or model_path == 'yolov8n.pt':
+        try:
+            return YOLO(model_path)
+        except Exception:
+            return None
     return None
-
-model = get_model()
 
 # Sidebar controls
 with st.sidebar:
     st.markdown("### ⚙️ Controls")
     
+    model_type = st.radio("Detection Model", ["Custom Indian (24 classes)", "COCO Pretrained (80 classes)"])
+    model = get_model(model_type)
+    
     uploaded_file = st.file_uploader("Upload Traffic Video", type=['mp4', 'avi', 'mov'])
     
-    conf_threshold = st.slider("Confidence Threshold", 0.1, 1.0, 0.3, 0.05)
+    default_conf = 0.15 if model_type == "Custom Indian (24 classes)" else 0.3
+    conf_threshold = st.slider("Confidence Threshold", 0.1, 1.0, default_conf, 0.05)
     sample_rate = st.slider("Process Every Nth Frame", 1, 10, 1)
     max_frames = st.number_input("Max Frames (0 = all)", 0, 10000, 300)
     
@@ -63,6 +72,7 @@ if uploaded_file is None:
 else:
     # Save uploaded file
     temp_path = r'C:\Pilli\trafficsense\outputs\uploaded_video.mp4'
+    os.makedirs(os.path.dirname(temp_path), exist_ok=True)
     with open(temp_path, 'wb') as f:
         f.write(uploaded_file.read())
     
@@ -126,6 +136,9 @@ else:
         
         if max_frames > 0 and processed >= max_frames:
             break
+        if model is None:
+            st.error('Model not loaded')
+            st.stop()
         
         # Run detection
         results = model(frame, conf=conf_threshold, verbose=False)[0]
