@@ -34,5 +34,5 @@ def intersection_card(iid, phase, queued, moving, severity, reasoning=""):
         </div>
         {f'<p style="color: #8b949e; margin-top: 10px; font-size: 12px;">💡 {reasoning}</p>' if reasoning else ''}
     </div>
-    """, unsafe_allow_html=True)
+    """)
 

@@ -9,5 +9,5 @@ def metric_card(title, value, delta=None, icon="📊"):
         <div style="font-size: 32px; font-weight: bold; color: #e6edf3;">{value}</div>
         {delta_html}
     </div>
-    """, unsafe_allow_html=True)
+    """)
 

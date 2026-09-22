@@ -144,7 +144,7 @@ def apply_theme():
         100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
     }
     </style>
-    """, unsafe_allow_html=True)
+    """)
 
 def render_metric_card(title, value, delta=None, icon="📊", color_theme="blue"):
     """Render a styled metric card with ultra-modern glassmorphism UI."""
