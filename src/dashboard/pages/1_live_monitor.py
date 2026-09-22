@@ -25,10 +25,12 @@ def get_model(model_type):
     from ultralytics import YOLO
     if model_type == "Custom Indian (24 classes)":
         model_path = str(config.MODELS_DIR / 'yolo' / 'best.pt')
+    elif model_type == "YOLO-World (Open Vocabulary)":
+        model_path = 'yolov8s-world.pt'
     else:
-        model_path = 'yolov8n.pt'
+        model_path = 'yolov8s.pt'
     
-    if os.path.exists(model_path) or model_path == 'yolov8n.pt':
+    if os.path.exists(model_path) or model_path in ['yolov8n.pt', 'yolov8s.pt', 'yolov8s-world.pt']:
         try:
             return YOLO(model_path)
         except Exception:
@@ -39,8 +41,27 @@ def get_model(model_type):
 with st.sidebar:
     st.markdown("### ⚙️ Engine Controls")
     
-    model_type = st.radio("Detection Model", ["Custom Indian (24 classes)", "COCO Pretrained (80 classes)"])
+    model_type = st.radio("Detection Model", [
+        "Custom Indian (24 classes)", 
+        "COCO Pretrained (80 classes)",
+        "YOLO-World (Open Vocabulary)"
+    ])
+    
+    # Text input for YOLO-World classes
+    world_classes = None
+    if model_type == "YOLO-World (Open Vocabulary)":
+        world_classes_str = st.text_input(
+            "Detect Classes (comma-separated)", 
+            value="car, motorcycle, bus, truck, auto rickshaw, ambulance, bicycle, pedestrian, traffic light",
+            help="Type ANY object you want to detect zero-shot."
+        )
+        world_classes = [c.strip() for c in world_classes_str.split(',') if c.strip()]
+        
     model = get_model(model_type)
+    
+    # Set classes if YOLO-World
+    if model is not None and model_type == "YOLO-World (Open Vocabulary)" and world_classes:
+        model.set_classes(world_classes)
     
     st.markdown("---")
     uploaded_file = st.file_uploader("Upload Traffic Video", type=['mp4', 'avi', 'mov'])
