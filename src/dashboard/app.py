@@ -18,8 +18,8 @@ apply_theme()
 # Sidebar
 with st.sidebar:
     st.image("https://img.icons8.com/color/96/traffic-light.png", width=60)
-    st.markdown("<h2 style='margin-bottom: 0;'>TrafficSense</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='color: #94a3b8; font-size: 14px;'>Multi-Agent Smart City Traffic</p>", unsafe_allow_html=True)
+    st.html("<h2 style='margin-bottom: 0;'>TrafficSense</h2>")
+    st.html("<p style='color: #94a3b8; font-size: 14px;'>Multi-Agent Smart City Traffic</p>")
     st.markdown("---")
     
     st.markdown("### Navigation")
@@ -29,25 +29,25 @@ with st.sidebar:
     
     st.markdown("---")
     st.markdown("### Architecture Specs")
-    st.markdown("""
+    st.html("""
     <div style='background: rgba(30,41,59,0.5); padding: 15px; border-radius: 10px; font-size: 13px;'>
     <b style='color: #60a5fa;'>Base Paper:</b> CoLLMLight<br>
     <b style='color: #60a5fa;'>Perception:</b> YOLOv8s (24-class)<br>
     <b style='color: #60a5fa;'>Reasoning:</b> Gemma 3 4B<br>
     <b style='color: #60a5fa;'>Engine:</b> CityFlow C++
     </div>
-    """, unsafe_allow_html=True)
+    """)
     
-    st.markdown("<br><br>", unsafe_allow_html=True)
-    st.markdown("""
+    st.html("<br><br>")
+    st.html("""
     <div style='display: flex; align-items: center; gap: 10px; padding: 10px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.2);'>
         <span class='glowing-dot'></span>
         <span style='color: #10b981; font-weight: 600; font-size: 14px;'>System Online</span>
     </div>
-    """, unsafe_allow_html=True)
+    """)
 
 # Hero Section
-st.markdown("""
+st.html("""
 <div style="padding: 3rem 2rem; background: linear-gradient(135deg, rgba(30,58,138,0.2) 0%, rgba(2,6,23,0) 100%); border-radius: 24px; margin-bottom: 2rem; border: 1px solid rgba(255,255,255,0.05);">
     <h1 style="font-size: 3.5rem; font-weight: 800; margin-bottom: 0.5rem; background: -webkit-linear-gradient(45deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
         TrafficSense
@@ -56,7 +56,7 @@ st.markdown("""
         Next-generation smart city traffic management powered by cooperative LLM orchestration and real-time YOLOv8 perception, optimized for complex Indian road networks.
     </p>
 </div>
-""", unsafe_allow_html=True)
+""")
 
 # Metrics Grid
 col1, col2, col3, col4 = st.columns(4)
@@ -71,7 +71,7 @@ with col4:
 
 st.markdown("---")
 
-st.markdown("""
+st.html("""
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
     <div class="glass-card">
         <h3 style="color: #60a5fa; display: flex; align-items: center; gap: 10px;">🎥 1. Live Monitor</h3>
@@ -82,4 +82,4 @@ st.markdown("""
         <p style="color: #94a3b8; font-size: 14px; line-height: 1.6;">View the live multi-agent simulation where 4 distinct agents negotiate and optimize traffic light phases using cooperative spatiotemporal reasoning via Gemma 3.</p>
     </div>
 </div>
-""", unsafe_allow_html=True)
+""")

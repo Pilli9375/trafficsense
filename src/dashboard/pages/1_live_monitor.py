@@ -17,7 +17,7 @@ st.set_page_config(page_title="Live Monitor | TrafficSense", layout="wide", page
 apply_theme()
 
 st.title("🎥 Live Traffic Monitor")
-st.markdown("<p style='color: #94a3b8; font-size: 1.1rem; margin-bottom: 2rem;'>Real-time vehicle detection, tracking, and congestion analysis using optimized YOLOv8.</p>", unsafe_allow_html=True)
+st.html("<p style='color: #94a3b8; font-size: 1.1rem; margin-bottom: 2rem;'>Real-time vehicle detection, tracking, and congestion analysis using optimized YOLOv8.</p>")
 
 # Load model
 @st.cache_resource
@@ -60,7 +60,7 @@ if uploaded_file is None:
     st.info("👈 Upload a traffic video from the sidebar to begin real-time detection.")
     
     # Show demo stats from previous run if available
-    st.markdown("<h3 style='margin-top: 2rem;'>Previous Run Summary</h3>", unsafe_allow_html=True)
+    st.html("<h3 style='margin-top: 2rem;'>Previous Run Summary</h3>")
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         render_metric_card("Vehicles Detected", "--", icon="🚗", color_theme="blue")
@@ -97,25 +97,25 @@ else:
         <span style="background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 6px;"><b>FPS:</b> {fps:.1f}</span>
         <span style="background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 6px;"><b>Total Frames:</b> {total_frames}</span>
     </div>
-    """, unsafe_allow_html=True)
+    """)
     
     # Layout
     video_col, metrics_col = st.columns([2.5, 1])
     
     with video_col:
         frame_placeholder = st.empty()
-        st.markdown("<br>", unsafe_allow_html=True)
+        st.html("<br>")
         st.subheader("📈 Congestion Timeline")
         timeline_chart = st.empty()
         
     with metrics_col:
-        st.markdown("<h3 style='margin-top: 0;'>Live Telemetry</h3>", unsafe_allow_html=True)
+        st.html("<h3 style='margin-top: 0;'>Live Telemetry</h3>")
         count_metric = st.empty()
         severity_metric = st.empty()
         conf_metric = st.empty()
         fps_metric = st.empty()
         
-        st.markdown("<br><h3>Class Distribution</h3>", unsafe_allow_html=True)
+        st.html("<br><h3>Class Distribution</h3>")
         class_chart = st.empty()
     
     frame_idx = 0
@@ -206,33 +206,33 @@ else:
         proc_fps = processed / elapsed if elapsed > 0 else 0
         
         # Update metrics with new glass UI
-        count_metric.markdown(f"""
+        count_metric.html(f"""
         <div class="glass-card" style="border-left: 4px solid #3b82f6; margin-bottom: 15px; padding: 15px;">
             <div style="font-size: 13px; color: #94a3b8; text-transform: uppercase;">🚗 Active Entities</div>
             <div style="font-size: 32px; font-weight: 700; color: #f8fafc;">{count}</div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
         
-        severity_metric.markdown(f"""
+        severity_metric.html(f"""
         <div class="glass-card" style="border-left: 4px solid {sev_color}; background: {sev_bg}; margin-bottom: 15px; padding: 15px;">
             <div style="font-size: 13px; color: #94a3b8; text-transform: uppercase;">🚦 Congestion Level</div>
             <div style="font-size: 32px; font-weight: 700; color: {sev_color};">{severity}</div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
         
-        conf_metric.markdown(f"""
+        conf_metric.html(f"""
         <div class="glass-card" style="border-left: 4px solid #8b5cf6; margin-bottom: 15px; padding: 15px;">
             <div style="font-size: 13px; color: #94a3b8; text-transform: uppercase;">🎯 AI Confidence</div>
             <div style="font-size: 32px; font-weight: 700; color: #f8fafc;">{avg_conf:.2f}</div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
         
-        fps_metric.markdown(f"""
+        fps_metric.html(f"""
         <div class="glass-card" style="border-left: 4px solid #10b981; margin-bottom: 15px; padding: 15px;">
             <div style="font-size: 13px; color: #94a3b8; text-transform: uppercase;">⚡ Processing FPS</div>
             <div style="font-size: 32px; font-weight: 700; color: #f8fafc;">{proc_fps:.1f}</div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
         
         # Class distribution
         if class_counter:
@@ -251,7 +251,7 @@ else:
                     </div>
                 </div>"""
             class_html += "</div>"
-            class_chart.markdown(class_html, unsafe_allow_html=True)
+            class_chart.html(class_html)
             
         # Timeline chart
         if len(severity_history) > 1:

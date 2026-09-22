@@ -10,3 +10,4 @@ def metric_card(title, value, delta=None, icon="📊"):
         {delta_html}
     </div>
     """, unsafe_allow_html=True)
+

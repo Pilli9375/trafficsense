@@ -315,7 +315,7 @@ st.set_page_config(page_title="Analytics | TrafficSense", layout="wide", page_ic
 apply_theme()
 
 st.title("📈 Performance Analytics")
-st.markdown("<p style='color: #94a3b8; font-size: 1.1rem; margin-bottom: 2rem;'>Comprehensive performance comparison of TrafficSense cooperative control versus traditional baselines.</p>", unsafe_allow_html=True)
+st.html("<p style='color: #94a3b8; font-size: 1.1rem; margin-bottom: 2rem;'>Comprehensive performance comparison of TrafficSense cooperative control versus traditional baselines.</p>")
 
 # Load data
 @st.cache_data
@@ -457,7 +457,7 @@ if not fixed_df.empty:
         </table>
     </div>
     """
-    st.markdown(summary_html, unsafe_allow_html=True)
+    st.html(summary_html)
     
     # Key insight
     if queue_improvement > 0 or wait_improvement > 0:
@@ -468,7 +468,7 @@ if not fixed_df.empty:
 else:
     st.warning("⚠️ Simulation data not found. Please run the network simulation first (Step 3.5).")
     
-    st.markdown("""
+    st.html("""
     ### How to generate data:
     1. Ensure Ollama is running in WSL
     2. Run: `python src/simulation/run_trafficsense_sim.py`

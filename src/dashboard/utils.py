@@ -49,7 +49,7 @@ def load_decisions():
 
 def apply_theme():
     """Apply stunning ultra-modern CSS for a premium dashboard experience."""
-    st.markdown("""
+    st.html("""
     <style>
     /* Import Google Fonts */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
@@ -162,27 +162,11 @@ def render_metric_card(title, value, delta=None, icon="📊", color_theme="blue"
         is_positive = "+" in str(delta) or (isinstance(delta, (int, float)) and delta > 0)
         d_color = "#10b981" if is_positive else "#ef4444"
         d_icon = "▲" if is_positive else "▼"
-        delta_html = f'''
-        <div style="background: rgba({ "16, 185, 129" if is_positive else "239, 68, 68" }, 0.15); 
-                    color: {d_color}; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
-            {d_icon} {abs(float(str(delta).replace('+','').replace('%','')))}%
-        </div>'''
+        bg_rgb = "16, 185, 129" if is_positive else "239, 68, 68"
+        val = abs(float(str(delta).replace('+','').replace('%','')))
+        delta_html = f"<div style='background: rgba({bg_rgb}, 0.15); color: {d_color}; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;'>{d_icon} {val}%</div>"
 
-    st.markdown(f"""
-    <div class="glass-card" style="border-left: 4px solid {border_color}; margin-bottom: 1rem;">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-            <span style="color: #94a3b8; font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">
-                {title}
-            </span>
-            <span style="font-size: 20px; background: {bg_color}; padding: 8px; border-radius: 10px;">
-                {icon}
-            </span>
-        </div>
-        <div style="display: flex; align-items: baseline; gap: 12px;">
-            <span style="font-size: 32px; font-weight: 700; color: #f8fafc; letter-spacing: -0.5px;">
-                {value}
-            </span>
-            {delta_html}
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    html = f"<div class='glass-card' style='border-left: 4px solid {border_color}; margin-bottom: 1rem;'><div style='display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;'><span style='color: #94a3b8; font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;'>{title}</span><span style='font-size: 20px; background: {bg_color}; padding: 8px; border-radius: 10px;'>{icon}</span></div><div style='display: flex; align-items: baseline; gap: 12px;'><span style='font-size: 32px; font-weight: 700; color: #f8fafc; letter-spacing: -0.5px;'>{value}</span>{delta_html}</div></div>"
+    
+    st.html(html)
+

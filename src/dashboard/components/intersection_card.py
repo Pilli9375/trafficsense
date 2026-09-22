@@ -11,7 +11,7 @@ def intersection_card(iid, phase, queued, moving, severity, reasoning=""):
     }
     color = severity_colors.get(severity, '#8b949e')
     
-    st.markdown(f"""
+    st.html(f"""
     <div style="background-color: #1c2128; border-radius: 10px; padding: 20px; margin-bottom: 15px; border: 1px solid #30363d;">
         <h4 style="color: #e6edf3; margin-top: 0;">🚦 Intersection {iid}</h4>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
@@ -35,3 +35,4 @@ def intersection_card(iid, phase, queued, moving, severity, reasoning=""):
         {f'<p style="color: #8b949e; margin-top: 10px; font-size: 12px;">💡 {reasoning}</p>' if reasoning else ''}
     </div>
     """, unsafe_allow_html=True)
+
