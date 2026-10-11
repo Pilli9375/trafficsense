@@ -15,6 +15,7 @@ llama-cpp-python>=0.3.0
 transformers>=4.44.0
 scipy>=1.14.0
 tqdm>=4.66.0
+reportlab>=4.0.0
 
 # === WSL2 UBUNTU (CityFlow + CoLLMLight) ===
 # DO NOT INSTALL THESE ON WINDOWS. Use inside WSL only.
