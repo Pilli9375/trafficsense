@@ -1,0 +1,96 @@
+"""Run one controller on one scenario and write summary.json + metrics.csv with provenance."""
+from __future__ import annotations
+
+import csv
+import json
+import platform
+import subprocess
+import time
+from datetime import datetime
+from pathlib import Path
+from typing import Any
+
+from trafficsense.config import repo_root, resolve_path
+from trafficsense.control import make_controller
+from trafficsense.sim.env import TrafficEnv
+from trafficsense.sim.metrics import MetricsTracker
+
+
+def git_info() -> dict[str, Any]:
+    def git(*args: str) -> str:
+        return subprocess.check_output(["git", *args], cwd=repo_root(), text=True).strip()
+    try:
+        return {"commit": git("rev-parse", "HEAD"), "dirty": bool(git("status", "--porcelain"))}
+    except (subprocess.CalledProcessError, FileNotFoundError) as e:
+        raise RuntimeError(f"Cannot read git commit for provenance: {e}") from e
+
+
+def run_experiment(cfg: dict[str, Any], scenario: str, controller: str,
+                   steps: int | None = None, seed: int | None = None,
+                   out_root: Path | None = None) -> Path:
+    steps = int(steps if steps is not None else cfg["sim"]["steps"])
+    if steps <= 0:
+        raise ValueError(f"steps must be positive, got {steps}")
+    seed = int(seed if seed is not None else cfg["sim"]["seed"])
+    out_root = Path(out_root) if out_root is not None else resolve_path(cfg, "runs")
+
+    started = datetime.now().astimezone()
+    out_dir = out_root / f"{started:%Y%m%d-%H%M%S}_{scenario}_{controller}_s{seed}"
+    if out_dir.exists():
+        raise FileExistsError(f"Run folder already exists: {out_dir}")
+    git = git_info()
+
+    env = TrafficEnv(cfg, scenario, seed=seed)
+    ctl = make_controller(controller, cfg)
+    metrics = MetricsTracker(env)
+    t0 = time.perf_counter()
+    for _ in range(steps):
+        ctl.act(env)
+        env.step()
+        metrics.update()
+    wall = time.perf_counter() - t0
+
+    result = metrics.summary()
+    summary = {
+        "provenance": {
+            "controller": controller,
+            "controller_params": ctl.info(),
+            "model": None,          # set by LLM controllers (name as reported by the server)
+            "provider": None,
+            "llm": None,            # LLM runs: calls, failures, latency mean/p95
+            "seed": seed,
+            "scenario": scenario,
+            "roadnet": str(env.roadnet_path.relative_to(repo_root())),
+            "flow": str(env.flow_path.relative_to(repo_root())),
+            "sim_steps": steps,
+            "git_commit": git["commit"],
+            "git_dirty": git["dirty"],
+            "timestamp": started.isoformat(timespec="seconds"),
+            "wall_time_s": round(wall, 2),
+            "python": platform.python_version(),
+        },
+        "signal": {
+            "min_green": env.min_green,
+            "max_green": env.max_green,
+            "transition_s": sorted(set(env.transition_time.values())),
+            "switches": sum(s.switches for s in env.signals.values()),
+            "forced_switches": sum(s.forced_switches for s in env.signals.values()),
+        },
+        "metrics": result["network"],
+        "per_intersection": result["per_intersection"],
+        "metric_notes": {
+            "att": "engine.get_average_travel_time(); includes vehicles still running at the end",
+            "queue_mean_per_intersection": "waiting vehicles (speed<0.1) on incoming lanes, mean over steps and intersections",
+            "queue_mean_total": "same, summed over intersections",
+            "waiting_time_mean": "seconds with speed<0.1 per vehicle, mean over vehicles that entered",
+            "throughput": "vehicles that finished their trip",
+        },
+    }
+
+    out_dir.mkdir(parents=True)
+    (out_dir / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    with (out_dir / "metrics.csv").open("w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=list(metrics.rows[0]))
+        w.writeheader()
+        w.writerows(metrics.rows)
+    return out_dir
