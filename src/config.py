@@ -40,7 +40,7 @@ INDIAN_CONFIG = SYNTHETIC_DATA_DIR / 'indian_2x2_config.json'
 
 # LLM (Ollama)
 OLLAMA_BASE_URL = 'http://localhost:11434/v1'
-OLLAMA_MODEL = 'gemma3:4b'
+OLLAMA_MODEL = 'gemma4:e4b'
 
 # WSL path conversion helper
 def to_wsl_path(windows_path):

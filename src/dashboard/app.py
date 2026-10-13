@@ -3,7 +3,19 @@ TrafficSense Dashboard
 Main entry point for the Streamlit application.
 """
 import streamlit as st
-from utils import apply_theme, render_metric_card
+import sys
+from pathlib import Path
+_DASHBOARD_DIR = Path(__file__).resolve().parent
+_PROJECT_ROOT = _DASHBOARD_DIR.parent.parent
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
+if str(_DASHBOARD_DIR) not in sys.path:
+    sys.path.insert(0, str(_DASHBOARD_DIR))
+
+try:
+    from src.dashboard.utils import apply_theme, render_metric_card
+except ImportError:
+    from utils import apply_theme, render_metric_card
 
 # Page config
 st.set_page_config(
@@ -33,7 +45,7 @@ with st.sidebar:
     <div style='background: rgba(30,41,59,0.5); padding: 15px; border-radius: 10px; font-size: 13px;'>
     <b style='color: #60a5fa;'>Base Paper:</b> CoLLMLight<br>
     <b style='color: #60a5fa;'>Perception:</b> YOLOv8s (24-class)<br>
-    <b style='color: #60a5fa;'>Reasoning:</b> Gemma 3 4B<br>
+    <b style='color: #60a5fa;'>Reasoning:</b> Gemma 4 4B<br>
     <b style='color: #60a5fa;'>Engine:</b> CityFlow C++
     </div>
     """)
@@ -67,7 +79,7 @@ with col2:
 with col3:
     render_metric_card("Detection mAP", "56.3%", "+2.7%", icon="🎯", color_theme="green")
 with col4:
-    render_metric_card("LLM Backend", "Gemma 3", icon="🧠", color_theme="purple")
+    render_metric_card("LLM Backend", "Gemma 4", icon="🧠", color_theme="purple")
 
 st.markdown("---")
 

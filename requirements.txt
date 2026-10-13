@@ -1,3 +1,4 @@
+--extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cpu
 # === WINDOWS NATIVE (YOLO + Dashboard + Local LLM) ===
 # Install command: pip install -r requirements.txt
 torch>=2.3.0
@@ -16,6 +17,8 @@ transformers>=4.44.0
 scipy>=1.14.0
 tqdm>=4.66.0
 reportlab>=4.0.0
+openai-clip
+setuptools<70
 
 # === WSL2 UBUNTU (CityFlow + CoLLMLight) ===
 # DO NOT INSTALL THESE ON WINDOWS. Use inside WSL only.

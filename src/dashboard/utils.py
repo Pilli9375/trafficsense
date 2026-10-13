@@ -158,13 +158,26 @@ def render_metric_card(title, value, delta=None, icon="📊", color_theme="blue"
     border_color, bg_color = colors.get(color_theme, colors["blue"])
     
     delta_html = ""
-    if delta:
-        is_positive = "+" in str(delta) or (isinstance(delta, (int, float)) and delta > 0)
-        d_color = "#10b981" if is_positive else "#ef4444"
-        d_icon = "▲" if is_positive else "▼"
-        bg_rgb = "16, 185, 129" if is_positive else "239, 68, 68"
-        val = abs(float(str(delta).replace('+','').replace('%','')))
-        delta_html = f"<div style='background: rgba({bg_rgb}, 0.15); color: {d_color}; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;'>{d_icon} {val}%</div>"
+    if delta is not None and str(delta).strip() and str(delta).strip().lower() != "none":
+        delta_str = str(delta).strip()
+        is_negative = delta_str.startswith("-") or (isinstance(delta, (int, float)) and delta < 0)
+        is_positive = delta_str.startswith("+") or (isinstance(delta, (int, float)) and delta > 0)
+        
+        if is_positive:
+            d_color = "#10b981"
+            d_icon = "▲"
+            bg_rgb = "16, 185, 129"
+        elif is_negative:
+            d_color = "#ef4444"
+            d_icon = "▼"
+            bg_rgb = "239, 68, 68"
+        else:
+            d_color = "#94a3b8"
+            d_icon = "•"
+            bg_rgb = "148, 163, 184"
+            
+        clean_text = delta_str.lstrip("+-")
+        delta_html = f"<div style='background: rgba({bg_rgb}, 0.15); color: {d_color}; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;'>{d_icon} {clean_text}</div>"
 
     html = f"<div class='glass-card' style='border-left: 4px solid {border_color}; margin-bottom: 1rem;'><div style='display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;'><span style='color: #94a3b8; font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;'>{title}</span><span style='font-size: 20px; background: {bg_color}; padding: 8px; border-radius: 10px;'>{icon}</span></div><div style='display: flex; align-items: baseline; gap: 12px;'><span style='font-size: 32px; font-weight: 700; color: #f8fafc; letter-spacing: -0.5px;'>{value}</span>{delta_html}</div></div>"
     

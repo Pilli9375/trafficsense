@@ -13,7 +13,7 @@ st.set_page_config(page_title="Network Control | TrafficSense", layout="wide", p
 apply_theme()
 
 st.title("🌐 Network Control")
-st.html("<p style='color: #94a3b8; font-size: 1.1rem; margin-bottom: 2rem;'>Multi-agent cooperative signal control powered by Gemma 3 4B reasoning traces.</p>")
+st.html("<p style='color: #94a3b8; font-size: 1.1rem; margin-bottom: 2rem;'>Multi-agent cooperative signal control powered by Gemma 4 4B reasoning traces.</p>")
 
 # Load data
 decisions = load_decisions()
@@ -59,7 +59,7 @@ with st.sidebar:
     st.markdown("### 🧠 LLM Engine")
     st.html("""
     <div style='background: rgba(139, 92, 246, 0.1); border-left: 4px solid #8b5cf6; padding: 15px; border-radius: 8px;'>
-        <b style='color: #a78bfa;'>Gemma 3 4B</b><br>
+        <b style='color: #a78bfa;'>Gemma 4 4B</b><br>
         <span style='font-size: 13px; color: #94a3b8;'>Avg Latency: ~12s / dec</span>
     </div>
     """)

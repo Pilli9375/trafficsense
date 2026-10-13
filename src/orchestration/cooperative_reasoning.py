@@ -14,15 +14,16 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
 
 from perception_adapter import CoLLMLightPerceptionAdapter, PerceptionStateGenerator
 from prompt_builder import CoLLMLightPromptBuilder
+from src import config
 
 
 class CooperativeReasoningEngine:
-    def __init__(self, model_name='gemma3:4b', api_url='http://localhost:11434/v1'):
-        self.model = model_name
-        self.api_url = api_url
+    def __init__(self, model_name=None, api_url=None):
+        self.model = model_name or getattr(config, 'OLLAMA_MODEL', 'gemma4:e4b')
+        self.api_url = api_url or getattr(config, 'OLLAMA_BASE_URL', 'http://localhost:11434/v1')
         self.builder = CoLLMLightPromptBuilder()
         
-    def _call_llm(self, prompt: str, temperature=0.7, max_tokens=200) -> str:
+    def _call_llm(self, prompt: str, temperature=0.7, max_tokens=600) -> str:
         """Call local Ollama LLM."""
         try:
             response = requests.post(
@@ -37,10 +38,14 @@ class CooperativeReasoningEngine:
                     "temperature": temperature,
                     "max_tokens": max_tokens
                 },
-                timeout=60
+                timeout=120
             )
             response.raise_for_status()
-            return response.json()['choices'][0]['message']['content']
+            msg = response.json()['choices'][0]['message']
+            content = msg.get('content') or ''
+            if not content.strip() and 'reasoning' in msg:
+                content = msg.get('reasoning') or ''
+            return content
         except Exception as e:
             print(f"[LLM ERROR] {e}")
             return '{"recommended_phase": 0, "green_duration_seconds": 30, "reasoning": "Fallback due to error", "cooperation_needed": false, "neighbor_coordination": "none"}'
