@@ -1,0 +1,19 @@
+# Default configuration. All paths are relative to the repo root.
+# Controller timing (min/max green, transition) is deliberately absent: it is set in Phase 1
+# and must be present before any run (missing keys raise, there are no silent defaults).
+paths:
+  external_data: data/external
+  collmlight_data: data/external/collmlight
+  scenarios: data/scenarios
+  scenario_configs: configs/scenarios
+  outputs: outputs
+  runs: outputs/runs
+
+sim:
+  steps: 3600          # default run length (CLAUDE.md)
+
+llm:
+  provider: ollama
+  host: http://localhost:11434
+  endpoint: /api/chat  # native endpoint, structured output via `format`
+  model: null          # chosen after scripts/benchmark_llm.py; must be set for LLM runs

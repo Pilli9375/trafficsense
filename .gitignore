@@ -43,3 +43,4 @@ tests/mock_ollama.py
 .venv/
 data/external/
 outputs/runs/
+*.egg-info/
