@@ -1,0 +1,1288 @@
+{
+ "provenance": {
+  "script": "scripts/tune_maxpressure_min_green.py",
+  "config": "configs/default.yaml",
+  "decision_interval": 5,
+  "min_greens": [
+   10,
+   15,
+   20,
+   25
+  ],
+  "scenarios": [
+   "jinan_3x4",
+   "hangzhou_4x4",
+   "indian_2x2_offpeak",
+   "indian_2x2_peak"
+  ],
+  "seeds": [
+   0,
+   1,
+   2
+  ],
+  "rule": "lowest mean rank of mean-over-seeds ATT across the 4 scenarios; tie-break mean ATT/best, then shorter min_green",
+  "git_commit_of_this_summary": "c7a6e341af42c23cefeda33a0a2cc2340fd0ea03",
+  "timestamp": "2026-10-14T16:46:17+05:30"
+ },
+ "results": {
+  "jinan_3x4": {
+   "10": {
+    "seeds": [
+     0,
+     1,
+     2
+    ],
+    "runs": [
+     "outputs/baselines/maxpressure_min_green_sweep/mg10/20261014-164247_jinan_3x4_maxpressure_s0",
+     "outputs/baselines/maxpressure_min_green_sweep/mg10/20261014-164252_jinan_3x4_maxpressure_s1",
+     "outputs/baselines/maxpressure_min_green_sweep/mg10/20261014-164258_jinan_3x4_maxpressure_s2"
+    ],
+    "git_commits": [
+     "c7a6e341af42c23cefeda33a0a2cc2340fd0ea03"
+    ],
+    "flow_sha256": [
+     "d0931c1b759479f9e748d69c16414020bfba03d555dcc6cdf7223a0c18cb9e69",
+     "d0931c1b759479f9e748d69c16414020bfba03d555dcc6cdf7223a0c18cb9e69",
+     "d0931c1b759479f9e748d69c16414020bfba03d555dcc6cdf7223a0c18cb9e69"
+    ],
+    "att": {
+     "values": [
+      295.88911798396333,
+      295.88911798396333,
+      295.88911798396333
+     ],
+     "mean": 295.88911798396333,
+     "std": 0.0
+    },
+    "throughput": {
+     "values": [
+      4135,
+      4135,
+      4135
+     ],
+     "mean": 4135,
+     "std": 0.0
+    },
+    "waiting_to_enter": {
+     "values": [
+      0,
+      0,
+      0
+     ],
+     "mean": 0,
+     "std": 0.0
+    },
+    "queue_mean_per_intersection": {
+     "values": [
+      4.939421296296295,
+      4.939421296296295,
+      4.939421296296295
+     ],
+     "mean": 4.939421296296295,
+     "std": 0.0
+    },
+    "transition_share": {
+     "values": [
+      0.31875,
+      0.31875,
+      0.31875
+     ],
+     "mean": 0.31875,
+     "std": 0.0
+    },
+    "forced_switches": {
+     "values": [
+      0,
+      0,
+      0
+     ],
+     "mean": 0,
+     "std": 0.0
+    }
+   },
+   "15": {
+    "seeds": [
+     0,
+     1,
+     2
+    ],
+    "runs": [
+     "outputs/baselines/maxpressure_min_green_sweep/mg15/20261014-164340_jinan_3x4_maxpressure_s0",
+     "outputs/baselines/maxpressure_min_green_sweep/mg15/20261014-164346_jinan_3x4_maxpressure_s1",
+     "outputs/baselines/maxpressure_min_green_sweep/mg15/20261014-164352_jinan_3x4_maxpressure_s2"
+    ],
+    "git_commits": [
+     "c7a6e341af42c23cefeda33a0a2cc2340fd0ea03"
+    ],
+    "flow_sha256": [
+     "d0931c1b759479f9e748d69c16414020bfba03d555dcc6cdf7223a0c18cb9e69",
+     "d0931c1b759479f9e748d69c16414020bfba03d555dcc6cdf7223a0c18cb9e69",
+     "d0931c1b759479f9e748d69c16414020bfba03d555dcc6cdf7223a0c18cb9e69"
+    ],
+    "att": {
+     "values": [
+      300.9289805269187,
+      300.9289805269187,
+      300.9289805269187
+     ],
+     "mean": 300.9289805269187,
+     "std": 0.0
+    },
+    "throughput": {
+     "values": [
+      4130,
+      4130,
+      4130
+     ],
+     "mean": 4130,
+     "std": 0.0
+    },
+    "waiting_to_enter": {
+     "values": [
+      0,
+      0,
+      0
+     ],
+     "mean": 0,
+     "std": 0.0
+    },
+    "queue_mean_per_intersection": {
+     "values": [
+      5.615324074074074,
+      5.615324074074074,
+      5.615324074074074
+     ],
+     "mean": 5.615324074074074,
+     "std": 0.0
+    },
+    "transition_share": {
+     "values": [
+      0.2423611111111111,
+      0.2423611111111111,
+      0.2423611111111111
+     ],
+     "mean": 0.2423611111111111,
+     "std": 0.0
+    },
+    "forced_switches": {
+     "values": [
+      0,
+      0,
+      0
+     ],
+     "mean": 0,
+     "std": 0.0
+    }
+   },
+   "20": {
+    "seeds": [
+     0,
+     1,
+     2
+    ],
+    "runs": [
+     "outputs/baselines/maxpressure_min_green_sweep/mg20/20261014-164432_jinan_3x4_maxpressure_s0",
+     "outputs/baselines/maxpressure_min_green_sweep/mg20/20261014-164438_jinan_3x4_maxpressure_s1",
+     "outputs/baselines/maxpressure_min_green_sweep/mg20/20261014-164444_jinan_3x4_maxpressure_s2"
+    ],
+    "git_commits": [
+     "c7a6e341af42c23cefeda33a0a2cc2340fd0ea03"
+    ],
+    "flow_sha256": [
+     "d0931c1b759479f9e748d69c16414020bfba03d555dcc6cdf7223a0c18cb9e69",
+     "d0931c1b759479f9e748d69c16414020bfba03d555dcc6cdf7223a0c18cb9e69",
+     "d0931c1b759479f9e748d69c16414020bfba03d555dcc6cdf7223a0c18cb9e69"
+    ],
+    "att": {
+     "values": [
+      312.0217640320733,
+      312.0217640320733,
+      312.0217640320733
+     ],
+     "mean": 312.0217640320733,
+     "std": 0.0
+    },
+    "throughput": {
+     "values": [
+      4119,
+      4119,
+      4119
+     ],
+     "mean": 4119,
+     "std": 0.0
+    },
+    "waiting_to_enter": {
+     "values": [
+      0,
+      0,
+      0
+     ],
+     "mean": 0,
+     "std": 0.0
+    },
+    "queue_mean_per_intersection": {
+     "values": [
+      6.759120370370371,
+      6.759120370370371,
+      6.759120370370371
+     ],
+     "mean": 6.759120370370371,
+     "std": 0.0
+    },
+    "transition_share": {
+     "values": [
+      0.19444444444444445,
+      0.19444444444444445,
+      0.19444444444444445
+     ],
+     "mean": 0.19444444444444445,
+     "std": 0.0
+    },
+    "forced_switches": {
+     "values": [
+      0,
+      0,
+      0
+     ],
+     "mean": 0,
+     "std": 0.0
+    }
+   },
+   "25": {
+    "seeds": [
+     0,
+     1,
+     2
+    ],
+    "runs": [
+     "outputs/baselines/maxpressure_min_green_sweep/mg25/20261014-164525_jinan_3x4_maxpressure_s0",
+     "outputs/baselines/maxpressure_min_green_sweep/mg25/20261014-164531_jinan_3x4_maxpressure_s1",
+     "outputs/baselines/maxpressure_min_green_sweep/mg25/20261014-164537_jinan_3x4_maxpressure_s2"
+    ],
+    "git_commits": [
+     "c7a6e341af42c23cefeda33a0a2cc2340fd0ea03"
+    ],
+    "flow_sha256": [
+     "d0931c1b759479f9e748d69c16414020bfba03d555dcc6cdf7223a0c18cb9e69",
+     "d0931c1b759479f9e748d69c16414020bfba03d555dcc6cdf7223a0c18cb9e69",
+     "d0931c1b759479f9e748d69c16414020bfba03d555dcc6cdf7223a0c18cb9e69"
+    ],
+    "att": {
+     "values": [
+      328.1766323024055,
+      328.1766323024055,
+      328.1766323024055
+     ],
+     "mean": 328.1766323024055,
+     "std": 0.0
+    },
+    "throughput": {
+     "values": [
+      4105,
+      4105,
+      4105
+     ],
+     "mean": 4105,
+     "std": 0.0
+    },
+    "waiting_to_enter": {
+     "values": [
+      0,
+      0,
+      0
+     ],
+     "mean": 0,
+     "std": 0.0
+    },
+    "queue_mean_per_intersection": {
+     "values": [
+      8.439537037037036,
+      8.439537037037036,
+      8.439537037037036
+     ],
+     "mean": 8.439537037037036,
+     "std": 0.0
+    },
+    "transition_share": {
+     "values": [
+      0.1625,
+      0.1625,
+      0.1625
+     ],
+     "mean": 0.1625,
+     "std": 0.0
+    },
+    "forced_switches": {
+     "values": [
+      0,
+      0,
+      0
+     ],
+     "mean": 0,
+     "std": 0.0
+    }
+   }
+  },
+  "hangzhou_4x4": {
+   "10": {
+    "seeds": [
+     0,
+     1,
+     2
+    ],
+    "runs": [
+     "outputs/baselines/maxpressure_min_green_sweep/mg10/20261014-164305_hangzhou_4x4_maxpressure_s0",
+     "outputs/baselines/maxpressure_min_green_sweep/mg10/20261014-164311_hangzhou_4x4_maxpressure_s1",
+     "outputs/baselines/maxpressure_min_green_sweep/mg10/20261014-164317_hangzhou_4x4_maxpressure_s2"
+    ],
+    "git_commits": [
+     "c7a6e341af42c23cefeda33a0a2cc2340fd0ea03"
+    ],
+    "flow_sha256": [
+     "595a6140e6649efe5be1b274eb8b03e8c4029e517c9ac2ad53c9ea556a414213",
+     "595a6140e6649efe5be1b274eb8b03e8c4029e517c9ac2ad53c9ea556a414213",
+     "595a6140e6649efe5be1b274eb8b03e8c4029e517c9ac2ad53c9ea556a414213"
+    ],
+    "att": {
+     "values": [
+      331.09554140127386,
+      331.09554140127386,
+      331.09554140127386
+     ],
+     "mean": 331.09554140127386,
+     "std": 0.0
+    },
+    "throughput": {
+     "values": [
+      2740,
+      2740,
+      2740
+     ],
+     "mean": 2740,
+     "std": 0.0
+    },
+    "waiting_to_enter": {
+     "values": [
+      0,
+      0,
+      0
+     ],
+     "mean": 0,
+     "std": 0.0
+    },
+    "queue_mean_per_intersection": {
+     "values": [
+      1.6680381944444445,
+      1.6680381944444445,
+      1.6680381944444445
+     ],
+     "mean": 1.6680381944444445,
+     "std": 0.0
+    },
+    "transition_share": {
+     "values": [
+      0.27022569444444444,
+      0.27022569444444444,
+      0.27022569444444444
+     ],
+     "mean": 0.27022569444444444,
+     "std": 0.0
+    },
+    "forced_switches": {
+     "values": [
+      0,
+      0,
+      0
+     ],
+     "mean": 0,
+     "std": 0.0
+    }
+   },
+   "15": {
+    "seeds": [
+     0,
+     1,
+     2
+    ],
+    "runs": [
+     "outputs/baselines/maxpressure_min_green_sweep/mg15/20261014-164357_hangzhou_4x4_maxpressure_s0",
+     "outputs/baselines/maxpressure_min_green_sweep/mg15/20261014-164403_hangzhou_4x4_maxpressure_s1",
+     "outputs/baselines/maxpressure_min_green_sweep/mg15/20261014-164409_hangzhou_4x4_maxpressure_s2"
+    ],
+    "git_commits": [
+     "c7a6e341af42c23cefeda33a0a2cc2340fd0ea03"
+    ],
+    "flow_sha256": [
+     "595a6140e6649efe5be1b274eb8b03e8c4029e517c9ac2ad53c9ea556a414213",
+     "595a6140e6649efe5be1b274eb8b03e8c4029e517c9ac2ad53c9ea556a414213",
+     "595a6140e6649efe5be1b274eb8b03e8c4029e517c9ac2ad53c9ea556a414213"
+    ],
+    "att": {
+     "values": [
+      335.64096547100235,
+      335.64096547100235,
+      335.64096547100235
+     ],
+     "mean": 335.64096547100235,
+     "std": 0.0
+    },
+    "throughput": {
+     "values": [
+      2726,
+      2726,
+      2726
+     ],
+     "mean": 2726,
+     "std": 0.0
+    },
+    "waiting_to_enter": {
+     "values": [
+      0,
+      0,
+      0
+     ],
+     "mean": 0,
+     "std": 0.0
+    },
+    "queue_mean_per_intersection": {
+     "values": [
+      1.9767187499999999,
+      1.9767187499999999,
+      1.9767187499999999
+     ],
+     "mean": 1.9767187499999999,
+     "std": 0.0
+    },
+    "transition_share": {
+     "values": [
+      0.21822916666666667,
+      0.21822916666666667,
+      0.21822916666666667
+     ],
+     "mean": 0.21822916666666667,
+     "std": 0.0
+    },
+    "forced_switches": {
+     "values": [
+      0,
+      0,
+      0
+     ],
+     "mean": 0,
+     "std": 0.0
+    }
+   },
+   "20": {
+    "seeds": [
+     0,
+     1,
+     2
+    ],
+    "runs": [
+     "outputs/baselines/maxpressure_min_green_sweep/mg20/20261014-164451_hangzhou_4x4_maxpressure_s0",
+     "outputs/baselines/maxpressure_min_green_sweep/mg20/20261014-164457_hangzhou_4x4_maxpressure_s1",
+     "outputs/baselines/maxpressure_min_green_sweep/mg20/20261014-164502_hangzhou_4x4_maxpressure_s2"
+    ],
+    "git_commits": [
+     "c7a6e341af42c23cefeda33a0a2cc2340fd0ea03"
+    ],
+    "flow_sha256": [
+     "595a6140e6649efe5be1b274eb8b03e8c4029e517c9ac2ad53c9ea556a414213",
+     "595a6140e6649efe5be1b274eb8b03e8c4029e517c9ac2ad53c9ea556a414213",
+     "595a6140e6649efe5be1b274eb8b03e8c4029e517c9ac2ad53c9ea556a414213"
+    ],
+    "att": {
+     "values": [
+      343.0982232651693,
+      343.0982232651693,
+      343.0982232651693
+     ],
+     "mean": 343.0982232651693,
+     "std": 0.0
+    },
+    "throughput": {
+     "values": [
+      2726,
+      2726,
+      2726
+     ],
+     "mean": 2726,
+     "std": 0.0
+    },
+    "waiting_to_enter": {
+     "values": [
+      0,
+      0,
+      0
+     ],
+     "mean": 0,
+     "std": 0.0
+    },
+    "queue_mean_per_intersection": {
+     "values": [
+      2.3931770833333332,
+      2.3931770833333332,
+      2.3931770833333332
+     ],
+     "mean": 2.3931770833333332,
+     "std": 0.0
+    },
+    "transition_share": {
+     "values": [
+      0.18255208333333334,
+      0.18255208333333334,
+      0.18255208333333334
+     ],
+     "mean": 0.18255208333333334,
+     "std": 0.0
+    },
+    "forced_switches": {
+     "values": [
+      0,
+      0,
+      0
+     ],
+     "mean": 0,
+     "std": 0.0
+    }
+   },
+   "25": {
+    "seeds": [
+     0,
+     1,
+     2
+    ],
+    "runs": [
+     "outputs/baselines/maxpressure_min_green_sweep/mg25/20261014-164543_hangzhou_4x4_maxpressure_s0",
+     "outputs/baselines/maxpressure_min_green_sweep/mg25/20261014-164549_hangzhou_4x4_maxpressure_s1",
+     "outputs/baselines/maxpressure_min_green_sweep/mg25/20261014-164555_hangzhou_4x4_maxpressure_s2"
+    ],
+    "git_commits": [
+     "c7a6e341af42c23cefeda33a0a2cc2340fd0ea03"
+    ],
+    "flow_sha256": [
+     "595a6140e6649efe5be1b274eb8b03e8c4029e517c9ac2ad53c9ea556a414213",
+     "595a6140e6649efe5be1b274eb8b03e8c4029e517c9ac2ad53c9ea556a414213",
+     "595a6140e6649efe5be1b274eb8b03e8c4029e517c9ac2ad53c9ea556a414213"
+    ],
+    "att": {
+     "values": [
+      354.3426081126383,
+      354.3426081126383,
+      354.3426081126383
+     ],
+     "mean": 354.3426081126383,
+     "std": 0.0
+    },
+    "throughput": {
+     "values": [
+      2715,
+      2715,
+      2715
+     ],
+     "mean": 2715,
+     "std": 0.0
+    },
+    "waiting_to_enter": {
+     "values": [
+      0,
+      0,
+      0
+     ],
+     "mean": 0,
+     "std": 0.0
+    },
+    "queue_mean_per_intersection": {
+     "values": [
+      3.0139062500000002,
+      3.0139062500000002,
+      3.0139062500000002
+     ],
+     "mean": 3.0139062500000002,
+     "std": 0.0
+    },
+    "transition_share": {
+     "values": [
+      0.15572916666666667,
+      0.15572916666666667,
+      0.15572916666666667
+     ],
+     "mean": 0.15572916666666667,
+     "std": 0.0
+    },
+    "forced_switches": {
+     "values": [
+      0,
+      0,
+      0
+     ],
+     "mean": 0,
+     "std": 0.0
+    }
+   }
+  },
+  "indian_2x2_offpeak": {
+   "10": {
+    "seeds": [
+     0,
+     1,
+     2
+    ],
+    "runs": [
+     "outputs/baselines/maxpressure_min_green_sweep/mg10/20261014-164323_indian_2x2_offpeak_maxpressure_s0",
+     "outputs/baselines/maxpressure_min_green_sweep/mg10/20261014-164324_indian_2x2_offpeak_maxpressure_s1",
+     "outputs/baselines/maxpressure_min_green_sweep/mg10/20261014-164327_indian_2x2_offpeak_maxpressure_s2"
+    ],
+    "git_commits": [
+     "c7a6e341af42c23cefeda33a0a2cc2340fd0ea03"
+    ],
+    "flow_sha256": [
+     "ee84bb0a490bb55dc6a3b4beffff130dfca5e4bca7c0be722f41dcd1d4e2297d",
+     "374bb626aaec41d5b92024cd05dd3d276a9d19cb145eb5ca1d916ca2377e55a6",
+     "10b60851bad7bd7ece028bbe4f83dd03cc308d0e74c47d37d6be6c4d38da7276"
+    ],
+    "att": {
+     "values": [
+      81.23027718550107,
+      82.17138103161398,
+      82.71769547325103
+     ],
+     "mean": 82.03978456345536,
+     "std": 0.7523905325740902
+    },
+    "throughput": {
+     "values": [
+      2290,
+      2345,
+      2361
+     ],
+     "mean": 2332,
+     "std": 37.242448899072144
+    },
+    "waiting_to_enter": {
+     "values": [
+      0,
+      0,
+      0
+     ],
+     "mean": 0,
+     "std": 0.0
+    },
+    "queue_mean_per_intersection": {
+     "values": [
+      3.724722222222222,
+      3.923611111111111,
+      4.067152777777777
+     ],
+     "mean": 3.905162037037037,
+     "std": 0.17195914513385038
+    },
+    "transition_share": {
+     "values": [
+      0.31666666666666665,
+      0.31805555555555554,
+      0.3215277777777778
+     ],
+     "mean": 0.31875,
+     "std": 0.00250385505240557
+    },
+    "forced_switches": {
+     "values": [
+      0,
+      0,
+      0
+     ],
+     "mean": 0,
+     "std": 0.0
+    }
+   },
+   "15": {
+    "seeds": [
+     0,
+     1,
+     2
+    ],
+    "runs": [
+     "outputs/baselines/maxpressure_min_green_sweep/mg15/20261014-164415_indian_2x2_offpeak_maxpressure_s0",
+     "outputs/baselines/maxpressure_min_green_sweep/mg15/20261014-164418_indian_2x2_offpeak_maxpressure_s1",
+     "outputs/baselines/maxpressure_min_green_sweep/mg15/20261014-164420_indian_2x2_offpeak_maxpressure_s2"
+    ],
+    "git_commits": [
+     "c7a6e341af42c23cefeda33a0a2cc2340fd0ea03"
+    ],
+    "flow_sha256": [
+     "ee84bb0a490bb55dc6a3b4beffff130dfca5e4bca7c0be722f41dcd1d4e2297d",
+     "374bb626aaec41d5b92024cd05dd3d276a9d19cb145eb5ca1d916ca2377e55a6",
+     "10b60851bad7bd7ece028bbe4f83dd03cc308d0e74c47d37d6be6c4d38da7276"
+    ],
+    "att": {
+     "values": [
+      87.15692963752666,
+      88.16555740432612,
+      89.07777777777778
+     ],
+     "mean": 88.13342160654352,
+     "std": 0.9608272095444079
+    },
+    "throughput": {
+     "values": [
+      2291,
+      2347,
+      2358
+     ],
+     "mean": 2332,
+     "std": 35.93048844644336
+    },
+    "waiting_to_enter": {
+     "values": [
+      0,
+      0,
+      0
+     ],
+     "mean": 0,
+     "std": 0.0
+    },
+    "queue_mean_per_intersection": {
+     "values": [
+      4.715694444444445,
+      4.943263888888888,
+      5.172152777777779
+     ],
+     "mean": 4.9437037037037035,
+     "std": 0.2282294845000635
+    },
+    "transition_share": {
+     "values": [
+      0.2454861111111111,
+      0.24513888888888888,
+      0.24618055555555557
+     ],
+     "mean": 0.24560185185185185,
+     "std": 0.000530390705434717
+    },
+    "forced_switches": {
+     "values": [
+      0,
+      0,
+      0
+     ],
+     "mean": 0,
+     "std": 0.0
+    }
+   },
+   "20": {
+    "seeds": [
+     0,
+     1,
+     2
+    ],
+    "runs": [
+     "outputs/baselines/maxpressure_min_green_sweep/mg20/20261014-164508_indian_2x2_offpeak_maxpressure_s0",
+     "outputs/baselines/maxpressure_min_green_sweep/mg20/20261014-164511_indian_2x2_offpeak_maxpressure_s1",
+     "outputs/baselines/maxpressure_min_green_sweep/mg20/20261014-164513_indian_2x2_offpeak_maxpressure_s2"
+    ],
+    "git_commits": [
+     "c7a6e341af42c23cefeda33a0a2cc2340fd0ea03"
+    ],
+    "flow_sha256": [
+     "ee84bb0a490bb55dc6a3b4beffff130dfca5e4bca7c0be722f41dcd1d4e2297d",
+     "374bb626aaec41d5b92024cd05dd3d276a9d19cb145eb5ca1d916ca2377e55a6",
+     "10b60851bad7bd7ece028bbe4f83dd03cc308d0e74c47d37d6be6c4d38da7276"
+    ],
+    "att": {
+     "values": [
+      96.1953091684435,
+      97.67179700499167,
+      96.43868312757202
+     ],
+     "mean": 96.76859643366906,
+     "std": 0.791603546621406
+    },
+    "throughput": {
+     "values": [
+      2275,
+      2327,
+      2348
+     ],
+     "mean": 2316.6666666666665,
+     "std": 37.58102358017053
+    },
+    "waiting_to_enter": {
+     "values": [
+      0,
+      0,
+      0
+     ],
+     "mean": 0,
+     "std": 0.0
+    },
+    "queue_mean_per_intersection": {
+     "values": [
+      6.194930555555556,
+      6.544930555555555,
+      6.435902777777778
+     ],
+     "mean": 6.391921296296296,
+     "std": 0.17909711900245454
+    },
+    "transition_share": {
+     "values": [
+      0.196875,
+      0.19756944444444444,
+      0.19826388888888888
+     ],
+     "mean": 0.19756944444444444,
+     "std": 0.000694444444444442
+    },
+    "forced_switches": {
+     "values": [
+      0,
+      0,
+      0
+     ],
+     "mean": 0,
+     "std": 0.0
+    }
+   },
+   "25": {
+    "seeds": [
+     0,
+     1,
+     2
+    ],
+    "runs": [
+     "outputs/baselines/maxpressure_min_green_sweep/mg25/20261014-164600_indian_2x2_offpeak_maxpressure_s0",
+     "outputs/baselines/maxpressure_min_green_sweep/mg25/20261014-164602_indian_2x2_offpeak_maxpressure_s1",
+     "outputs/baselines/maxpressure_min_green_sweep/mg25/20261014-164605_indian_2x2_offpeak_maxpressure_s2"
+    ],
+    "git_commits": [
+     "c7a6e341af42c23cefeda33a0a2cc2340fd0ea03"
+    ],
+    "flow_sha256": [
+     "ee84bb0a490bb55dc6a3b4beffff130dfca5e4bca7c0be722f41dcd1d4e2297d",
+     "374bb626aaec41d5b92024cd05dd3d276a9d19cb145eb5ca1d916ca2377e55a6",
+     "10b60851bad7bd7ece028bbe4f83dd03cc308d0e74c47d37d6be6c4d38da7276"
+    ],
+    "att": {
+     "values": [
+      106.77825159914713,
+      104.81821963394343,
+      107.9991769547325
+     ],
+     "mean": 106.53188272927436,
+     "std": 1.6047260153067238
+    },
+    "throughput": {
+     "values": [
+      2271,
+      2328,
+      2336
+     ],
+     "mean": 2311.6666666666665,
+     "std": 35.444792753426185
+    },
+    "waiting_to_enter": {
+     "values": [
+      0,
+      0,
+      0
+     ],
+     "mean": 0,
+     "std": 0.0
+    },
+    "queue_mean_per_intersection": {
+     "values": [
+      7.944305555555555,
+      7.762291666666666,
+      8.384722222222223
+     ],
+     "mean": 8.030439814814814,
+     "std": 0.32003012684106125
+    },
+    "transition_share": {
+     "values": [
+      0.16527777777777777,
+      0.16493055555555555,
+      0.165625
+     ],
+     "mean": 0.16527777777777777,
+     "std": 0.000347222222222221
+    },
+    "forced_switches": {
+     "values": [
+      0,
+      0,
+      0
+     ],
+     "mean": 0,
+     "std": 0.0
+    }
+   }
+  },
+  "indian_2x2_peak": {
+   "10": {
+    "seeds": [
+     0,
+     1,
+     2
+    ],
+    "runs": [
+     "outputs/baselines/maxpressure_min_green_sweep/mg10/20261014-164329_indian_2x2_peak_maxpressure_s0",
+     "outputs/baselines/maxpressure_min_green_sweep/mg10/20261014-164333_indian_2x2_peak_maxpressure_s1",
+     "outputs/baselines/maxpressure_min_green_sweep/mg10/20261014-164336_indian_2x2_peak_maxpressure_s2"
+    ],
+    "git_commits": [
+     "c7a6e341af42c23cefeda33a0a2cc2340fd0ea03"
+    ],
+    "flow_sha256": [
+     "9a45e9fdad4c5991de887ec3df95bdea7a89587c47c5657b830e88c29c86f951",
+     "4c9ab1a13e847e991ab6495d815e16e1ebcf49d4cdf80d26212aeab5f04795c4",
+     "5d79d63eb705a70596551431937b36da040df72b3e82ee9ef34d16d40f8c0e6f"
+    ],
+    "att": {
+     "values": [
+      162.94471823441182,
+      136.30316930775646,
+      127.85109489051095
+     ],
+     "mean": 142.36632747755974,
+     "std": 18.315622159646537
+    },
+    "throughput": {
+     "values": [
+      4366,
+      4610,
+      4572
+     ],
+     "mean": 4516,
+     "std": 131.28594745821047
+    },
+    "waiting_to_enter": {
+     "values": [
+      1,
+      0,
+      0
+     ],
+     "mean": 0.3333333333333333,
+     "std": 0.5773502691896257
+    },
+    "queue_mean_per_intersection": {
+     "values": [
+      31.6925,
+      24.175069444444443,
+      21.64881944444444
+     ],
+     "mean": 25.838796296296294,
+     "std": 5.224449258409048
+    },
+    "transition_share": {
+     "values": [
+      0.32395833333333335,
+      0.3236111111111111,
+      0.3246527777777778
+     ],
+     "mean": 0.32407407407407407,
+     "std": 0.0005303907054347018
+    },
+    "forced_switches": {
+     "values": [
+      0,
+      0,
+      0
+     ],
+     "mean": 0,
+     "std": 0.0
+    }
+   },
+   "15": {
+    "seeds": [
+     0,
+     1,
+     2
+    ],
+    "runs": [
+     "outputs/baselines/maxpressure_min_green_sweep/mg15/20261014-164423_indian_2x2_peak_maxpressure_s0",
+     "outputs/baselines/maxpressure_min_green_sweep/mg15/20261014-164426_indian_2x2_peak_maxpressure_s1",
+     "outputs/baselines/maxpressure_min_green_sweep/mg15/20261014-164428_indian_2x2_peak_maxpressure_s2"
+    ],
+    "git_commits": [
+     "c7a6e341af42c23cefeda33a0a2cc2340fd0ea03"
+    ],
+    "flow_sha256": [
+     "9a45e9fdad4c5991de887ec3df95bdea7a89587c47c5657b830e88c29c86f951",
+     "4c9ab1a13e847e991ab6495d815e16e1ebcf49d4cdf80d26212aeab5f04795c4",
+     "5d79d63eb705a70596551431937b36da040df72b3e82ee9ef34d16d40f8c0e6f"
+    ],
+    "att": {
+     "values": [
+      115.98907220912793,
+      116.09987489574645,
+      114.52325338894681
+     ],
+     "mean": 115.53740016460706,
+     "std": 0.8800224831088314
+    },
+    "throughput": {
+     "values": [
+      4501,
+      4634,
+      4594
+     ],
+     "mean": 4576.333333333333,
+     "std": 68.23733093647006
+    },
+    "waiting_to_enter": {
+     "values": [
+      1,
+      0,
+      0
+     ],
+     "mean": 0.3333333333333333,
+     "std": 0.5773502691896257
+    },
+    "queue_mean_per_intersection": {
+     "values": [
+      17.526319444444443,
+      18.163472222222225,
+      17.798611111111114
+     ],
+     "mean": 17.829467592592593,
+     "std": 0.3196951788728579
+    },
+    "transition_share": {
+     "values": [
+      0.24722222222222223,
+      0.24756944444444445,
+      0.2465277777777778
+     ],
+     "mean": 0.24710648148148148,
+     "std": 0.0005303907054347018
+    },
+    "forced_switches": {
+     "values": [
+      0,
+      0,
+      0
+     ],
+     "mean": 0,
+     "std": 0.0
+    }
+   },
+   "20": {
+    "seeds": [
+     0,
+     1,
+     2
+    ],
+    "runs": [
+     "outputs/baselines/maxpressure_min_green_sweep/mg20/20261014-164516_indian_2x2_peak_maxpressure_s0",
+     "outputs/baselines/maxpressure_min_green_sweep/mg20/20261014-164519_indian_2x2_peak_maxpressure_s1",
+     "outputs/baselines/maxpressure_min_green_sweep/mg20/20261014-164522_indian_2x2_peak_maxpressure_s2"
+    ],
+    "git_commits": [
+     "c7a6e341af42c23cefeda33a0a2cc2340fd0ea03"
+    ],
+    "flow_sha256": [
+     "9a45e9fdad4c5991de887ec3df95bdea7a89587c47c5657b830e88c29c86f951",
+     "4c9ab1a13e847e991ab6495d815e16e1ebcf49d4cdf80d26212aeab5f04795c4",
+     "5d79d63eb705a70596551431937b36da040df72b3e82ee9ef34d16d40f8c0e6f"
+    ],
+    "att": {
+     "values": [
+      119.90293550460682,
+      115.52731442869057,
+      117.1053180396246
+     ],
+     "mean": 117.511855990974,
+     "std": 2.2159579823218953
+    },
+    "throughput": {
+     "values": [
+      4469,
+      4631,
+      4611
+     ],
+     "mean": 4570.333333333333,
+     "std": 88.32515685428095
+    },
+    "waiting_to_enter": {
+     "values": [
+      1,
+      0,
+      0
+     ],
+     "mean": 0.3333333333333333,
+     "std": 0.5773502691896257
+    },
+    "queue_mean_per_intersection": {
+     "values": [
+      18.960833333333333,
+      18.20895833333333,
+      18.721319444444443
+     ],
+     "mean": 18.63037037037037,
+     "std": 0.38409999279152457
+    },
+    "transition_share": {
+     "values": [
+      0.1986111111111111,
+      0.19826388888888888,
+      0.19791666666666666
+     ],
+     "mean": 0.19826388888888888,
+     "std": 0.000347222222222221
+    },
+    "forced_switches": {
+     "values": [
+      0,
+      0,
+      0
+     ],
+     "mean": 0,
+     "std": 0.0
+    }
+   },
+   "25": {
+    "seeds": [
+     0,
+     1,
+     2
+    ],
+    "runs": [
+     "outputs/baselines/maxpressure_min_green_sweep/mg25/20261014-164607_indian_2x2_peak_maxpressure_s0",
+     "outputs/baselines/maxpressure_min_green_sweep/mg25/20261014-164610_indian_2x2_peak_maxpressure_s1",
+     "outputs/baselines/maxpressure_min_green_sweep/mg25/20261014-164613_indian_2x2_peak_maxpressure_s2"
+    ],
+    "git_commits": [
+     "c7a6e341af42c23cefeda33a0a2cc2340fd0ea03"
+    ],
+    "flow_sha256": [
+     "9a45e9fdad4c5991de887ec3df95bdea7a89587c47c5657b830e88c29c86f951",
+     "4c9ab1a13e847e991ab6495d815e16e1ebcf49d4cdf80d26212aeab5f04795c4",
+     "5d79d63eb705a70596551431937b36da040df72b3e82ee9ef34d16d40f8c0e6f"
+    ],
+    "att": {
+     "values": [
+      124.49796443111207,
+      123.1148874061718,
+      125.54994786235662
+     ],
+     "mean": 124.38759989988016,
+     "std": 1.2212760145168977
+    },
+    "throughput": {
+     "values": [
+      4463,
+      4627,
+      4589
+     ],
+     "mean": 4559.666666666667,
+     "std": 85.84482123770387
+    },
+    "waiting_to_enter": {
+     "values": [
+      1,
+      0,
+      0
+     ],
+     "mean": 0.3333333333333333,
+     "std": 0.5773502691896257
+    },
+    "queue_mean_per_intersection": {
+     "values": [
+      20.559375,
+      20.744930555555555,
+      21.63319444444444
+     ],
+     "mean": 20.979166666666664,
+     "std": 0.5739529306729647
+    },
+    "transition_share": {
+     "values": [
+      0.16597222222222222,
+      0.16527777777777777,
+      0.165625
+     ],
+     "mean": 0.165625,
+     "std": 0.000347222222222221
+    },
+    "forced_switches": {
+     "values": [
+      0,
+      0,
+      0
+     ],
+     "mean": 0,
+     "std": 0.0
+    }
+   }
+  }
+ },
+ "selection": {
+  "rank": {
+   "jinan_3x4": {
+    "10": 1.0,
+    "15": 2.0,
+    "20": 3.0,
+    "25": 4.0
+   },
+   "hangzhou_4x4": {
+    "10": 1.0,
+    "15": 2.0,
+    "20": 3.0,
+    "25": 4.0
+   },
+   "indian_2x2_offpeak": {
+    "10": 1.0,
+    "15": 2.0,
+    "20": 3.0,
+    "25": 4.0
+   },
+   "indian_2x2_peak": {
+    "15": 1.0,
+    "20": 2.0,
+    "25": 3.0,
+    "10": 4.0
+   }
+  },
+  "att_over_best": {
+   "jinan_3x4": {
+    "10": 1.0,
+    "15": 1.017032943209586,
+    "20": 1.0545226068401214,
+    "25": 1.1091203168890857
+   },
+   "hangzhou_4x4": {
+    "10": 1.0,
+    "15": 1.0137284363615746,
+    "20": 1.0362514149634794,
+    "25": 1.0702125634582011
+   },
+   "indian_2x2_offpeak": {
+    "10": 1.0,
+    "15": 1.0742766095195546,
+    "20": 1.1795325517806718,
+    "25": 1.298539279401387
+   },
+   "indian_2x2_peak": {
+    "10": 1.2322098928548615,
+    "15": 1.0,
+    "20": 1.017089321929989,
+    "25": 1.0766003019166446
+   }
+  },
+  "mean_rank": {
+   "10": 1.75,
+   "15": 1.75,
+   "20": 2.75,
+   "25": 3.75
+  },
+  "mean_att_over_best": {
+   "10": 1.0580524732137153,
+   "15": 1.0262594972726788,
+   "20": 1.0718489738785655,
+   "25": 1.1386181154163295
+  },
+  "chosen_min_green": 15
+ }
+}
