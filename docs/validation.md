@@ -238,7 +238,8 @@ cannot be converted to ours, so those cells are blank. "Matched" rows use their 
 | Ours: MaxPressure matched | 1263.3 | 29.2 | 540.2 | 2470 | 683.1 | 2505 |
 | Ours default: FixedTime (4 paired phases, 30 s) | 1460.3 | 32.1 | 866.4 | 1400 | 970.7 | 1433 |
 | Ours default: FixedTime all 8 phases | 1441.7 | 31.1 | 783.9 | 1552 | 892.4 | 1576 |
-| Ours default: MaxPressure (8 phases, 5 s, min 10 / max 60) | 1293.5 | 25.9 | 522.5 | 2271 | 679.6 | 2297 |
+| Ours default: MaxPressure (8 phases, 15 s, min 10 / max 60) | 1231.5 | 24.9 | 454.8 | 2556 | 613.5 | 2595 |
+| Ours: maxpressure_5s (default before tuning) (8 phases, 5 s, min 10 / max 60) | 1293.5 | 25.9 | 522.5 | 2271 | 679.6 | 2297 |
 <!-- END:all_synthetic -->
 
 ### Jinan 3x4 (`anon_3_4_jinan_real_2000.json`)
@@ -261,7 +262,8 @@ cannot be converted to ours, so those cells are blank. "Matched" rows use their 
 | Ours: MaxPressure matched | 317.8 | 7.5 | 73.9 | 4115 | 273.2 | 4187 |
 | Ours default: FixedTime (4 paired phases, 30 s) | 423.0 | 17.8 | 176.2 | 3968 | 380.9 | 4039 |
 | Ours default: FixedTime all 8 phases | 434.8 | 18.9 | 187.8 | 3991 | 393.9 | 4032 |
-| Ours default: MaxPressure (8 phases, 5 s, min 10 / max 60) | 295.9 | 4.9 | 49.0 | 4135 | 248.9 | 4200 |
+| Ours default: MaxPressure (8 phases, 15 s, min 10 / max 60) | 297.0 | 5.1 | 50.1 | 4149 | 250.3 | 4206 |
+| Ours: maxpressure_5s (default before tuning) (8 phases, 5 s, min 10 / max 60) | 295.9 | 4.9 | 49.0 | 4135 | 248.9 | 4200 |
 <!-- END:all_jinan -->
 
 ### Hangzhou 4x4 (`anon_4_4_hangzhou_real.json`)
@@ -284,16 +286,24 @@ cannot be converted to ours, so those cells are blank. "Matched" rows use their 
 | Ours: MaxPressure matched | 365.7 | 3.6 | 70.0 | 2702 | 325.3 | 2751 |
 | Ours default: FixedTime (4 paired phases, 30 s) | 580.6 | 13.0 | 258.9 | 2438 | 516.0 | 2480 |
 | Ours default: FixedTime all 8 phases | 590.5 | 13.6 | 270.9 | 2412 | 527.3 | 2446 |
-| Ours default: MaxPressure (8 phases, 5 s, min 10 / max 60) | 331.1 | 1.7 | 32.2 | 2740 | 285.7 | 2789 |
+| Ours default: MaxPressure (8 phases, 15 s, min 10 / max 60) | 334.3 | 1.8 | 35.6 | 2735 | 289.2 | 2785 |
+| Ours: maxpressure_5s (default before tuning) (8 phases, 5 s, min 10 / max 60) | 331.1 | 1.7 | 32.2 | 2740 | 285.7 | 2789 |
 <!-- END:all_hangzhou -->
 
 ### What the tables show
 
 * On every dataset our MaxPressure beats FixedTime by a wide margin, in both settings and
   under both metric definitions.
-* Our default MaxPressure (8 phases, 5 s decisions) beats the matched one (4 phases, 30 s
+* The default MaxPressure decision interval is now **15 s**, chosen by the pre-registered
+  sweep in `docs/baselines.md` (section 1); the previous 5 s default is kept as
+  `maxpressure_5s`. Re-running `maxpressure_5s` reproduces the earlier 5 s results exactly.
+  Synthetic 4x4 was **not** part of that sweep. On it, 15 s does better than both 5 s and
+  the matched 30 s setting (CityFlow ATT 1231.5 vs 1293.5 and 1263.3 s; 19% of
+  intersection-time in transition vs 22% and 11%). On Jinan and Hangzhou, 15 s is slightly
+  behind 5 s (297.0 vs 295.9 s and 334.3 vs 331.1 s).
+* The 5 s MaxPressure (8 phases) beats the matched one (4 phases, 30 s
   decisions) on Jinan (295.9 vs 317.8 s) and Hangzhou (331.1 vs 365.7 s), but **not** on
-  Synthetic 4x4 (1293.5 vs 1263.3 s). The default switches about twice as often, so its
+  Synthetic 4x4 (1293.5 vs 1263.3 s). The 5 s setting switches about twice as often, so its
   signals spend roughly twice as much time in the 5 s transition phase (measured: 22% vs 11%
   of intersection-time on Synthetic, 32% vs 16% on Jinan, 27% vs 15% on Hangzhou). The likely
   explanation, **not verified**: on the oversaturated Synthetic network the green time lost
