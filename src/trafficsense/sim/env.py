@@ -78,7 +78,7 @@ class TrafficEnv:
             "roadnetFile": str(self.roadnet_path),
             "flowFile": str(self.flow_path),
             "rlTrafficLight": True,
-            "laneChange": False,
+            "laneChange": bool(_require(sim, "lane_change", "sim")),
             "saveReplay": False,
             "roadnetLogFile": "",
             "replayLogFile": "",

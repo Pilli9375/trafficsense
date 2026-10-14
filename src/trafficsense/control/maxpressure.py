@@ -3,7 +3,9 @@
 Pressure of a phase = sum over the movements it serves of
 (waiting vehicles on the movement's incoming lanes - waiting vehicles on its outgoing lanes).
 Every `decision_interval` seconds, each intersection that has met min_green switches to the
-phase with the highest pressure. Ties keep the current phase, otherwise the lowest index wins.
+phase with the highest pressure. `phases` picks the candidate set (all green phases, or the 4
+paired phases). With `tie_break: keep_current` a tie keeps the current phase, otherwise the
+lowest index wins; `lowest_index` always takes the lowest index (as CoLLMLight's np.argmax).
 
 The env forces a switch when a green reaches max_green. To keep the choice pressure-based,
 the current phase is excluded when keeping it would reach max_green before the next decision;
@@ -14,22 +16,29 @@ from __future__ import annotations
 from typing import Any
 
 from trafficsense.control.base import Controller
+from trafficsense.control.fixedtime import PHASE_SETS, phase_cycle
 from trafficsense.sim.env import TrafficEnv
 from trafficsense.sim.roadnet import Intersection
 
 
-def phase_pressures(inter: Intersection, state: dict[str, Any]) -> dict[int, float]:
+TIE_BREAKS = ("keep_current", "lowest_index")
+
+
+def phase_pressures(inter: Intersection, state: dict[str, Any],
+                    candidates: list[int] | None = None) -> dict[int, float]:
     by_index = {m["index"]: m for m in state["movements"]}
+    phases = [p for p in inter.green_phases if candidates is None or p.index in candidates]
     return {
         p.index: sum(by_index[k]["queue"] - by_index[k]["out_queue"] for k in p.movements)
-        for p in inter.green_phases
+        for p in phases
     }
 
 
-def choose_phase(pressures: dict[int, float], current: int, exclude_current: bool) -> int:
+def choose_phase(pressures: dict[int, float], current: int, exclude_current: bool,
+                 tie_break: str = "keep_current") -> int:
     cand = {p: v for p, v in pressures.items() if not (exclude_current and p == current)}
     best = max(cand.values())
-    if current in cand and cand[current] == best:
+    if tie_break == "keep_current" and current in cand and cand[current] == best:
         return current
     return min(p for p, v in cand.items() if v == best)
 
@@ -44,7 +53,14 @@ class MaxPressureController(Controller):
         self.interval = int(c["decision_interval"])
         if self.interval <= 0:
             raise ValueError(f"decision_interval must be positive, got {self.interval}")
+        self.phases = c.get("phases", "all")
+        if self.phases not in PHASE_SETS:
+            raise ValueError(f"maxpressure.phases must be one of {PHASE_SETS}, got {self.phases!r}")
+        self.tie_break = c.get("tie_break", "keep_current")
+        if self.tie_break not in TIE_BREAKS:
+            raise ValueError(f"maxpressure.tie_break must be one of {TIE_BREAKS}, got {self.tie_break!r}")
         self.max_green = int(cfg["signal"]["max_green"])
+        self._candidates: dict[str, list[int]] = {}
 
     def act(self, env: TrafficEnv) -> None:
         if int(round(env.time)) % self.interval != 0:
@@ -53,9 +69,13 @@ class MaxPressureController(Controller):
             if not env.can_switch(iid):
                 continue
             inter = env.intersection(iid)
-            pressures = phase_pressures(inter, env.get_state(iid))
+            if iid not in self._candidates:
+                self._candidates[iid] = phase_cycle(inter, self.phases)
+            pressures = phase_pressures(inter, env.get_state(iid), self._candidates[iid])
             near_max = env.time_in_phase(iid) + self.interval >= self.max_green
-            env.request_phase(iid, choose_phase(pressures, env.signals[iid].green_phase, near_max))
+            env.request_phase(iid, choose_phase(pressures, env.signals[iid].green_phase, near_max,
+                                                self.tie_break))
 
     def info(self) -> dict[str, Any]:
-        return {"name": self.name, "decision_interval": self.interval}
+        return {"name": self.name, "decision_interval": self.interval, "phases": self.phases,
+                "tie_break": self.tie_break}

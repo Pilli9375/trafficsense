@@ -89,3 +89,16 @@ def test_fixedtime_decision_interval(cfg, synthetic_4x4):
     _, trace = _run(c, "fixedtime", 300)
     phases = [t[IID][0] for t in trace]
     assert phases == [1] * 30 + [0] * 5 + [2] * 55 + [0] * 5 + [3] * 55 + [0] * 5 + [4] * 55 + [0] * 5 + [1] * 55 + [0] * 5 + [2] * 25
+
+
+def test_maxpressure_tie_break_and_phase_set(synthetic_4x4):
+    assert choose_phase({1: 5, 2: 5}, current=2, exclude_current=False, tie_break="lowest_index") == 1
+    inter = load_roadnet(synthetic_4x4["roadnet"]).intersections[IID]
+    movements = [{"index": m.index, "queue": 0, "out_queue": 0} for m in inter.movements]
+    assert set(phase_pressures(inter, {"movements": movements}, [1, 2, 3, 4])) == {1, 2, 3, 4}
+
+
+def test_lane_change_reaches_engine(cfg, synthetic_4x4):
+    on = {**cfg, "sim": {**cfg["sim"], "lane_change": True}}
+    assert TrafficEnv(on, "synthetic_4x4").engine_config["laneChange"] is True
+    assert TrafficEnv(cfg, "synthetic_4x4").engine_config["laneChange"] is False

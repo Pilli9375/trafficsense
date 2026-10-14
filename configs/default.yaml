@@ -11,12 +11,19 @@ scenarios:
   synthetic_4x4:
     roadnet: data/external/collmlight/Synthetic/4_4/roadnet_4_4.json
     flow: data/external/collmlight/Synthetic/4_4/anon_4_4_synthetic_8000.json
+  jinan_3x4:
+    roadnet: data/external/collmlight/Jinan/3_4/roadnet_3_4.json
+    flow: data/external/collmlight/Jinan/3_4/anon_3_4_jinan_real_2000.json
+  hangzhou_4x4:
+    roadnet: data/external/collmlight/Hangzhou/4_4/roadnet_4_4.json
+    flow: data/external/collmlight/Hangzhou/4_4/anon_4_4_hangzhou_real.json
 
 sim:
   steps: 3600          # default run length (CLAUDE.md)
   interval: 1.0        # seconds per simulator step
   seed: 0
   threads: 1
+  lane_change: false   # CityFlow laneChange; CoLLMLight runs with true
 
 # Signal timing enforced by the env wrapper for every controller.
 # The transition (yellow) duration is NOT set here: it is read from the roadnet's
@@ -34,6 +41,8 @@ controllers:
     phases: all        # every green phase in the roadnet (8 in the CoLLMLight roadnets)
   maxpressure:
     decision_interval: 5   # s between re-evaluations; switches only once min_green is met
+    phases: all            # all | paired (CoLLMLight's MaxPressure uses the 4 paired phases)
+    tie_break: keep_current  # keep_current | lowest_index (CoLLMLight: np.argmax -> lowest)
 
 llm:
   provider: ollama

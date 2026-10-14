@@ -1,0 +1,33 @@
+{
+  "source": "CoLLMLight code (unmodified), run via scripts/validation/run_collmlight_baseline.py",
+  "collmlight_commit": "ce204a90a238e206fa5673b6922aab3a6a9fc597",
+  "entry_point": "harness copy of run_maxpressure.py config with synthetic_4x4 paths",
+  "model": "MaxPressure",
+  "dataset": "synthetic_4x4",
+  "traffic_file": "anon_4_4_synthetic_8000.json",
+  "numpy_seed": 0,
+  "engine_configs": [
+    {
+      "seed": 44,
+      "laneChange": true,
+      "interval": 1
+    },
+    {
+      "seed": 47,
+      "laneChange": true,
+      "interval": 1
+    }
+  ],
+  "results": {
+    "test_reward_over": 0.0,
+    "test_throughput_over": 2505.0,
+    "test_avg_queue_len_over": 468.43333333333334,
+    "test_queuing_vehicle_num_over": 56212.0,
+    "test_avg_waiting_time_over": 84.81417210828953,
+    "test_avg_travel_time_over": 683.1029690461149,
+    "cityflow_att": 1263.2965,
+    "vehicles_running_at_end": 696,
+    "sim_time_end": 3600.0
+  },
+  "timestamp": "2026-10-14T11:54:43+05:30"
+}

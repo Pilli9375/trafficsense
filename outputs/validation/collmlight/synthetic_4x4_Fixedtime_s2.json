@@ -1,0 +1,33 @@
+{
+  "source": "CoLLMLight code (unmodified), run via scripts/validation/run_collmlight_baseline.py",
+  "collmlight_commit": "ce204a90a238e206fa5673b6922aab3a6a9fc597",
+  "entry_point": "run_fixedtime.main",
+  "model": "Fixedtime",
+  "dataset": "synthetic_4x4",
+  "traffic_file": "anon_4_4_synthetic_8000.json",
+  "numpy_seed": 2,
+  "engine_configs": [
+    {
+      "seed": 40,
+      "laneChange": true,
+      "interval": 1
+    },
+    {
+      "seed": 15,
+      "laneChange": true,
+      "interval": 1
+    }
+  ],
+  "results": {
+    "test_reward_over": 0.0,
+    "test_throughput_over": 751.0,
+    "test_avg_queue_len_over": 467.26666666666665,
+    "test_queuing_vehicle_num_over": 56072.0,
+    "test_avg_waiting_time_over": 1215.554608988661,
+    "test_avg_travel_time_over": 1192.537716262976,
+    "cityflow_att": 1611.979625,
+    "vehicles_running_at_end": 708,
+    "sim_time_end": 3600.0
+  },
+  "timestamp": "2026-10-14T12:05:55+05:30"
+}
