@@ -87,8 +87,9 @@ class MetricsTracker:
             self.rows.append({
                 "time": t,
                 "intersection": i,
-                "phase": self.env.current_phase(i),
-                "in_transition": int(self.env.in_transition(i)),
+                # phase shown during the step that just ran (not the one set for the next step)
+                "phase": self.env.shown_phase(i),
+                "in_transition": int(self.env.shown_phase(i) == self.env.intersection(i).transition_phase.index),
                 "queue": q,
                 "vehicles_incoming": on_in,
                 "throughput_cum": len(self.int_crossed[i]),

@@ -64,7 +64,7 @@ def main():
         ctl.act(env)
         env.step()
         for i in env.intersection_ids:
-            phase_time[(i, env.current_phase(i))] += 1
+            phase_time[(i, env.shown_phase(i))] += 1
         if t % 600 == 0:
             cnt = env.eng.get_lane_vehicle_count()
             running = len(env.eng.get_vehicles())

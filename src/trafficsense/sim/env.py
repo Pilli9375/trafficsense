@@ -114,6 +114,9 @@ class TrafficEnv:
         return self.eng.get_current_time()
 
     def step(self) -> None:
+        # Phase in force while the simulator advances; current_phase() read after step()
+        # already describes the NEXT step (e.g. the green that follows a finished transition).
+        self._shown = {iid: self.current_phase(iid) for iid in self.signals}
         self.eng.next_step()
         for iid, s in self.signals.items():
             if s.in_transition:
@@ -135,6 +138,12 @@ class TrafficEnv:
         """Phase index currently shown by the simulator (transition phase during a switch)."""
         s = self.signals[iid]
         return self.intersection(iid).transition_phase.index if s.in_transition else s.green_phase
+
+    def shown_phase(self, iid: str) -> int:
+        """Phase the simulator showed during the last step()."""
+        if not hasattr(self, "_shown"):
+            raise RuntimeError("shown_phase() called before the first step()")
+        return self._shown[iid]
 
     def time_in_phase(self, iid: str) -> int:
         return self.signals[iid].time_in_phase

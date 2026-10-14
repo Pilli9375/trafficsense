@@ -48,6 +48,35 @@ def test_transition_inserted_with_roadnet_duration(env):
     assert env.time_in_phase(IID) == 1
 
 
+def test_shown_phase_is_the_phase_during_the_step(cfg, synthetic_4x4):
+    """current_phase() after a step is the phase for the NEXT step; shown_phase() is the one
+    the engine used. A transition is shown for exactly transition_time steps."""
+    e = TrafficEnv(cfg, "synthetic_4x4")
+    for _ in range(e.min_green):
+        e.step()
+    e.request_phase(IID, 3)
+    shown, after = [], []
+    for _ in range(7):
+        e.step()
+        shown.append(e.shown_phase(IID))
+        after.append(e.current_phase(IID))
+    assert shown == [0, 0, 0, 0, 0, 3, 3]
+    assert after == [0, 0, 0, 0, 3, 3, 3]
+
+
+def test_metrics_rows_record_full_transition(cfg, synthetic_4x4):
+    from trafficsense.sim.metrics import MetricsTracker
+    e = TrafficEnv(cfg, "synthetic_4x4")
+    m = MetricsTracker(e)
+    for k in range(40):
+        if k == e.min_green:
+            e.request_phase(IID, 3)
+        e.step()
+        m.update()
+    rows = [r for r in m.rows if r["intersection"] == IID]
+    assert sum(r["in_transition"] for r in rows) == e.transition_time[IID]
+
+
 def test_min_green_enforced(env):
     for _ in range(env.min_green - 1):
         env.step()
