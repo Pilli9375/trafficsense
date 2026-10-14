@@ -2,8 +2,9 @@
 with BOTH our metrics and CoLLMLight's metric definitions.
 
 Profiles:
-  default_fixedtime / default_fixedtime_all_phases / default_maxpressure
-                        our configs/default.yaml settings
+  default_fixedtime / default_fixedtime_all_phases / default_maxpressure / default_maxpressure_5s
+                        our configs/default.yaml settings (default_maxpressure_5s = the
+                        maxpressure_5s controller, the default before tuning)
   matched_fixedtime     4 paired phases, 30 s green, switch checked on a 30 s grid
   matched_maxpressure   4 paired phases, decision every 30 s, np.argmax tie-break, no max green
   replica_fixedtime     matched_fixedtime but cycling phases 1 and 3 only, which is what
@@ -28,7 +29,8 @@ from trafficsense.sim.metrics import MetricsTracker
 sys.path.insert(0, str(Path(__file__).resolve().parent))   # sibling validation module
 from collmlight_metrics import CoLLMLightMetrics  # noqa: E402
 
-PROFILES = ("default_fixedtime", "default_fixedtime_all_phases", "default_maxpressure", "matched_fixedtime",
+PROFILES = ("default_fixedtime", "default_fixedtime_all_phases", "default_maxpressure", "default_maxpressure_5s",
+            "matched_fixedtime",
             "matched_maxpressure", "replica_fixedtime")
 
 

@@ -49,7 +49,8 @@ controllers:
     green_time: 30
     phases: all        # every green phase in the roadnet (8 in the CoLLMLight roadnets)
   maxpressure:
-    decision_interval: 5   # s between re-evaluations; switches only once min_green is met
+    decision_interval: 15  # s between re-evaluations; switches only once min_green is met.
+                           # Chosen by scripts/tune_maxpressure.py (docs/baselines.md)
     phases: all            # all | paired (CoLLMLight's MaxPressure uses the 4 paired phases)
     tie_break: keep_current  # keep_current | lowest_index (CoLLMLight: np.argmax -> lowest)
   maxpressure_5s:          # the original 5 s setting, kept for comparison

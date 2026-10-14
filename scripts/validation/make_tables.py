@@ -67,6 +67,14 @@ def crosscheck(ds, sc):
     return table(CM_HEADER, rows)
 
 
+def mp_label(prefix, o):
+    """Label from the settings recorded in the result file, so it cannot go stale."""
+    p = o["controller_params"]
+    sig = o["signal"]
+    return (f"{prefix} ({'8' if p['phases'] == 'all' else '4'} phases, {p['decision_interval']} s, "
+            f"min {sig['min_green']} / max {sig['max_green']})")
+
+
 def ours_table(ds, sc):
     s = engine_seed(ds, "MaxPressure")
     runs = [
@@ -76,7 +84,9 @@ def ours_table(ds, sc):
         ("Ours: MaxPressure matched", ours(sc, "matched_maxpressure", s), None),
         ("Ours default: FixedTime (4 paired phases, 30 s)", ours(sc, "default_fixedtime", 0), None),
         ("Ours default: FixedTime all 8 phases", ours(sc, "default_fixedtime_all_phases", 0), None),
-        ("Ours default: MaxPressure (8 phases, 5 s, min 10 / max 60)", ours(sc, "default_maxpressure", 0), None),
+        (mp_label("Ours default: MaxPressure", ours(sc, "default_maxpressure", 0)), ours(sc, "default_maxpressure", 0), None),
+        (mp_label("Ours: maxpressure_5s (default before tuning)", ours(sc, "default_maxpressure_5s", 0)),
+         ours(sc, "default_maxpressure_5s", 0), None),
     ]
     rows = []
     for label, o, t in runs:
