@@ -6,7 +6,8 @@ from trafficsense.control.maxpressure import MaxPressureController
 CONTROLLERS = {
     "fixedtime": partial(FixedTimeController, name="fixedtime"),
     "fixedtime_all_phases": partial(FixedTimeController, name="fixedtime_all_phases"),
-    "maxpressure": MaxPressureController,
+    "maxpressure": partial(MaxPressureController, name="maxpressure"),
+    "maxpressure_5s": partial(MaxPressureController, name="maxpressure_5s"),
 }
 
 

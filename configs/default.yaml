@@ -52,6 +52,10 @@ controllers:
     decision_interval: 5   # s between re-evaluations; switches only once min_green is met
     phases: all            # all | paired (CoLLMLight's MaxPressure uses the 4 paired phases)
     tie_break: keep_current  # keep_current | lowest_index (CoLLMLight: np.argmax -> lowest)
+  maxpressure_5s:          # the original 5 s setting, kept for comparison
+    decision_interval: 5
+    phases: all
+    tie_break: keep_current
 
 llm:
   provider: ollama

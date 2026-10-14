@@ -3,7 +3,10 @@
 Pressure of a phase = sum over the movements it serves of
 (waiting vehicles on the movement's incoming lanes - waiting vehicles on its outgoing lanes).
 Every `decision_interval` seconds, each intersection that has met min_green switches to the
-phase with the highest pressure. `phases` picks the candidate set (all green phases, or the 4
+phase with the highest pressure. Decisions fall on a fixed grid (simulation time a multiple of
+the interval), as in CoLLMLight, so the shortest green actually possible is the first grid point
+at least min_green after the transition: 10 s for a 5 s or 15 s interval, 15 s for 10 s and 20 s,
+25 s for 30 s (with 5 s transitions). `phases` picks the candidate set (all green phases, or the 4
 paired phases). With `tie_break: keep_current` a tie keeps the current phase, otherwise the
 lowest index wins; `lowest_index` always takes the lowest index (as CoLLMLight's np.argmax).
 
@@ -46,19 +49,22 @@ def choose_phase(pressures: dict[int, float], current: int, exclude_current: boo
 class MaxPressureController(Controller):
     name = "maxpressure"
 
-    def __init__(self, cfg: dict[str, Any]):
-        c = cfg["controllers"]["maxpressure"]
+    def __init__(self, cfg: dict[str, Any], name: str = "maxpressure"):
+        self.name = name
+        if name not in cfg["controllers"]:
+            raise KeyError(f"Config is missing controllers.{name}")
+        c = cfg["controllers"][name]
         if c.get("decision_interval") is None:
-            raise KeyError("Config is missing controllers.maxpressure.decision_interval")
+            raise KeyError(f"Config is missing controllers.{name}.decision_interval")
         self.interval = int(c["decision_interval"])
         if self.interval <= 0:
             raise ValueError(f"decision_interval must be positive, got {self.interval}")
         self.phases = c.get("phases", "all")
         if self.phases not in PHASE_SETS:
-            raise ValueError(f"maxpressure.phases must be one of {PHASE_SETS}, got {self.phases!r}")
+            raise ValueError(f"{name}.phases must be one of {PHASE_SETS}, got {self.phases!r}")
         self.tie_break = c.get("tie_break", "keep_current")
         if self.tie_break not in TIE_BREAKS:
-            raise ValueError(f"maxpressure.tie_break must be one of {TIE_BREAKS}, got {self.tie_break!r}")
+            raise ValueError(f"{name}.tie_break must be one of {TIE_BREAKS}, got {self.tie_break!r}")
         self.max_green = int(cfg["signal"]["max_green"])
         self._candidates: dict[str, list[int]] = {}
 

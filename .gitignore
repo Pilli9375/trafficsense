@@ -47,3 +47,6 @@ outputs/runs/
 
 # Per-step metrics of the Indian 2x2 batch runs (large; summary.json files are tracked)
 outputs/indian_2x2/runs/*/metrics.csv
+
+# Per-step metrics of the baseline tuning runs (large; summary.json files are tracked)
+outputs/baselines/**/metrics.csv
