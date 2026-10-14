@@ -161,6 +161,10 @@ Design and analysis committed before any run (`scripts/run_emergency_experiments
   chooses no LLM controller, only the other three run. If it chooses the plain controller
   (`llm_v3`), that runs as is, without ambulance information in its prompt (only the hybrid
   and guarded arms list ambulances).
+  **Resolved:** the final round chose `llm_guarded_mp` with `llama3.2:3b`, decision interval
+  5 s (`docs/llm_benchmark.md`). Its prompt lists ambulances, and a phase serving a listed
+  ambulance is exempt from the guard, so the guard cannot block ambulance priority. In the
+  benchmark this controller applied MaxPressure's choice in 106 of its 121 decisions.
 * **Primary ambulance metric:** mean travel time of the signal-relevant ambulances that
   finished, pooled over the 5 seeds; also the median, the mean stopped time and how many did
   not finish by t = 3600 s. All 37 ambulances are reported too.

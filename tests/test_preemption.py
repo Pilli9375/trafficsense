@@ -44,3 +44,26 @@ def test_guided_offers_a_phase_for_the_ambulance(cfg):
     ctl2 = LLMGuidedMPController(c, client=FakeClient(first))
     run(c, "indian_2x2_peak", ctl2, 100, 1)
     assert "Ambulance" not in ctl2.client.calls[0][0][0]["content"]
+
+
+def test_guarded_never_blocks_a_phase_for_an_ambulance(cfg):
+    from trafficsense.control.guided import LLMGuardedMPController
+    c = copy.deepcopy(cfg)
+    c["llm"].update(model="fake:1b", decision_interval=5, min_green=15)
+
+    def policy(m, s):      # an ambulance's phase if one is listed, else the last (lowest-ranked) option
+        lines = m[1]["content"].splitlines()
+        served = [l.split("served by phase ")[1] for l in lines if "served by phase " in l]
+        offered = s["properties"]["phase"]["enum"]
+        serving = [int(x) for x in served[0].split(", ") if int(x) in offered] if served else []
+        if serving:
+            return json.dumps({"phase": serving[0], "reason": "ambulance"})
+        listed = [int(l.split()[0]) for l in lines if l[:1].isdigit()]
+        return json.dumps({"phase": listed[-1], "reason": "x"})
+    ctl = LLMGuardedMPController(c, client=FakeClient(policy))
+    run(c, AMB, ctl, 600, 2)
+    amb = [d for d in ctl.decisions if "ambulances" in d]
+    exempt = [d for d in amb if d["guard_ambulance_exempt"]]
+    assert amb and exempt and not any(d["guard_override"] for d in exempt)
+    assert all(d["phase"] == d["llm_phase"] for d in exempt)
+    assert ctl.stats()["guard_overrides"] > 0 and ctl.stats()["guard_ambulance_exemptions"] == len(exempt)
