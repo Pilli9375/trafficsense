@@ -97,6 +97,15 @@ controllers:
     prompt: guided
     options: 2             # MaxPressure's top 2 are offered, plus keeping the current phase
     tie_break: keep_current  # MaxPressure's ranking, as controllers.maxpressure
+  # Final LLM design round (Phase 3b): prompt v3 = v2 / guided plus two fixes (llm/prompt.py).
+  llm_v3:
+    mode: cooperative
+    prompt: v3
+  llm_guided_mp_v3:
+    mode: cooperative
+    prompt: guided_v3
+    options: 2
+    tie_break: keep_current
   llm_v1:                  # the Phase 3a prompt, kept for the record. Until Phase 3b this controller
     mode: cooperative      # was called llm_cooperative (runs without a `prompt` parameter are v1)
     prompt: v1

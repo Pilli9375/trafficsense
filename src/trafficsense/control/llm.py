@@ -158,7 +158,7 @@ class LLMControllerBase(Controller):
 
 class LLMController(LLMControllerBase):
     """The LLM chooses any green phase (the current one is left out near max green)."""
-    PROMPTS = ("v1", "v2")
+    PROMPTS = ("v1", "v2", "v3")
 
     def __init__(self, cfg: dict[str, Any], name: str = "llm_cooperative", client: Any = None):
         super().__init__(cfg, name, client)

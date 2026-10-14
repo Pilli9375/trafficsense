@@ -144,7 +144,7 @@ def test_v2_render(peak_env):
     assert {p["label"] for p in obs["phases"]} == {"W+E straight", "S+N straight", "W+E cross-turn", "S+N cross-turn",
                                                    "W only", "E only", "S only", "N only"}
     with pytest.raises(ValueError, match="version"):
-        messages(obs, "v3")
+        messages(obs, "v9")
 
 
 def test_v2_is_much_shorter_than_v1(peak_env):
@@ -152,3 +152,18 @@ def test_v2_is_much_shorter_than_v1(peak_env):
     obs = observe(peak_env, peak_env.intersection_ids[0], list(range(1, 9)), "cooperative", 15)
     words = {v: sum(len(re.findall(r"\w+|[^\w\s]", m["content"])) for m in messages(obs, v)) for v in ("v1", "v2")}
     assert words["v2"] < 0.55 * words["v1"]
+
+
+@pytest.mark.parametrize("base,v3", [("v2", "v3"), ("guided", "guided_v3")])
+def test_v3_changes_only_two_lines(peak_env, base, v3):
+    obs = observe(peak_env, peak_env.intersection_ids[0], [1, 2, 3], "cooperative", 15)
+    obs["ranking"] = [3, 1, 2, 4, 5, 6, 7, 8]
+    (s_old, u_old), (s_new, u_new) = messages(obs, base), messages(obs, v3)
+    assert u_old == u_new                                   # same user message
+    a, b = s_old["content"].splitlines(), s_new["content"].splitlines()
+    changed = [(x, y) for x, y in zip(a, b) if x != y]
+    assert len(a) == len(b) and len(changed) == 2
+    assert "HIGHER pressure = the phase needs green MORE" in changed[0][1]
+    assert changed[1][1].endswith('"reason": "<short reason>"}. The reason must be 15 words or fewer.')
+    assert "at most" not in s_new["content"] and "at most 15 words" in s_old["content"]
+    assert prompt.MAX_REASON_WORDS[v3] == prompt.MAX_REASON_WORDS[base] == 15

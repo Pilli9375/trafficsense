@@ -42,7 +42,7 @@ def mp_ranking(pressures: dict[int, float], current: int, exclude_current: bool,
 
 
 class LLMGuidedMPController(LLMControllerBase):
-    PROMPTS = ("guided",)
+    PROMPTS = ("guided", "guided_v3")
 
     def __init__(self, cfg: dict[str, Any], name: str = "llm_guided_mp", client: Any = None):
         super().__init__(cfg, name, client)

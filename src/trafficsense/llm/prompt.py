@@ -26,6 +26,13 @@ Two prompt versions render the same observation:
     phases, and keeping the current one when allowed) are listed, in rank order, with their
     pressure and queue; neighbours as in v2; reason <= 15 words. In emergency scenarios the
     ambulances within detection range are listed, and the system prompt says so.
+  * v3 and guided_v3 (Phase 3b, final round): v2 and guided with exactly two changes, a
+    post-hoc fix of a defect found in the v2/hybrid analysis (docs/llm_benchmark.md): the
+    prompts defined pressure but never said which way is better, and the models preferred
+    low pressure. v3 (a) says "HIGHER pressure = the phase needs green MORE" and (b) moves
+    the word limit out of the JSON placeholder, which qwen2.5:3b copied into its reasons
+    ("At most 15 vehicles ..."). Built by text substitution on v2/guided, so nothing else
+    differs (tested).
 Phase pressure here is MaxPressure's (queue minus downstream queue, summed over the phase's
 movements) without the free turns. Every green phase serves all free turns, so leaving them
 out lowers every phase by the same amount and keeps MaxPressure's ranking.
@@ -41,8 +48,8 @@ from typing import Any
 
 from trafficsense.sim.env import TrafficEnv
 
-VERSIONS = ("v1", "v2", "guided")
-MAX_REASON_WORDS = {"v1": 25, "v2": 15, "guided": 15}
+VERSIONS = ("v1", "v2", "guided", "v3", "guided_v3")
+MAX_REASON_WORDS = {"v1": 25, "v2": 15, "guided": 15, "v3": 15, "guided_v3": 15}
 TURN_LABEL = {"go_straight": "straight", "turn_left": "cross-turn"}
 FREE_TURN = "turn_right"
 MODES = ("cooperative", "isolated")
@@ -76,7 +83,33 @@ roads; queue = stopped vehicles a phase serves. Choose one of the offered phases
 Changing phase starts a {transition} s transition in which only free turns move. A green lasts {min_green} to \
 {max_green} s.
 {emergency}Reply JSON: {{"phase": <offered id>, "reason": "<at most {words} words>"}}"""
+
+# v3: the only two changes to v2 / guided (see the module docstring).
+V3_EDITS = {
+    "v2": [("pressure = queue minus stopped vehicles on their exit roads.",
+            "pressure = vehicles waiting to go minus vehicles already stopped on their exit roads. "
+            "HIGHER pressure = the phase needs green MORE."),
+           ('"reason": "<at most {words} words>"}}',
+            '"reason": "<short reason>"}}. The reason must be {words} words or fewer.')],
+    "guided": [("pressure = stopped vehicles a phase serves minus stopped vehicles on their exit roads;",
+                "pressure = vehicles waiting to go minus vehicles already stopped on their exit roads; "
+                "HIGHER pressure = the phase needs green MORE;"),
+               ('"reason": "<at most {words} words>"}}',
+                '"reason": "<short reason>"}}. The reason must be {words} words or fewer.')],
+}
+
+
+def _v3(template: str, base: str) -> str:
+    for old, new in V3_EDITS[base]:
+        if template.count(old) != 1:
+            raise ValueError(f"v3 edit target not found exactly once in the {base} prompt: {old!r}")
+        template = template.replace(old, new)
+    return template
+
+
 EMERGENCY_GUIDED = "Ambulances, if listed, must get through quickly: give green to a phase that serves them.\n"
+SYSTEM_PROMPT_V3 = _v3(SYSTEM_PROMPT_V2, "v2")
+SYSTEM_PROMPT_GUIDED_V3 = _v3(SYSTEM_PROMPT_GUIDED, "guided")
 
 
 def movement_label(m) -> str:
@@ -273,10 +306,15 @@ def messages(obs: dict[str, Any], version: str) -> list[dict[str, str]]:
         sys = SYSTEM_PROMPT_V2.format(transition=obs["transition_s"], min_green=obs["min_green"],
                                       max_green=obs["max_green"], words=MAX_REASON_WORDS["v2"])
         user = render_v2(obs)
-    elif version == "guided":
-        sys = SYSTEM_PROMPT_GUIDED.format(transition=obs["transition_s"], min_green=obs["min_green"],
-                                          max_green=obs["max_green"], words=MAX_REASON_WORDS["guided"],
-                                          emergency=EMERGENCY_GUIDED if "ambulances" in obs else "")
+    elif version == "v3":
+        sys = SYSTEM_PROMPT_V3.format(transition=obs["transition_s"], min_green=obs["min_green"],
+                                      max_green=obs["max_green"], words=MAX_REASON_WORDS["v3"])
+        user = render_v2(obs)
+    elif version in ("guided", "guided_v3"):
+        tpl = SYSTEM_PROMPT_GUIDED if version == "guided" else SYSTEM_PROMPT_GUIDED_V3
+        sys = tpl.format(transition=obs["transition_s"], min_green=obs["min_green"],
+                         max_green=obs["max_green"], words=MAX_REASON_WORDS[version],
+                         emergency=EMERGENCY_GUIDED if "ambulances" in obs else "")
         user = render_guided(obs)
     else:
         raise ValueError(f"prompt version must be one of {VERSIONS}, got {version!r}")

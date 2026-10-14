@@ -19,6 +19,8 @@ CONTROLLERS = {
     "llm_cooperative": partial(LLMController, name="llm_cooperative"),
     "llm_isolated": partial(LLMController, name="llm_isolated"),
     "llm_guided_mp": partial(LLMGuidedMPController, name="llm_guided_mp"),
+    "llm_v3": partial(LLMController, name="llm_v3"),
+    "llm_guided_mp_v3": partial(LLMGuidedMPController, name="llm_guided_mp_v3"),
 }
 
 
