@@ -22,6 +22,9 @@ Two prompt versions render the same observation:
     arithmetic; neighbours as in v1; no vehicle types (to stay under ~300 tokens; pressure
     counts vehicles regardless of type, as MaxPressure does); the transition is stated as a
     fact without advice; reason <= 15 words.
+  * guided (llm_guided_mp): MaxPressure ranks the phases; only the offered options (its top
+    phases, and keeping the current one when allowed) are listed, in rank order, with their
+    pressure and queue; neighbours as in v2; reason <= 15 words.
 Phase pressure here is MaxPressure's (queue minus downstream queue, summed over the phase's
 movements) without the free turns. Every green phase serves all free turns, so leaving them
 out lowers every phase by the same amount and keeps MaxPressure's ranking.
@@ -37,8 +40,8 @@ from typing import Any
 
 from trafficsense.sim.env import TrafficEnv
 
-VERSIONS = ("v1", "v2")
-MAX_REASON_WORDS = {"v1": 25, "v2": 15}
+VERSIONS = ("v1", "v2", "guided")
+MAX_REASON_WORDS = {"v1": 25, "v2": 15, "guided": 15}
 TURN_LABEL = {"go_straight": "straight", "turn_left": "cross-turn"}
 FREE_TURN = "turn_right"
 MODES = ("cooperative", "isolated")
@@ -63,6 +66,15 @@ Changing phase starts a {transition} s transition in which only free turns move.
 {max_green} s.
 queue = stopped vehicles a phase serves; pressure = queue minus stopped vehicles on their exit roads.
 Reply JSON: {{"phase": <allowed id>, "reason": "<at most {words} words>"}}"""
+
+
+SYSTEM_PROMPT_GUIDED = """You help a MaxPressure controller run one traffic signal in an Indian city. Goal: \
+short queues and low travel time network-wide.
+MaxPressure ranks phases by pressure = stopped vehicles a phase serves minus stopped vehicles on their exit \
+roads; queue = stopped vehicles a phase serves. Choose one of the offered phases; neighbour data may help.
+Changing phase starts a {transition} s transition in which only free turns move. A green lasts {min_green} to \
+{max_green} s.
+Reply JSON: {{"phase": <offered id>, "reason": "<at most {words} words>"}}"""
 
 
 def movement_label(m) -> str:
@@ -228,6 +240,22 @@ def render_v2(obs: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def render_guided(obs: dict[str, Any]) -> str:
+    """Guided user message: the offered options in MaxPressure's rank order (obs["ranking"])."""
+    cur = next(p for p in obs["phases"] if p["id"] == obs["current_phase"])
+    by_id = {p["id"]: p for p in obs["phases"]}
+    lines = [f"Phase {cur['id']} ({cur['label']}) green for {obs['time_in_phase']} s.",
+             "Options, best MaxPressure rank first (phase: pressure, queue):"]
+    for i in [r for r in obs["ranking"] if r in obs["allowed"]]:
+        p = by_id[i]
+        keep = " (keep current)" if i == obs["current_phase"] else ""
+        lines.append(f"{i} {p['label']}{keep}: {p['pressure']}, {p['queue']}")
+    if "neighbours" in obs:
+        lines.append("Neighbours:")
+        lines.extend(_neighbour_line(nb) for nb in obs["neighbours"])
+    return "\n".join(lines)
+
+
 def messages(obs: dict[str, Any], version: str) -> list[dict[str, str]]:
     if version == "v1":
         sys = SYSTEM_PROMPT.format(transition=obs["transition_s"], min_green=obs["min_green"],
@@ -237,6 +265,10 @@ def messages(obs: dict[str, Any], version: str) -> list[dict[str, str]]:
         sys = SYSTEM_PROMPT_V2.format(transition=obs["transition_s"], min_green=obs["min_green"],
                                       max_green=obs["max_green"], words=MAX_REASON_WORDS["v2"])
         user = render_v2(obs)
+    elif version == "guided":
+        sys = SYSTEM_PROMPT_GUIDED.format(transition=obs["transition_s"], min_green=obs["min_green"],
+                                          max_green=obs["max_green"], words=MAX_REASON_WORDS["guided"])
+        user = render_guided(obs)
     else:
         raise ValueError(f"prompt version must be one of {VERSIONS}, got {version!r}")
     return [{"role": "system", "content": sys}, {"role": "user", "content": user}]

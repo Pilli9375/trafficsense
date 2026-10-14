@@ -42,6 +42,7 @@ def test_benchmark_setup_is_pinned(bench):
     assert bench.MODELS == ["gemma3:4b", "gemma4:e4b", "llama3.2:3b", "qwen2.5:3b"]
     assert bench.ARMS["v1"] == {"controller": "llm_v1", "models": bench.MODELS}
     assert bench.ARMS["v2"] == {"controller": "llm_cooperative", "models": ["gemma4:e4b", "llama3.2:3b", "qwen2.5:3b"]}
+    assert bench.ARMS["hybrid"] == {"controller": "llm_guided_mp", "models": bench.ARMS["v2"]["models"]}
     assert (bench.SCENARIO, bench.SEED, bench.STEPS) == ("indian_2x2_peak", 0, 600)
     assert (bench.DECISION_INTERVAL, bench.MIN_GREEN) == (5, 15)
     assert bench.BASELINES == ["maxpressure", "fixedtime_webster"]
@@ -62,6 +63,7 @@ def test_arm_of_runs(bench):
     assert bench.arm_of({"controller": "llm_cooperative", "controller_params": {"mode": "cooperative"}}) == "v1"
     assert bench.arm_of({"controller": "llm_cooperative", "controller_params": {"prompt": "v2"}}) == "v2"
     assert bench.arm_of({"controller": "llm_v1", "controller_params": {"prompt": "v1"}}) == "v1"
+    assert bench.arm_of({"controller": "llm_guided_mp", "controller_params": {"prompt": "guided"}}) == "hybrid"
     with pytest.raises(SystemExit):
         bench.arm_of({"controller": "llm_isolated", "controller_params": {"prompt": "v2"}})
 

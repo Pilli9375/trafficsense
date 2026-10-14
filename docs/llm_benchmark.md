@@ -7,6 +7,7 @@ controller on a short, fixed run. Each **arm** is one controller design:
 |---|---|---|---|---|
 | v1 | `llm_v1` (named `llm_cooperative` when its runs were made) | v1 | gemma3:4b, gemma4:e4b, llama3.2:3b, qwen2.5:3b | 3a |
 | v2 | `llm_cooperative` | v2 | gemma4:e4b, llama3.2:3b, qwen2.5:3b | 3b |
+| hybrid | `llm_guided_mp` | guided | gemma4:e4b, llama3.2:3b, qwen2.5:3b | 3b |
 
 `gemma3:4b` is left out from Phase 3b on: it does not fit in the 4 GB card (see the v1
 findings). Every number below is generated from
@@ -44,28 +45,31 @@ benchmark was run, and kept unchanged for Phase 3b:
 ## Results
 
 <!-- BEGIN:llm_benchmark -->
-| Arm | Model | Calls | Failures | Latency mean (s) | Latency p95 (s) | Prompt tokens (mean) | VRAM, nvidia-smi peak − idle (MiB) | Ollama size_vram / size (MiB) | ATT at 600 s (s) | Queue / int. (veh) | Finished trips | Switches | Eligible |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| v1 | `gemma3:4b` | 333 | 0.0% (none) | 5.05 | 5.43 | 686 | 2466 | 1524 / 3308 | 197.4 | 46.35 | 316 | 45 | no |
-| v1 | `gemma4:e4b` | 160 | 0.6% (reason_too_long 1) | 7.55 | 8.36 | 671 | 2852 | 217 / 217 | 112.2 | 19.44 | 564 | 104 | no |
-| v1 | `llama3.2:3b` | 288 | 6.2% (reason_too_long 18) | 3.14 | 3.35 | 654 | 2280 | 2210 / 2210 | 181.1 | 40.94 | 348 | 62 | no |
-| v1 | `qwen2.5:3b` | 159 | 0.0% (none) | 3.01 | 3.34 | 653 | 2060 | 1985 / 1985 | 141.2 | 29.15 | 465 | 105 | no |
-| v2 | `gemma4:e4b` | 120 | 0.0% (none) | 4.85 | 5.32 | 291 | 2852 | 217 / 217 | 111.1 | 17.95 | 578 | 120 | no |
-| v2 | `llama3.2:3b` | 351 | 0.3% (reason_too_long 1) | 1.36 | 1.52 | 285 | 2230 | 2210 / 2210 | 181.5 | 42.26 | 352 | 40 | yes |
-| v2 | `qwen2.5:3b` | 355 | 29.3% (reason_too_long 104) | 1.47 | 1.65 | 285 | 2058 | 1985 / 1985 | 146.8 | 31.11 | 498 | 36 | no |
-| baseline | maxpressure | – | – | – | – | – | – | – | 92.5 | 11.85 | 623 | 115 | – |
-| baseline | fixedtime_webster | – | – | – | – | – | – | – | 97.4 | 13.49 | 626 | 110 | – |
+| Arm | Model | Calls | Failures | Latency mean (s) | Latency p95 (s) | Prompt tokens (mean) | VRAM, nvidia-smi peak − idle (MiB) | Ollama size_vram / size (MiB) | ATT at 600 s (s) | Queue / int. (veh) | Finished trips | Switches | Differs from MaxPressure's choice | Eligible |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| v1 | `gemma3:4b` | 333 | 0.0% (none) | 5.05 | 5.43 | 686 | 2466 | 1524 / 3308 | 197.4 | 46.35 | 316 | 45 | – | no |
+| v1 | `gemma4:e4b` | 160 | 0.6% (reason_too_long 1) | 7.55 | 8.36 | 671 | 2852 | 217 / 217 | 112.2 | 19.44 | 564 | 104 | – | no |
+| v1 | `llama3.2:3b` | 288 | 6.2% (reason_too_long 18) | 3.14 | 3.35 | 654 | 2280 | 2210 / 2210 | 181.1 | 40.94 | 348 | 62 | – | no |
+| v1 | `qwen2.5:3b` | 159 | 0.0% (none) | 3.01 | 3.34 | 653 | 2060 | 1985 / 1985 | 141.2 | 29.15 | 465 | 105 | – | no |
+| v2 | `gemma4:e4b` | 120 | 0.0% (none) | 4.85 | 5.32 | 291 | 2852 | 217 / 217 | 111.1 | 17.95 | 578 | 120 | – | no |
+| v2 | `llama3.2:3b` | 351 | 0.3% (reason_too_long 1) | 1.36 | 1.52 | 285 | 2230 | 2210 / 2210 | 181.5 | 42.26 | 352 | 40 | – | yes |
+| v2 | `qwen2.5:3b` | 355 | 29.3% (reason_too_long 104) | 1.47 | 1.65 | 285 | 2058 | 1985 / 1985 | 146.8 | 31.11 | 498 | 36 | – | no |
+| hybrid | `gemma4:e4b` | not run |  |  |  |  |  |  |  |  |  |  |  |  |
+| hybrid | `llama3.2:3b` | not run |  |  |  |  |  |  |  |  |  |  |  |  |
+| hybrid | `qwen2.5:3b` | not run |  |  |  |  |  |  |  |  |  |  |  |  |
+| baseline | maxpressure | – | – | – | – | – | – | – | 92.5 | 11.85 | 623 | 115 | – | – |
+| baseline | fixedtime_webster | – | – | – | – | – | – | – | 97.4 | 13.49 | 626 | 110 | – | – |
 <!-- END:llm_benchmark -->
 
 Same model across arms (ATT and queue over the same 600 s):
 
 <!-- BEGIN:llm_compare -->
-| Model | Queue / int. (v1 / v2) | ATT at 600 s (v1 / v2) | Latency p95 s (v1 / v2) | Failure rate (v1 / v2) |
+| Model | Queue / int. (v1 / v2 / hybrid) | ATT at 600 s (v1 / v2 / hybrid) | Latency p95 s (v1 / v2 / hybrid) | Failure rate (v1 / v2 / hybrid) |
 |---|---|---|---|---|
-| `gemma3:4b` | 46.35 / – | 197.4 / – | 5.43 / – | 0.0% / – |
-| `gemma4:e4b` | 19.44 / 17.95 | 112.2 / 111.1 | 8.36 / 5.32 | 0.6% / 0.0% |
-| `llama3.2:3b` | 40.94 / 42.26 | 181.1 / 181.5 | 3.35 / 1.52 | 6.2% / 0.3% |
-| `qwen2.5:3b` | 29.15 / 31.11 | 141.2 / 146.8 | 3.34 / 1.65 | 0.0% / 29.3% |
+| `gemma3:4b` | 46.35 / – / – | 197.4 / – / – | 5.43 / – / – | 0.0% / – / – |
+| `gemma4:e4b` | 19.44 / 17.95 / – | 112.2 / 111.1 / – | 8.36 / 5.32 / – | 0.6% / 0.0% / – |
+| `llama3.2:3b` | 40.94 / 42.26 / – | 181.1 / 181.5 / – | 3.35 / 1.52 / – | 6.2% / 0.3% / – |
+| `qwen2.5:3b` | 29.15 / 31.11 / – | 141.2 / 146.8 / – | 3.34 / 1.65 / – | 0.0% / 29.3% / – |
 <!-- END:llm_compare -->
 
 What the models chose, replayed from each run's decision log
@@ -91,7 +95,8 @@ here is MaxPressure's at the moment of each decision; v2 showed it to the model:
 |---|---|---|---|
 | v1 | none | none | – |
 | v2 | llama3.2:3b | llama3.2:3b | 10 s (p95 × intersections = 6.1 s) |
-| all arms | v2 llama3.2:3b | v2 llama3.2:3b | 10 s (p95 × intersections = 6.1 s) |
+| hybrid | arm incomplete | – | – |
+| all arms | not every arm is complete | – | – |
 <!-- END:llm_selection -->
 
 ## Phase 3a: prompt v1
@@ -187,3 +192,24 @@ procedure and selection rule.
 * Not tested: a prompt that says higher pressure means more need for green, or a different
   reason format. Either would be a v3, i.e. another change after seeing the data, and is
   the user's decision.
+
+## Phase 3b: hybrid `llm_guided_mp`
+
+MaxPressure proposes, the LLM picks; designed and committed before any hybrid run
+(`src/trafficsense/control/guided.py`):
+
+* At each decision MaxPressure ranks the green phases by pressure, exactly as the default
+  MaxPressure (same pressures and tie-break; the current phase is left out when keeping it
+  would reach max green). The LLM is offered MaxPressure's **top 2** and **keeping the current
+  phase** (always allowed here, since an intersection is only asked once min green is met),
+  so 2 or 3 options.
+* The prompt ("guided") lists only those options, best rank first, with pressure and queue,
+  plus the neighbours as in v2; the reason is at most 15 words.
+* **On a failed call MaxPressure's top choice is applied** and the failure is counted.
+  An LLM that always takes the first option, or always fails, gives exactly MaxPressure's
+  run (tested over 600 steps).
+* Logged per decision: MaxPressure's ranking and top choice, and whether the LLM's choice
+  differs from it; the benchmark table reports that rate ("Differs from MaxPressure's
+  choice") and how many of those were "keep current".
+* Same setup and the same selection rule as the other arms; gemma4:e4b, llama3.2:3b,
+  qwen2.5:3b.

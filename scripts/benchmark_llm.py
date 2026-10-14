@@ -18,6 +18,10 @@ Arms (one controller each):
           qwen2.5:3b; gemma3:4b is left out because it does not fit in the 4 GB of VRAM
           (Phase 3a: 1524 of 3308 MiB on the GPU).
   Target for v2, reported but not a criterion: < 300 prompt tokens per call (server count).
+  hybrid  llm_guided_mp: MaxPressure ranks the phases, the LLM picks one of its top 2 or
+          keeps the current phase; on a failed call MaxPressure's top choice is applied (and
+          the failure counted). Cooperative, prompt "guided". Same 3 models as v2. Also
+          reported: how often the LLM's choice differs from MaxPressure's top choice.
 
 GPU: before each model, every model Ollama has loaded is unloaded and the GPU must then show
 <= 300 MiB in use (nvidia-smi), else the script stops. The model is loaded with one short
@@ -63,7 +67,8 @@ from trafficsense.llm.client import OllamaClient
 MODELS = ["gemma3:4b", "gemma4:e4b", "llama3.2:3b", "qwen2.5:3b"]
 FITS_VRAM = ["gemma4:e4b", "llama3.2:3b", "qwen2.5:3b"]
 ARMS = {"v1": {"controller": "llm_v1", "models": MODELS},
-        "v2": {"controller": "llm_cooperative", "models": FITS_VRAM}}
+        "v2": {"controller": "llm_cooperative", "models": FITS_VRAM},
+        "hybrid": {"controller": "llm_guided_mp", "models": FITS_VRAM}}
 LEGACY_V1 = "llm_cooperative"   # name of llm_v1 before prompt versions existed
 PROMPT_TOKEN_TARGET = 300
 BASELINES = ["maxpressure", "fixedtime_webster"]
@@ -215,7 +220,10 @@ def row(r: dict) -> dict:
                  vram_peak_minus_idle_mib=g["peak_minus_idle_mib"], vram_peak_mib=g["peak_used_mib"],
                  ollama_size_vram_mib=(g["ollama_ps"][0]["size_vram"] / 2**20 if g["ollama_ps"] else None),
                  ollama_size_mib=(g["ollama_ps"][0]["size"] / 2**20 if g["ollama_ps"] else None),
-                 warmup_call_s=g["warmup_call_s"], forced_switches=s["signal"]["forced_switches"])
+                 warmup_call_s=g["warmup_call_s"], forced_switches=s["signal"]["forced_switches"],
+                 mp_disagreement_rate=l.get("mp_disagreement_rate"), mp_disagreements=l.get("mp_disagreements"),
+                 mp_disagreements_kept_current=l.get("mp_disagreements_kept_current"),
+                 mp_fallbacks=l.get("mp_fallbacks"))
     return e
 
 
@@ -276,14 +284,15 @@ def tables(b: dict) -> dict[str, str]:
                          e["vram_peak_minus_idle_mib"],
                          fmt(e["ollama_size_vram_mib"], 0) + " / " + fmt(e["ollama_size_mib"], 0),
                          fmt(e["att_s"], 1), fmt(e["queue_mean_per_intersection"], 2), e["throughput"], e["switches"],
-                         ("yes" if k in elig else "no") if x["selection"] else "arm incomplete"])
-        rows += [[arm, f"`{m}`", "not run"] + [""] * 11 for m in x["not_run"]]
+                         disagree(e), ("yes" if k in elig else "no") if x["selection"] else "arm incomplete"])
+        rows += [[arm, f"`{m}`", "not run"] + [""] * 12 for m in x["not_run"]]
     for k, e in b["baselines"].items():
         rows.append(["baseline", k, "–", "–", "–", "–", "–", "–", "–", fmt(e["att_s"], 1),
-                     fmt(e["queue_mean_per_intersection"], 2), e["throughput"], e["switches"], "–"])
+                     fmt(e["queue_mean_per_intersection"], 2), e["throughput"], e["switches"], "–", "–"])
     t1 = table(["Arm", "Model", "Calls", "Failures", "Latency mean (s)", "Latency p95 (s)", "Prompt tokens (mean)",
                 "VRAM, nvidia-smi peak − idle (MiB)", "Ollama size_vram / size (MiB)", "ATT at 600 s (s)",
-                "Queue / int. (veh)", "Finished trips", "Switches", "Eligible"], rows)
+                "Queue / int. (veh)", "Finished trips", "Switches", "Differs from MaxPressure's choice",
+                "Eligible"], rows)
 
     # same model across arms
     models = list(dict.fromkeys(m for x in b["arms"].values() for m in x["models"]))
@@ -309,6 +318,14 @@ def tables(b: dict) -> dict[str, str]:
                  (o["chosen_model"] or "none") if o else "–", interval(o)])
     t3 = table(["Applied to", "Eligible", "Chosen", "Decision interval"], rows)
     return {"llm_benchmark": t1, "llm_compare": t2, "llm_selection": t3}
+
+
+def disagree(e: dict) -> str:
+    """Hybrid only: successful calls whose phase differs from MaxPressure's top choice."""
+    if e.get("mp_disagreement_rate") is None:
+        return "–"
+    return (f"{100 * e['mp_disagreement_rate']:.1f}% ({e['mp_disagreements']}; "
+            f"{e['mp_disagreements_kept_current']} kept current)")
 
 
 def interval(s: dict | None) -> str:

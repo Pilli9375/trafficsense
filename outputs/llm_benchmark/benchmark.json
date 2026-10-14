@@ -6,7 +6,7 @@
   "steps": 600,
   "decision_interval_s": 5,
   "min_green_s": 15,
-  "git_commit_of_this_summary": "b030fef878a1a8671870125bf87cc4ced715cfaa"
+  "git_commit_of_this_summary": "f0c6862ab6f50db5b6362200fabe06e3a1a37f75"
  },
  "arms": {
   "v1": {
@@ -40,7 +40,11 @@
      "ollama_size_vram_mib": 1523.7099990844727,
      "ollama_size_mib": 3308.219997406006,
      "warmup_call_s": 11.608759116999863,
-     "forced_switches": 0
+     "forced_switches": 0,
+     "mp_disagreement_rate": null,
+     "mp_disagreements": null,
+     "mp_disagreements_kept_current": null,
+     "mp_fallbacks": null
     },
     "gemma4:e4b": {
      "run": "20261014-180240_indian_2x2_peak_llm_cooperative_s0",
@@ -72,7 +76,11 @@
      "ollama_size_vram_mib": 217.23999881744385,
      "ollama_size_mib": 217.23999881744385,
      "warmup_call_s": 20.895836491999944,
-     "forced_switches": 0
+     "forced_switches": 0,
+     "mp_disagreement_rate": null,
+     "mp_disagreements": null,
+     "mp_disagreements_kept_current": null,
+     "mp_fallbacks": null
     },
     "llama3.2:3b": {
      "run": "20261014-182204_indian_2x2_peak_llm_cooperative_s0",
@@ -104,7 +112,11 @@
      "ollama_size_vram_mib": 2210.359998703003,
      "ollama_size_mib": 2210.359998703003,
      "warmup_call_s": 4.615375938999932,
-     "forced_switches": 0
+     "forced_switches": 0,
+     "mp_disagreement_rate": null,
+     "mp_disagreements": null,
+     "mp_disagreements_kept_current": null,
+     "mp_fallbacks": null
     },
     "qwen2.5:3b": {
      "run": "20261014-183637_indian_2x2_peak_llm_cooperative_s0",
@@ -134,7 +146,11 @@
      "ollama_size_vram_mib": 1985.3399991989136,
      "ollama_size_mib": 1985.3399991989136,
      "warmup_call_s": 4.844252830998812,
-     "forced_switches": 0
+     "forced_switches": 0,
+     "mp_disagreement_rate": null,
+     "mp_disagreements": null,
+     "mp_disagreements_kept_current": null,
+     "mp_fallbacks": null
     }
    },
    "not_run": [],
@@ -177,7 +193,11 @@
      "ollama_size_vram_mib": 217.23999881744385,
      "ollama_size_mib": 217.23999881744385,
      "warmup_call_s": 21.490203354998812,
-     "forced_switches": 0
+     "forced_switches": 0,
+     "mp_disagreement_rate": null,
+     "mp_disagreements": null,
+     "mp_disagreements_kept_current": null,
+     "mp_fallbacks": null
     },
     "llama3.2:3b": {
      "run": "20261014-213845_indian_2x2_peak_llm_cooperative_s0",
@@ -209,7 +229,11 @@
      "ollama_size_vram_mib": 2210.359998703003,
      "ollama_size_mib": 2210.359998703003,
      "warmup_call_s": 5.919602236001083,
-     "forced_switches": 0
+     "forced_switches": 0,
+     "mp_disagreement_rate": null,
+     "mp_disagreements": null,
+     "mp_disagreements_kept_current": null,
+     "mp_fallbacks": null
     },
     "qwen2.5:3b": {
      "run": "20261014-214648_indian_2x2_peak_llm_cooperative_s0",
@@ -241,7 +265,11 @@
      "ollama_size_vram_mib": 1985.3399991989136,
      "ollama_size_mib": 1985.3399991989136,
      "warmup_call_s": 4.691894537998451,
-     "forced_switches": 5
+     "forced_switches": 5,
+     "mp_disagreement_rate": null,
+     "mp_disagreements": null,
+     "mp_disagreements_kept_current": null,
+     "mp_fallbacks": null
     }
    },
    "not_run": [],
@@ -255,6 +283,16 @@
     "interval_rule": "shortest multiple of 5 s >= p95 latency x 4 intersections",
     "round_p95_s": 6.086021673996584
    }
+  },
+  "hybrid": {
+   "controller": "llm_guided_mp",
+   "models": {},
+   "not_run": [
+    "gemma4:e4b",
+    "llama3.2:3b",
+    "qwen2.5:3b"
+   ],
+   "selection": null
   }
  },
  "baselines": {
@@ -279,14 +317,5 @@
    "git_commit": "29f2b382667aef56adfde129f44527d096145390"
   }
  },
- "overall_selection": {
-  "rule": "eligible: failure rate < 2% and p95 latency < 3.0 s; then lowest mean queue per intersection, tie-break lower ATT",
-  "eligible": [
-   "v2 llama3.2:3b"
-  ],
-  "chosen_model": "v2 llama3.2:3b",
-  "decision_interval_s": 10,
-  "interval_rule": "shortest multiple of 5 s >= p95 latency x 4 intersections",
-  "round_p95_s": 6.086021673996584
- }
+ "overall_selection": null
 }

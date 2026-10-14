@@ -68,6 +68,11 @@ controllers:
   llm_isolated:
     mode: isolated         # own intersection only
     prompt: v2
+  llm_guided_mp:           # MaxPressure ranks the phases, the LLM picks (control/guided.py)
+    mode: cooperative
+    prompt: guided
+    options: 2             # MaxPressure's top 2 are offered, plus keeping the current phase
+    tie_break: keep_current  # MaxPressure's ranking, as controllers.maxpressure
   llm_v1:                  # the Phase 3a prompt, kept for the record. Until Phase 3b this controller
     mode: cooperative      # was called llm_cooperative (runs without a `prompt` parameter are v1)
     prompt: v1

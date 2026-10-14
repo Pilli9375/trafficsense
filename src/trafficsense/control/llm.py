@@ -39,17 +39,21 @@ log = logging.getLogger(__name__)
 REQUIRED = ("decision_interval", "min_green", "max_consecutive_failures")
 
 
-class LLMController(Controller):
-    def __init__(self, cfg: dict[str, Any], name: str = "llm_cooperative", client: Any = None):
+class LLMControllerBase(Controller):
+    """Shared by the LLM controllers: config, client, failure counting, stats and provenance.
+    Subclasses implement act() and call self._ask() for each decision."""
+
+    def __init__(self, cfg: dict[str, Any], name: str, client: Any = None):
         self.name = name
         if name not in cfg["controllers"]:
             raise KeyError(f"Config is missing controllers.{name}")
-        self.mode = cfg["controllers"][name].get("mode")
+        c = cfg["controllers"][name]
+        self.mode = c.get("mode")
         if self.mode not in prompt.MODES:
             raise ValueError(f"controllers.{name}.mode must be one of {prompt.MODES}, got {self.mode!r}")
-        self.prompt = cfg["controllers"][name].get("prompt")
-        if self.prompt not in prompt.VERSIONS:
-            raise ValueError(f"controllers.{name}.prompt must be one of {prompt.VERSIONS}, got {self.prompt!r}")
+        self.prompt = c.get("prompt")
+        if self.prompt not in self.PROMPTS:
+            raise ValueError(f"controllers.{name}.prompt must be one of {self.PROMPTS}, got {self.prompt!r}")
         llm = cfg["llm"]
         missing = [k for k in REQUIRED if llm.get(k) is None]
         if missing:
@@ -70,46 +74,37 @@ class LLMController(Controller):
         self.decisions: list[dict[str, Any]] = []
         self._consecutive = 0
 
-    def act(self, env: TrafficEnv) -> None:
-        if int(round(env.time)) % self.interval != 0:
-            return
-        for iid in env.intersection_ids:
-            if not env.can_switch(iid) or env.time_in_phase(iid) < self.min_green:
-                continue
-            self._decide(env, iid)
+    PROMPTS: tuple[str, ...] = ()
 
-    def _decide(self, env: TrafficEnv, iid: str) -> None:
-        cur = env.signals[iid].green_phase
-        allowed = [p.index for p in env.intersection(iid).green_phases]
-        if env.time_in_phase(iid) + self.interval >= self.max_green:
-            allowed.remove(cur)
-        obs = prompt.observe(env, iid, allowed, self.mode, self.min_green)
-        msgs = prompt.messages(obs, self.prompt)
-        rec: dict[str, Any] = {"step": int(env.time), "intersection": iid, "current_phase": cur,
-                               "time_in_phase": env.time_in_phase(iid), "allowed": allowed}
+    def _due(self, env: TrafficEnv) -> list[str]:
+        """Intersections to decide for now: on the decision grid, switch allowed, min green met."""
+        if int(round(env.time)) % self.interval != 0:
+            return []
+        return [i for i in env.intersection_ids if env.can_switch(i) and env.time_in_phase(i) >= self.min_green]
+
+    def _ask(self, obs: dict[str, Any], allowed: list[int], rec: dict[str, Any]) -> tuple[int, str] | None:
+        """One LLM call. Returns (phase, reason), or None after a counted failure (recorded in
+        `rec`, which the caller completes and appends). LLMUnavailable propagates; too many
+        failures in a row raise."""
         try:
-            res = self.client.chat(msgs, prompt.response_schema(allowed, self.prompt))
+            res = self.client.chat(prompt.messages(obs, self.prompt), prompt.response_schema(allowed, self.prompt))
             rec.update(latency_s=res.latency_s, prompt_tokens=res.prompt_tokens,
                        response_tokens=res.response_tokens, server_model=res.model, raw=res.content)
-            phase, reason = prompt.parse_response(res.content, allowed, prompt.MAX_REASON_WORDS[self.prompt])
+            out = prompt.parse_response(res.content, allowed, prompt.MAX_REASON_WORDS[self.prompt])
         except LLMUnavailable:
             raise
         except (LLMError, prompt.InvalidResponse) as e:
             self._consecutive += 1
-            rec.update(ok=False, failure_type=e.failure_type, error=str(e), phase=cur, reason=None,
-                       action="kept current phase (failure)")
-            self.decisions.append(rec)
-            n = sum(1 for d in self.decisions if not d["ok"])
-            log.warning("LLM failure #%d (%s) at t=%s %s: %s", n, e.failure_type, rec["step"], iid, e)
+            rec.update(ok=False, failure_type=e.failure_type, error=str(e), reason=None)
+            n = sum(1 for d in self.decisions if not d["ok"]) + 1
+            log.warning("LLM failure #%d (%s) at t=%s %s: %s", n, e.failure_type, rec["step"], rec["intersection"], e)
             if self._consecutive >= self.max_consecutive:
                 raise RuntimeError(f"{self._consecutive} LLM calls in a row failed (last: {e.failure_type}: {e}); "
                                    "stopping the run") from e
-            return
+            return None
         self._consecutive = 0
-        switched = env.request_phase(iid, phase)
-        rec.update(ok=True, failure_type=None, phase=phase, reason=reason,
-                   action="switch" if switched else "keep")
-        self.decisions.append(rec)
+        rec.update(ok=True, failure_type=None, reason=out[1])
+        return out
 
     # ---- reporting ----------------------------------------------------------------------
     def stats(self) -> dict[str, Any]:
@@ -159,3 +154,31 @@ class LLMController(Controller):
         with (out_dir / "decisions.jsonl").open("w", encoding="utf-8") as f:
             for rec in self.decisions:
                 f.write(json.dumps(rec) + "\n")
+
+
+class LLMController(LLMControllerBase):
+    """The LLM chooses any green phase (the current one is left out near max green)."""
+    PROMPTS = ("v1", "v2")
+
+    def __init__(self, cfg: dict[str, Any], name: str = "llm_cooperative", client: Any = None):
+        super().__init__(cfg, name, client)
+
+    def act(self, env: TrafficEnv) -> None:
+        for iid in self._due(env):
+            self._decide(env, iid)
+
+    def _decide(self, env: TrafficEnv, iid: str) -> None:
+        cur = env.signals[iid].green_phase
+        allowed = [p.index for p in env.intersection(iid).green_phases]
+        if env.time_in_phase(iid) + self.interval >= self.max_green:
+            allowed.remove(cur)
+        obs = prompt.observe(env, iid, allowed, self.mode, self.min_green)
+        rec: dict[str, Any] = {"step": int(env.time), "intersection": iid, "current_phase": cur,
+                               "time_in_phase": env.time_in_phase(iid), "allowed": allowed}
+        out = self._ask(obs, allowed, rec)
+        if out is None:
+            rec.update(phase=cur, action="kept current phase (failure)")
+        else:
+            switched = env.request_phase(iid, out[0])
+            rec.update(phase=out[0], action="switch" if switched else "keep")
+        self.decisions.append(rec)
