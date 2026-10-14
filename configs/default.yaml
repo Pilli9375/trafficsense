@@ -56,6 +56,13 @@ signal:
   min_green: 10        # s
   max_green: 60        # s
 
+# Emergency vehicles: what the preemption baseline and llm_guided_mp are told.
+emergency:
+  detection_range_m: 150   # ASSUMPTION: an ambulance on an incoming lane within this distance of
+                           # the stop line is detected (lanes are 176-188 m long; at 12.5 m/s an
+                           # ambulance covers 150 m in 12 s, enough for a 5 s decision step plus
+                           # the 5 s transition)
+
 controllers:
   fixedtime:
     green_time: 30     # s per green phase
@@ -81,6 +88,10 @@ controllers:
   llm_isolated:
     mode: isolated         # own intersection only
     prompt: v2
+  preemption_mp:           # MaxPressure + rule-based ambulance preemption (control/preemption.py)
+    decision_interval: 5   # same timing as the default MaxPressure and the LLM benchmark
+    min_green: 15
+    tie_break: keep_current
   llm_guided_mp:           # MaxPressure ranks the phases, the LLM picks (control/guided.py)
     mode: cooperative
     prompt: guided

@@ -53,9 +53,7 @@ import copy
 import json
 import math
 import re
-import subprocess
 import sys
-import threading
 import time
 from datetime import datetime
 from pathlib import Path
@@ -63,6 +61,7 @@ from pathlib import Path
 from trafficsense.config import load_config, repo_root
 from trafficsense.experiment import git_info, run_experiment
 from trafficsense.llm.client import OllamaClient
+from trafficsense.llm.gpu import VramSampler, free_gpu, gpu_name
 
 MODELS = ["gemma3:4b", "gemma4:e4b", "llama3.2:3b", "qwen2.5:3b"]
 FITS_VRAM = ["gemma4:e4b", "llama3.2:3b", "qwen2.5:3b"]
@@ -75,60 +74,10 @@ BASELINES = ["maxpressure", "fixedtime_webster"]
 SCENARIO, SEED, STEPS = "indian_2x2_peak", 0, 600
 DECISION_INTERVAL, MIN_GREEN = 5, 15
 MAX_FAILURE_RATE, MAX_P95_S = 0.02, 3.0
-GPU_IDLE_MAX_MIB = 300
 TRANSITION_S = 5
 RUNS = Path("outputs/llm_benchmark/runs")
 OUT = Path("outputs/llm_benchmark/benchmark.json")
 DOC = Path("docs/llm_benchmark.md")
-
-
-# ---- GPU ------------------------------------------------------------------------------------
-def gpu_used_mib() -> int:
-    out = subprocess.check_output(["nvidia-smi", "--query-gpu=memory.used", "--format=csv,noheader,nounits"],
-                                  text=True)
-    vals = [int(x) for x in out.split()]
-    if len(vals) != 1:
-        raise SystemExit(f"Expected one GPU, nvidia-smi reports {len(vals)}")
-    return vals[0]
-
-
-def gpu_name() -> str:
-    return subprocess.check_output(["nvidia-smi", "--query-gpu=name,driver_version", "--format=csv,noheader"],
-                                   text=True).strip()
-
-
-def free_gpu(client: OllamaClient) -> int:
-    """Unload every Ollama model, then require an idle GPU. Returns the idle memory.used (MiB)."""
-    for m in client.loaded_models():
-        client.unload(m["name"])
-    for _ in range(30):
-        if not client.loaded_models():
-            break
-        time.sleep(1)
-    else:
-        raise SystemExit(f"Ollama still has models loaded: {[m['name'] for m in client.loaded_models()]}")
-    time.sleep(3)
-    used = gpu_used_mib()
-    if used > GPU_IDLE_MAX_MIB:
-        raise SystemExit(f"GPU not free: {used} MiB in use with no Ollama model loaded (limit {GPU_IDLE_MAX_MIB}). "
-                         "Stop other GPU work (YOLO, other servers) first.")
-    return used
-
-
-class VramSampler(threading.Thread):
-    def __init__(self, period_s: float = 1.0):
-        super().__init__(daemon=True)
-        self.period, self.samples, self._halt = period_s, [], threading.Event()
-
-    def run(self):
-        while not self._halt.is_set():
-            self.samples.append(gpu_used_mib())
-            self._halt.wait(self.period)
-
-    def stop(self) -> list[int]:
-        self._halt.set()
-        self.join()
-        return self.samples
 
 
 # ---- runs -----------------------------------------------------------------------------------
@@ -141,7 +90,7 @@ def bench_cfg(cfg: dict, model: str | None) -> dict:
 def run_model(cfg: dict, arm: str, model: str, root: Path) -> Path:
     c = bench_cfg(cfg, model)
     client = OllamaClient.from_config(c["llm"])
-    idle = free_gpu(client)
+    idle = free_gpu(client)   # <= 300 MiB used with no model loaded, else SystemExit
     info = client.model_info()
     t0 = time.perf_counter()
     client.chat([{"role": "user", "content": "Reply with JSON."}], {"type": "object"})   # load the model

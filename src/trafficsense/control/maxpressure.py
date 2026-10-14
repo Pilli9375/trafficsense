@@ -83,13 +83,17 @@ class MaxPressureController(Controller):
         for iid in env.intersection_ids:
             if not env.can_switch(iid) or env.time_in_phase(iid) < self.min_green:
                 continue
-            inter = env.intersection(iid)
-            if iid not in self._candidates:
-                self._candidates[iid] = phase_cycle(inter, self.phases)
-            pressures = phase_pressures(inter, env.get_state(iid), self._candidates[iid])
-            near_max = env.time_in_phase(iid) + self.interval >= self.max_green
-            env.request_phase(iid, choose_phase(pressures, env.signals[iid].green_phase, near_max,
-                                                self.tie_break))
+            env.request_phase(iid, self._choose(env, iid))
+
+    def _pressures(self, env: TrafficEnv, iid: str) -> dict[int, float]:
+        inter = env.intersection(iid)
+        if iid not in self._candidates:
+            self._candidates[iid] = phase_cycle(inter, self.phases)
+        return phase_pressures(inter, env.get_state(iid), self._candidates[iid])
+
+    def _choose(self, env: TrafficEnv, iid: str) -> int:
+        near_max = env.time_in_phase(iid) + self.interval >= self.max_green
+        return choose_phase(self._pressures(env, iid), env.signals[iid].green_phase, near_max, self.tie_break)
 
     def info(self) -> dict[str, Any]:
         return {"name": self.name, "decision_interval": self.interval, "min_green": self.min_green,

@@ -24,7 +24,8 @@ Two prompt versions render the same observation:
     fact without advice; reason <= 15 words.
   * guided (llm_guided_mp): MaxPressure ranks the phases; only the offered options (its top
     phases, and keeping the current one when allowed) are listed, in rank order, with their
-    pressure and queue; neighbours as in v2; reason <= 15 words.
+    pressure and queue; neighbours as in v2; reason <= 15 words. In emergency scenarios the
+    ambulances within detection range are listed, and the system prompt says so.
 Phase pressure here is MaxPressure's (queue minus downstream queue, summed over the phase's
 movements) without the free turns. Every green phase serves all free turns, so leaving them
 out lowers every phase by the same amount and keeps MaxPressure's ranking.
@@ -74,7 +75,8 @@ MaxPressure ranks phases by pressure = stopped vehicles a phase serves minus sto
 roads; queue = stopped vehicles a phase serves. Choose one of the offered phases; neighbour data may help.
 Changing phase starts a {transition} s transition in which only free turns move. A green lasts {min_green} to \
 {max_green} s.
-Reply JSON: {{"phase": <offered id>, "reason": "<at most {words} words>"}}"""
+{emergency}Reply JSON: {{"phase": <offered id>, "reason": "<at most {words} words>"}}"""
+EMERGENCY_GUIDED = "Ambulances, if listed, must get through quickly: give green to a phase that serves them.\n"
 
 
 def movement_label(m) -> str:
@@ -250,6 +252,12 @@ def render_guided(obs: dict[str, Any]) -> str:
         p = by_id[i]
         keep = " (keep current)" if i == obs["current_phase"] else ""
         lines.append(f"{i} {p['label']}{keep}: {p['pressure']}, {p['queue']}")
+    if obs.get("ambulances"):
+        lines.append(f"Ambulances within {obs['emergency_range_m']:.0f} m:")
+        for a in obs["ambulances"]:
+            served = (f"served by phase {', '.join(map(str, a['phases']))}" if a["phases"] else
+                      "only the current phase serves it, which must end now (max green)")
+            lines.append(f"{a['movement']}, {a['distance_m']:.0f} m from the stop line; {served}")
     if "neighbours" in obs:
         lines.append("Neighbours:")
         lines.extend(_neighbour_line(nb) for nb in obs["neighbours"])
@@ -267,7 +275,8 @@ def messages(obs: dict[str, Any], version: str) -> list[dict[str, str]]:
         user = render_v2(obs)
     elif version == "guided":
         sys = SYSTEM_PROMPT_GUIDED.format(transition=obs["transition_s"], min_green=obs["min_green"],
-                                          max_green=obs["max_green"], words=MAX_REASON_WORDS["guided"])
+                                          max_green=obs["max_green"], words=MAX_REASON_WORDS["guided"],
+                                          emergency=EMERGENCY_GUIDED if "ambulances" in obs else "")
         user = render_guided(obs)
     else:
         raise ValueError(f"prompt version must be one of {VERSIONS}, got {version!r}")

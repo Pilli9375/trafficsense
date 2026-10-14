@@ -49,7 +49,8 @@ def test_benchmark_setup_is_pinned(bench):
 
 
 def test_vram_sampler_starts_and_stops(bench, monkeypatch):
-    monkeypatch.setattr(bench, "gpu_used_mib", lambda: 123)
+    from trafficsense.llm import gpu
+    monkeypatch.setattr(gpu, "gpu_used_mib", lambda: 123)
     s = bench.VramSampler(period_s=0.01)
     s.start()
     import time
