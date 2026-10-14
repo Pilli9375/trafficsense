@@ -16,9 +16,11 @@ from pathlib import Path
 from typing import Any
 
 import cityflow
+import yaml
 
 from trafficsense.config import repo_root
 from trafficsense.sim.roadnet import Intersection, Roadnet, load_roadnet
+from trafficsense.sim.vehicles import VehicleTypes
 
 
 @dataclass
@@ -66,6 +68,12 @@ class TrafficEnv:
             if not p.is_file():
                 hint = sc.get("generate_hint", "")
                 raise FileNotFoundError(f"Scenario file not found: {p}" + (f" ({hint})" if hint else ""))
+
+        vt = sc.get("vehicle_types")
+        self.vehicle_types_path = (root / vt).resolve() if vt else None
+        if self.vehicle_types_path is not None and not self.vehicle_types_path.is_file():
+            raise FileNotFoundError(f"scenarios.{scenario}.vehicle_types not found: {self.vehicle_types_path}")
+        self._vehicle_types: VehicleTypes | None = None
 
         self.roadnet: Roadnet = load_roadnet(self.roadnet_path)
         self.transition_time: dict[str, int] = {}
@@ -183,6 +191,17 @@ class TrafficEnv:
         self.eng.set_tl_phase(iid, self.intersection(iid).transition_phase.index)
 
     # ---- observation ----------------------------------------------------------------
+    @property
+    def vehicle_types(self) -> VehicleTypes:
+        """Type of each vehicle, from the flow file (named by scenarios.<name>.vehicle_types)."""
+        if self._vehicle_types is None:
+            named = None
+            if self.vehicle_types_path is not None:
+                with self.vehicle_types_path.open(encoding="utf-8") as f:
+                    named = yaml.safe_load(f)["vehicle_types"]
+            self._vehicle_types = VehicleTypes(self.flow_path, named)
+        return self._vehicle_types
+
     def get_state(self, iid: str) -> dict[str, Any]:
         """Per-movement counts for one intersection, computed only from its own lanes."""
         inter = self.intersection(iid)
