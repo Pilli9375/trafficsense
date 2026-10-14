@@ -23,13 +23,20 @@ Tables are generated from `outputs/emergency_smoke/` by `scripts/run_emergency_s
   acceleration 2.5 m/s², max deceleration 6.0 m/s²; ASSUMPTIONS) at the 12.5 m/s lane
   limit; minGap, usual acceleration and deceleration are CityFlow's defaults
   (`configs/scenarios/indian_2x2.yaml`, `emergency_vehicle_types`).
-* Generated with `scripts/generate_indian_flow.py --level all --seed 0 1 2 --emergency`:
+* Generated with `scripts/generate_indian_flow.py --level all --seed 0 1 2 --emergency`
+  (seeds 3 and 4, for the full runs only: `--level peak --seed 3 4`, first without and then
+  with `--emergency`; this also creates the normal peak flows for those seeds):
 
   | Seed | Ambulances in the hour | In the first 600 s |
   |---|---|---|
   | 0 | 3 | none (first at t = 1670 s) |
   | 1 | 14 | one, t = 257 s, enters from the east and leaves by a free turn at the first signal |
   | 2 | 6 | one, t = 253 s, goes straight through two signals |
+  | 3 | 6 | (full runs only) |
+  | 4 | 8 | (full runs only) |
+
+  Over seeds 0–4: 37 ambulances, 29 of them **signal-relevant** (their route has at least one
+  movement a signal controls; the other 8 only make free turns, which no signal affects).
 
 **CityFlow limitation.** Nobody yields to an ambulance and, with lane changing off, it
 cannot overtake: it waits in the queue like any vehicle. Only the signal can help it, which
@@ -141,4 +148,36 @@ What the smoke tests show (one ambulance per run at most; observations, not resu
   This is the misreading found in the benchmark (`docs/llm_benchmark.md`, hybrid findings):
   the model prefers low pressure. As in the benchmark, it overruled MaxPressure in 96–97% of
   its calls and its queues (25.19–30.27) are about twice MaxPressure's.
+
+## Full runs (pre-registered, not run yet)
+
+Design and analysis committed before any run (`scripts/run_emergency_experiments.py`):
+
+* `indian_2x2_peak_amb`, **seeds 0–4, 3600 s**, ambulances at 6/h (ASSUMPTION): 37 ambulances,
+  29 signal-relevant.
+* Controllers `maxpressure`, `fixedtime_webster`, `preemption_mp`, and **the LLM arm chosen by
+  the final LLM design round** (`docs/llm_benchmark.md`, final decision): its controller and
+  model, with the rule's decision interval and a 15 s minimum green. If the final round
+  chooses no LLM controller, only the other three run. If it chooses the plain controller
+  (`llm_v3`), that runs as is, without ambulance information in its prompt (only the hybrid
+  and guarded arms list ambulances).
+* **Primary ambulance metric:** mean travel time of the signal-relevant ambulances that
+  finished, pooled over the 5 seeds; also the median, the mean stopped time and how many did
+  not finish by t = 3600 s. All 37 ambulances are reported too.
+* The same ambulances run under every controller, so each controller is also compared with
+  `preemption_mp` ambulance by ambulance (mean difference; how many faster, how many slower).
+* Normal traffic: ATT, mean queue per intersection and finished trips, mean ± std over the
+  5 seeds.
+* No significance test is pre-registered; with 29 relevant ambulances the numbers are
+  reported as measured, with their spread.
+
+Normal traffic (mean ± std over seeds 0–4):
+
+<!-- BEGIN:emergency_full -->
+<!-- END:emergency_full -->
+
+Ambulances:
+
+<!-- BEGIN:emergency_full_ambulances -->
+<!-- END:emergency_full_ambulances -->
 

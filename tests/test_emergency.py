@@ -139,3 +139,17 @@ def test_free_turn_ambulance_is_not_reported(cfg):
         on_lane |= first in env.eng.get_lane_vehicles()["road_3_2_2_2"]
         assert not any(ev.detect(env, i, 1000) for i in env.intersection_ids)
     assert on_lane
+
+
+def test_full_run_ambulance_counts(sc):
+    """docs/emergency.md and run_emergency_experiments.py quote: seeds 0-4 hold 37 ambulances,
+    29 signal-relevant; seeds 3 and 4 have 6 and 8."""
+    from trafficsense.sim.emergency import route_movements, signal_relevant
+    net = load_roadnet(repo_root() / sc["roadnet"]["file"])
+    d = repo_root() / sc["output_dir"]
+    em = [json.loads((d / f"flow_peak_amb_s{s}.meta.json").read_text())["emergency"]["emergency"] for s in range(5)]
+    assert [len(e) for e in em] == [3, 14, 6, 6, 8]
+    routes = [a["route"] for e in em for a in e]
+    assert len(routes) == 37 and sum(signal_relevant(net, r) for r in routes) == 29
+    assert route_movements(net, ["road_3_2_2", "road_2_2_1"]) == [("intersection_2_2", "turn_right")]
+    assert not signal_relevant(net, ["road_3_2_2", "road_2_2_1"])

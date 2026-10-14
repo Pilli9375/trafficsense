@@ -98,6 +98,25 @@ class EmergencyVehicles:
         return sorted(out, key=lambda s: s.distance_m)
 
 
+def route_movements(net, route: list[str]) -> list[tuple[str, str]]:
+    """(intersection, turn) for each signalised intersection the route crosses."""
+    out = []
+    for a, b in zip(route, route[1:]):
+        for iid, inter in net.intersections.items():
+            m = [m for m in inter.movements if m.in_road == a and m.out_road == b]
+            if m:
+                out.append((iid, m[0].turn))
+                break
+        else:
+            raise ValueError(f"No movement from {a} to {b} in the roadnet")
+    return out
+
+
+def signal_relevant(net, route: list[str]) -> bool:
+    """True if the route has at least one movement a signal controls (not a free turn)."""
+    return any(turn != FREE_TURN for _, turn in route_movements(net, route))
+
+
 class EmergencyTracker:
     def __init__(self, env: TrafficEnv):
         self.env = env
