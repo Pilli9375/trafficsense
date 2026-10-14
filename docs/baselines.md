@@ -124,3 +124,89 @@ What the results show:
 Because the sweep effectively varies the shortest green, a direct sweep of `min_green` (kept
 at 10 s here, as specified) might find a better setting. That was not done; it would change
 the experiment design.
+
+## 2. Webster-tuned FixedTime
+
+Controller `fixedtime_webster` (`src/trafficsense/control/webster.py`, where the method is
+written out in full). It cycles the same 4 paired phases as `fixedtime`, but each
+intersection gets its own cycle length and green splits, computed once at the start of the
+run by Webster's method (Webster, 1958, *Traffic signal settings*, Road Research Technical
+Paper 39):
+
+| Quantity | Formula / source |
+|---|---|
+| Lane demand q (veh/h) | vehicles routed over the lane in the run's flow file, first 3600 s |
+| Saturation flow s (veh/h) and start-up lost time l (s) | **measured**: queue discharge on the scenario's roadnet with the flow file's vehicle mix (900 s red, then green); a straight line fitted to cumulative departures over green s 10–70 gives s (slope) and l (where it crosses zero); mean of 30 random-order queues |
+| Flow ratio of phase i | y_i = max over its non-right-turn lanes of q / s |
+| Critical flow ratio | Y = Σ y_i (right turns run in every phase and are excluded) |
+| Lost time per cycle | L = n (T + l), n = 4 phases, T = 5 s transition (red for every non-right movement) |
+| Optimum cycle | C0 = (1.5 L + 5) / (1 − Y), clipped to 60–180 s; Y ≥ 1 → 180 s |
+| Green of phase i | G_i = l + (C − L) y_i / Y, clipped to min green 10 s / max green 60 s (the rest shared by y), rounded to whole seconds |
+
+Why random-order queues: with the periodic feed used for the capacity table in
+`docs/indian_scenario.md`, every measurement builds the same regular interleaving of
+vehicle types, and the start-up lost time came out anywhere from 3.3 to 5.7 s depending on
+which types happened to lead the queue (one queue per seed's mix). Over random queues a
+single measurement ranges from about −2 to 7 s, so 30 are averaged (measurement seed 0,
+independent of the run seed). Jinan and Hangzhou have a single vehicle type, so every queue
+is the same and one measurement is exact. Every number used in a plan, and the plan itself,
+is stored in each run's `summary.json` (`provenance.controller_params`).
+
+Using the run's own flow file as the demand equals a perfect traffic count of the simulated
+hour. That **favours** this controller: a real Webster plan is built from earlier counts.
+
+### Plans
+
+Ranges over intersections (and seeds):
+
+<!-- BEGIN:webster_plans -->
+| Scenario | s straight (veh/h) | s protected turn (veh/h) | Start-up lost time (s) | L (s) | Y | C0 (s) | Cycle run (s) | Plans at cycle_min | Plans with Y ≥ 1 | Greens clipped to min/max |
+|---|---|---|---|---|---|---|---|---|---|---|
+| jinan_3x4 | 1459 | 1396 | 0.46 | 21.8 | 0.22–0.43 | 48–66 | 60–66 | 18 / 36 | 0 / 36 | 111 / 144 |
+| hangzhou_4x4 | 1459 | 1396 | 0.46 | 21.8 | 0.14–0.45 | 44–69 | 60–69 | 42 / 48 | 0 / 48 | 186 / 192 |
+<!-- END:webster_plans -->
+
+### Jinan 3x4 and Hangzhou 4x4: all baselines
+
+Seeds 0, 1, 2 (identical results: fixed flow file, deterministic controllers).
+
+**Jinan 3x4**
+
+<!-- BEGIN:compare_jinan_3x4 -->
+| Controller | ATT (s) | Throughput | Queue / int. (veh) | Waiting time / vehicle (s) | Time in transition |
+|---|---|---|---|---|---|
+| FixedTime, 4 paired phases, 30 s | 423.0 ± 0.0 | 3968 ± 0 | 17.76 ± 0.00 | 176.2 ± 0.0 | 0.142 ± 0.000 |
+| FixedTime, Webster plan | 416.1 ± 0.0 | 3965 ± 0 | 16.42 ± 0.00 | 162.6 ± 0.0 | 0.325 ± 0.000 |
+| MaxPressure, 15 s (tuned default) | 297.0 ± 0.0 | 4149 ± 0 | 5.06 ± 0.00 | 50.1 ± 0.0 | 0.311 ± 0.000 |
+| MaxPressure, 5 s | 295.9 ± 0.0 | 4135 ± 0 | 4.94 ± 0.00 | 49.0 ± 0.0 | 0.319 ± 0.000 |
+<!-- END:compare_jinan_3x4 -->
+
+**Hangzhou 4x4**
+
+<!-- BEGIN:compare_hangzhou_4x4 -->
+| Controller | ATT (s) | Throughput | Queue / int. (veh) | Waiting time / vehicle (s) | Time in transition |
+|---|---|---|---|---|---|
+| FixedTime, 4 paired phases, 30 s | 580.6 ± 0.0 | 2438 ± 0 | 13.00 ± 0.00 | 258.9 ± 0.0 | 0.142 ± 0.000 |
+| FixedTime, Webster plan | 549.8 ± 0.0 | 2439 ± 0 | 11.80 ± 0.00 | 232.5 ± 0.0 | 0.330 ± 0.000 |
+| MaxPressure, 15 s (tuned default) | 334.3 ± 0.0 | 2735 ± 0 | 1.84 ± 0.00 | 35.6 ± 0.0 | 0.250 ± 0.000 |
+| MaxPressure, 5 s | 331.1 ± 0.0 | 2740 ± 0 | 1.67 ± 0.00 | 32.2 ± 0.0 | 0.270 ± 0.000 |
+<!-- END:compare_hangzhou_4x4 -->
+
+What the tables show:
+
+* **On these two networks the Webster plan is mostly "every phase at min green".** With 4
+  phases, a 10 s min green and 5 s transitions, no cycle can be shorter than
+  4 × (10 + 5) = 60 s, which is also the 60 s floor. Webster's optimum C0 is below 60 s on
+  half of Jinan's and most of Hangzhou's intersections (Y is low, 0.14–0.45), so those plans
+  run 60 s cycles of four 10 s greens; most other greens are clipped too. The method is applied
+  as specified; the minimum-green constraint leaves it little room on lightly loaded
+  intersections.
+* **Webster improves on 30 s FixedTime only a little** (ATT 416.1 vs 423.0 s on Jinan,
+  549.8 vs 580.6 s on Hangzhou), despite perfect demand counts, and loses far more time to
+  transitions (33% vs 14%) because its cycles are short.
+* **MaxPressure is far better than either FixedTime plan** (about 297 and 334 s). A likely
+  reason, **not verified**: Webster's formula assumes steady demand, and these real flows are
+  not steady. Jinan's arrivals fall from 937 vehicles in the first 10 minutes to 500 in the
+  last; Hangzhou's peak in minutes 10–20 (659 vs 424–514 in the others). A fixed plan cannot
+  follow that, while MaxPressure reacts to the queues. The Indian 2x2 flows have steady
+  Poisson demand, the setting Webster was derived for (results in `docs/indian_scenario.md`).

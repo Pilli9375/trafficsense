@@ -1,0 +1,151 @@
+{
+  "provenance": {
+    "controller": "fixedtime",
+    "controller_params": {
+      "name": "fixedtime",
+      "green_time": 30,
+      "phases": "paired",
+      "decision_interval": 1
+    },
+    "model": null,
+    "provider": null,
+    "llm": null,
+    "seed": 1,
+    "scenario": "hangzhou_4x4",
+    "roadnet": "data/external/collmlight/Hangzhou/4_4/roadnet_4_4.json",
+    "flow": "data/external/collmlight/Hangzhou/4_4/anon_4_4_hangzhou_real.json",
+    "flow_sha256": "595a6140e6649efe5be1b274eb8b03e8c4029e517c9ac2ad53c9ea556a414213",
+    "flow_per_seed": false,
+    "sim_steps": 3600,
+    "git_commit": "fb80a48656aef732d2db2bcf350b63bc01ec9dfc",
+    "git_dirty": false,
+    "timestamp": "2026-10-14T14:30:50+05:30",
+    "wall_time_s": 6.47,
+    "python": "3.10.12"
+  },
+  "signal": {
+    "min_green": 10,
+    "max_green": 60,
+    "transition_s": [
+      5
+    ],
+    "switches": 1632,
+    "forced_switches": 0
+  },
+  "metrics": {
+    "att": 580.6382836071069,
+    "queue_mean_per_intersection": 13.000364583333333,
+    "queue_mean_total": 208.00583333333333,
+    "waiting_time_mean": 258.8693397856896,
+    "throughput": 2438,
+    "vehicles_entered": 2893,
+    "vehicles_running_at_end": 455,
+    "vehicles_waiting_to_enter_at_end": 90,
+    "steps": 3600
+  },
+  "per_intersection": {
+    "intersection_1_1": {
+      "queue_mean": 15.28111111111111,
+      "waiting_time_mean": 66.43961352657004,
+      "throughput": 810,
+      "vehicles_seen": 828
+    },
+    "intersection_1_2": {
+      "queue_mean": 6.993888888888889,
+      "waiting_time_mean": 36.279538904899134,
+      "throughput": 674,
+      "vehicles_seen": 694
+    },
+    "intersection_1_3": {
+      "queue_mean": 6.604722222222223,
+      "waiting_time_mean": 41.13667820069204,
+      "throughput": 562,
+      "vehicles_seen": 578
+    },
+    "intersection_1_4": {
+      "queue_mean": 68.0375,
+      "waiting_time_mean": 234.61206896551724,
+      "throughput": 945,
+      "vehicles_seen": 1044
+    },
+    "intersection_2_1": {
+      "queue_mean": 4.7186111111111115,
+      "waiting_time_mean": 35.316008316008315,
+      "throughput": 472,
+      "vehicles_seen": 481
+    },
+    "intersection_2_2": {
+      "queue_mean": 4.900277777777778,
+      "waiting_time_mean": 38.94260485651214,
+      "throughput": 445,
+      "vehicles_seen": 453
+    },
+    "intersection_2_3": {
+      "queue_mean": 4.002777777777778,
+      "waiting_time_mean": 35.4054054054054,
+      "throughput": 393,
+      "vehicles_seen": 407
+    },
+    "intersection_2_4": {
+      "queue_mean": 6.563888888888889,
+      "waiting_time_mean": 38.29821717990276,
+      "throughput": 597,
+      "vehicles_seen": 617
+    },
+    "intersection_3_1": {
+      "queue_mean": 3.3980555555555556,
+      "waiting_time_mean": 37.40978593272171,
+      "throughput": 319,
+      "vehicles_seen": 327
+    },
+    "intersection_3_2": {
+      "queue_mean": 4.545277777777778,
+      "waiting_time_mean": 39.90975609756097,
+      "throughput": 392,
+      "vehicles_seen": 410
+    },
+    "intersection_3_3": {
+      "queue_mean": 4.340833333333333,
+      "waiting_time_mean": 38.2078239608802,
+      "throughput": 397,
+      "vehicles_seen": 409
+    },
+    "intersection_3_4": {
+      "queue_mean": 6.2972222222222225,
+      "waiting_time_mean": 36.68284789644013,
+      "throughput": 597,
+      "vehicles_seen": 618
+    },
+    "intersection_4_1": {
+      "queue_mean": 4.120277777777778,
+      "waiting_time_mean": 34.57575757575758,
+      "throughput": 419,
+      "vehicles_seen": 429
+    },
+    "intersection_4_2": {
+      "queue_mean": 5.453611111111111,
+      "waiting_time_mean": 36.2902033271719,
+      "throughput": 522,
+      "vehicles_seen": 541
+    },
+    "intersection_4_3": {
+      "queue_mean": 5.153611111111111,
+      "waiting_time_mean": 34.29390018484288,
+      "throughput": 523,
+      "vehicles_seen": 541
+    },
+    "intersection_4_4": {
+      "queue_mean": 57.594166666666666,
+      "waiting_time_mean": 225.12377850162866,
+      "throughput": 816,
+      "vehicles_seen": 921
+    }
+  },
+  "metric_notes": {
+    "att": "engine.get_average_travel_time(): all generated vehicles from scheduled start, incl. those still running or still waiting to enter",
+    "queue_mean_per_intersection": "waiting vehicles (speed<0.1) on incoming lanes, mean over steps and intersections",
+    "queue_mean_total": "same, summed over intersections",
+    "waiting_time_mean": "seconds with speed<0.1 per vehicle, mean over vehicles that entered",
+    "throughput": "vehicles that finished their trip"
+  }
+}
