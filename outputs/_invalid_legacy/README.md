@@ -18,6 +18,10 @@ Why these results are invalid:
 4. **Wrong phase indices.** Phase 0 (a right-turn-only transition phase in the Synthetic 4x4
    roadnet) was treated as a green phase, and throughput was always 0 because of a non-existent
    keyword passed to `get_vehicles`.
+5. **The old Indian 2x2 scenario could not carry traffic.** `indian_2x2_roadnet.json` (moved
+   here from `data/synthetic/`) has empty `roadLinks`, so no vehicle could cross an
+   intersection. It was replaced in Phase 2 by `data/scenarios/indian_2x2/` (see
+   `docs/indian_scenario.md`).
 
 Replacement results are written to `outputs/runs/<timestamp>_<scenario>_<controller>_s<seed>/`
 with full provenance in `summary.json` (see `CLAUDE.md`).

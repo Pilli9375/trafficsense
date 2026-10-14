@@ -1,0 +1,20 @@
+# Indian 2x2 scenario: roadnet geometry, vehicle mix, per-type parameters and demand.
+# Every number has a source or is marked ASSUMPTION; docs/indian_scenario.md explains each one.
+# Paths are relative to the repo root.
+
+output_dir: data/scenarios/indian_2x2
+
+roadnet:
+  file: data/scenarios/indian_2x2/roadnet.json
+  rows: 2
+  cols: 2
+  spacing_m: 200            # between intersections (Phase 2 spec)
+  boundary_road_m: 200      # entry/exit roads to the network edge (ASSUMPTION: same as spacing)
+  lane_width_m: 3.0         # Phase 2 spec (~3.0 m)
+  lanes:                    # per direction, one lane per turn (CityFlow generator layout)
+    left: 1
+    straight: 1
+    right: 1
+  lane_max_speed_mps: 12.5  # 45 km/h; Phase 2 spec range 11-13 m/s (ASSUMPTION within it)
+  intersection_width_m: 12  # distance from the centre to the stop line (ASSUMPTION, see doc)
+  # Phases come from the generator: phase 0 = 5 s transition (right turns only), phases 1-8 green.
