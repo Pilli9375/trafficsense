@@ -4,7 +4,8 @@
     python scripts/make_baseline_tables.py --check  # exit 1 if the doc is out of date
 
 Inputs: outputs/baselines/maxpressure_sweep.json (scripts/tune_maxpressure.py),
-outputs/baselines/runs/*/summary.json (scripts/run_baselines.py).
+outputs/baselines/runs/*/summary.json (scripts/run_baselines.py) and
+outputs/indian_2x2/runs/*/summary.json (scripts/run_indian_experiments.py).
 Each table sits between <!-- BEGIN:name --> and <!-- END:name --> markers in the doc.
 Mean ± std is over seeds 0, 1, 2; std is the sample standard deviation (ddof = 1).
 """
@@ -20,7 +21,9 @@ ROOT = repo_root()
 DOC = ROOT / "docs" / "baselines.md"
 SWEEP = ROOT / "outputs" / "baselines" / "maxpressure_sweep.json"
 RUNS = ROOT / "outputs" / "baselines" / "runs"
+INDIAN_RUNS = ROOT / "outputs" / "indian_2x2" / "runs"
 BASELINE_SCENARIOS = ["jinan_3x4", "hangzhou_4x4"]
+INDIAN_SCENARIOS = ["indian_2x2_offpeak", "indian_2x2_peak"]
 CONTROLLERS = [("fixedtime", "FixedTime, 4 paired phases, 30 s"),
                ("fixedtime_webster", "FixedTime, Webster plan"),
                ("maxpressure", "MaxPressure, 15 s (tuned default)"),
@@ -79,7 +82,7 @@ def transition_share(summary):
 
 def load_runs():
     runs = {}
-    for p in sorted(RUNS.glob("*/summary.json")):
+    for p in sorted(RUNS.glob("*/summary.json")) + sorted(INDIAN_RUNS.glob("*/summary.json")):
         s = json.loads(p.read_text())
         pv = s["provenance"]
         key = (pv["scenario"], pv["controller"], pv["seed"])
@@ -147,8 +150,24 @@ WEBSTER_HEADER = ["Scenario", "s straight (veh/h)", "s protected turn (veh/h)", 
 
 
 def webster_table(runs):
-    rows = [webster_rows(sc, by_seed(runs, sc, "fixedtime_webster")) for sc in BASELINE_SCENARIOS]
+    rows = [webster_rows(sc, by_seed(runs, sc, "fixedtime_webster")) for sc in BASELINE_SCENARIOS + INDIAN_SCENARIOS]
     return table(WEBSTER_HEADER, rows)
+
+
+def overview_table(runs):
+    """ATT (mean over seeds) of every baseline on every scenario; best per scenario in bold."""
+    scs = BASELINE_SCENARIOS + INDIAN_SCENARIOS
+    att = {(sc, ctl): statistics.mean(r["metrics"]["att"] for r in by_seed(runs, sc, ctl))
+           for sc in scs for ctl, _ in CONTROLLERS}
+    rows = []
+    for ctl, label in CONTROLLERS:
+        cells = []
+        for sc in scs:
+            best = min(att[(sc, c)] for c, _ in CONTROLLERS)
+            v = f"{att[(sc, ctl)]:.1f}"
+            cells.append(f"**{v}**" if att[(sc, ctl)] == best else v)
+        rows.append([label] + cells)
+    return table(["Controller (ATT, s)"] + scs, rows)
 
 
 def build():
@@ -159,6 +178,7 @@ def build():
     tables["webster_plans"] = webster_table(runs)
     for sc in BASELINE_SCENARIOS:
         tables[f"compare_{sc}"] = compare_table(runs, sc)
+    tables["overview"] = overview_table(runs)
     return tables
 
 

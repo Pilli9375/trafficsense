@@ -157,13 +157,16 @@ hour. That **favours** this controller: a real Webster plan is built from earlie
 
 ### Plans
 
-Ranges over intersections (and seeds):
+Ranges over intersections (and seeds; each Indian seed has its own flow file, so its own
+measured mix and plan):
 
 <!-- BEGIN:webster_plans -->
 | Scenario | s straight (veh/h) | s protected turn (veh/h) | Start-up lost time (s) | L (s) | Y | C0 (s) | Cycle run (s) | Plans at cycle_min | Plans with Y ≥ 1 | Greens clipped to min/max |
 |---|---|---|---|---|---|---|---|---|---|---|
 | jinan_3x4 | 1459 | 1396 | 0.46 | 21.8 | 0.22–0.43 | 48–66 | 60–66 | 18 / 36 | 0 / 36 | 111 / 144 |
 | hangzhou_4x4 | 1459 | 1396 | 0.46 | 21.8 | 0.14–0.45 | 44–69 | 60–69 | 42 / 48 | 0 / 48 | 186 / 192 |
+| indian_2x2_offpeak | 2073–2098 | 2000–2023 | 1.94–2.05 | 27.8–28.2 | 0.22–0.25 | 60–63 | 60–63 | 1 / 12 | 0 / 12 | 36 / 48 |
+| indian_2x2_peak | 2096–2116 | 2017–2036 | 2.00–2.11 | 28.0–28.5 | 0.44–0.48 | 84–91 | 84–91 | 0 / 12 | 0 / 12 | 23 / 48 |
 <!-- END:webster_plans -->
 
 ### Jinan 3x4 and Hangzhou 4x4: all baselines
@@ -210,3 +213,33 @@ What the tables show:
   last; Hangzhou's peak in minutes 10–20 (659 vs 424–514 in the others). A fixed plan cannot
   follow that, while MaxPressure reacts to the queues. The Indian 2x2 flows have steady
   Poisson demand, the setting Webster was derived for (results in `docs/indian_scenario.md`).
+* **On Indian 2x2 the picture differs.** Demand is steady and heavier, so at peak C0 is
+  84–91 s and the splits follow demand (E–W straight 25–30 s, N–S straight 18–23 s, both
+  protected-turn phases at the 10 s minimum). There the Webster plan beats MaxPressure (next section).
+
+## 3. All baselines on all datasets
+
+ATT (s), mean over seeds 0, 1, 2; the best per column in bold. Full tables: section 2 above
+(Jinan, Hangzhou) and `docs/indian_scenario.md` (Indian 2x2, with queue, waiting time,
+throughput and backlog).
+
+<!-- BEGIN:overview -->
+| Controller (ATT, s) | jinan_3x4 | hangzhou_4x4 | indian_2x2_offpeak | indian_2x2_peak |
+|---|---|---|---|---|
+| FixedTime, 4 paired phases, 30 s | 423.0 | 580.6 | 121.5 | 279.9 |
+| FixedTime, Webster plan | 416.1 | 549.8 | 100.4 | **116.3** |
+| MaxPressure, 15 s (tuned default) | 297.0 | 334.3 | **81.3** | 133.8 |
+| MaxPressure, 5 s | **295.9** | **331.1** | 82.0 | 142.4 |
+<!-- END:overview -->
+
+* **No single baseline is best everywhere.** MaxPressure is best on Jinan, Hangzhou and
+  Indian off-peak. At Indian peak the Webster plan is best (116.3 s, against 133.8 s for the
+  tuned MaxPressure), ahead on every seed.
+* At Indian peak the Webster plan also matches the best MaxPressure setting of the sweep
+  (10 s and 20 s intervals, about 116 s), which the pre-registered rule did not choose.
+  The explanation in section 1 applies: near the capacity of the switching pattern, fewer
+  switches (less time in 5 s transitions) win. It is likely, but **not verified**, that a
+  MaxPressure with a longer minimum green would close this gap.
+* **For the LLM comparison:** the LLM controller should be compared with the best baseline
+  per scenario and level, not only with MaxPressure. At Indian peak that is the Webster plan,
+  which also has an unfair advantage: perfect counts of steady demand.
