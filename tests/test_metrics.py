@@ -51,3 +51,25 @@ def test_rows_per_step_per_intersection(run600):
 def test_summary_without_steps_raises(cfg, synthetic_4x4):
     with pytest.raises(RuntimeError):
         MetricsTracker(TrafficEnv(cfg, "synthetic_4x4")).summary()
+
+
+def test_cityflow_att_includes_vehicles_waiting_to_enter(cfg, synthetic_4x4):
+    """Pins down what get_average_travel_time() measures: every generated vehicle, timed from
+    its flow startTime; finished ones up to the step before we see them gone, the rest
+    (running or still queued to enter) up to now."""
+    import json
+    flows = json.loads(synthetic_4x4["flow"].read_text())
+    start = {f"flow_{i}_0": f["startTime"] for i, f in enumerate(flows)}
+    env = TrafficEnv(cfg, "synthetic_4x4")
+    finish, prev = {}, set()
+    for _ in range(900):
+        env.step()
+        run = set(env.eng.get_vehicles(include_waiting=False))
+        for v in prev - run:
+            finish[v] = env.time - 1
+        prev = run
+    now = env.time
+    pending = set(env.eng.get_vehicles(include_waiting=True))
+    assert len(pending) > len(prev)            # some vehicles are still queued to enter
+    total = sum(finish[v] - start[v] for v in finish) + sum(now - start[v] for v in pending)
+    assert env.eng.get_average_travel_time() == pytest.approx(total / (len(finish) + len(pending)), abs=1e-6)

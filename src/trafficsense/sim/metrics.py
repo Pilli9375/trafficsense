@@ -2,8 +2,10 @@
 
 Call `update()` once after every `env.step()`.
 
-* ATT: engine.get_average_travel_time() at the end of the run. CityFlow includes vehicles
-  still in the network, counting their travel time up to the current step.
+* ATT: engine.get_average_travel_time() at the end of the run. CityFlow averages over every
+  vehicle generated so far, timed from its scheduled start: finished vehicles up to their
+  finish, vehicles still driving AND vehicles still queued to enter the network up to now.
+  So entry-queue delay is included (verified in tests/test_metrics.py).
 * Queue length: waiting vehicles (speed < 0.1 m/s, CityFlow's waiting count) on an
   intersection's incoming lanes, averaged over steps.
 * Waiting time: seconds each vehicle spends with speed < 0.1 m/s, averaged over all vehicles
@@ -11,7 +13,7 @@ Call `update()` once after every `env.step()`.
   lanes, averaged over the vehicles that were on those lanes.
 * Throughput: vehicles that finished their trip (were running and then left the network).
   Per intersection: vehicles that were on an incoming lane and later on an outgoing lane.
-Vehicles still waiting to enter the network are not counted anywhere.
+Apart from ATT, vehicles still waiting to enter the network are not counted.
 """
 from __future__ import annotations
 

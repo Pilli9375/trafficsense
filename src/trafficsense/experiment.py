@@ -79,7 +79,7 @@ def run_experiment(cfg: dict[str, Any], scenario: str, controller: str,
         "metrics": result["network"],
         "per_intersection": result["per_intersection"],
         "metric_notes": {
-            "att": "engine.get_average_travel_time(); includes vehicles still running at the end",
+            "att": "engine.get_average_travel_time(): all generated vehicles from scheduled start, incl. those still running or still waiting to enter",
             "queue_mean_per_intersection": "waiting vehicles (speed<0.1) on incoming lanes, mean over steps and intersections",
             "queue_mean_total": "same, summed over intersections",
             "waiting_time_mean": "seconds with speed<0.1 per vehicle, mean over vehicles that entered",
