@@ -96,15 +96,15 @@ def free_gpu(client: OllamaClient) -> int:
 class VramSampler(threading.Thread):
     def __init__(self, period_s: float = 1.0):
         super().__init__(daemon=True)
-        self.period, self.samples, self._stop = period_s, [], threading.Event()
+        self.period, self.samples, self._halt = period_s, [], threading.Event()
 
     def run(self):
-        while not self._stop.is_set():
+        while not self._halt.is_set():
             self.samples.append(gpu_used_mib())
-            self._stop.wait(self.period)
+            self._halt.wait(self.period)
 
     def stop(self) -> list[int]:
-        self._stop.set()
+        self._halt.set()
         self.join()
         return self.samples
 

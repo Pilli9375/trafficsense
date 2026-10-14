@@ -43,3 +43,13 @@ def test_benchmark_setup_is_pinned(bench):
     assert (bench.SCENARIO, bench.SEED, bench.STEPS) == ("indian_2x2_peak", 0, 600)
     assert (bench.DECISION_INTERVAL, bench.MIN_GREEN) == (5, 15)
     assert bench.BASELINES == ["maxpressure", "fixedtime_webster"]
+
+
+def test_vram_sampler_starts_and_stops(bench, monkeypatch):
+    monkeypatch.setattr(bench, "gpu_used_mib", lambda: 123)
+    s = bench.VramSampler(period_s=0.01)
+    s.start()
+    import time
+    time.sleep(0.05)
+    samples = s.stop()
+    assert samples and set(samples) == {123} and not s.is_alive()
