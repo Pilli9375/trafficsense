@@ -1,0 +1,128 @@
+{
+  "provenance": {
+    "controller": "llm_cooperative",
+    "controller_params": {
+      "name": "llm_cooperative",
+      "mode": "cooperative",
+      "decision_interval": 5,
+      "min_green": 15,
+      "phases": "all",
+      "client": {
+        "host": "http://localhost:11434",
+        "endpoint": "/api/chat",
+        "timeout_s": 60.0,
+        "options": {
+          "temperature": 0.0,
+          "seed": 0,
+          "num_ctx": 2048,
+          "num_predict": 128
+        },
+        "keep_alive": "30m"
+      },
+      "max_consecutive_failures": 20
+    },
+    "model": "gemma4:e4b",
+    "provider": "ollama",
+    "llm": {
+      "calls": 160,
+      "ok": 159,
+      "failures": 1,
+      "failures_by_type": {
+        "reason_too_long": 1
+      },
+      "failure_rate": 0.00625,
+      "switches_requested": 104,
+      "latency_n": 160,
+      "latency_mean_s": 7.545836943256285,
+      "latency_p95_s": 8.356688227650237,
+      "latency_max_s": 9.402854037999532,
+      "prompt_tokens_mean": 670.7,
+      "response_tokens_mean": 35.7125,
+      "server_reported_models": [
+        "gemma4:e4b"
+      ],
+      "latency_note": "wall clock per call, over calls that returned a response (timeouts excluded, counted as failures)",
+      "model_digest": "dc35e8d9c6061baa6f0fa870975ab6932e2542b579b13ea0f199fa4bb7300c9c",
+      "model_details": {
+        "parent_model": "gemma4-validation-20260929:e4b-imatrix-attention-q6-q8-draft2",
+        "format": "gguf",
+        "family": "gemma4",
+        "families": [
+          "gemma4"
+        ],
+        "parameter_size": "7.5B",
+        "quantization_level": "Q4_K_M",
+        "context_length": 131072,
+        "embedding_length": 2560,
+        "runner": "llamacpp"
+      },
+      "server_version": "0.40.3",
+      "decisions_log": "decisions.jsonl"
+    },
+    "seed": 0,
+    "scenario": "indian_2x2_peak",
+    "roadnet": "data/scenarios/indian_2x2/roadnet.json",
+    "flow": "data/scenarios/indian_2x2/flow_peak_s0.json",
+    "flow_sha256": "9a45e9fdad4c5991de887ec3df95bdea7a89587c47c5657b830e88c29c86f951",
+    "flow_per_seed": true,
+    "sim_steps": 600,
+    "git_commit": "29f2b382667aef56adfde129f44527d096145390",
+    "git_dirty": false,
+    "timestamp": "2026-10-14T18:02:40+05:30",
+    "wall_time_s": 1208.13,
+    "python": "3.10.12"
+  },
+  "signal": {
+    "min_green": 10,
+    "max_green": 60,
+    "transition_s": [
+      5
+    ],
+    "switches": 104,
+    "forced_switches": 0
+  },
+  "metrics": {
+    "att": 112.19708994708995,
+    "queue_mean_per_intersection": 19.441666666666666,
+    "queue_mean_total": 77.76666666666667,
+    "waiting_time_mean": 61.73809523809524,
+    "throughput": 564,
+    "vehicles_entered": 756,
+    "vehicles_running_at_end": 192,
+    "vehicles_waiting_to_enter_at_end": 0,
+    "steps": 600
+  },
+  "per_intersection": {
+    "intersection_1_1": {
+      "queue_mean": 19.57,
+      "waiting_time_mean": 33.741379310344826,
+      "throughput": 302,
+      "vehicles_seen": 348
+    },
+    "intersection_2_1": {
+      "queue_mean": 13.481666666666667,
+      "waiting_time_mean": 24.218562874251496,
+      "throughput": 287,
+      "vehicles_seen": 334
+    },
+    "intersection_1_2": {
+      "queue_mean": 19.218333333333334,
+      "waiting_time_mean": 31.765840220385677,
+      "throughput": 329,
+      "vehicles_seen": 363
+    },
+    "intersection_2_2": {
+      "queue_mean": 25.496666666666666,
+      "waiting_time_mean": 44.47093023255814,
+      "throughput": 293,
+      "vehicles_seen": 344
+    }
+  },
+  "metric_notes": {
+    "att": "engine.get_average_travel_time(): all generated vehicles from scheduled start, incl. those still running or still waiting to enter",
+    "queue_mean_per_intersection": "waiting vehicles (speed<0.1) on incoming lanes, mean over steps and intersections",
+    "queue_mean_total": "same, summed over intersections",
+    "waiting_time_mean": "seconds with speed<0.1 per vehicle, mean over vehicles that entered",
+    "throughput": "vehicles that finished their trip"
+  }
+}
