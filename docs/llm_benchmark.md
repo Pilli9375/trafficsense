@@ -54,9 +54,9 @@ benchmark was run, and kept unchanged for Phase 3b:
 | v2 | `gemma4:e4b` | 120 | 0.0% (none) | 4.85 | 5.32 | 291 | 2852 | 217 / 217 | 111.1 | 17.95 | 578 | 120 | – | no |
 | v2 | `llama3.2:3b` | 351 | 0.3% (reason_too_long 1) | 1.36 | 1.52 | 285 | 2230 | 2210 / 2210 | 181.5 | 42.26 | 352 | 40 | – | yes |
 | v2 | `qwen2.5:3b` | 355 | 29.3% (reason_too_long 104) | 1.47 | 1.65 | 285 | 2058 | 1985 / 1985 | 146.8 | 31.11 | 498 | 36 | – | no |
-| hybrid | `gemma4:e4b` | not run |  |  |  |  |  |  |  |  |  |  |  |  |
-| hybrid | `llama3.2:3b` | not run |  |  |  |  |  |  |  |  |  |  |  |  |
-| hybrid | `qwen2.5:3b` | not run |  |  |  |  |  |  |  |  |  |  |  |  |
+| hybrid | `gemma4:e4b` | 284 | 0.4% (reason_too_long 1) | 4.44 | 4.84 | 270 | 2850 | 217 / 217 | 125.8 | 23.38 | 546 | 62 | 82.3% (233; 209 kept current) | no |
+| hybrid | `llama3.2:3b` | 287 | 0.3% (reason_too_long 1) | 1.03 | 1.13 | 260 | 2280 | 2210 / 2210 | 135.3 | 26.64 | 519 | 61 | 99.0% (283; 225 kept current) | yes |
+| hybrid | `qwen2.5:3b` | 249 | 11.2% (reason_too_long 28) | 1.12 | 1.27 | 255 | 2058 | 1985 / 1985 | 123.3 | 22.05 | 570 | 74 | 75.6% (167; 159 kept current) | no |
 | baseline | maxpressure | – | – | – | – | – | – | – | 92.5 | 11.85 | 623 | 115 | – | – |
 | baseline | fixedtime_webster | – | – | – | – | – | – | – | 97.4 | 13.49 | 626 | 110 | – | – |
 <!-- END:llm_benchmark -->
@@ -67,9 +67,9 @@ Same model across arms (ATT and queue over the same 600 s):
 | Model | Queue / int. (v1 / v2 / hybrid) | ATT at 600 s (v1 / v2 / hybrid) | Latency p95 s (v1 / v2 / hybrid) | Failure rate (v1 / v2 / hybrid) |
 |---|---|---|---|---|
 | `gemma3:4b` | 46.35 / – / – | 197.4 / – / – | 5.43 / – / – | 0.0% / – / – |
-| `gemma4:e4b` | 19.44 / 17.95 / – | 112.2 / 111.1 / – | 8.36 / 5.32 / – | 0.6% / 0.0% / – |
-| `llama3.2:3b` | 40.94 / 42.26 / – | 181.1 / 181.5 / – | 3.35 / 1.52 / – | 6.2% / 0.3% / – |
-| `qwen2.5:3b` | 29.15 / 31.11 / – | 141.2 / 146.8 / – | 3.34 / 1.65 / – | 0.0% / 29.3% / – |
+| `gemma4:e4b` | 19.44 / 17.95 / 23.38 | 112.2 / 111.1 / 125.8 | 8.36 / 5.32 / 4.84 | 0.6% / 0.0% / 0.4% |
+| `llama3.2:3b` | 40.94 / 42.26 / 26.64 | 181.1 / 181.5 / 135.3 | 3.35 / 1.52 / 1.13 | 6.2% / 0.3% / 0.3% |
+| `qwen2.5:3b` | 29.15 / 31.11 / 22.05 | 141.2 / 146.8 / 123.3 | 3.34 / 1.65 / 1.27 | 0.0% / 29.3% / 11.2% |
 <!-- END:llm_compare -->
 
 What the models chose, replayed from each run's decision log
@@ -77,15 +77,18 @@ What the models chose, replayed from each run's decision log
 here is MaxPressure's at the moment of each decision; v2 showed it to the model:
 
 <!-- BEGIN:llm_decisions -->
-| Prompt | Model | Successful calls | Kept current phase | Chose highest-pressure phase | Kept current although another had higher pressure |
-|---|---|---|---|---|---|
-| v1 | `gemma3:4b` | 333 | 86% | 4% | 95% |
-| v1 | `gemma4:e4b` | 159 | 35% | 9% | 34% |
-| v1 | `llama3.2:3b` | 270 | 77% | 2% | 84% |
-| v1 | `qwen2.5:3b` | 159 | 34% | 18% | 34% |
-| v2 | `gemma4:e4b` | 120 | 0% | 40% | 0% |
-| v2 | `llama3.2:3b` | 350 | 89% | 6% | 99% |
-| v2 | `qwen2.5:3b` | 251 | 88% | 6% | 100% |
+| Prompt | Model | Successful calls | Kept current phase | Chose highest-pressure phase | Chose lowest-pressure phase | Kept current although another had higher pressure |
+|---|---|---|---|---|---|---|
+| v1 | `gemma3:4b` | 333 | 86% | 4% | 51% | 95% |
+| v1 | `gemma4:e4b` | 159 | 35% | 9% | 29% | 34% |
+| v1 | `llama3.2:3b` | 270 | 77% | 2% | 34% | 84% |
+| v1 | `qwen2.5:3b` | 159 | 34% | 18% | 25% | 34% |
+| v2 | `gemma4:e4b` | 120 | 0% | 40% | 9% | 0% |
+| v2 | `llama3.2:3b` | 350 | 89% | 6% | 48% | 99% |
+| v2 | `qwen2.5:3b` | 251 | 88% | 6% | 49% | 100% |
+| guided | `gemma4:e4b` | 283 | 78% | 18% | 83% | 84% |
+| guided | `llama3.2:3b` | 286 | 79% | 4% | 86% | 86% |
+| guided | `qwen2.5:3b` | 221 | 78% | 25% | 77% | 80% |
 <!-- END:llm_decisions -->
 
 ## Selection
@@ -95,8 +98,8 @@ here is MaxPressure's at the moment of each decision; v2 showed it to the model:
 |---|---|---|---|
 | v1 | none | none | – |
 | v2 | llama3.2:3b | llama3.2:3b | 10 s (p95 × intersections = 6.1 s) |
-| hybrid | arm incomplete | – | – |
-| all arms | not every arm is complete | – | – |
+| hybrid | llama3.2:3b | llama3.2:3b | 5 s (p95 × intersections = 4.5 s) |
+| all arms | hybrid llama3.2:3b, v2 llama3.2:3b | hybrid llama3.2:3b | 5 s (p95 × intersections = 4.5 s) |
 <!-- END:llm_selection -->
 
 ## Phase 3a: prompt v1
@@ -213,3 +216,33 @@ MaxPressure proposes, the LLM picks; designed and committed before any hybrid ru
   choice") and how many of those were "keep current".
 * Same setup and the same selection rule as the other arms; gemma4:e4b, llama3.2:3b,
   qwen2.5:3b.
+
+### Hybrid findings
+
+* **By the rule over all arms, the recommendation is the hybrid with `llama3.2:3b`, decision
+  interval 5 s** (p95 1.13 s × 4 = 4.5 s). Eligible were hybrid `llama3.2:3b` and v2
+  `llama3.2:3b`; the hybrid has the lower queue (26.64 against 42.26). Within the hybrid arm it
+  is again the only eligible model, and again the worst of its arm: `qwen2.5:3b` (22.05) and
+  `gemma4:e4b` (23.38) have lower queues but fail the rule (11.2% failures; p95 4.84 s).
+* **Every hybrid run controls worse than MaxPressure alone:** queue 22.05–26.64 against
+  11.85, ATT 123.3–135.3 s against 92.5 s. A hybrid can only differ from MaxPressure where
+  the LLM overrules it, and the LLMs overruled it in 75.6% (`qwen2.5:3b`), 82.3%
+  (`gemma4:e4b`) and 99.0% (`llama3.2:3b`, which took MaxPressure's choice in 3 of 286
+  successful calls) of their successful calls, mostly by keeping the current phase.
+* The hybrid still helps the two small models compared with choosing freely (v2): queue
+  42.26 → 26.64 for `llama3.2:3b` and 31.11 → 22.05 for `qwen2.5:3b`, because their worst
+  choices are no longer on offer. For `gemma4:e4b` it is worse than v2 (17.95 → 23.38).
+* **The common cause in v2 and the hybrid: the models treat low pressure as good.** In the
+  hybrid every model chose the lowest-pressure option in 77–86% of the calls where the options
+  differed in pressure (table above); keeping the current phase, usually the lowest-pressure
+  option and listed last, was chosen in 78–79% of calls. Their reasons say so directly:
+  "Current phase has negative pressure, indicating it's the best choice for now"
+  (`gemma4:e4b`), "Low pressure, minimal queue impact" (`llama3.2:3b`). In v2, with 8 phases,
+  `llama3.2:3b` and `qwen2.5:3b` chose the lowest-pressure phase in 48% and 49% of calls. The
+  guided prompt says the options are listed "best MaxPressure rank first" but, like v2, does
+  not say that higher pressure means more need for green.
+* `qwen2.5:3b` again failed on long reasons (11.2%, all `reason_too_long`).
+* Not tested, and each would be a change after seeing the data (the user's decision): stating
+  that higher pressure means a phase needs green more, renaming "pressure" (e.g. "waiting
+  vehicles that can move"), offering only MaxPressure's top 2 without "keep current", or a
+  shorter reason format.

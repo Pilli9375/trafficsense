@@ -13,6 +13,8 @@ a constant per intersection, see llm/prompt.py).
 Per run, over successful calls:
   keep                 the LLM chose the current phase
   highest pressure     the chosen phase has the highest pressure among the allowed phases
+  lowest pressure      the chosen phase has the lowest pressure among the allowed phases (when
+                       the allowed phases do not all have the same pressure)
   keep, other higher   kept the current phase although an allowed phase had higher pressure,
                        as a share of the calls where one had
 These describe the decisions; they are not simulator metrics.
@@ -50,12 +52,15 @@ def replay(cfg: dict, run_dir: Path) -> dict:
                 raise SystemExit(f"{run_dir.name}: replay diverged at t={d['step']} {iid}")
             pr = phase_pressures(env.intersection(iid), env.get_state(iid))
             allowed = {p: pr[p] for p in d["allowed"]}
-            best = max(allowed.values())
+            best, worst = max(allowed.values()), min(allowed.values())
             n["calls"] += 1
             if d["ok"]:
                 n["ok"] += 1
                 n["keep"] += d["phase"] == cur
                 n["highest"] += allowed[d["phase"]] == best
+                if best > worst:
+                    n["spread"] += 1
+                    n["lowest"] += allowed[d["phase"]] == worst
                 if cur in allowed and allowed[cur] < best:
                     n["other_higher"] += 1
                     n["keep_other_higher"] += d["phase"] == cur
@@ -69,6 +74,7 @@ def replay(cfg: dict, run_dir: Path) -> dict:
     return {"run": run_dir.name, "model": pv["model"], "controller": pv["controller"],
             "prompt": pv["controller_params"].get("prompt", "v1"), "calls": n["calls"], "ok": n["ok"],
             "keep_rate": n["keep"] / n["ok"], "highest_pressure_rate": n["highest"] / n["ok"],
+            "lowest_pressure_rate": n["lowest"] / n["spread"] if n["spread"] else None,
             "keep_when_other_higher_rate": n["keep_other_higher"] / n["other_higher"] if n["other_higher"] else None,
             "replay_att_matches": True}
 
@@ -86,10 +92,12 @@ def table(a: dict) -> str:
     def pct(x):
         return "–" if x is None else f"{100 * x:.0f}%"
     out = ["| Prompt | Model | Successful calls | Kept current phase | Chose highest-pressure phase | "
-           "Kept current although another had higher pressure |", "|---|---|---|---|---|---|"]
+           "Chose lowest-pressure phase | Kept current although another had higher pressure |",
+           "|---|---|---|---|---|---|---|"]
     for r in a["runs"]:
         out.append(f"| {r['prompt']} | `{r['model']}` | {r['ok']} | {pct(r['keep_rate'])} | "
-                   f"{pct(r['highest_pressure_rate'])} | {pct(r['keep_when_other_higher_rate'])} |")
+                   f"{pct(r['highest_pressure_rate'])} | {pct(r['lowest_pressure_rate'])} | "
+                   f"{pct(r['keep_when_other_higher_rate'])} |")
     return "\n".join(out)
 
 

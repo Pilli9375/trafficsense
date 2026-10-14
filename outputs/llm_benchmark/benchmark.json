@@ -6,7 +6,7 @@
   "steps": 600,
   "decision_interval_s": 5,
   "min_green_s": 15,
-  "git_commit_of_this_summary": "f0c6862ab6f50db5b6362200fabe06e3a1a37f75"
+  "git_commit_of_this_summary": "98558aa475749f809c7abc725ea6e862618247eb"
  },
  "arms": {
   "v1": {
@@ -286,13 +286,127 @@
   },
   "hybrid": {
    "controller": "llm_guided_mp",
-   "models": {},
-   "not_run": [
-    "gemma4:e4b",
-    "llama3.2:3b",
-    "qwen2.5:3b"
-   ],
-   "selection": null
+   "models": {
+    "gemma4:e4b": {
+     "run": "20261014-215937_indian_2x2_peak_llm_guided_mp_s0",
+     "controller": "llm_guided_mp",
+     "att_s": 125.80820105820106,
+     "queue_mean_per_intersection": 23.384583333333335,
+     "throughput": 546,
+     "waiting_time_mean_s": 74.30952380952381,
+     "switches": 62,
+     "git_commit": "98558aa475749f809c7abc725ea6e862618247eb",
+     "model": "gemma4:e4b",
+     "prompt": "guided",
+     "digest": "dc35e8d9c6061baa6f0fa870975ab6932e2542b579b13ea0f199fa4bb7300c9c",
+     "calls": 284,
+     "failures": 1,
+     "failures_by_type": {
+      "reason_too_long": 1
+     },
+     "failure_rate": 0.0035211267605633804,
+     "latency_mean_s": 4.435986587140818,
+     "latency_p95_s": 4.835868131949427,
+     "latency_max_s": 5.205470327000512,
+     "prompt_tokens_mean": 269.7711267605634,
+     "response_tokens_mean": 27.380281690140844,
+     "switches_requested": 62,
+     "wall_time_s": 1260.66,
+     "vram_peak_minus_idle_mib": 2850,
+     "vram_peak_mib": 2863,
+     "ollama_size_vram_mib": 217.23999881744385,
+     "ollama_size_mib": 217.23999881744385,
+     "warmup_call_s": 21.41736676799701,
+     "forced_switches": 0,
+     "mp_disagreement_rate": 0.823321554770318,
+     "mp_disagreements": 233,
+     "mp_disagreements_kept_current": 209,
+     "mp_fallbacks": 1
+    },
+    "llama3.2:3b": {
+     "run": "20261014-222046_indian_2x2_peak_llm_guided_mp_s0",
+     "controller": "llm_guided_mp",
+     "att_s": 135.28703703703704,
+     "queue_mean_per_intersection": 26.635833333333338,
+     "throughput": 519,
+     "waiting_time_mean_s": 84.61243386243386,
+     "switches": 61,
+     "git_commit": "98558aa475749f809c7abc725ea6e862618247eb",
+     "model": "llama3.2:3b",
+     "prompt": "guided",
+     "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+     "calls": 287,
+     "failures": 1,
+     "failures_by_type": {
+      "reason_too_long": 1
+     },
+     "failure_rate": 0.003484320557491289,
+     "latency_mean_s": 1.033398385003517,
+     "latency_p95_s": 1.1331137689987372,
+     "latency_max_s": 1.6510782709992782,
+     "prompt_tokens_mean": 259.70383275261327,
+     "response_tokens_mean": 21.5609756097561,
+     "switches_requested": 61,
+     "wall_time_s": 297.48,
+     "vram_peak_minus_idle_mib": 2280,
+     "vram_peak_mib": 2293,
+     "ollama_size_vram_mib": 2210.359998703003,
+     "ollama_size_mib": 2210.359998703003,
+     "warmup_call_s": 4.491485325997928,
+     "forced_switches": 0,
+     "mp_disagreement_rate": 0.9895104895104895,
+     "mp_disagreements": 283,
+     "mp_disagreements_kept_current": 225,
+     "mp_fallbacks": 1
+    },
+    "qwen2.5:3b": {
+     "run": "20261014-222552_indian_2x2_peak_llm_guided_mp_s0",
+     "controller": "llm_guided_mp",
+     "att_s": 123.26587301587301,
+     "queue_mean_per_intersection": 22.049999999999997,
+     "throughput": 570,
+     "waiting_time_mean_s": 70.02777777777777,
+     "switches": 74,
+     "git_commit": "98558aa475749f809c7abc725ea6e862618247eb",
+     "model": "qwen2.5:3b",
+     "prompt": "guided",
+     "digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+     "calls": 249,
+     "failures": 28,
+     "failures_by_type": {
+      "reason_too_long": 28
+     },
+     "failure_rate": 0.11244979919678715,
+     "latency_mean_s": 1.1191796886505252,
+     "latency_p95_s": 1.2678151972009801,
+     "latency_max_s": 1.772114439001598,
+     "prompt_tokens_mean": 255.18072289156626,
+     "response_tokens_mean": 28.79116465863454,
+     "switches_requested": 74,
+     "wall_time_s": 279.53,
+     "vram_peak_minus_idle_mib": 2058,
+     "vram_peak_mib": 2071,
+     "ollama_size_vram_mib": 1985.3399991989136,
+     "ollama_size_mib": 1985.3399991989136,
+     "warmup_call_s": 4.6857980839995435,
+     "forced_switches": 0,
+     "mp_disagreement_rate": 0.755656108597285,
+     "mp_disagreements": 167,
+     "mp_disagreements_kept_current": 159,
+     "mp_fallbacks": 28
+    }
+   },
+   "not_run": [],
+   "selection": {
+    "rule": "eligible: failure rate < 2% and p95 latency < 3.0 s; then lowest mean queue per intersection, tie-break lower ATT",
+    "eligible": [
+     "llama3.2:3b"
+    ],
+    "chosen_model": "llama3.2:3b",
+    "decision_interval_s": 5,
+    "interval_rule": "shortest multiple of 5 s >= p95 latency x 4 intersections",
+    "round_p95_s": 4.532455075994949
+   }
   }
  },
  "baselines": {
@@ -317,5 +431,15 @@
    "git_commit": "29f2b382667aef56adfde129f44527d096145390"
   }
  },
- "overall_selection": null
+ "overall_selection": {
+  "rule": "eligible: failure rate < 2% and p95 latency < 3.0 s; then lowest mean queue per intersection, tie-break lower ATT",
+  "eligible": [
+   "hybrid llama3.2:3b",
+   "v2 llama3.2:3b"
+  ],
+  "chosen_model": "hybrid llama3.2:3b",
+  "decision_interval_s": 5,
+  "interval_rule": "shortest multiple of 5 s >= p95 latency x 4 intersections",
+  "round_p95_s": 4.532455075994949
+ }
 }

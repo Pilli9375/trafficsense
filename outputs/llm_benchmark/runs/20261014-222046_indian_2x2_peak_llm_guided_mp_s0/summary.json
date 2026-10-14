@@ -1,0 +1,138 @@
+{
+  "provenance": {
+    "controller": "llm_guided_mp",
+    "controller_params": {
+      "name": "llm_guided_mp",
+      "mode": "cooperative",
+      "prompt": "guided",
+      "decision_interval": 5,
+      "min_green": 15,
+      "phases": "all",
+      "client": {
+        "host": "http://localhost:11434",
+        "endpoint": "/api/chat",
+        "timeout_s": 60.0,
+        "options": {
+          "temperature": 0.0,
+          "seed": 0,
+          "num_ctx": 2048,
+          "num_predict": 128
+        },
+        "keep_alive": "30m"
+      },
+      "max_consecutive_failures": 20,
+      "options": 2,
+      "tie_break": "keep_current",
+      "ranking": "maxpressure (phase_pressures over all green phases)"
+    },
+    "model": "llama3.2:3b",
+    "provider": "ollama",
+    "llm": {
+      "calls": 287,
+      "ok": 286,
+      "failures": 1,
+      "failures_by_type": {
+        "reason_too_long": 1
+      },
+      "failure_rate": 0.003484320557491289,
+      "switches_requested": 61,
+      "latency_n": 287,
+      "latency_mean_s": 1.033398385003517,
+      "latency_p95_s": 1.1331137689987372,
+      "latency_max_s": 1.6510782709992782,
+      "prompt_tokens_mean": 259.70383275261327,
+      "response_tokens_mean": 21.5609756097561,
+      "server_reported_models": [
+        "llama3.2:3b"
+      ],
+      "latency_note": "wall clock per call, over calls that returned a response (timeouts excluded, counted as failures)",
+      "mp_disagreements": 283,
+      "mp_disagreement_rate": 0.9895104895104895,
+      "mp_disagreements_kept_current": 225,
+      "mp_disagreements_chose_lower_ranked": 58,
+      "mp_fallbacks": 1,
+      "mp_disagreement_note": "over successful calls: LLM's phase != MaxPressure's top choice",
+      "model_digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+      "model_details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "llama",
+        "families": [
+          "llama"
+        ],
+        "parameter_size": "3.2B",
+        "quantization_level": "Q4_K_M",
+        "context_length": 131072,
+        "embedding_length": 3072,
+        "runner": "ggml"
+      },
+      "server_version": "0.40.3",
+      "decisions_log": "decisions.jsonl"
+    },
+    "seed": 0,
+    "scenario": "indian_2x2_peak",
+    "roadnet": "data/scenarios/indian_2x2/roadnet.json",
+    "flow": "data/scenarios/indian_2x2/flow_peak_s0.json",
+    "flow_sha256": "9a45e9fdad4c5991de887ec3df95bdea7a89587c47c5657b830e88c29c86f951",
+    "flow_per_seed": true,
+    "sim_steps": 600,
+    "git_commit": "98558aa475749f809c7abc725ea6e862618247eb",
+    "git_dirty": false,
+    "timestamp": "2026-10-14T22:20:46+05:30",
+    "wall_time_s": 297.48,
+    "python": "3.10.12"
+  },
+  "signal": {
+    "min_green": 10,
+    "max_green": 60,
+    "transition_s": [
+      5
+    ],
+    "switches": 61,
+    "forced_switches": 0
+  },
+  "metrics": {
+    "att": 135.28703703703704,
+    "queue_mean_per_intersection": 26.635833333333338,
+    "queue_mean_total": 106.54333333333334,
+    "waiting_time_mean": 84.61243386243386,
+    "throughput": 519,
+    "vehicles_entered": 756,
+    "vehicles_running_at_end": 237,
+    "vehicles_waiting_to_enter_at_end": 0,
+    "steps": 600
+  },
+  "per_intersection": {
+    "intersection_1_1": {
+      "queue_mean": 20.713333333333335,
+      "waiting_time_mean": 36.55294117647059,
+      "throughput": 286,
+      "vehicles_seen": 340
+    },
+    "intersection_2_1": {
+      "queue_mean": 22.823333333333334,
+      "waiting_time_mean": 41.37160120845922,
+      "throughput": 286,
+      "vehicles_seen": 331
+    },
+    "intersection_1_2": {
+      "queue_mean": 25.766666666666666,
+      "waiting_time_mean": 46.84848484848485,
+      "throughput": 278,
+      "vehicles_seen": 330
+    },
+    "intersection_2_2": {
+      "queue_mean": 37.24,
+      "waiting_time_mean": 64.95348837209302,
+      "throughput": 280,
+      "vehicles_seen": 344
+    }
+  },
+  "metric_notes": {
+    "att": "engine.get_average_travel_time(): all generated vehicles from scheduled start, incl. those still running or still waiting to enter",
+    "queue_mean_per_intersection": "waiting vehicles (speed<0.1) on incoming lanes, mean over steps and intersections",
+    "queue_mean_total": "same, summed over intersections",
+    "waiting_time_mean": "seconds with speed<0.1 per vehicle, mean over vehicles that entered",
+    "throughput": "vehicles that finished their trip"
+  }
+}
