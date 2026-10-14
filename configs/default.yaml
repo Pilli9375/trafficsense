@@ -64,8 +64,13 @@ controllers:
     tie_break: keep_current  # keep_current | lowest_index (CoLLMLight: np.argmax -> lowest)
   llm_cooperative:         # timing and model: llm.* below
     mode: cooperative      # prompt includes each neighbour's phase and queues towards / from us
+    prompt: v2             # trafficsense/llm/prompt.py
   llm_isolated:
     mode: isolated         # own intersection only
+    prompt: v2
+  llm_v1:                  # the Phase 3a prompt, kept for the record. Until Phase 3b this controller
+    mode: cooperative      # was called llm_cooperative (runs without a `prompt` parameter are v1)
+    prompt: v1
   maxpressure_15s:         # previous default (scripts/tune_maxpressure.py), kept for comparison
     decision_interval: 15
     phases: all

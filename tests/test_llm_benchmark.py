@@ -40,6 +40,8 @@ def test_select_none_eligible(bench):
 
 def test_benchmark_setup_is_pinned(bench):
     assert bench.MODELS == ["gemma3:4b", "gemma4:e4b", "llama3.2:3b", "qwen2.5:3b"]
+    assert bench.ARMS["v1"] == {"controller": "llm_v1", "models": bench.MODELS}
+    assert bench.ARMS["v2"] == {"controller": "llm_cooperative", "models": ["gemma4:e4b", "llama3.2:3b", "qwen2.5:3b"]}
     assert (bench.SCENARIO, bench.SEED, bench.STEPS) == ("indian_2x2_peak", 0, 600)
     assert (bench.DECISION_INTERVAL, bench.MIN_GREEN) == (5, 15)
     assert bench.BASELINES == ["maxpressure", "fixedtime_webster"]
@@ -53,3 +55,20 @@ def test_vram_sampler_starts_and_stops(bench, monkeypatch):
     time.sleep(0.05)
     samples = s.stop()
     assert samples and set(samples) == {123} and not s.is_alive()
+
+
+def test_arm_of_runs(bench):
+    assert bench.arm_of({"controller": "maxpressure", "controller_params": {}}) is None
+    assert bench.arm_of({"controller": "llm_cooperative", "controller_params": {"mode": "cooperative"}}) == "v1"
+    assert bench.arm_of({"controller": "llm_cooperative", "controller_params": {"prompt": "v2"}}) == "v2"
+    assert bench.arm_of({"controller": "llm_v1", "controller_params": {"prompt": "v1"}}) == "v1"
+    with pytest.raises(SystemExit):
+        bench.arm_of({"controller": "llm_isolated", "controller_params": {"prompt": "v2"}})
+
+
+def test_stored_benchmark_reproduces_phase_3a_selection(bench):
+    """The v1 arm, read from the Phase 3a runs, gives the same (empty) selection as before."""
+    b = bench.report(repo_root())
+    v1 = b["arms"]["v1"]
+    assert sorted(v1["models"]) == sorted(bench.MODELS) and v1["selection"]["eligible"] == []
+    assert v1["models"]["qwen2.5:3b"]["latency_p95_s"] == pytest.approx(3.34, abs=0.005)

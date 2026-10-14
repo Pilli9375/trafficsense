@@ -14,8 +14,21 @@ Free turns (CityFlow `turn_right`) run in every phase, including the transition,
 cannot affect them and they are left out. Movement names are neutral about the side of
 the road: "straight", "cross-turn" (CityFlow turn_left, crossing the opposing flow).
 
-The answer must be JSON {"phase": <allowed id>, "reason": "<= 25 words"}. parse_response()
-raises InvalidResponse with a failure type for anything else; the controller counts it.
+Two prompt versions render the same observation:
+  * v1 (Phase 3a, kept for the record): every movement's queue/moving/downstream, vehicle
+    types per approach, neighbours; the rules say switching "wastes green time"; reason <= 25
+    words. About 650 tokens.
+  * v2: one line per phase with a precomputed pressure and queue, so the model does no
+    arithmetic; neighbours as in v1; no vehicle types (to stay under ~300 tokens; pressure
+    counts vehicles regardless of type, as MaxPressure does); the transition is stated as a
+    fact without advice; reason <= 15 words.
+Phase pressure here is MaxPressure's (queue minus downstream queue, summed over the phase's
+movements) without the free turns. Every green phase serves all free turns, so leaving them
+out lowers every phase by the same amount and keeps MaxPressure's ranking.
+
+The answer must be JSON {"phase": <allowed id>, "reason": "<= N words"} (N per version).
+parse_response() raises InvalidResponse with a failure type for anything else; the
+controller counts it.
 """
 from __future__ import annotations
 
@@ -24,11 +37,13 @@ from typing import Any
 
 from trafficsense.sim.env import TrafficEnv
 
-MAX_REASON_WORDS = 25
+VERSIONS = ("v1", "v2")
+MAX_REASON_WORDS = {"v1": 25, "v2": 15}
 TURN_LABEL = {"go_straight": "straight", "turn_left": "cross-turn"}
 FREE_TURN = "turn_right"
 MODES = ("cooperative", "isolated")
 
+# v1: unchanged since the Phase 3a benchmark (tests pin its hash).
 SYSTEM_PROMPT = """You control the traffic signal of one intersection in a city road network with mixed \
 Indian traffic (two-wheelers, auto-rickshaws, cars, buses, trucks).
 At each decision you choose which green phase to show next. Goal: keep vehicles moving and queues short \
@@ -42,17 +57,37 @@ driving towards the stop line; downstream = stopped vehicles on the exit road (a
 the movement).
 Answer with JSON only: {{"phase": <one of the allowed phase ids>, "reason": "<at most 25 words>"}}."""
 
+SYSTEM_PROMPT_V2 = """You pick the next green phase for one traffic signal in an Indian city. Goal: short \
+queues and low travel time network-wide.
+Changing phase starts a {transition} s transition in which only free turns move. A green lasts {min_green} to \
+{max_green} s.
+queue = stopped vehicles a phase serves; pressure = queue minus stopped vehicles on their exit roads.
+Reply JSON: {{"phase": <allowed id>, "reason": "<at most {words} words>"}}"""
+
 
 def movement_label(m) -> str:
     return f"{m.approach} {TURN_LABEL[m.turn]}"
 
 
-def response_schema(allowed: list[int]) -> dict[str, Any]:
+def phase_label(inter, phase) -> str:
+    """Short name of a green phase from its non-free movements, e.g. "W+E straight",
+    "W+E cross-turn", or "N only" for every movement of one approach."""
+    ms = [inter.movements[k] for k in phase.movements if inter.movements[k].turn != FREE_TURN]
+    turns = [TURN_LABEL[t] for t in TURN_LABEL if any(m.turn == t for m in ms)]
+    sides = list(dict.fromkeys(m.approach for m in ms))
+    if len(turns) == 1:
+        return f"{'+'.join(sides)} {turns[0]}"
+    if len(sides) == 1:
+        return f"{sides[0]} only" if len(turns) == len(TURN_LABEL) else f"{sides[0]} {'+'.join(turns)}"
+    return ", ".join(movement_label(m) for m in ms)
+
+
+def response_schema(allowed: list[int], version: str) -> dict[str, Any]:
     """JSON schema passed as Ollama's `format`. maxLength bounds the generated text (latency);
-    the 25-word limit itself is checked in parse_response."""
+    the word limit itself is checked in parse_response."""
     return {"type": "object",
             "properties": {"phase": {"type": "integer", "enum": sorted(allowed)},
-                           "reason": {"type": "string", "maxLength": 200}},
+                           "reason": {"type": "string", "maxLength": 8 * MAX_REASON_WORDS[version]}},
             "required": ["phase", "reason"]}
 
 
@@ -62,7 +97,7 @@ class InvalidResponse(ValueError):
         self.failure_type = failure_type
 
 
-def parse_response(text: str, allowed: list[int]) -> tuple[int, str]:
+def parse_response(text: str, allowed: list[int], max_words: int) -> tuple[int, str]:
     try:
         obj = json.loads(text)
     except (json.JSONDecodeError, TypeError) as e:
@@ -76,8 +111,8 @@ def parse_response(text: str, allowed: list[int]) -> tuple[int, str]:
         raise InvalidResponse("invalid_schema", f"reason is not a non-empty string: {reason!r}")
     if phase not in allowed:
         raise InvalidResponse("phase_not_allowed", f"phase {phase} not in allowed {sorted(allowed)}")
-    if len(reason.split()) > MAX_REASON_WORDS:
-        raise InvalidResponse("reason_too_long", f"reason has {len(reason.split())} words (max {MAX_REASON_WORDS})")
+    if len(reason.split()) > max_words:
+        raise InvalidResponse("reason_too_long", f"reason has {len(reason.split())} words (max {max_words})")
     return phase, reason.strip()
 
 
@@ -103,8 +138,12 @@ def observe(env: TrafficEnv, iid: str, allowed: list[int], mode: str, min_green:
         return {"movement": movement_label(m), "queue": q, "moving": sum(count[l] for l in m.in_lanes) - q,
                 "downstream": sum(waiting[l] for l in m.out_lanes)}
 
-    phases = [{"id": p.index, "movements": [mv(by_idx[k]) for k in p.movements if by_idx[k].turn != FREE_TURN]}
-              for p in inter.green_phases]
+    phases = []
+    for p in inter.green_phases:
+        ms = [mv(by_idx[k]) for k in p.movements if by_idx[k].turn != FREE_TURN]
+        phases.append({"id": p.index, "label": phase_label(inter, p), "movements": ms,
+                       "queue": sum(m["queue"] for m in ms),
+                       "pressure": sum(m["queue"] - m["downstream"] for m in ms)})
     on_approach: dict[str, list[str]] = {}
     for m in inter.movements:
         for l in m.in_lanes:
@@ -133,6 +172,7 @@ def _neighbour(env: TrafficEnv, iid: str, nb: str, direction: str, waiting: dict
         "id": nb, "direction": direction,
         "phase": green, "phase_movements": [movement_label(n.movements[k]) for k in sorted(served)
                                             if n.movements[k].turn != FREE_TURN],
+        "phase_label": None if green is None else phase_label(n, n.phases[green]),
         "queue_heading_to_us": sum(waiting[l] for m in toward for l in m.in_lanes),
         "of_which_green_now": sum(waiting[l] for m in toward if m.index in served or m.turn == FREE_TURN
                                   for l in m.in_lanes),
@@ -164,6 +204,39 @@ def render(obs: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def messages(obs: dict[str, Any]) -> list[dict[str, str]]:
-    sys = SYSTEM_PROMPT.format(transition=obs["transition_s"], min_green=obs["min_green"], max_green=obs["max_green"])
-    return [{"role": "system", "content": sys}, {"role": "user", "content": render(obs)}]
+def _neighbour_line(nb: dict[str, Any]) -> str:
+    ph = "in transition" if nb["phase"] is None else f"phase {nb['phase']} ({nb['phase_label']})"
+    return (f"{nb['direction']}: {ph}; {nb['queue_heading_to_us']} stopped toward us, "
+            f"{nb['of_which_green_now']} on green; {nb['queue_on_road_from_us']} stopped on our road to it")
+
+
+def render_v2(obs: dict[str, Any]) -> str:
+    """v2 user message: one line per phase (pressure, queue), then neighbours."""
+    cur = next(p for p in obs["phases"] if p["id"] == obs["current_phase"])
+    lines = [f"Phase {cur['id']} ({cur['label']}) green for {obs['time_in_phase']} s.",
+             "phase: pressure, queue"]
+    for p in obs["phases"]:
+        lines.append(f"{p['id']} {p['label']}: {p['pressure']}, {p['queue']}")
+    if "neighbours" in obs:
+        lines.append("Neighbours:")
+        lines.extend(_neighbour_line(nb) for nb in obs["neighbours"])
+    every = [p["id"] for p in obs["phases"]]
+    left_out = [i for i in every if i not in obs["allowed"]]
+    lines.append("Allowed: all" if not left_out else
+                 f"Allowed: all except {', '.join(map(str, left_out))}" if len(left_out) < len(every) / 2 else
+                 f"Allowed: {', '.join(map(str, obs['allowed']))}")
+    return "\n".join(lines)
+
+
+def messages(obs: dict[str, Any], version: str) -> list[dict[str, str]]:
+    if version == "v1":
+        sys = SYSTEM_PROMPT.format(transition=obs["transition_s"], min_green=obs["min_green"],
+                                   max_green=obs["max_green"])
+        user = render(obs)
+    elif version == "v2":
+        sys = SYSTEM_PROMPT_V2.format(transition=obs["transition_s"], min_green=obs["min_green"],
+                                      max_green=obs["max_green"], words=MAX_REASON_WORDS["v2"])
+        user = render_v2(obs)
+    else:
+        raise ValueError(f"prompt version must be one of {VERSIONS}, got {version!r}")
+    return [{"role": "system", "content": sys}, {"role": "user", "content": user}]

@@ -65,8 +65,26 @@ def test_asks_only_when_a_switch_is_allowed_and_applies_the_answer(lcfg):
 def test_cooperative_and_isolated_prompts_differ(lcfg):
     _, coop = run(lcfg, lowest_allowed, 100)
     _, iso = run(lcfg, lowest_allowed, 100, name="llm_isolated")
-    assert "Neighbouring intersections" in coop.client.calls[0][0][1]["content"]
-    assert "Neighbouring intersections" not in iso.client.calls[0][0][1]["content"]
+    assert "Neighbours:" in coop.client.calls[0][0][1]["content"]
+    assert "Neighbours:" not in iso.client.calls[0][0][1]["content"]
+
+
+def test_prompt_versions(lcfg):
+    _, v1 = run(lcfg, lowest_allowed, 100, name="llm_v1")
+    _, v2 = run(lcfg, lowest_allowed, 100)
+    assert (v1.prompt, v2.prompt) == ("v1", "v2") and v1.info()["prompt"] == "v1"
+    assert "Neighbouring intersections" in v1.client.calls[0][0][1]["content"]
+    assert v1.client.calls[0][1]["properties"]["reason"]["maxLength"] == 200
+    assert "phase: pressure, queue" in v2.client.calls[0][0][1]["content"]
+    # the same decisions, so the same observations: only the rendering differs
+    assert [d["phase"] for d in v1.decisions] == [d["phase"] for d in v2.decisions]
+    sixteen = json.dumps({"phase": 1, "reason": " ".join(["w"] * 16)})
+    _, v2 = run(lcfg, lambda m, s: sixteen, 30)
+    assert v2.stats()["failures_by_type"] == {"reason_too_long": v2.stats()["calls"]}
+    bad = copy.deepcopy(lcfg)
+    bad["controllers"]["llm_cooperative"]["prompt"] = None
+    with pytest.raises(ValueError, match="prompt"):
+        LLMController(bad, "llm_cooperative", client=FakeClient(lowest_allowed))
 
 
 def test_invalid_answers_keep_the_phase_and_are_counted(lcfg):

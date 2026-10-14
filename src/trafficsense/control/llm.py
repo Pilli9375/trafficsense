@@ -1,7 +1,9 @@
 """LLM signal control: one LLM call per intersection decision (adapted from CoLLMLight).
 
 Modes: `cooperative` (the prompt includes a summary of each neighbouring intersection) and
-`isolated` (own intersection only); see trafficsense.llm.prompt for exactly what is sent.
+`isolated` (own intersection only). `prompt` picks the prompt version (v1: Phase 3a, kept as
+controller llm_v1; v2: llm_cooperative / llm_isolated); see trafficsense.llm.prompt for exactly
+what is sent.
 
 Timing, from llm.* in the config, follows MaxPressure so the two differ only in the decision
 rule: decisions fall on a grid of `decision_interval` seconds; an intersection is asked only
@@ -45,6 +47,9 @@ class LLMController(Controller):
         self.mode = cfg["controllers"][name].get("mode")
         if self.mode not in prompt.MODES:
             raise ValueError(f"controllers.{name}.mode must be one of {prompt.MODES}, got {self.mode!r}")
+        self.prompt = cfg["controllers"][name].get("prompt")
+        if self.prompt not in prompt.VERSIONS:
+            raise ValueError(f"controllers.{name}.prompt must be one of {prompt.VERSIONS}, got {self.prompt!r}")
         llm = cfg["llm"]
         missing = [k for k in REQUIRED if llm.get(k) is None]
         if missing:
@@ -79,14 +84,14 @@ class LLMController(Controller):
         if env.time_in_phase(iid) + self.interval >= self.max_green:
             allowed.remove(cur)
         obs = prompt.observe(env, iid, allowed, self.mode, self.min_green)
-        msgs = prompt.messages(obs)
+        msgs = prompt.messages(obs, self.prompt)
         rec: dict[str, Any] = {"step": int(env.time), "intersection": iid, "current_phase": cur,
                                "time_in_phase": env.time_in_phase(iid), "allowed": allowed}
         try:
-            res = self.client.chat(msgs, prompt.response_schema(allowed))
+            res = self.client.chat(msgs, prompt.response_schema(allowed, self.prompt))
             rec.update(latency_s=res.latency_s, prompt_tokens=res.prompt_tokens,
                        response_tokens=res.response_tokens, server_model=res.model, raw=res.content)
-            phase, reason = prompt.parse_response(res.content, allowed)
+            phase, reason = prompt.parse_response(res.content, allowed, prompt.MAX_REASON_WORDS[self.prompt])
         except LLMUnavailable:
             raise
         except (LLMError, prompt.InvalidResponse) as e:
@@ -135,7 +140,7 @@ class LLMController(Controller):
         }
 
     def info(self) -> dict[str, Any]:
-        return {"name": self.name, "mode": self.mode, "decision_interval": self.interval,
+        return {"name": self.name, "mode": self.mode, "prompt": self.prompt, "decision_interval": self.interval,
                 "min_green": self.min_green, "phases": "all",
                 "client": {"host": self.client.host, "endpoint": self.client.endpoint,
                            "timeout_s": self.client.timeout_s, "options": self.client.options,

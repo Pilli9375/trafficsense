@@ -12,6 +12,7 @@ CONTROLLERS = {
     "maxpressure": partial(MaxPressureController, name="maxpressure"),
     "maxpressure_15s": partial(MaxPressureController, name="maxpressure_15s"),
     "maxpressure_5s": partial(MaxPressureController, name="maxpressure_5s"),
+    "llm_v1": partial(LLMController, name="llm_v1"),
     "llm_cooperative": partial(LLMController, name="llm_cooperative"),
     "llm_isolated": partial(LLMController, name="llm_isolated"),
 }
