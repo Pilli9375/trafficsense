@@ -1,9 +1,12 @@
 """Calibrate the Indian 2x2 demand levels against measured capacity, under MaxPressure.
 
 1. Capacity (trafficsense.sim.capacity), with the scenario's vehicle mix:
-   * stop-line saturation flow s of a straight and a protected-turn lane (queue discharge);
+   * stop-line saturation flow s and start-up lost time l of a straight and a protected-turn
+     lane: queue discharge, line fitted to cumulative departures, mean over 30 random-order
+     queues (measure_discharge_mixed; the same measurement fixedtime_webster uses);
    * entry admission limit of an entry lane (CityFlow insertion, permanent green).
-2. Sweep total demand R (veh/h). For each R and seed: generate flows, run MaxPressure for
+2. Sweep total demand R (veh/h). For each R and seed: generate flows, run MaxPressure
+   (controllers.maxpressure in the config, i.e. the tuned default) for
    duration_s steps and record the state at that moment, then keep running with no new
    arrivals (up to --drain-max s) and record when the network is empty.
    Also, from the flow file: the busiest non-right-turn lane's demand / s, Webster's critical
@@ -14,6 +17,13 @@
    * R* = the lowest swept R at which any of the seeds does not drain.
    * peak = the largest swept R <= 0.9 * R*, and every seed must drain at it.
    * off-peak = peak / 2 (ASSUMPTION: off-peak demand is half the peak demand).
+
+4. Controller-independent reference (reported, NOT used by the rule above): Webster's
+   capacity limit. With Webster splits, a cycle of C s is undersaturated only if
+   Y < (C - L) / C, with L = 4 * (transition + l). At the longest cycle allowed
+   (controllers.fixedtime_webster.cycle_max) this gives Y_cap. Reported: the mean over seeds of
+   Y max (the busiest intersection's Y) at every swept R, R at which it reaches Y_cap
+   (linear interpolation), and Y max / Y_cap at R*, peak and off-peak. ANALYTIC.
 
 Output: outputs/validation/indian_demand_calibration.json. The chosen levels are then written
 into configs/scenarios/indian_2x2.yaml by hand (the script prints them).
@@ -29,7 +39,7 @@ from pathlib import Path
 from trafficsense.config import load_config, repo_root
 from trafficsense.control import make_controller
 from trafficsense.experiment import git_info
-from trafficsense.sim.capacity import (critical_flow_ratio, lane_demand, measure_discharge,
+from trafficsense.sim.capacity import (critical_flow_ratio, lane_demand, measure_discharge_mixed,
                                        measure_saturation, mixed_feed, turn_route)
 from trafficsense.sim.demand import VEHICLE_KEYS, Network, generate
 from trafficsense.sim.env import TrafficEnv
@@ -41,24 +51,28 @@ DRAIN_MAX_S = 900
 PEAK_FRACTION = 0.9
 OFFPEAK_OVER_PEAK = 0.5
 FEED_VEH_PER_S = 2.0
+DISCHARGE_REPS = 30
+DISCHARGE_SEED = 0
 
 
 def measure_capacity(sc, rp, net):
     nw = Network(net)
     entry = nw.entry_roads[0]
     feed = mixed_feed(sc["vehicle_types"], FEED_VEH_PER_S, VEHICLE_KEYS)
-    straight = measure_discharge(rp, net, turn_route(net, entry, "go_straight"), feed)
-    left = measure_discharge(rp, net, turn_route(net, entry, "turn_left"), feed)
+    sat = {t: measure_discharge_mixed(rp, net, turn_route(net, entry, t), sc["vehicle_types"], VEHICLE_KEYS,
+                                      reps=DISCHARGE_REPS, seed=DISCHARGE_SEED)
+           for t in ("go_straight", "turn_left")}
     admit = measure_saturation(rp, net, turn_route(net, entry, "go_straight"), feed)
     return {
         "feed_veh_per_s": FEED_VEH_PER_S,
-        "saturation_flow": {"go_straight": straight, "turn_left": left},
+        "saturation_flow": sat,
+        "startup_lost_time_s": sum(v["startup_lost_time_s"] for v in sat.values()) / len(sat),
         "entry_admission": admit,
     }
 
 
 def demand_analysis(net, flows, cap, duration_s):
-    s = {t: cap["saturation_flow"][t]["saturation_flow_veh_per_hour"] for t in ("go_straight", "turn_left")}
+    s = {t: cap["saturation_flow"][t]["fit_saturation_flow_veh_per_hour"] for t in ("go_straight", "turn_left")}
     admit = cap["entry_admission"]["measured_veh_per_hour"]
     per_h = 3600.0 / duration_s
     lanes = lane_demand(net, flows)
@@ -128,6 +142,42 @@ def run_maxpressure(cfg, rp, flow_path, seed, duration_s, drain_max):
     }
 
 
+def webster_reference(cfg, net, cap, sweep, selection):
+    """Step 4 of the docstring: where the demand levels sit against Webster's capacity limit."""
+    trans = {i.transition_phase.duration for i in net.intersections.values()}
+    if len(trans) != 1:
+        raise ValueError(f"Expected one transition duration, got {trans}")
+    (T,) = trans
+    n = {len(i.paired_phases) for i in net.intersections.values()}
+    if len(n) != 1:
+        raise ValueError(f"Expected the same number of paired phases everywhere, got {n}")
+    (n,) = n
+    c_max = float(cfg["controllers"]["fixedtime_webster"]["cycle_max"])
+    L = n * (T + cap["startup_lost_time_s"])
+    y_cap = (c_max - L) / c_max
+    rates = sorted({r["veh_per_hour"] for r in sweep})
+    y_mean = {R: sum(r["Y_max_ANALYTIC"] for r in sweep if r["veh_per_hour"] == R)
+              / sum(1 for r in sweep if r["veh_per_hour"] == R) for R in rates}
+    r_at_cap = None
+    for a, b in zip(rates, rates[1:]):
+        if y_mean[a] < y_cap <= y_mean[b]:
+            r_at_cap = a + (b - a) * (y_cap - y_mean[a]) / (y_mean[b] - y_mean[a])
+            break
+    out = {"lost_time_L_s": L, "cycle_max_s": c_max, "Y_cap": y_cap,
+           "Y_max_mean_by_rate": {str(R): y_mean[R] for R in rates},
+           "R_at_Y_cap_veh_per_hour": r_at_cap}
+    for key in ("R_star", "peak_veh_per_hour", "offpeak_veh_per_hour"):
+        R = selection.get(key)
+        if R is None:
+            continue
+        # off-peak may not be a swept rate: Y is proportional to demand, so scale from the nearest one
+        near = min(rates, key=lambda x: abs(x - R))
+        y = y_mean[near] * R / near
+        out[key] = {"veh_per_hour": R, "Y_max": y, "Y_max_over_Y_cap": y / y_cap,
+                    "Y_from_swept_rate": near}
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--config", default="configs/default.yaml")
@@ -148,8 +198,9 @@ def main():
 
     t0 = time.perf_counter()
     cap = measure_capacity(sc, rp, net)
-    print(f"saturation flow straight {cap['saturation_flow']['go_straight']['saturation_flow_veh_per_hour']:.0f}, "
-          f"protected turn {cap['saturation_flow']['turn_left']['saturation_flow_veh_per_hour']:.0f}, "
+    print(f"saturation flow straight {cap['saturation_flow']['go_straight']['fit_saturation_flow_veh_per_hour']:.0f}, "
+          f"protected turn {cap['saturation_flow']['turn_left']['fit_saturation_flow_veh_per_hour']:.0f}, "
+          f"start-up lost time {cap['startup_lost_time_s']:.2f} s, "
           f"entry admission {cap['entry_admission']['measured_veh_per_hour']:.0f} veh/h", flush=True)
 
     sweep = []
@@ -185,6 +236,7 @@ def main():
         if cands:
             selection["peak_veh_per_hour"] = max(cands)
             selection["offpeak_veh_per_hour"] = max(cands) * OFFPEAK_OVER_PEAK
+    selection["webster_reference_ANALYTIC"] = webster_reference(cfg, net, cap, sweep, selection)
     out = {
         "provenance": {"script": "scripts/calibrate_indian_demand.py", "controller": "maxpressure",
                        "controller_params": make_controller("maxpressure", cfg).info(),
