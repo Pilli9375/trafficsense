@@ -83,7 +83,8 @@ llm:
   timeout_s: 60        # per call; a timeout counts as a failed decision
   temperature: 0
   seed: 0              # LLM sampling seed, fixed (recorded in every summary.json)
-  num_ctx: 4096        # context window (tokens); prompts are well under 1500
+  num_ctx: 2048        # context window (tokens). Prompts are ~650; at 4096 llama3.2:3b no longer fits
+                       # fully in the GTX 1650's VRAM. A prompt that could be truncated raises.
   num_predict: 128     # cap on generated tokens; the JSON answer needs about 40
   keep_alive: 30m      # keep the model loaded between calls
   decision_interval: null  # s; decided after scripts/benchmark_llm.py

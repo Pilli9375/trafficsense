@@ -94,3 +94,9 @@ def test_from_config_requires_every_setting(cfg):
         OllamaClient.from_config(bad, session=FakeSession())
     with pytest.raises(ValueError, match="provider"):
         OllamaClient.from_config(dict(llm, provider="openai"), session=FakeSession())
+
+
+def test_prompt_that_may_be_truncated_raises():
+    c, _ = client((200, dict(CHAT_OK, prompt_eval_count=2000)), num_ctx=2048, num_predict=128)
+    with pytest.raises(ValueError, match="num_ctx"):
+        c.chat([{"role": "user", "content": "hi"}], {})

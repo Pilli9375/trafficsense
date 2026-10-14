@@ -10,7 +10,9 @@ Errors are raised, never hidden:
   * LLMTimeout      no answer within timeout_s.
   * LLMServerError  the server answered with an HTTP error or an "error" field, or a body
                     that is not the expected chat response.
-Each error has `failure_type`, which the controller counts.
+Each error has `failure_type`, which the controller counts. A prompt that may not fit the
+context window (prompt tokens + num_predict > num_ctx) raises ValueError: Ollama would
+silently truncate it, so this is a configuration error that stops the run.
 
 The HTTP session is injectable (`session=`) so tests can use an in-process fake; nothing in
 the package starts a fake server.
@@ -148,6 +150,11 @@ class OllamaClient:
         def secs(k: str) -> float | None:
             return resp[k] / 1e9 if isinstance(resp.get(k), (int, float)) else None
 
+        n_prompt = resp.get("prompt_eval_count")
+        if isinstance(n_prompt, int) and n_prompt + self.options["num_predict"] > self.options["num_ctx"]:
+            # Ollama silently drops the start of a prompt that does not fit; refuse instead.
+            raise ValueError(f"Prompt of {n_prompt} tokens + num_predict {self.options['num_predict']} exceeds "
+                             f"num_ctx {self.options['num_ctx']}; raise llm.num_ctx")
         return ChatResult(content=msg["content"], model=str(resp.get("model", "")), latency_s=latency,
                           prompt_tokens=resp.get("prompt_eval_count"), response_tokens=resp.get("eval_count"),
                           total_duration_s=secs("total_duration"), load_duration_s=secs("load_duration"),
