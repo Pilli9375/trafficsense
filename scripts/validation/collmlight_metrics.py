@@ -13,6 +13,8 @@ Mirrors utils/cityflow_env.py and utils/oneline.py in the CoLLMLight repo, inclu
   * waiting time: for each running vehicle with speed < 0.1, the length of its *current*
     stop on its current drivable (reset when it moves or changes lane/link); the mean over
     currently stopped vehicles is sampled once per action step and averaged over steps.
+  * lane-change shadows ("<id>_shadow"): their ATT skips them, but their throughput counts
+    them among all vehicles before skipping, so every shadow ever seen counts as "left".
 These are NOT the definitions TrafficSense reports; they exist only to compare like with like.
 """
 from __future__ import annotations
@@ -81,6 +83,8 @@ class CoLLMLightMetrics:
         for d in self.arrive_leave.values():
             for v, (enter, leave) in d.items():
                 all_veh.add(v)
+                if "shadow" in v:
+                    continue
                 if math.isnan(leave):
                     not_left.add(v)
                     leave = self.run_counts

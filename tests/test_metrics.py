@@ -73,3 +73,17 @@ def test_cityflow_att_includes_vehicles_waiting_to_enter(cfg, synthetic_4x4):
     assert len(pending) > len(prev)            # some vehicles are still queued to enter
     total = sum(finish[v] - start[v] for v in finish) + sum(now - start[v] for v in pending)
     assert env.eng.get_average_travel_time() == pytest.approx(total / (len(finish) + len(pending)), abs=1e-6)
+
+
+def test_lane_change_shadows_are_not_vehicles(cfg):
+    # Jinan with lane changing produces "<id>_shadow" placeholders from ~t=139
+    on = {**cfg, "sim": {**cfg["sim"], "lane_change": True}}
+    env = TrafficEnv(on, "jinan_3x4")
+    m = MetricsTracker(env)
+    seen_shadow = False
+    for _ in range(300):
+        env.step()
+        m.update()
+        seen_shadow |= any(v.endswith("_shadow") for vs in env.eng.get_lane_vehicles().values() for v in vs)
+    assert seen_shadow
+    assert not any(v.endswith("_shadow") for s in m.int_seen.values() for v in s)

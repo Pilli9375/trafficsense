@@ -14,6 +14,10 @@ Call `update()` once after every `env.step()`.
 * Throughput: vehicles that finished their trip (were running and then left the network).
   Per intersection: vehicles that were on an incoming lane and later on an outgoing lane.
 Apart from ATT, vehicles still waiting to enter the network are not counted.
+With lane changing enabled, CityFlow puts a temporary "<id>_shadow" copy of a lane-changing
+vehicle on the target lane. Shadows are not vehicles (no speed, not in get_vehicles) and are
+skipped here; CityFlow's own per-lane waiting count may include them. With lane_change: false
+(the default) there are no shadows.
 """
 from __future__ import annotations
 
@@ -23,6 +27,7 @@ from typing import Any
 from trafficsense.sim.env import TrafficEnv
 
 STOP_SPEED = 0.1   # m/s
+SHADOW_SUFFIX = "_shadow"
 
 
 class MetricsTracker:
@@ -66,12 +71,16 @@ class MetricsTracker:
             on_in = 0
             for l in self._in_lanes[i]:
                 for v in lane_veh[l]:
+                    if v.endswith(SHADOW_SUFFIX):
+                        continue
                     on_in += 1
                     self.int_seen[i].add(v)
                     if speed[v] < STOP_SPEED:
                         self.int_wait[i] += dt
             for l in self._out_lanes[i]:
                 for v in lane_veh[l]:
+                    if v.endswith(SHADOW_SUFFIX):
+                        continue
                     if v in self.int_seen[i]:
                         self.int_crossed[i].add(v)
             self.rows.append({
