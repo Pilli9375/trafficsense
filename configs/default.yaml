@@ -72,6 +72,11 @@ controllers:
 llm:
   provider: ollama
   host: http://localhost:11434
-  endpoint: /api/chat  # native endpoint, structured output via `format`
+  endpoint: /api/chat  # native endpoint, structured output via `format` (JSON schema)
   model: null          # chosen after scripts/benchmark_llm.py; must be set for LLM runs
-  decision_interval: null  # decided in Phase 3
+  timeout_s: 60        # per call; a timeout counts as a failed decision
+  temperature: 0
+  seed: 0              # LLM sampling seed, fixed (recorded in every summary.json)
+  num_ctx: 4096        # context window (tokens); prompts are well under 1500
+  num_predict: 128     # cap on generated tokens; the JSON answer needs about 40
+  keep_alive: 30m      # keep the model loaded between calls
