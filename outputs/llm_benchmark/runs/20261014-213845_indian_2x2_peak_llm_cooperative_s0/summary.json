@@ -1,0 +1,129 @@
+{
+  "provenance": {
+    "controller": "llm_cooperative",
+    "controller_params": {
+      "name": "llm_cooperative",
+      "mode": "cooperative",
+      "prompt": "v2",
+      "decision_interval": 5,
+      "min_green": 15,
+      "phases": "all",
+      "client": {
+        "host": "http://localhost:11434",
+        "endpoint": "/api/chat",
+        "timeout_s": 60.0,
+        "options": {
+          "temperature": 0.0,
+          "seed": 0,
+          "num_ctx": 2048,
+          "num_predict": 128
+        },
+        "keep_alive": "30m"
+      },
+      "max_consecutive_failures": 20
+    },
+    "model": "llama3.2:3b",
+    "provider": "ollama",
+    "llm": {
+      "calls": 351,
+      "ok": 350,
+      "failures": 1,
+      "failures_by_type": {
+        "reason_too_long": 1
+      },
+      "failure_rate": 0.002849002849002849,
+      "switches_requested": 40,
+      "latency_n": 351,
+      "latency_mean_s": 1.3565207033104714,
+      "latency_p95_s": 1.521505418499146,
+      "latency_max_s": 1.8689745780029625,
+      "prompt_tokens_mean": 285.28205128205127,
+      "response_tokens_mean": 24.641025641025642,
+      "server_reported_models": [
+        "llama3.2:3b"
+      ],
+      "latency_note": "wall clock per call, over calls that returned a response (timeouts excluded, counted as failures)",
+      "model_digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+      "model_details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "llama",
+        "families": [
+          "llama"
+        ],
+        "parameter_size": "3.2B",
+        "quantization_level": "Q4_K_M",
+        "context_length": 131072,
+        "embedding_length": 3072,
+        "runner": "ggml"
+      },
+      "server_version": "0.40.3",
+      "decisions_log": "decisions.jsonl"
+    },
+    "seed": 0,
+    "scenario": "indian_2x2_peak",
+    "roadnet": "data/scenarios/indian_2x2/roadnet.json",
+    "flow": "data/scenarios/indian_2x2/flow_peak_s0.json",
+    "flow_sha256": "9a45e9fdad4c5991de887ec3df95bdea7a89587c47c5657b830e88c29c86f951",
+    "flow_per_seed": true,
+    "sim_steps": 600,
+    "git_commit": "b030fef878a1a8671870125bf87cc4ced715cfaa",
+    "git_dirty": false,
+    "timestamp": "2026-10-14T21:38:45+05:30",
+    "wall_time_s": 477.08,
+    "python": "3.10.12"
+  },
+  "signal": {
+    "min_green": 10,
+    "max_green": 60,
+    "transition_s": [
+      5
+    ],
+    "switches": 40,
+    "forced_switches": 0
+  },
+  "metrics": {
+    "att": 181.52116402116403,
+    "queue_mean_per_intersection": 42.256249999999994,
+    "queue_mean_total": 169.025,
+    "waiting_time_mean": 139.34203296703296,
+    "throughput": 352,
+    "vehicles_entered": 728,
+    "vehicles_running_at_end": 376,
+    "vehicles_waiting_to_enter_at_end": 28,
+    "steps": 600
+  },
+  "per_intersection": {
+    "intersection_1_1": {
+      "queue_mean": 44.461666666666666,
+      "waiting_time_mean": 78.46176470588236,
+      "throughput": 247,
+      "vehicles_seen": 340
+    },
+    "intersection_2_1": {
+      "queue_mean": 37.666666666666664,
+      "waiting_time_mean": 73.37662337662337,
+      "throughput": 215,
+      "vehicles_seen": 308
+    },
+    "intersection_1_2": {
+      "queue_mean": 43.736666666666665,
+      "waiting_time_mean": 86.89403973509934,
+      "throughput": 233,
+      "vehicles_seen": 302
+    },
+    "intersection_2_2": {
+      "queue_mean": 43.16,
+      "waiting_time_mean": 85.74834437086092,
+      "throughput": 204,
+      "vehicles_seen": 302
+    }
+  },
+  "metric_notes": {
+    "att": "engine.get_average_travel_time(): all generated vehicles from scheduled start, incl. those still running or still waiting to enter",
+    "queue_mean_per_intersection": "waiting vehicles (speed<0.1) on incoming lanes, mean over steps and intersections",
+    "queue_mean_total": "same, summed over intersections",
+    "waiting_time_mean": "seconds with speed<0.1 per vehicle, mean over vehicles that entered",
+    "throughput": "vehicles that finished their trip"
+  }
+}

@@ -6,7 +6,7 @@
   "steps": 600,
   "decision_interval_s": 5,
   "min_green_s": 15,
-  "git_commit_of_this_summary": "fba5eed293f4d86a4ec1226d10c316225abd8a49"
+  "git_commit_of_this_summary": "b030fef878a1a8671870125bf87cc4ced715cfaa"
  },
  "arms": {
   "v1": {
@@ -148,13 +148,113 @@
   },
   "v2": {
    "controller": "llm_cooperative",
-   "models": {},
-   "not_run": [
-    "gemma4:e4b",
-    "llama3.2:3b",
-    "qwen2.5:3b"
-   ],
-   "selection": null
+   "models": {
+    "gemma4:e4b": {
+     "run": "20261014-212917_indian_2x2_peak_llm_cooperative_s0",
+     "controller": "llm_cooperative",
+     "att_s": 111.11904761904762,
+     "queue_mean_per_intersection": 17.952916666666667,
+     "throughput": 578,
+     "waiting_time_mean_s": 57.026455026455025,
+     "switches": 120,
+     "git_commit": "b030fef878a1a8671870125bf87cc4ced715cfaa",
+     "model": "gemma4:e4b",
+     "prompt": "v2",
+     "digest": "dc35e8d9c6061baa6f0fa870975ab6932e2542b579b13ea0f199fa4bb7300c9c",
+     "calls": 120,
+     "failures": 0,
+     "failures_by_type": {},
+     "failure_rate": 0.0,
+     "latency_mean_s": 4.849155663333204,
+     "latency_p95_s": 5.3169936867492655,
+     "latency_max_s": 5.884304437000537,
+     "prompt_tokens_mean": 291.01666666666665,
+     "response_tokens_mean": 28.375,
+     "switches_requested": 120,
+     "wall_time_s": 582.62,
+     "vram_peak_minus_idle_mib": 2852,
+     "vram_peak_mib": 2865,
+     "ollama_size_vram_mib": 217.23999881744385,
+     "ollama_size_mib": 217.23999881744385,
+     "warmup_call_s": 21.490203354998812,
+     "forced_switches": 0
+    },
+    "llama3.2:3b": {
+     "run": "20261014-213845_indian_2x2_peak_llm_cooperative_s0",
+     "controller": "llm_cooperative",
+     "att_s": 181.52116402116403,
+     "queue_mean_per_intersection": 42.256249999999994,
+     "throughput": 352,
+     "waiting_time_mean_s": 139.34203296703296,
+     "switches": 40,
+     "git_commit": "b030fef878a1a8671870125bf87cc4ced715cfaa",
+     "model": "llama3.2:3b",
+     "prompt": "v2",
+     "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+     "calls": 351,
+     "failures": 1,
+     "failures_by_type": {
+      "reason_too_long": 1
+     },
+     "failure_rate": 0.002849002849002849,
+     "latency_mean_s": 1.3565207033104714,
+     "latency_p95_s": 1.521505418499146,
+     "latency_max_s": 1.8689745780029625,
+     "prompt_tokens_mean": 285.28205128205127,
+     "response_tokens_mean": 24.641025641025642,
+     "switches_requested": 40,
+     "wall_time_s": 477.08,
+     "vram_peak_minus_idle_mib": 2230,
+     "vram_peak_mib": 2291,
+     "ollama_size_vram_mib": 2210.359998703003,
+     "ollama_size_mib": 2210.359998703003,
+     "warmup_call_s": 5.919602236001083,
+     "forced_switches": 0
+    },
+    "qwen2.5:3b": {
+     "run": "20261014-214648_indian_2x2_peak_llm_cooperative_s0",
+     "controller": "llm_cooperative",
+     "att_s": 146.77380952380952,
+     "queue_mean_per_intersection": 31.110416666666666,
+     "throughput": 498,
+     "waiting_time_mean_s": 98.80820105820106,
+     "switches": 36,
+     "git_commit": "b030fef878a1a8671870125bf87cc4ced715cfaa",
+     "model": "qwen2.5:3b",
+     "prompt": "v2",
+     "digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+     "calls": 355,
+     "failures": 104,
+     "failures_by_type": {
+      "reason_too_long": 104
+     },
+     "failure_rate": 0.29295774647887324,
+     "latency_mean_s": 1.4658958579914507,
+     "latency_p95_s": 1.6543503049975699,
+     "latency_max_s": 2.0350227689996245,
+     "prompt_tokens_mean": 285.30422535211267,
+     "response_tokens_mean": 30.777464788732395,
+     "switches_requested": 31,
+     "wall_time_s": 521.31,
+     "vram_peak_minus_idle_mib": 2058,
+     "vram_peak_mib": 2071,
+     "ollama_size_vram_mib": 1985.3399991989136,
+     "ollama_size_mib": 1985.3399991989136,
+     "warmup_call_s": 4.691894537998451,
+     "forced_switches": 5
+    }
+   },
+   "not_run": [],
+   "selection": {
+    "rule": "eligible: failure rate < 2% and p95 latency < 3.0 s; then lowest mean queue per intersection, tie-break lower ATT",
+    "eligible": [
+     "llama3.2:3b"
+    ],
+    "chosen_model": "llama3.2:3b",
+    "decision_interval_s": 10,
+    "interval_rule": "shortest multiple of 5 s >= p95 latency x 4 intersections",
+    "round_p95_s": 6.086021673996584
+   }
   }
  },
  "baselines": {
@@ -179,5 +279,14 @@
    "git_commit": "29f2b382667aef56adfde129f44527d096145390"
   }
  },
- "overall_selection": null
+ "overall_selection": {
+  "rule": "eligible: failure rate < 2% and p95 latency < 3.0 s; then lowest mean queue per intersection, tie-break lower ATT",
+  "eligible": [
+   "v2 llama3.2:3b"
+  ],
+  "chosen_model": "v2 llama3.2:3b",
+  "decision_interval_s": 10,
+  "interval_rule": "shortest multiple of 5 s >= p95 latency x 4 intersections",
+  "round_p95_s": 6.086021673996584
+ }
 }

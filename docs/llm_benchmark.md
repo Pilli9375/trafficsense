@@ -50,9 +50,9 @@ benchmark was run, and kept unchanged for Phase 3b:
 | v1 | `gemma4:e4b` | 160 | 0.6% (reason_too_long 1) | 7.55 | 8.36 | 671 | 2852 | 217 / 217 | 112.2 | 19.44 | 564 | 104 | no |
 | v1 | `llama3.2:3b` | 288 | 6.2% (reason_too_long 18) | 3.14 | 3.35 | 654 | 2280 | 2210 / 2210 | 181.1 | 40.94 | 348 | 62 | no |
 | v1 | `qwen2.5:3b` | 159 | 0.0% (none) | 3.01 | 3.34 | 653 | 2060 | 1985 / 1985 | 141.2 | 29.15 | 465 | 105 | no |
-| v2 | `gemma4:e4b` | not run |  |  |  |  |  |  |  |  |  |  |  |
-| v2 | `llama3.2:3b` | not run |  |  |  |  |  |  |  |  |  |  |  |
-| v2 | `qwen2.5:3b` | not run |  |  |  |  |  |  |  |  |  |  |  |
+| v2 | `gemma4:e4b` | 120 | 0.0% (none) | 4.85 | 5.32 | 291 | 2852 | 217 / 217 | 111.1 | 17.95 | 578 | 120 | no |
+| v2 | `llama3.2:3b` | 351 | 0.3% (reason_too_long 1) | 1.36 | 1.52 | 285 | 2230 | 2210 / 2210 | 181.5 | 42.26 | 352 | 40 | yes |
+| v2 | `qwen2.5:3b` | 355 | 29.3% (reason_too_long 104) | 1.47 | 1.65 | 285 | 2058 | 1985 / 1985 | 146.8 | 31.11 | 498 | 36 | no |
 | baseline | maxpressure | – | – | – | – | – | – | – | 92.5 | 11.85 | 623 | 115 | – |
 | baseline | fixedtime_webster | – | – | – | – | – | – | – | 97.4 | 13.49 | 626 | 110 | – |
 <!-- END:llm_benchmark -->
@@ -63,10 +63,26 @@ Same model across arms (ATT and queue over the same 600 s):
 | Model | Queue / int. (v1 / v2) | ATT at 600 s (v1 / v2) | Latency p95 s (v1 / v2) | Failure rate (v1 / v2) |
 |---|---|---|---|---|
 | `gemma3:4b` | 46.35 / – | 197.4 / – | 5.43 / – | 0.0% / – |
-| `gemma4:e4b` | 19.44 / – | 112.2 / – | 8.36 / – | 0.6% / – |
-| `llama3.2:3b` | 40.94 / – | 181.1 / – | 3.35 / – | 6.2% / – |
-| `qwen2.5:3b` | 29.15 / – | 141.2 / – | 3.34 / – | 0.0% / – |
+| `gemma4:e4b` | 19.44 / 17.95 | 112.2 / 111.1 | 8.36 / 5.32 | 0.6% / 0.0% |
+| `llama3.2:3b` | 40.94 / 42.26 | 181.1 / 181.5 | 3.35 / 1.52 | 6.2% / 0.3% |
+| `qwen2.5:3b` | 29.15 / 31.11 | 141.2 / 146.8 | 3.34 / 1.65 | 0.0% / 29.3% |
 <!-- END:llm_compare -->
+
+What the models chose, replayed from each run's decision log
+(`scripts/analyze_llm_decisions.py`; the replay reproduces every run's ATT exactly). Pressure
+here is MaxPressure's at the moment of each decision; v2 showed it to the model:
+
+<!-- BEGIN:llm_decisions -->
+| Prompt | Model | Successful calls | Kept current phase | Chose highest-pressure phase | Kept current although another had higher pressure |
+|---|---|---|---|---|---|
+| v1 | `gemma3:4b` | 333 | 86% | 4% | 95% |
+| v1 | `gemma4:e4b` | 159 | 35% | 9% | 34% |
+| v1 | `llama3.2:3b` | 270 | 77% | 2% | 84% |
+| v1 | `qwen2.5:3b` | 159 | 34% | 18% | 34% |
+| v2 | `gemma4:e4b` | 120 | 0% | 40% | 0% |
+| v2 | `llama3.2:3b` | 350 | 89% | 6% | 99% |
+| v2 | `qwen2.5:3b` | 251 | 88% | 6% | 100% |
+<!-- END:llm_decisions -->
 
 ## Selection
 
@@ -74,8 +90,8 @@ Same model across arms (ATT and queue over the same 600 s):
 | Applied to | Eligible | Chosen | Decision interval |
 |---|---|---|---|
 | v1 | none | none | – |
-| v2 | arm incomplete | – | – |
-| all arms | not every arm is complete | – | – |
+| v2 | llama3.2:3b | llama3.2:3b | 10 s (p95 × intersections = 6.1 s) |
+| all arms | v2 llama3.2:3b | v2 llama3.2:3b | 10 s (p95 × intersections = 6.1 s) |
 <!-- END:llm_selection -->
 
 ## Phase 3a: prompt v1
@@ -139,3 +155,35 @@ committed before any v2 run:
 
 Everything else is unchanged: same scenario, seed, 600 steps, timing, Ollama options, GPU
 procedure and selection rule.
+
+### v2 findings
+
+* **By the rule, v2 recommends `llama3.2:3b`** with a decision interval of 10 s (p95 1.52 s ×
+  4 intersections = 6.1 s): it is the only eligible v2 model (1 failure in 351 calls). It is
+  also **the worst-controlling v2 model**: queue 42.26 vehicles per intersection and ATT
+  181.5 s, as bad as with v1 and far behind MaxPressure (11.85, 92.5 s). The rule screens on
+  reliability and speed and then picks the lowest queue among what is left; with one model
+  left, it picks that one whatever its queue. This is reported as the rule's result, not as a
+  model worth running.
+* **Shorter prompts made calls about twice as fast:** p95 1.52 s (`llama3.2:3b`) and 1.65 s
+  (`qwen2.5:3b`) against 3.35 and 3.34 s with v1; `gemma4:e4b` went from 8.36 to 5.32 s. The
+  prompts averaged 285–291 tokens (target < 300).
+* **Precomputed pressures did not make the small models follow pressure.** `llama3.2:3b` and
+  `qwen2.5:3b` kept the current phase in 89% and 88% of their successful calls, and chose the
+  highest-pressure allowed phase in 6%; whenever another allowed phase had higher pressure,
+  they kept the current one in 99% and 100% of those calls. With v1 `qwen2.5:3b` kept the
+  phase in 34% of calls. So dropping the "switching wastes green time" warning did not stop
+  the keeping; v2 made it worse for these two models. Their reasons suggest why:
+  `llama3.2:3b` reads pressure as something to avoid ("Low pressure, short queues, and low
+  travel time", its second most common reason); the v2 prompt defines pressure but, to stay
+  neutral, does not say which way favours a phase.
+* **`qwen2.5:3b` failed 29.3% of its calls** (104 of 355), every one a reason over 15 words.
+  It copies the format placeholder `<at most 15 words>` into its answers ("At most 15
+  vehicles are stopped, ..."; "At most 15 words: Switching to ..."; 250 of its 355 answers
+  contain "at most 15"), and the failed reasons run to 16–23 words. A failed call keeps the current phase, which adds to its keeping.
+* **`gemma4:e4b` is the one model that changed behaviour:** it never kept the current phase
+  under v2 and chose the highest-pressure phase in 40% of its calls (v1: 9%). It has the lowest
+  queue of any LLM run so far (17.95) and no failures, but is not eligible (p95 5.32 s).
+* Not tested: a prompt that says higher pressure means more need for green, or a different
+  reason format. Either would be a v3, i.e. another change after seeing the data, and is
+  the user's decision.

@@ -1,0 +1,89 @@
+{
+ "script": "scripts/analyze_llm_decisions.py",
+ "runs": [
+  {
+   "run": "20261014-173520_indian_2x2_peak_llm_cooperative_s0",
+   "model": "gemma3:4b",
+   "controller": "llm_cooperative",
+   "prompt": "v1",
+   "calls": 333,
+   "ok": 333,
+   "keep_rate": 0.8648648648648649,
+   "highest_pressure_rate": 0.03903903903903904,
+   "keep_when_other_higher_rate": 0.9523809523809523,
+   "replay_att_matches": true
+  },
+  {
+   "run": "20261014-180240_indian_2x2_peak_llm_cooperative_s0",
+   "model": "gemma4:e4b",
+   "controller": "llm_cooperative",
+   "prompt": "v1",
+   "calls": 160,
+   "ok": 159,
+   "keep_rate": 0.34591194968553457,
+   "highest_pressure_rate": 0.09433962264150944,
+   "keep_when_other_higher_rate": 0.34,
+   "replay_att_matches": true
+  },
+  {
+   "run": "20261014-182204_indian_2x2_peak_llm_cooperative_s0",
+   "model": "llama3.2:3b",
+   "controller": "llm_cooperative",
+   "prompt": "v1",
+   "calls": 288,
+   "ok": 270,
+   "keep_rate": 0.7703703703703704,
+   "highest_pressure_rate": 0.018518518518518517,
+   "keep_when_other_higher_rate": 0.8448979591836735,
+   "replay_att_matches": true
+  },
+  {
+   "run": "20261014-183637_indian_2x2_peak_llm_cooperative_s0",
+   "model": "qwen2.5:3b",
+   "controller": "llm_cooperative",
+   "prompt": "v1",
+   "calls": 159,
+   "ok": 159,
+   "keep_rate": 0.33962264150943394,
+   "highest_pressure_rate": 0.1761006289308176,
+   "keep_when_other_higher_rate": 0.3401360544217687,
+   "replay_att_matches": true
+  },
+  {
+   "run": "20261014-212917_indian_2x2_peak_llm_cooperative_s0",
+   "model": "gemma4:e4b",
+   "controller": "llm_cooperative",
+   "prompt": "v2",
+   "calls": 120,
+   "ok": 120,
+   "keep_rate": 0.0,
+   "highest_pressure_rate": 0.4,
+   "keep_when_other_higher_rate": 0.0,
+   "replay_att_matches": true
+  },
+  {
+   "run": "20261014-213845_indian_2x2_peak_llm_cooperative_s0",
+   "model": "llama3.2:3b",
+   "controller": "llm_cooperative",
+   "prompt": "v2",
+   "calls": 351,
+   "ok": 350,
+   "keep_rate": 0.8857142857142857,
+   "highest_pressure_rate": 0.06,
+   "keep_when_other_higher_rate": 0.9899665551839465,
+   "replay_att_matches": true
+  },
+  {
+   "run": "20261014-214648_indian_2x2_peak_llm_cooperative_s0",
+   "model": "qwen2.5:3b",
+   "controller": "llm_cooperative",
+   "prompt": "v2",
+   "calls": 355,
+   "ok": 251,
+   "keep_rate": 0.8764940239043825,
+   "highest_pressure_rate": 0.05976095617529881,
+   "keep_when_other_higher_rate": 1.0,
+   "replay_att_matches": true
+  }
+ ]
+}

@@ -72,3 +72,14 @@ def test_stored_benchmark_reproduces_phase_3a_selection(bench):
     v1 = b["arms"]["v1"]
     assert sorted(v1["models"]) == sorted(bench.MODELS) and v1["selection"]["eligible"] == []
     assert v1["models"]["qwen2.5:3b"]["latency_p95_s"] == pytest.approx(3.34, abs=0.005)
+
+
+def test_decision_replay_reproduces_a_stored_run():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("analyze", repo_root() / "scripts" / "analyze_llm_decisions.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    from trafficsense.config import load_config
+    run = sorted((repo_root() / mod.RUNS).glob("*/decisions.jsonl"))[0].parent
+    r = mod.replay(load_config("configs/default.yaml"), run)     # raises if the replay's ATT differs
+    assert r["replay_att_matches"] and 0 <= r["keep_rate"] <= 1 and r["ok"] <= r["calls"]
