@@ -1,0 +1,33 @@
+{
+  "source": "CoLLMLight code (unmodified), run via scripts/validation/run_collmlight_baseline.py",
+  "collmlight_commit": "ce204a90a238e206fa5673b6922aab3a6a9fc597",
+  "entry_point": "run_fixedtime.main",
+  "model": "Fixedtime",
+  "dataset": "hangzhou",
+  "traffic_file": "anon_4_4_hangzhou_real.json",
+  "numpy_seed": 0,
+  "engine_configs": [
+    {
+      "seed": 44,
+      "laneChange": true,
+      "interval": 1
+    },
+    {
+      "seed": 47,
+      "laneChange": true,
+      "interval": 1
+    }
+  ],
+  "results": {
+    "test_reward_over": 0.0,
+    "test_throughput_over": 1526.0,
+    "test_avg_queue_len_over": 694.5416666666666,
+    "test_queuing_vehicle_num_over": 83345.0,
+    "test_avg_waiting_time_over": 827.5488426109895,
+    "test_avg_travel_time_over": 1002.7630564318262,
+    "cityflow_att": 1054.6758204956463,
+    "vehicles_running_at_end": 1409,
+    "sim_time_end": 3600.0
+  },
+  "timestamp": "2026-10-14T12:13:48+05:30"
+}

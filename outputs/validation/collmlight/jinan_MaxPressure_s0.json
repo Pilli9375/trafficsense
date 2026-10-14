@@ -1,0 +1,33 @@
+{
+  "source": "CoLLMLight code (unmodified), run via scripts/validation/run_collmlight_baseline.py",
+  "collmlight_commit": "ce204a90a238e206fa5673b6922aab3a6a9fc597",
+  "entry_point": "run_maxpressure.main",
+  "model": "MaxPressure",
+  "dataset": "jinan",
+  "traffic_file": "anon_3_4_jinan_real_2000.json",
+  "numpy_seed": 0,
+  "engine_configs": [
+    {
+      "seed": 44,
+      "laneChange": true,
+      "interval": 1
+    },
+    {
+      "seed": 47,
+      "laneChange": true,
+      "interval": 1
+    }
+  ],
+  "results": {
+    "test_reward_over": 0.0,
+    "test_throughput_over": 4187.0,
+    "test_avg_queue_len_over": 106.575,
+    "test_queuing_vehicle_num_over": 12789.0,
+    "test_avg_waiting_time_over": 38.248717948276514,
+    "test_avg_travel_time_over": 273.1993127147766,
+    "cityflow_att": 317.8405863490609,
+    "vehicles_running_at_end": 250,
+    "sim_time_end": 3600.0
+  },
+  "timestamp": "2026-10-14T12:09:01+05:30"
+}

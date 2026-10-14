@@ -1,0 +1,33 @@
+{
+  "source": "CoLLMLight code (unmodified), run via scripts/validation/run_collmlight_baseline.py",
+  "collmlight_commit": "ce204a90a238e206fa5673b6922aab3a6a9fc597",
+  "entry_point": "run_maxpressure.main",
+  "model": "MaxPressure",
+  "dataset": "hangzhou",
+  "traffic_file": "anon_4_4_hangzhou_real.json",
+  "numpy_seed": 0,
+  "engine_configs": [
+    {
+      "seed": 44,
+      "laneChange": true,
+      "interval": 1
+    },
+    {
+      "seed": 47,
+      "laneChange": true,
+      "interval": 1
+    }
+  ],
+  "results": {
+    "test_reward_over": 0.0,
+    "test_throughput_over": 2751.0,
+    "test_avg_queue_len_over": 68.99166666666666,
+    "test_queuing_vehicle_num_over": 8279.0,
+    "test_avg_waiting_time_over": 49.600853612314374,
+    "test_avg_travel_time_over": 325.32886356017434,
+    "cityflow_att": 365.72069658405894,
+    "vehicles_running_at_end": 281,
+    "sim_time_end": 3600.0
+  },
+  "timestamp": "2026-10-14T12:14:17+05:30"
+}
