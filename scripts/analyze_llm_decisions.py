@@ -17,7 +17,9 @@ Per run, over successful calls:
                        the allowed phases do not all have the same pressure)
   keep, other higher   kept the current phase although an allowed phase had higher pressure,
                        as a share of the calls where one had
-These describe the decisions; they are not simulator metrics.
+The LLM's own answer is scored (llm_phase; for the guarded arm that is before the guard); the
+replay applies the phase actually applied. These describe the decisions; they are not
+simulator metrics.
 """
 import argparse
 import collections
@@ -33,7 +35,10 @@ from trafficsense.sim.env import TrafficEnv
 RUNS = Path("outputs/llm_benchmark/runs")
 OUT = Path("outputs/llm_benchmark/decisions_analysis.json")
 DOC = Path("docs/llm_benchmark.md")
-ARM_ORDER = {"v1": 0, "v2": 1, "guided": 2}
+ARMS = {("llm_cooperative", "v1"): "v1", ("llm_v1", "v1"): "v1", ("llm_cooperative", "v2"): "v2",
+        ("llm_guided_mp", "guided"): "hybrid", ("llm_v3", "v3"): "v3",
+        ("llm_guided_mp_v3", "guided_v3"): "hybrid_v3", ("llm_guarded_mp", "guided_v3"): "guarded_v3"}
+ARM_ORDER = ["v1", "v2", "hybrid", "v3", "hybrid_v3", "guarded_v3"]
 
 
 def replay(cfg: dict, run_dir: Path) -> dict:
@@ -55,15 +60,16 @@ def replay(cfg: dict, run_dir: Path) -> dict:
             best, worst = max(allowed.values()), min(allowed.values())
             n["calls"] += 1
             if d["ok"]:
+                ans = d.get("llm_phase", d["phase"])      # runs before llm_phase existed: no guard
                 n["ok"] += 1
-                n["keep"] += d["phase"] == cur
-                n["highest"] += allowed[d["phase"]] == best
+                n["keep"] += ans == cur
+                n["highest"] += allowed[ans] == best
                 if best > worst:
                     n["spread"] += 1
-                    n["lowest"] += allowed[d["phase"]] == worst
+                    n["lowest"] += allowed[ans] == worst
                 if cur in allowed and allowed[cur] < best:
                     n["other_higher"] += 1
-                    n["keep_other_higher"] += d["phase"] == cur
+                    n["keep_other_higher"] += ans == cur
             env.request_phase(iid, d["phase"])
         env.step()
     if at:
@@ -71,8 +77,9 @@ def replay(cfg: dict, run_dir: Path) -> dict:
     if env.eng.get_average_travel_time() != s["metrics"]["att"]:
         raise SystemExit(f"{run_dir.name}: replay ATT {env.eng.get_average_travel_time()} != run ATT "
                          f"{s['metrics']['att']}")
+    prompt = pv["controller_params"].get("prompt", "v1")
     return {"run": run_dir.name, "model": pv["model"], "controller": pv["controller"],
-            "prompt": pv["controller_params"].get("prompt", "v1"), "calls": n["calls"], "ok": n["ok"],
+            "prompt": prompt, "arm": ARMS[(pv["controller"], prompt)], "calls": n["calls"], "ok": n["ok"],
             "keep_rate": n["keep"] / n["ok"], "highest_pressure_rate": n["highest"] / n["ok"],
             "lowest_pressure_rate": n["lowest"] / n["spread"] if n["spread"] else None,
             "keep_when_other_higher_rate": n["keep_other_higher"] / n["other_higher"] if n["other_higher"] else None,
@@ -84,18 +91,18 @@ def analyse(root: Path) -> dict:
     rows = []
     for p in sorted((root / RUNS).glob("*/decisions.jsonl")):
         rows.append(replay(cfg, p.parent))
-    rows.sort(key=lambda r: (ARM_ORDER[r["prompt"]], r["model"]))
+    rows.sort(key=lambda r: (ARM_ORDER.index(r["arm"]), r["model"]))
     return {"script": "scripts/analyze_llm_decisions.py", "runs": rows}
 
 
 def table(a: dict) -> str:
     def pct(x):
         return "–" if x is None else f"{100 * x:.0f}%"
-    out = ["| Prompt | Model | Successful calls | Kept current phase | Chose highest-pressure phase | "
+    out = ["| Arm (prompt) | Model | Successful calls | Kept current phase | Chose highest-pressure phase | "
            "Chose lowest-pressure phase | Kept current although another had higher pressure |",
            "|---|---|---|---|---|---|---|"]
     for r in a["runs"]:
-        out.append(f"| {r['prompt']} | `{r['model']}` | {r['ok']} | {pct(r['keep_rate'])} | "
+        out.append(f"| {r['arm']} ({r['prompt']}) | `{r['model']}` | {r['ok']} | {pct(r['keep_rate'])} | "
                    f"{pct(r['highest_pressure_rate'])} | {pct(r['lowest_pressure_rate'])} | "
                    f"{pct(r['keep_when_other_higher_rate'])} |")
     return "\n".join(out)

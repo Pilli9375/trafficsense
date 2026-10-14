@@ -43,6 +43,10 @@ def test_benchmark_setup_is_pinned(bench):
     assert bench.ARMS["v1"] == {"controller": "llm_v1", "models": bench.MODELS}
     assert bench.ARMS["v2"] == {"controller": "llm_cooperative", "models": ["gemma4:e4b", "llama3.2:3b", "qwen2.5:3b"]}
     assert bench.ARMS["hybrid"] == {"controller": "llm_guided_mp", "models": bench.ARMS["v2"]["models"]}
+    assert {a: bench.ARMS[a]["controller"] for a in bench.FINAL_ARMS} == {
+        "v3": "llm_v3", "hybrid_v3": "llm_guided_mp_v3", "guarded_v3": "llm_guarded_mp"}
+    assert all(bench.ARMS[a]["models"] == bench.FITS_VRAM for a in bench.FINAL_ARMS)
+    assert bench.EARLIER_ARMS == ["v1", "v2", "hybrid"]
     assert (bench.SCENARIO, bench.SEED, bench.STEPS) == ("indian_2x2_peak", 0, 600)
     assert (bench.DECISION_INTERVAL, bench.MIN_GREEN) == (5, 15)
     assert bench.BASELINES == ["maxpressure", "fixedtime_webster"]
@@ -86,3 +90,32 @@ def test_decision_replay_reproduces_a_stored_run():
     run = sorted((repo_root() / mod.RUNS).glob("*/decisions.jsonl"))[0].parent
     r = mod.replay(load_config("configs/default.yaml"), run)     # raises if the replay's ATT differs
     assert r["replay_att_matches"] and 0 <= r["keep_rate"] <= 1 and r["ok"] <= r["calls"]
+
+
+def arms_with(bench, rows):
+    """rows: {arm: {model: m(...)}}; every arm present, arms not given are complete and empty."""
+    out = {}
+    for a in bench.ARMS:
+        models = rows.get(a, {})
+        out[a] = {"models": models, "selection": bench.select(models, 4)}
+    return out
+
+
+def test_final_decision_takes_final_round_winner_even_if_worse_than_mp(bench):
+    arms = arms_with(bench, {"v3": {"x": m(0.0, 1.0, 30.0, 120)}, "hybrid_v3": {"x": m(0.0, 1.0, 20.0, 110)},
+                             "guarded_v3": {"x": m(0.0, 5.0, 12.0, 95)},       # best queue but too slow
+                             "hybrid": {"x": m(0.0, 1.0, 5.0, 90)}})          # earlier round: not in the pool
+    f = bench.final_decision(arms, {"queue_mean_per_intersection": 11.85}, 4)
+    assert f["step"] == 1 and (f["arm"], f["model"], f["controller"]) == ("hybrid_v3", "x", "llm_guided_mp_v3")
+    assert f["worse_than_maxpressure"] and f["decision_interval_s"] == 5
+
+
+def test_final_decision_falls_back_to_every_round(bench):
+    arms = arms_with(bench, {"v3": {"x": m(0.5, 1.0, 1.0, 1)}, "hybrid": {"x": m(0.0, 1.0, 26.6, 135)},
+                             "v2": {"x": m(0.0, 1.5, 42.3, 181)}})
+    f = bench.final_decision(arms, {"queue_mean_per_intersection": 11.85}, 4)
+    assert f["step"] == 2 and f["chosen_model"] == "hybrid x"
+    none = arms_with(bench, {"v3": {"x": m(0.5, 1.0, 1.0, 1)}})
+    assert bench.final_decision(none, {"queue_mean_per_intersection": 1}, 4)["step"] == 3
+    incomplete = dict(arms, v3={"models": {}, "selection": None})
+    assert bench.final_decision(incomplete, {"queue_mean_per_intersection": 1}, 4) is None

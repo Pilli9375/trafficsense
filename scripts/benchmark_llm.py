@@ -23,6 +23,24 @@ Arms (one controller each):
           the failure counted). Cooperative, prompt "guided". Same 3 models as v2. Also
           reported: how often the LLM's choice differs from MaxPressure's top choice.
 
+Final LLM design round (Phase 3b, pre-registered and committed BEFORE any of its runs):
+  v3          llm_v3: v2 with the prompt fix v3 (llm/prompt.py: "HIGHER pressure = the phase
+              needs green MORE", word limit out of the JSON placeholder). A post-hoc fix of a
+              defect found in the v2/hybrid analysis, not part of the original design.
+  hybrid_v3   llm_guided_mp_v3: the hybrid with prompt guided_v3 (same two changes).
+  guarded_v3  llm_guarded_mp: hybrid_v3 whose answer is applied only if its pressure
+              >= top - 0.2 x |top| (= 0.8 x top for top >= 0), else MaxPressure's choice;
+              guard overrides are counted.
+  Models gemma4:e4b, llama3.2:3b, qwen2.5:3b; same setup and the same selection rule.
+  THIS IS THE FINAL LLM DESIGN ROUND. The final decision (benchmark.json "final"):
+    1. the selection rule over all (arm, model) pairs of the three final-round arms;
+       the chosen pair, with the rule's decision interval, goes to the full experiments,
+       even if its queue is worse than MaxPressure's (that is reported, not acted on);
+    2. if no final-round pair is eligible, the same rule over every (arm, model) pair of
+       every round (v1, v2, hybrid and the final round);
+    3. if nothing is eligible at all, no LLM controller goes to the full experiments.
+  No further prompt or controller tuning after this round.
+
 GPU: before each model, every model Ollama has loaded is unloaded and the GPU must then show
 <= 300 MiB in use (nvidia-smi), else the script stops. The model is loaded with one short
 warm-up call (its load time is recorded), so latencies are of a loaded model. VRAM is
@@ -38,8 +56,9 @@ unchanged in Phase 3b (committed before any v2 run):
      tie-break the lower ATT.
   3. If no model is eligible, no model is recommended by the rule; the table is reported as is.
 The rule is applied within each arm once all of the arm's models are run, and, once every
-arm is complete, over all (arm, model) pairs together: that pair is the recommended
-controller and model.
+arm is complete, over all (arm, model) pairs together (Phase 3b: v1, v2 and hybrid; reported
+as phase3b_selection). For the final round, the final decision above replaces that
+recommendation.
 Decision interval rule, fixed at the same time: the shortest multiple of the 5 s transition
 that is >= (chosen model's p95 latency x number of intersections). On one GPU the calls of a
 decision round run one after another, so this is the shortest interval at which a full round
@@ -67,7 +86,12 @@ MODELS = ["gemma3:4b", "gemma4:e4b", "llama3.2:3b", "qwen2.5:3b"]
 FITS_VRAM = ["gemma4:e4b", "llama3.2:3b", "qwen2.5:3b"]
 ARMS = {"v1": {"controller": "llm_v1", "models": MODELS},
         "v2": {"controller": "llm_cooperative", "models": FITS_VRAM},
-        "hybrid": {"controller": "llm_guided_mp", "models": FITS_VRAM}}
+        "hybrid": {"controller": "llm_guided_mp", "models": FITS_VRAM},
+        "v3": {"controller": "llm_v3", "models": FITS_VRAM},
+        "hybrid_v3": {"controller": "llm_guided_mp_v3", "models": FITS_VRAM},
+        "guarded_v3": {"controller": "llm_guarded_mp", "models": FITS_VRAM}}
+EARLIER_ARMS = ["v1", "v2", "hybrid"]
+FINAL_ARMS = ["v3", "hybrid_v3", "guarded_v3"]
 LEGACY_V1 = "llm_cooperative"   # name of llm_v1 before prompt versions existed
 PROMPT_TOKEN_TARGET = 300
 BASELINES = ["maxpressure", "fixedtime_webster"]
@@ -172,7 +196,9 @@ def row(r: dict) -> dict:
                  warmup_call_s=g["warmup_call_s"], forced_switches=s["signal"]["forced_switches"],
                  mp_disagreement_rate=l.get("mp_disagreement_rate"), mp_disagreements=l.get("mp_disagreements"),
                  mp_disagreements_kept_current=l.get("mp_disagreements_kept_current"),
-                 mp_fallbacks=l.get("mp_fallbacks"))
+                 mp_fallbacks=l.get("mp_fallbacks"), guard_overrides=l.get("guard_overrides"),
+                 guard_override_rate=l.get("guard_override_rate"),
+                 applied_differs_from_mp=l.get("applied_differs_from_mp"))
     return e
 
 
@@ -197,20 +223,44 @@ def report(root: Path) -> dict:
     if missing:
         raise SystemExit(f"Missing baseline runs: {missing}")
     n_int = len(runs[(None, BASELINES[0])]["summary"]["per_intersection"])
-    arms, complete = {}, True
+    arms = {}
     for arm, a in ARMS.items():
         models = {m: row(runs[(arm, m)]) for m in a["models"] if (arm, m) in runs}
         done = len(models) == len(a["models"])
-        complete &= done
         arms[arm] = {"controller": a["controller"], "models": models,
                      "not_run": [m for m in a["models"] if m not in models],
                      "selection": select(models, n_int) if done else None}
-    pairs = {f"{arm} {m}": e for arm, x in arms.items() for m, e in x["models"].items()}
+    done = {a: arms[a]["selection"] is not None for a in ARMS}
+    earlier = {f"{a} {m}": e for a in EARLIER_ARMS for m, e in arms[a]["models"].items()}
     return {"provenance": {"script": "scripts/benchmark_llm.py", "scenario": SCENARIO, "seed": SEED, "steps": STEPS,
                            "decision_interval_s": DECISION_INTERVAL, "min_green_s": MIN_GREEN,
                            "git_commit_of_this_summary": git_info()["commit"]},
             "arms": arms, "baselines": {k: row(runs[(None, k)]) for k in BASELINES},
-            "overall_selection": select(pairs, n_int) if complete else None}
+            "phase3b_selection": select(earlier, n_int) if all(done[a] for a in EARLIER_ARMS) else None,
+            "final": final_decision(arms, row(runs[(None, "maxpressure")]), n_int)}
+
+
+def final_decision(arms: dict, mp: dict, n_int: int) -> dict | None:
+    """The pre-registered final decision (docstring); None until the final-round arms are run."""
+    if any(arms[a]["selection"] is None for a in FINAL_ARMS):
+        return None
+
+    def pool(names):
+        return {f"{a} {m}": e for a in names for m, e in arms[a]["models"].items()}
+    final = {"step": 1, "pool": "final-round arms", **select(pool(FINAL_ARMS), n_int)}
+    if final["chosen_model"] is None:
+        if any(arms[a]["selection"] is None for a in arms):
+            raise SystemExit("No final-round pair is eligible and not every earlier arm is complete")
+        final = {"step": 2, "pool": "every arm of every round", **select(pool(list(arms)), n_int)}
+    if final["chosen_model"] is None:
+        final["step"] = 3
+        return final
+    arm, model = final["chosen_model"].split(" ", 1)
+    e = arms[arm]["models"][model]
+    final.update(arm=arm, controller=ARMS[arm]["controller"], model=model,
+                 queue_vs_maxpressure=[e["queue_mean_per_intersection"], mp["queue_mean_per_intersection"]],
+                 worse_than_maxpressure=e["queue_mean_per_intersection"] > mp["queue_mean_per_intersection"])
+    return final
 
 
 def fmt(x, nd):
@@ -233,40 +283,48 @@ def tables(b: dict) -> dict[str, str]:
                          e["vram_peak_minus_idle_mib"],
                          fmt(e["ollama_size_vram_mib"], 0) + " / " + fmt(e["ollama_size_mib"], 0),
                          fmt(e["att_s"], 1), fmt(e["queue_mean_per_intersection"], 2), e["throughput"], e["switches"],
-                         disagree(e), ("yes" if k in elig else "no") if x["selection"] else "arm incomplete"])
-        rows += [[arm, f"`{m}`", "not run"] + [""] * 12 for m in x["not_run"]]
+                         disagree(e), guard(e), ("yes" if k in elig else "no") if x["selection"] else "arm incomplete"])
+        rows += [[arm, f"`{m}`", "not run"] + [""] * 13 for m in x["not_run"]]
     for k, e in b["baselines"].items():
         rows.append(["baseline", k, "–", "–", "–", "–", "–", "–", "–", fmt(e["att_s"], 1),
-                     fmt(e["queue_mean_per_intersection"], 2), e["throughput"], e["switches"], "–", "–"])
+                     fmt(e["queue_mean_per_intersection"], 2), e["throughput"], e["switches"], "–", "–", "–"])
     t1 = table(["Arm", "Model", "Calls", "Failures", "Latency mean (s)", "Latency p95 (s)", "Prompt tokens (mean)",
                 "VRAM, nvidia-smi peak − idle (MiB)", "Ollama size_vram / size (MiB)", "ATT at 600 s (s)",
-                "Queue / int. (veh)", "Finished trips", "Switches", "Differs from MaxPressure's choice",
-                "Eligible"], rows)
+                "Queue / int. (veh)", "Finished trips", "Switches", "LLM's answer differs from MaxPressure's choice",
+                "Guard replaced the LLM's answer", "Eligible"], rows)
 
     # same model across arms
     models = list(dict.fromkeys(m for x in b["arms"].values() for m in x["models"]))
     arms = list(b["arms"])
-    rows = []
-    for m in models:
-        cells = [b["arms"][a]["models"].get(m) for a in arms]
-        rows.append([f"`{m}`"] + [" / ".join(fmt(e[k], d) if e else "–" for e in cells)
-                                  for k, d in (("queue_mean_per_intersection", 2), ("att_s", 1),
-                                               ("latency_p95_s", 2))]
-                    + [" / ".join(f"{100 * e['failure_rate']:.1f}%" if e else "–" for e in cells)])
-    head = " / ".join(arms)
-    t2 = table(["Model", f"Queue / int. ({head})", f"ATT at 600 s ({head})", f"Latency p95 s ({head})",
-                f"Failure rate ({head})"], rows)
+
+    def grid(cell):
+        rows = [[f"`{m}`"] + [cell(b["arms"][a]["models"][m]) if m in b["arms"][a]["models"] else "–" for a in arms]
+                for m in models]
+        return table(["Model"] + arms, rows)
+    t2 = grid(lambda e: f"{fmt(e['queue_mean_per_intersection'], 2)} / {fmt(e['att_s'], 1)}")
+    t2b = grid(lambda e: f"{fmt(e['latency_p95_s'], 2)} / {100 * e['failure_rate']:.1f}%")
 
     rows = []
     for arm, x in b["arms"].items():
         s = x["selection"]
         rows.append([arm, ", ".join(s["eligible"]) or "none" if s else "arm incomplete",
                      (s["chosen_model"] or "none") if s else "–", interval(s)])
-    o = b["overall_selection"]
-    rows.append(["all arms", ", ".join(o["eligible"]) or "none" if o else "not every arm is complete",
+    o = b["phase3b_selection"]
+    rows.append(["Phase 3b: all of v1, v2, hybrid", ", ".join(o["eligible"]) or "none" if o else "incomplete",
                  (o["chosen_model"] or "none") if o else "–", interval(o)])
+    f = b["final"]
+    if f is None:
+        rows.append(["**Final decision**", "final round incomplete", "–", "–"])
+    else:
+        where = {1: "final-round arms", 2: "every arm (no final-round pair eligible)",
+                 3: "nothing eligible: no LLM controller"}[f["step"]]
+        chosen = "none" if f["chosen_model"] is None else (
+            f"**{f['chosen_model']}** (`{f['controller']}`); queue {f['queue_vs_maxpressure'][0]:.2f} vs "
+            f"MaxPressure {f['queue_vs_maxpressure'][1]:.2f}" + (", worse than MaxPressure"
+                                                                 if f["worse_than_maxpressure"] else ""))
+        rows.append([f"**Final decision** ({where})", ", ".join(f["eligible"]) or "none", chosen, interval(f)])
     t3 = table(["Applied to", "Eligible", "Chosen", "Decision interval"], rows)
-    return {"llm_benchmark": t1, "llm_compare": t2, "llm_selection": t3}
+    return {"llm_benchmark": t1, "llm_compare": t2, "llm_compare_latency": t2b, "llm_selection": t3}
 
 
 def disagree(e: dict) -> str:
@@ -275,6 +333,13 @@ def disagree(e: dict) -> str:
         return "–"
     return (f"{100 * e['mp_disagreement_rate']:.1f}% ({e['mp_disagreements']}; "
             f"{e['mp_disagreements_kept_current']} kept current)")
+
+
+def guard(e: dict) -> str:
+    """Guarded arm only: successful calls whose answer the guard replaced by MaxPressure's choice."""
+    if e.get("guard_override_rate") is None:
+        return "–"
+    return f"{100 * e['guard_override_rate']:.1f}% ({e['guard_overrides']})"
 
 
 def interval(s: dict | None) -> str:
@@ -309,7 +374,7 @@ def main():
         doc = (root / DOC).read_text()
         fresh = report(root)
         ok = render(doc, tables(b)) == doc and all(fresh[k] == b.get(k) for k in ("arms", "baselines",
-                                                                                   "overall_selection"))
+                                                                                   "phase3b_selection", "final"))
         print("docs/llm_benchmark.md matches the results" if ok else
               "docs/llm_benchmark.md or benchmark.json is out of date; run scripts/benchmark_llm.py --report-only")
         sys.exit(0 if ok else 1)
@@ -342,8 +407,7 @@ def main():
         (root / DOC).write_text(render((root / DOC).read_text(), tables(b)))
         print(f"Updated {DOC}")
     print(f"Wrote {OUT}")
-    print(json.dumps({a: x["selection"] for a, x in b["arms"].items()} | {"overall": b["overall_selection"]},
-                     indent=1))
+    print(json.dumps({a: x["selection"] for a, x in b["arms"].items()} | {"final": b["final"]}, indent=1))
 
 
 if __name__ == "__main__":

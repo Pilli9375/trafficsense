@@ -6,7 +6,7 @@
   "steps": 600,
   "decision_interval_s": 5,
   "min_green_s": 15,
-  "git_commit_of_this_summary": "98558aa475749f809c7abc725ea6e862618247eb"
+  "git_commit_of_this_summary": "ed950807781ccaa470d87d0bcb0f73c85bca9509"
  },
  "arms": {
   "v1": {
@@ -44,7 +44,10 @@
      "mp_disagreement_rate": null,
      "mp_disagreements": null,
      "mp_disagreements_kept_current": null,
-     "mp_fallbacks": null
+     "mp_fallbacks": null,
+     "guard_overrides": null,
+     "guard_override_rate": null,
+     "applied_differs_from_mp": null
     },
     "gemma4:e4b": {
      "run": "20261014-180240_indian_2x2_peak_llm_cooperative_s0",
@@ -80,7 +83,10 @@
      "mp_disagreement_rate": null,
      "mp_disagreements": null,
      "mp_disagreements_kept_current": null,
-     "mp_fallbacks": null
+     "mp_fallbacks": null,
+     "guard_overrides": null,
+     "guard_override_rate": null,
+     "applied_differs_from_mp": null
     },
     "llama3.2:3b": {
      "run": "20261014-182204_indian_2x2_peak_llm_cooperative_s0",
@@ -116,7 +122,10 @@
      "mp_disagreement_rate": null,
      "mp_disagreements": null,
      "mp_disagreements_kept_current": null,
-     "mp_fallbacks": null
+     "mp_fallbacks": null,
+     "guard_overrides": null,
+     "guard_override_rate": null,
+     "applied_differs_from_mp": null
     },
     "qwen2.5:3b": {
      "run": "20261014-183637_indian_2x2_peak_llm_cooperative_s0",
@@ -150,7 +159,10 @@
      "mp_disagreement_rate": null,
      "mp_disagreements": null,
      "mp_disagreements_kept_current": null,
-     "mp_fallbacks": null
+     "mp_fallbacks": null,
+     "guard_overrides": null,
+     "guard_override_rate": null,
+     "applied_differs_from_mp": null
     }
    },
    "not_run": [],
@@ -197,7 +209,10 @@
      "mp_disagreement_rate": null,
      "mp_disagreements": null,
      "mp_disagreements_kept_current": null,
-     "mp_fallbacks": null
+     "mp_fallbacks": null,
+     "guard_overrides": null,
+     "guard_override_rate": null,
+     "applied_differs_from_mp": null
     },
     "llama3.2:3b": {
      "run": "20261014-213845_indian_2x2_peak_llm_cooperative_s0",
@@ -233,7 +248,10 @@
      "mp_disagreement_rate": null,
      "mp_disagreements": null,
      "mp_disagreements_kept_current": null,
-     "mp_fallbacks": null
+     "mp_fallbacks": null,
+     "guard_overrides": null,
+     "guard_override_rate": null,
+     "applied_differs_from_mp": null
     },
     "qwen2.5:3b": {
      "run": "20261014-214648_indian_2x2_peak_llm_cooperative_s0",
@@ -269,7 +287,10 @@
      "mp_disagreement_rate": null,
      "mp_disagreements": null,
      "mp_disagreements_kept_current": null,
-     "mp_fallbacks": null
+     "mp_fallbacks": null,
+     "guard_overrides": null,
+     "guard_override_rate": null,
+     "applied_differs_from_mp": null
     }
    },
    "not_run": [],
@@ -321,7 +342,10 @@
      "mp_disagreement_rate": 0.823321554770318,
      "mp_disagreements": 233,
      "mp_disagreements_kept_current": 209,
-     "mp_fallbacks": 1
+     "mp_fallbacks": 1,
+     "guard_overrides": null,
+     "guard_override_rate": null,
+     "applied_differs_from_mp": null
     },
     "llama3.2:3b": {
      "run": "20261014-222046_indian_2x2_peak_llm_guided_mp_s0",
@@ -357,7 +381,10 @@
      "mp_disagreement_rate": 0.9895104895104895,
      "mp_disagreements": 283,
      "mp_disagreements_kept_current": 225,
-     "mp_fallbacks": 1
+     "mp_fallbacks": 1,
+     "guard_overrides": null,
+     "guard_override_rate": null,
+     "applied_differs_from_mp": null
     },
     "qwen2.5:3b": {
      "run": "20261014-222552_indian_2x2_peak_llm_guided_mp_s0",
@@ -393,7 +420,10 @@
      "mp_disagreement_rate": 0.755656108597285,
      "mp_disagreements": 167,
      "mp_disagreements_kept_current": 159,
-     "mp_fallbacks": 28
+     "mp_fallbacks": 28,
+     "guard_overrides": null,
+     "guard_override_rate": null,
+     "applied_differs_from_mp": null
     }
    },
    "not_run": [],
@@ -407,6 +437,36 @@
     "interval_rule": "shortest multiple of 5 s >= p95 latency x 4 intersections",
     "round_p95_s": 4.532455075994949
    }
+  },
+  "v3": {
+   "controller": "llm_v3",
+   "models": {},
+   "not_run": [
+    "gemma4:e4b",
+    "llama3.2:3b",
+    "qwen2.5:3b"
+   ],
+   "selection": null
+  },
+  "hybrid_v3": {
+   "controller": "llm_guided_mp_v3",
+   "models": {},
+   "not_run": [
+    "gemma4:e4b",
+    "llama3.2:3b",
+    "qwen2.5:3b"
+   ],
+   "selection": null
+  },
+  "guarded_v3": {
+   "controller": "llm_guarded_mp",
+   "models": {},
+   "not_run": [
+    "gemma4:e4b",
+    "llama3.2:3b",
+    "qwen2.5:3b"
+   ],
+   "selection": null
   }
  },
  "baselines": {
@@ -431,7 +491,7 @@
    "git_commit": "29f2b382667aef56adfde129f44527d096145390"
   }
  },
- "overall_selection": {
+ "phase3b_selection": {
   "rule": "eligible: failure rate < 2% and p95 latency < 3.0 s; then lowest mean queue per intersection, tie-break lower ATT",
   "eligible": [
    "hybrid llama3.2:3b",
@@ -441,5 +501,6 @@
   "decision_interval_s": 5,
   "interval_rule": "shortest multiple of 5 s >= p95 latency x 4 intersections",
   "round_p95_s": 4.532455075994949
- }
+ },
+ "final": null
 }
