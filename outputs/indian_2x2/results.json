@@ -217,13 +217,83 @@
     2
    ],
    "runs": [
-    "20261014-144404_indian_2x2_offpeak_maxpressure_s0",
-    "20261014-144406_indian_2x2_offpeak_maxpressure_s1",
-    "20261014-144408_indian_2x2_offpeak_maxpressure_s2"
+    "20261014-164910_indian_2x2_offpeak_maxpressure_s0",
+    "20261014-164913_indian_2x2_offpeak_maxpressure_s1",
+    "20261014-164915_indian_2x2_offpeak_maxpressure_s2"
+   ],
+   "label": "MaxPressure (8 phases, 5 s, min 15 / max 60)",
+   "git_commits": [
+    "0266e9054acc3ee8765ee50f7d82bee5e962eecd"
+   ],
+   "att": {
+    "values": [
+     87.15692963752666,
+     88.16555740432612,
+     89.07777777777778
+    ],
+    "mean": 88.13342160654352,
+    "std": 0.9608272095444079
+   },
+   "queue_mean_per_intersection": {
+    "values": [
+     4.715694444444445,
+     4.943263888888888,
+     5.172152777777779
+    ],
+    "mean": 4.9437037037037035,
+    "std": 0.2282294845000635
+   },
+   "waiting_time_mean": {
+    "values": [
+     28.970149253731343,
+     29.62396006655574,
+     30.659259259259258
+    ],
+    "mean": 29.75112285984878,
+    "std": 0.8517047227133328
+   },
+   "throughput": {
+    "values": [
+     2291,
+     2347,
+     2358
+    ],
+    "mean": 2332,
+    "std": 35.93048844644336
+   },
+   "vehicles_waiting_to_enter_at_end": {
+    "values": [
+     0,
+     0,
+     0
+    ],
+    "mean": 0,
+    "std": 0.0
+   },
+   "transition_share": {
+    "values": [
+     0.2454861111111111,
+     0.24513888888888888,
+     0.24618055555555557
+    ],
+    "mean": 0.24560185185185185,
+    "std": 0.000530390705434717
+   }
+  },
+  "maxpressure_15s": {
+   "seeds": [
+    0,
+    1,
+    2
+   ],
+   "runs": [
+    "20261014-164917_indian_2x2_offpeak_maxpressure_15s_s0",
+    "20261014-164920_indian_2x2_offpeak_maxpressure_15s_s1",
+    "20261014-164922_indian_2x2_offpeak_maxpressure_15s_s2"
    ],
    "label": "MaxPressure (8 phases, 15 s, min 10 / max 60)",
    "git_commits": [
-    "8929100ea54e4026158b925f97a95cd9c71df858"
+    "0266e9054acc3ee8765ee50f7d82bee5e962eecd"
    ],
    "att": {
     "values": [
@@ -569,13 +639,83 @@
     2
    ],
    "runs": [
-    "20261014-144555_indian_2x2_peak_maxpressure_s0",
-    "20261014-144559_indian_2x2_peak_maxpressure_s1",
-    "20261014-144602_indian_2x2_peak_maxpressure_s2"
+    "20261014-164925_indian_2x2_peak_maxpressure_s0",
+    "20261014-164928_indian_2x2_peak_maxpressure_s1",
+    "20261014-164931_indian_2x2_peak_maxpressure_s2"
+   ],
+   "label": "MaxPressure (8 phases, 5 s, min 15 / max 60)",
+   "git_commits": [
+    "0266e9054acc3ee8765ee50f7d82bee5e962eecd"
+   ],
+   "att": {
+    "values": [
+     115.98907220912793,
+     116.09987489574645,
+     114.52325338894681
+    ],
+    "mean": 115.53740016460706,
+    "std": 0.8800224831088314
+   },
+   "queue_mean_per_intersection": {
+    "values": [
+     17.526319444444443,
+     18.163472222222225,
+     17.798611111111114
+    ],
+    "mean": 17.829467592592593,
+    "std": 0.3196951788728579
+   },
+   "waiting_time_mean": {
+    "values": [
+     54.14123446206601,
+     54.58361134278565,
+     53.50990615224192
+    ],
+    "mean": 54.078250652364524,
+    "std": 0.539616464967039
+   },
+   "throughput": {
+    "values": [
+     4501,
+     4634,
+     4594
+    ],
+    "mean": 4576.333333333333,
+    "std": 68.23733093647006
+   },
+   "vehicles_waiting_to_enter_at_end": {
+    "values": [
+     1,
+     0,
+     0
+    ],
+    "mean": 0.3333333333333333,
+    "std": 0.5773502691896257
+   },
+   "transition_share": {
+    "values": [
+     0.24722222222222223,
+     0.24756944444444445,
+     0.2465277777777778
+    ],
+    "mean": 0.24710648148148148,
+    "std": 0.0005303907054347018
+   }
+  },
+  "maxpressure_15s": {
+   "seeds": [
+    0,
+    1,
+    2
+   ],
+   "runs": [
+    "20261014-164934_indian_2x2_peak_maxpressure_15s_s0",
+    "20261014-164938_indian_2x2_peak_maxpressure_15s_s1",
+    "20261014-164941_indian_2x2_peak_maxpressure_15s_s2"
    ],
    "label": "MaxPressure (8 phases, 15 s, min 10 / max 60)",
    "git_commits": [
-    "8929100ea54e4026158b925f97a95cd9c71df858"
+    "0266e9054acc3ee8765ee50f7d82bee5e962eecd"
    ],
    "att": {
     "values": [

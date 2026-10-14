@@ -29,7 +29,7 @@ Throughput and transition time are reported but not used to choose.
 Mean ± std over seeds 0, 1, 2. On Jinan and Hangzhou the flow file is fixed and the controller
 is deterministic, so the three seeds give identical results (std 0). The Indian scenario has a
 different flow file per seed. The demand levels here are the ones in force when the sweep was
-run (off-peak 2375, peak 4750 veh/h; section 3 re-checks them).
+run (off-peak 2375, peak 4750 veh/h; `docs/indian_scenario.md` re-checks them).
 
 "Shortest possible green" follows from the decision grid: MaxPressure only decides when
 simulation time is a multiple of the interval, so after a switch (5 s transition) the next
@@ -96,8 +96,9 @@ This is measured in `tests/test_baselines.py`, not just derived.
 | 30 s | 5 | 5 | 5 | 3 | 4.50 | 1.158 |  |
 <!-- END:mp_selection -->
 
-**15 s is the new default** (`controllers.maxpressure` in `configs/default.yaml`). The old
-5 s setting stays available as controller `maxpressure_5s`.
+**15 s became the default** at this point. Section 2 then replaced it (5 s interval with a
+15 s min green); this 15 s-interval setting stays available as controller `maxpressure_15s`, and
+the original 5 s setting as `maxpressure_5s`.
 
 What the results show:
 
@@ -121,11 +122,102 @@ What the results show:
 * **30 s is worst or near-worst everywhere** except Indian peak, where it is 3rd.
 * No run had a forced (max-green) switch.
 
-Because the sweep effectively varies the shortest green, a direct sweep of `min_green` (kept
-at 10 s here, as specified) might find a better setting. That was not done; it would change
-the experiment design.
+Because the sweep effectively varies the shortest green, section 2 sweeps the minimum green
+directly.
 
-## 2. Webster-tuned FixedTime
+## 2. MaxPressure minimum green
+
+`scripts/tune_maxpressure_min_green.py` fixes the decision interval at 5 s and gives MaxPressure
+its own minimum green of 10, 15, 20 or 25 s (`controllers.maxpressure.min_green`; the env's
+10 s `signal.min_green` stays as a floor for every controller, so FixedTime and Webster are
+unaffected). With a 5 s grid and 5 s transitions every green starts on the grid, so the
+shortest possible green equals `min_green` exactly (measured in `tests/test_baselines.py`).
+Same 4 scenarios, seeds 0–2, 3600 steps; every other setting as in section 1.
+
+**Selection rule:** the same as section 1, with min green in place of the interval (lowest
+mean ATT rank over the 4 scenarios; tie-break lowest mean ATT / best, then the shorter min
+green). It was written into the script's docstring and committed (`c7a6e34`) before the sweep
+was run. The shared code is `src/trafficsense/selection.py`.
+
+Min green 10 s is the same setting as `maxpressure_5s`, and it reproduces that controller's
+results exactly on all 4 scenarios.
+
+**Jinan 3x4**
+
+<!-- BEGIN:mg_sweep_jinan_3x4 -->
+| Min green | ATT (s) | Throughput | Waiting to enter at 3600 s | Queue / int. (veh) | Time in transition | ATT rank |
+|---|---|---|---|---|---|---|
+| 10 s | 295.9 ± 0.0 | 4135 ± 0 | 0.0 ± 0.0 | 4.94 ± 0.00 | 0.319 ± 0.000 | 1 |
+| 15 s | 300.9 ± 0.0 | 4130 ± 0 | 0.0 ± 0.0 | 5.62 ± 0.00 | 0.242 ± 0.000 | 2 |
+| 20 s | 312.0 ± 0.0 | 4119 ± 0 | 0.0 ± 0.0 | 6.76 ± 0.00 | 0.194 ± 0.000 | 3 |
+| 25 s | 328.2 ± 0.0 | 4105 ± 0 | 0.0 ± 0.0 | 8.44 ± 0.00 | 0.163 ± 0.000 | 4 |
+<!-- END:mg_sweep_jinan_3x4 -->
+
+**Hangzhou 4x4**
+
+<!-- BEGIN:mg_sweep_hangzhou_4x4 -->
+| Min green | ATT (s) | Throughput | Waiting to enter at 3600 s | Queue / int. (veh) | Time in transition | ATT rank |
+|---|---|---|---|---|---|---|
+| 10 s | 331.1 ± 0.0 | 2740 ± 0 | 0.0 ± 0.0 | 1.67 ± 0.00 | 0.270 ± 0.000 | 1 |
+| 15 s | 335.6 ± 0.0 | 2726 ± 0 | 0.0 ± 0.0 | 1.98 ± 0.00 | 0.218 ± 0.000 | 2 |
+| 20 s | 343.1 ± 0.0 | 2726 ± 0 | 0.0 ± 0.0 | 2.39 ± 0.00 | 0.183 ± 0.000 | 3 |
+| 25 s | 354.3 ± 0.0 | 2715 ± 0 | 0.0 ± 0.0 | 3.01 ± 0.00 | 0.156 ± 0.000 | 4 |
+<!-- END:mg_sweep_hangzhou_4x4 -->
+
+**Indian 2x2, off-peak**
+
+<!-- BEGIN:mg_sweep_indian_2x2_offpeak -->
+| Min green | ATT (s) | Throughput | Waiting to enter at 3600 s | Queue / int. (veh) | Time in transition | ATT rank |
+|---|---|---|---|---|---|---|
+| 10 s | 82.0 ± 0.8 | 2332 ± 37 | 0.0 ± 0.0 | 3.91 ± 0.17 | 0.319 ± 0.003 | 1 |
+| 15 s | 88.1 ± 1.0 | 2332 ± 36 | 0.0 ± 0.0 | 4.94 ± 0.23 | 0.246 ± 0.001 | 2 |
+| 20 s | 96.8 ± 0.8 | 2317 ± 38 | 0.0 ± 0.0 | 6.39 ± 0.18 | 0.198 ± 0.001 | 3 |
+| 25 s | 106.5 ± 1.6 | 2312 ± 35 | 0.0 ± 0.0 | 8.03 ± 0.32 | 0.165 ± 0.000 | 4 |
+<!-- END:mg_sweep_indian_2x2_offpeak -->
+
+**Indian 2x2, peak**
+
+<!-- BEGIN:mg_sweep_indian_2x2_peak -->
+| Min green | ATT (s) | Throughput | Waiting to enter at 3600 s | Queue / int. (veh) | Time in transition | ATT rank |
+|---|---|---|---|---|---|---|
+| 10 s | 142.4 ± 18.3 | 4516 ± 131 | 0.3 ± 0.6 | 25.84 ± 5.22 | 0.324 ± 0.001 | 4 |
+| 15 s | 115.5 ± 0.9 | 4576 ± 68 | 0.3 ± 0.6 | 17.83 ± 0.32 | 0.247 ± 0.001 | 1 |
+| 20 s | 117.5 ± 2.2 | 4570 ± 88 | 0.3 ± 0.6 | 18.63 ± 0.38 | 0.198 ± 0.000 | 2 |
+| 25 s | 124.4 ± 1.2 | 4560 ± 86 | 0.3 ± 0.6 | 20.98 ± 0.57 | 0.166 ± 0.000 | 3 |
+<!-- END:mg_sweep_indian_2x2_peak -->
+
+### Selection
+
+<!-- BEGIN:mg_selection -->
+| Min green | Rank: jinan_3x4 | Rank: hangzhou_4x4 | Rank: indian_2x2_offpeak | Rank: indian_2x2_peak | Mean rank | Mean ATT / best |  |
+|---|---|---|---|---|---|---|---|
+| 10 s | 1 | 1 | 1 | 4 | 1.75 | 1.058 |  |
+| 15 s | 2 | 2 | 2 | 1 | 1.75 | 1.026 | **chosen** |
+| 20 s | 3 | 3 | 3 | 2 | 2.75 | 1.072 |  |
+| 25 s | 4 | 4 | 4 | 3 | 3.75 | 1.139 |  |
+<!-- END:mg_selection -->
+
+**A 5 s interval with a 15 s min green is the new default** (`controllers.maxpressure`).
+
+What the results show:
+
+* **Again the choice was decided by the tie-break.** 10 s and 15 s have the same mean rank
+  (1.75). 10 s is best on Jinan, Hangzhou and Indian off-peak, but last at Indian peak
+  (142.4 s vs 115.5 s). 15 s is second on those three and best at peak, so where it loses it
+  loses by less (mean ATT / best 1.026 vs 1.058).
+* **Longer min greens are monotonically worse in light traffic** and better only near
+  capacity, the same light-vs-heavy pattern as section 1: fewer switches mean less time in
+  5 s transitions (time in transition 0.32 → 0.25 → 0.20 → 0.17), which pays off only when
+  queues are long enough to use the green.
+* **The new default is not better than the previous one everywhere.** Against the 15 s
+  interval / 10 s min green setting (`maxpressure_15s`), it is worse on Jinan (300.9 vs
+  297.0 s), Hangzhou (335.6 vs 334.3 s) and Indian off-peak (88.1 vs 81.3 s), and much better
+  at Indian peak (115.5 vs 133.8 s), with a far smaller seed spread there (± 0.9 vs ± 15.9 s).
+  The previous default was not part of this sweep (it has a 15 s grid), so the rule does not
+  compare them; the numbers are in section 4.
+* No run had a forced (max-green) switch.
+
+## 3. Webster-tuned FixedTime
 
 Controller `fixedtime_webster` (`src/trafficsense/control/webster.py`, where the method is
 written out in full). It cycles the same 4 paired phases as `fixedtime`, but each
@@ -180,8 +272,9 @@ Seeds 0, 1, 2 (identical results: fixed flow file, deterministic controllers).
 |---|---|---|---|---|---|
 | FixedTime, 4 paired phases, 30 s | 423.0 ± 0.0 | 3968 ± 0 | 17.76 ± 0.00 | 176.2 ± 0.0 | 0.142 ± 0.000 |
 | FixedTime, Webster plan | 416.1 ± 0.0 | 3965 ± 0 | 16.42 ± 0.00 | 162.6 ± 0.0 | 0.325 ± 0.000 |
-| MaxPressure, 15 s (tuned default) | 297.0 ± 0.0 | 4149 ± 0 | 5.06 ± 0.00 | 50.1 ± 0.0 | 0.311 ± 0.000 |
-| MaxPressure, 5 s | 295.9 ± 0.0 | 4135 ± 0 | 4.94 ± 0.00 | 49.0 ± 0.0 | 0.319 ± 0.000 |
+| MaxPressure, 5 s, min green 15 s (tuned default) | 300.9 ± 0.0 | 4130 ± 0 | 5.62 ± 0.00 | 55.7 ± 0.0 | 0.242 ± 0.000 |
+| MaxPressure, 15 s, min green 10 s | 297.0 ± 0.0 | 4149 ± 0 | 5.06 ± 0.00 | 50.1 ± 0.0 | 0.311 ± 0.000 |
+| MaxPressure, 5 s, min green 10 s | 295.9 ± 0.0 | 4135 ± 0 | 4.94 ± 0.00 | 49.0 ± 0.0 | 0.319 ± 0.000 |
 <!-- END:compare_jinan_3x4 -->
 
 **Hangzhou 4x4**
@@ -191,8 +284,9 @@ Seeds 0, 1, 2 (identical results: fixed flow file, deterministic controllers).
 |---|---|---|---|---|---|
 | FixedTime, 4 paired phases, 30 s | 580.6 ± 0.0 | 2438 ± 0 | 13.00 ± 0.00 | 258.9 ± 0.0 | 0.142 ± 0.000 |
 | FixedTime, Webster plan | 549.8 ± 0.0 | 2439 ± 0 | 11.80 ± 0.00 | 232.5 ± 0.0 | 0.330 ± 0.000 |
-| MaxPressure, 15 s (tuned default) | 334.3 ± 0.0 | 2735 ± 0 | 1.84 ± 0.00 | 35.6 ± 0.0 | 0.250 ± 0.000 |
-| MaxPressure, 5 s | 331.1 ± 0.0 | 2740 ± 0 | 1.67 ± 0.00 | 32.2 ± 0.0 | 0.270 ± 0.000 |
+| MaxPressure, 5 s, min green 15 s (tuned default) | 335.6 ± 0.0 | 2726 ± 0 | 1.98 ± 0.00 | 38.2 ± 0.0 | 0.218 ± 0.000 |
+| MaxPressure, 15 s, min green 10 s | 334.3 ± 0.0 | 2735 ± 0 | 1.84 ± 0.00 | 35.6 ± 0.0 | 0.250 ± 0.000 |
+| MaxPressure, 5 s, min green 10 s | 331.1 ± 0.0 | 2740 ± 0 | 1.67 ± 0.00 | 32.2 ± 0.0 | 0.270 ± 0.000 |
 <!-- END:compare_hangzhou_4x4 -->
 
 What the tables show:
@@ -207,7 +301,7 @@ What the tables show:
 * **Webster improves on 30 s FixedTime only a little** (ATT 416.1 vs 423.0 s on Jinan,
   549.8 vs 580.6 s on Hangzhou), despite perfect demand counts, and loses far more time to
   transitions (33% vs 14%) because its cycles are short.
-* **MaxPressure is far better than either FixedTime plan** (about 297 and 334 s). A likely
+* **MaxPressure is far better than either FixedTime plan** (296–301 s and 331–336 s over the three settings). A likely
   reason, **not verified**: Webster's formula assumes steady demand, and these real flows are
   not steady. Jinan's arrivals fall from 937 vehicles in the first 10 minutes to 500 in the
   last; Hangzhou's peak in minutes 10–20 (659 vs 424–514 in the others). A fixed plan cannot
@@ -215,11 +309,12 @@ What the tables show:
   Poisson demand, the setting Webster was derived for (results in `docs/indian_scenario.md`).
 * **On Indian 2x2 the picture differs.** Demand is steady and heavier, so at peak C0 is
   84–91 s and the splits follow demand (E–W straight 25–30 s, N–S straight 18–23 s, both
-  protected-turn phases at the 10 s minimum). There the Webster plan beats MaxPressure (next section).
+  protected-turn phases at the 10 s minimum). There the Webster plan beats the 10 s-min-green
+  MaxPressure settings and roughly ties the new default (next section).
 
-## 3. All baselines on all datasets
+## 4. All baselines on all datasets
 
-ATT (s), mean over seeds 0, 1, 2; the best per column in bold. Full tables: section 2 above
+ATT (s), mean over seeds 0, 1, 2; the best per column in bold. Full tables: section 3 above
 (Jinan, Hangzhou) and `docs/indian_scenario.md` (Indian 2x2, with queue, waiting time,
 throughput and backlog).
 
@@ -227,19 +322,21 @@ throughput and backlog).
 | Controller (ATT, s) | jinan_3x4 | hangzhou_4x4 | indian_2x2_offpeak | indian_2x2_peak |
 |---|---|---|---|---|
 | FixedTime, 4 paired phases, 30 s | 423.0 | 580.6 | 121.5 | 279.9 |
-| FixedTime, Webster plan | 416.1 | 549.8 | 100.4 | **116.3** |
-| MaxPressure, 15 s (tuned default) | 297.0 | 334.3 | **81.3** | 133.8 |
-| MaxPressure, 5 s | **295.9** | **331.1** | 82.0 | 142.4 |
+| FixedTime, Webster plan | 416.1 | 549.8 | 100.4 | 116.3 |
+| MaxPressure, 5 s, min green 15 s (tuned default) | 300.9 | 335.6 | 88.1 | **115.5** |
+| MaxPressure, 15 s, min green 10 s | 297.0 | 334.3 | **81.3** | 133.8 |
+| MaxPressure, 5 s, min green 10 s | **295.9** | **331.1** | 82.0 | 142.4 |
 <!-- END:overview -->
 
-* **No single baseline is best everywhere.** MaxPressure is best on Jinan, Hangzhou and
-  Indian off-peak. At Indian peak the Webster plan is best (116.3 s, against 133.8 s for the
-  tuned MaxPressure), ahead on every seed.
-* At Indian peak the Webster plan also matches the best MaxPressure setting of the sweep
-  (10 s and 20 s intervals, about 116 s), which the pre-registered rule did not choose.
-  The explanation in section 1 applies: near the capacity of the switching pattern, fewer
-  switches (less time in 5 s transitions) win. It is likely, but **not verified**, that a
-  MaxPressure with a longer minimum green would close this gap.
+* **No single MaxPressure setting is best everywhere.** On Jinan, Hangzhou and Indian
+  off-peak the 10 s-min-green settings are best (the 15 s-interval one off-peak, by 0.7 s);
+  at Indian peak the new default is best.
+* **At Indian peak, the new default and the Webster plan are effectively tied**: 115.5 s vs
+  116.3 s mean ATT, with MaxPressure ahead on seeds 0 and 1 (116.0 vs 118.3 s, 116.1 vs
+  119.6 s) and Webster ahead on seed 2 (111.1 vs 114.5 s). Three seeds cannot separate them.
+  Section 1 had suggested a longer minimum green would close the gap to Webster; section 2
+  confirms it.
 * **For the LLM comparison:** the LLM controller should be compared with the best baseline
-  per scenario and level, not only with MaxPressure. At Indian peak that is the Webster plan,
-  which also has an unfair advantage: perfect counts of steady demand.
+  per scenario and level, not only with the default MaxPressure. Off-peak that is
+  `maxpressure_15s` (81.3 s); at peak, both the default MaxPressure and the Webster plan,
+  which has an unfair advantage: perfect counts of steady demand.

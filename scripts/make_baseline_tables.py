@@ -4,6 +4,7 @@
     python scripts/make_baseline_tables.py --check  # exit 1 if the doc is out of date
 
 Inputs: outputs/baselines/maxpressure_sweep.json (scripts/tune_maxpressure.py),
+outputs/baselines/maxpressure_min_green_sweep.json (scripts/tune_maxpressure_min_green.py),
 outputs/baselines/runs/*/summary.json (scripts/run_baselines.py) and
 outputs/indian_2x2/runs/*/summary.json (scripts/run_indian_experiments.py).
 Each table sits between <!-- BEGIN:name --> and <!-- END:name --> markers in the doc.
@@ -20,14 +21,16 @@ from trafficsense.config import repo_root
 ROOT = repo_root()
 DOC = ROOT / "docs" / "baselines.md"
 SWEEP = ROOT / "outputs" / "baselines" / "maxpressure_sweep.json"
+MG_SWEEP = ROOT / "outputs" / "baselines" / "maxpressure_min_green_sweep.json"
 RUNS = ROOT / "outputs" / "baselines" / "runs"
 INDIAN_RUNS = ROOT / "outputs" / "indian_2x2" / "runs"
 BASELINE_SCENARIOS = ["jinan_3x4", "hangzhou_4x4"]
 INDIAN_SCENARIOS = ["indian_2x2_offpeak", "indian_2x2_peak"]
 CONTROLLERS = [("fixedtime", "FixedTime, 4 paired phases, 30 s"),
                ("fixedtime_webster", "FixedTime, Webster plan"),
-               ("maxpressure", "MaxPressure, 15 s (tuned default)"),
-               ("maxpressure_5s", "MaxPressure, 5 s")]
+               ("maxpressure", "MaxPressure, 5 s, min green 15 s (tuned default)"),
+               ("maxpressure_15s", "MaxPressure, 15 s, min green 10 s"),
+               ("maxpressure_5s", "MaxPressure, 5 s, min green 10 s")]
 TRANSITION_S = 5
 MIN_GREEN = 10
 
@@ -71,6 +74,27 @@ def selection_table(sw):
                     + [f"{sel['mean_rank'][k]:.2f}", f"{sel['mean_att_over_best'][k]:.3f}",
                        "**chosen**" if int(k) == sel["chosen_decision_interval"] else ""])
     return table(["Interval"] + [f"Rank: {sc}" for sc in scs] + ["Mean rank", "Mean ATT / best", ""], rows)
+
+
+def mg_sweep_table(sw, sc):
+    rows = []
+    rank = sw["selection"]["rank"][sc]
+    for k, e in sw["results"][sc].items():
+        rows.append([f"{k} s", ms(e["att"], 1), ms(e["throughput"], 0), ms(e["waiting_to_enter"], 1),
+                     ms(e["queue_mean_per_intersection"], 2), ms(e["transition_share"], 3), f"{rank[k]:g}"])
+    return table(["Min green", "ATT (s)", "Throughput", "Waiting to enter at 3600 s", "Queue / int. (veh)",
+                  "Time in transition", "ATT rank"], rows)
+
+
+def mg_selection_table(sw):
+    sel = sw["selection"]
+    scs = sw["provenance"]["scenarios"]
+    rows = []
+    for k in map(str, sw["provenance"]["min_greens"]):
+        rows.append([f"{k} s"] + [f"{sel['rank'][sc][k]:g}" for sc in scs]
+                    + [f"{sel['mean_rank'][k]:.2f}", f"{sel['mean_att_over_best'][k]:.3f}",
+                       "**chosen**" if int(k) == sel["chosen_min_green"] else ""])
+    return table(["Min green"] + [f"Rank: {sc}" for sc in scs] + ["Mean rank", "Mean ATT / best", ""], rows)
 
 
 def transition_share(summary):
@@ -174,6 +198,9 @@ def build():
     sw = json.loads(SWEEP.read_text())
     tables = {f"mp_sweep_{sc}": sweep_table(sw, sc) for sc in sw["provenance"]["scenarios"]}
     tables["mp_selection"] = selection_table(sw)
+    mg = json.loads(MG_SWEEP.read_text())
+    tables.update({f"mg_sweep_{sc}": mg_sweep_table(mg, sc) for sc in mg["provenance"]["scenarios"]})
+    tables["mg_selection"] = mg_selection_table(mg)
     runs = load_runs()
     tables["webster_plans"] = webster_table(runs)
     for sc in BASELINE_SCENARIOS:

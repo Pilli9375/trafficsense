@@ -33,8 +33,9 @@ SC_CFG = "configs/scenarios/indian_2x2.yaml"
 CONTROLLERS = [("fixedtime", "FixedTime, 4 paired phases, 30 s"),
                ("fixedtime_all_phases", "FixedTime, all 8 phases, 30 s"),
                ("fixedtime_webster", "FixedTime, 4 paired phases, Webster plan"),
-               ("maxpressure", "MaxPressure (8 phases, {decision_interval} s, min 10 / max 60)"),
-               ("maxpressure_5s", "MaxPressure (8 phases, {decision_interval} s, min 10 / max 60)")]
+               ("maxpressure", "MaxPressure (8 phases, {decision_interval} s, min {min_green} / max 60)"),
+               ("maxpressure_15s", "MaxPressure (8 phases, {decision_interval} s, min {min_green} / max 60)"),
+               ("maxpressure_5s", "MaxPressure (8 phases, {decision_interval} s, min {min_green} / max 60)")]
 CALIB_5S = ROOT / "outputs" / "validation" / "indian_demand_calibration_maxpressure_5s.json"
 LEVELS = ["offpeak", "peak"]
 METRICS = [("att", "ATT (s)", 1), ("queue_mean_per_intersection", "Queue / intersection (veh)", 2),
@@ -83,7 +84,15 @@ def load_runs(sc):
 
 def label_of(ctl, summary):
     """Label with the settings recorded in the run, so it cannot go stale."""
-    return dict(CONTROLLERS)[ctl].format(**summary["provenance"]["controller_params"])
+    return dict(CONTROLLERS)[ctl].format(**controller_settings(summary))
+
+
+def controller_settings(summary):
+    """controller_params, plus min_green from the env's recorded signal settings for runs made
+    before MaxPressure had its own min_green (it was then always the env's)."""
+    cp = dict(summary["provenance"]["controller_params"])
+    cp.setdefault("min_green", summary["signal"]["min_green"])
+    return cp
 
 
 def aggregate(runs):
@@ -94,7 +103,7 @@ def aggregate(runs):
             rs = sorted(((k[2], v) for k, v in runs.items() if k[0] == sc_name and k[1] == ctl))
             if not rs:
                 raise SystemExit(f"No runs for {sc_name} / {ctl}; run scripts/run_indian_experiments.py")
-            params = {json.dumps(v["summary"]["provenance"]["controller_params"].get("decision_interval"))
+            params = {json.dumps([controller_settings(v["summary"]).get(k) for k in ("decision_interval", "min_green")])
                       for _, v in rs}
             if len(params) != 1:
                 raise SystemExit(f"{sc_name} / {ctl}: runs with different settings {params}")
