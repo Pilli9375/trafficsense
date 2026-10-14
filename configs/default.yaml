@@ -62,6 +62,10 @@ controllers:
                            # Chosen by scripts/tune_maxpressure_min_green.py (docs/baselines.md)
     phases: all            # all | paired (CoLLMLight's MaxPressure uses the 4 paired phases)
     tie_break: keep_current  # keep_current | lowest_index (CoLLMLight: np.argmax -> lowest)
+  llm_cooperative:         # timing and model: llm.* below
+    mode: cooperative      # prompt includes each neighbour's phase and queues towards / from us
+  llm_isolated:
+    mode: isolated         # own intersection only
   maxpressure_15s:         # previous default (scripts/tune_maxpressure.py), kept for comparison
     decision_interval: 15
     phases: all
@@ -82,3 +86,6 @@ llm:
   num_ctx: 4096        # context window (tokens); prompts are well under 1500
   num_predict: 128     # cap on generated tokens; the JSON answer needs about 40
   keep_alive: 30m      # keep the model loaded between calls
+  decision_interval: null  # s; decided after scripts/benchmark_llm.py
+  min_green: null          # s; LLM controller's own min green (>= signal.min_green)
+  max_consecutive_failures: 20  # this many failed calls in a row stops the run with an error

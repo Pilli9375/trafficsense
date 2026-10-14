@@ -13,6 +13,7 @@ from typing import Any
 
 from trafficsense.config import repo_root, resolve_path
 from trafficsense.control import make_controller
+from trafficsense.control.base import Controller
 from trafficsense.sim.env import TrafficEnv
 from trafficsense.sim.metrics import MetricsTracker
 
@@ -31,7 +32,8 @@ def git_info() -> dict[str, Any]:
 
 def run_experiment(cfg: dict[str, Any], scenario: str, controller: str,
                    steps: int | None = None, seed: int | None = None,
-                   out_root: Path | None = None) -> Path:
+                   out_root: Path | None = None, ctl: Controller | None = None) -> Path:
+    """`ctl` overrides make_controller(controller, cfg); used by tests to inject a fake LLM client."""
     steps = int(steps if steps is not None else cfg["sim"]["steps"])
     if steps <= 0:
         raise ValueError(f"steps must be positive, got {steps}")
@@ -45,7 +47,9 @@ def run_experiment(cfg: dict[str, Any], scenario: str, controller: str,
     git = git_info()
 
     env = TrafficEnv(cfg, scenario, seed=seed)
-    ctl = make_controller(controller, cfg)
+    ctl = ctl if ctl is not None else make_controller(controller, cfg)
+    if ctl.name != controller:
+        raise ValueError(f"Controller object is {ctl.name!r}, run asked for {controller!r}")
     metrics = MetricsTracker(env)
     t0 = time.perf_counter()
     for _ in range(steps):
@@ -55,13 +59,17 @@ def run_experiment(cfg: dict[str, Any], scenario: str, controller: str,
     wall = time.perf_counter() - t0
 
     result = metrics.summary()
+    extra = ctl.provenance()
+    unknown = set(extra) - {"model", "provider", "llm"}
+    if unknown:
+        raise KeyError(f"Controller provenance has unexpected keys {sorted(unknown)}")
     summary = {
         "provenance": {
             "controller": controller,
             "controller_params": ctl.info(),
-            "model": None,          # set by LLM controllers (name as reported by the server)
-            "provider": None,
-            "llm": None,            # LLM runs: calls, failures, latency mean/p95
+            "model": extra.get("model"),        # LLM controllers: name as reported by the server
+            "provider": extra.get("provider"),
+            "llm": extra.get("llm"),            # LLM runs: calls, failures by type, latency mean/p95
             "seed": seed,
             "scenario": scenario,
             "roadnet": str(env.roadnet_path.relative_to(repo_root())),
@@ -94,6 +102,7 @@ def run_experiment(cfg: dict[str, Any], scenario: str, controller: str,
     }
 
     out_dir.mkdir(parents=True)
+    ctl.write_artifacts(out_dir)
     (out_dir / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     with (out_dir / "metrics.csv").open("w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(metrics.rows[0]))
