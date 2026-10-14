@@ -71,3 +71,78 @@ def test_maxpressure_shortest_green_on_decision_grid(cfg, synthetic_4x4, interva
                 run = 0
         greens += runs[1:]   # the first green starts at t=0, off the post-transition pattern
     assert greens and min(greens) == shortest
+
+
+# ---- Webster FixedTime -------------------------------------------------------------------
+from trafficsense.control.webster import split_greens, webster_cycle  # noqa: E402
+
+
+@pytest.fixture(scope="module")
+def indian_flows(cfg):
+    p = repo_root() / cfg["scenarios"]["indian_2x2_peak"]["flow"].format(seed=0)
+    if not p.is_file():
+        pytest.fail(f"{p} missing; run scripts/generate_indian_flow.py --level all --seed 0 1 2")
+
+
+def test_webster_cycle_formula_and_caps():
+    c0, c = webster_cycle(0.5, 20.0, 60, 180)
+    assert c0 == pytest.approx((1.5 * 20 + 5) / 0.5) and c == pytest.approx(70.0)
+    assert webster_cycle(0.1, 20.0, 60, 180)[1] == 60          # C0 = 38.9 -> cycle_min
+    assert webster_cycle(0.9, 20.0, 60, 180)[1] == 180         # C0 = 350 -> cycle_max
+    assert webster_cycle(1.0, 20.0, 60, 180) == (None, 180.0)  # no finite optimum
+
+
+def test_split_greens_proportional_to_y():
+    g = split_greens({1: 0.3, 2: 0.1}, cycle=100, transition=5, startup_lost=2, min_green=10, max_green=90)
+    # effective green 100 - 2*(5+2) = 86, split 3:1, plus the start-up loss back
+    assert g[1] == pytest.approx(2 + 86 * 0.75) and g[2] == pytest.approx(2 + 86 * 0.25)
+    assert sum(g.values()) + 2 * 5 == pytest.approx(100)
+
+
+def test_split_greens_clips_and_redistributes():
+    y = {1: 0.40, 2: 0.30, 3: 0.02, 4: 0.01}
+    g = split_greens(y, cycle=120, transition=5, startup_lost=2, min_green=10, max_green=60)
+    assert g[3] == 10 and g[4] == 10
+    assert all(10 <= v <= 60 for v in g.values())
+    assert sum(g.values()) + 4 * 5 == pytest.approx(120)               # cycle kept
+    assert (g[1] - 2) / (g[2] - 2) == pytest.approx(0.40 / 0.30)       # free phases still by y
+    g = split_greens({1: 0.9, 2: 0.0}, cycle=180, transition=5, startup_lost=2, min_green=10, max_green=60)
+    assert g == {1: 60, 2: 10}                                          # both clipped: cycle shrinks
+    assert split_greens({1: 0.0, 2: 0.0}, 60, 5, 2, 10, 60) == {1: 25.0, 2: 25.0}
+
+
+def test_random_order_vehicles_are_seeded():
+    import numpy as np
+    from trafficsense.sim.capacity import random_order_vehicles
+    types = {"a": {"share": 3, **{k: 1.0 for k in ("length", "minGap")}},
+             "b": {"share": 1, **{k: 2.0 for k in ("length", "minGap")}}}
+    v1 = random_order_vehicles(types, ("length", "minGap"), 2, 2000, np.random.default_rng(5))
+    v2 = random_order_vehicles(types, ("length", "minGap"), 2, 2000, np.random.default_rng(5))
+    assert v1 == v2 and len(v1) == 4000 and v1[-1][1] == 1999
+    share_a = sum(1 for v, _ in v1 if v["length"] == 1.0) / len(v1)
+    assert share_a == pytest.approx(0.75, abs=0.03)
+
+
+def test_webster_controller_runs_its_plan(cfg, indian_flows):
+    c = copy.deepcopy(cfg)
+    c["controllers"]["fixedtime_webster"]["measurement_reps"] = 2   # speed; the plan logic is the same
+    env = TrafficEnv(c, "indian_2x2_peak", seed=0)
+    ctl = make_controller("fixedtime_webster", c)
+    shown = {i: [] for i in env.intersection_ids}
+    for _ in range(600):
+        ctl.act(env)
+        env.step()
+        for i in env.intersection_ids:
+            shown[i].append(env.shown_phase(i))
+    assert all(s.forced_switches == 0 for s in env.signals.values())
+    info = ctl.info()
+    assert info["inputs"]["startup_lost_time_s"] > 0
+    for iid, p in info["plans"].items():
+        assert 0 < p["Y"] < 1 and 60 <= p["cycle_webster_s"] <= 180
+        assert p["cycle_run_s"] == sum(p["greens_s"].values()) + 4 * 5
+        tr = env.intersection(iid).transition_phase.index
+        expected = []
+        while len(expected) < 600:
+            for ph in p["phases"]:
+                expected += [ph] * p["greens_s"][ph] + [tr] * 5
+        assert shown[iid] == expected[:600]

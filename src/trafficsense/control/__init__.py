@@ -2,10 +2,12 @@ from functools import partial
 
 from trafficsense.control.fixedtime import FixedTimeController
 from trafficsense.control.maxpressure import MaxPressureController
+from trafficsense.control.webster import WebsterFixedTimeController
 
 CONTROLLERS = {
     "fixedtime": partial(FixedTimeController, name="fixedtime"),
     "fixedtime_all_phases": partial(FixedTimeController, name="fixedtime_all_phases"),
+    "fixedtime_webster": WebsterFixedTimeController,
     "maxpressure": partial(MaxPressureController, name="maxpressure"),
     "maxpressure_5s": partial(MaxPressureController, name="maxpressure_5s"),
 }

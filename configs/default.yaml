@@ -48,6 +48,12 @@ controllers:
   fixedtime_all_phases:
     green_time: 30
     phases: all        # every green phase in the roadnet (8 in the CoLLMLight roadnets)
+  fixedtime_webster:      # 4 paired phases; cycle and splits by Webster's method (control/webster.py)
+    cycle_min: 60          # s
+    cycle_max: 180         # s
+    demand_window_s: 3600  # lane demand = vehicles in the flow file starting in [0, window)
+    measurement_reps: 30   # random-order queues averaged for saturation flow / start-up loss
+    measurement_seed: 0    # seed of those queue orders (not the run seed)
   maxpressure:
     decision_interval: 15  # s between re-evaluations; switches only once min_green is met.
                            # Chosen by scripts/tune_maxpressure.py (docs/baselines.md)

@@ -2,7 +2,8 @@
 
 * measure_discharge: the stop-line SATURATION FLOW. Hold the signal red until the lane is full,
   switch it green, and count vehicles leaving the lane while the queue discharges. This is the
-  rate a green phase can serve, so it is the capacity that signal timing works with.
+  rate a green phase can serve, so it is the capacity that signal timing works with. Also the
+  START-UP LOST TIME, from a straight-line fit to the cumulative departures.
 * measure_saturation: the signals on a route permanently show the phase serving it and the
   route is fed far more vehicles than it can carry; the finished-vehicle rate after a warm-up.
   On a route that starts at the network edge this is limited by CityFlow's vehicle INSERTION:
@@ -120,12 +121,17 @@ def measure_saturation(roadnet_path: Path, net: Roadnet, route: list[str],
 
 
 def measure_discharge(roadnet_path: Path, net: Roadnet, route: list[str],
-                      feed: list[tuple[dict[str, Any], float]], red: int = 900,
-                      window: tuple[int, int] = (10, 70), seed: int = 0) -> dict[str, Any]:
+                      feed: list[tuple[dict[str, Any], float]] | None, red: int = 900,
+                      window: tuple[int, int] = (10, 70), seed: int = 0,
+                      vehicles: list[tuple[dict[str, Any], int]] | None = None) -> dict[str, Any]:
     """Saturation flow (veh/h) of the first stop line on `route`: count vehicles leaving the
     lane during green seconds [window[0], window[1]) after `red` s of red. The first seconds
     (start-up lost time) are excluded, as in the usual saturation-flow definition; the count
-    from green onset is reported too. Raises if the queue runs out inside the window."""
+    from green onset is reported too. Raises if the queue runs out inside the window.
+    Vehicles come from `feed` (periodic flows, see mixed_feed) or, instead, from `vehicles`:
+    one (parameters, start second) per vehicle, in that order (see random_order_vehicles)."""
+    if (feed is None) == (vehicles is None):
+        raise ValueError("pass exactly one of feed and vehicles")
     if route[1:] == []:
         raise ValueError("route needs at least two roads")
     first, lane = None, None
@@ -139,8 +145,12 @@ def measure_discharge(roadnet_path: Path, net: Roadnet, route: list[str],
         raise ValueError("right turns run in every phase; they cannot be held red")
     hold = serving_phases(net, route)
     red_phase = next(p.index for p in net.intersections[first].paired_phases if mv.index not in p.movements)
-    flow = [{"vehicle": v, "route": route, "interval": float(iv), "startTime": 0, "endTime": red + window[1]}
-            for v, iv in feed]
+    if feed is not None:
+        flow = [{"vehicle": v, "route": route, "interval": float(iv), "startTime": 0, "endTime": red + window[1]}
+                for v, iv in feed]
+    else:
+        flow = [{"vehicle": v, "route": route, "interval": 1.0, "startTime": t, "endTime": t}
+                for v, t in vehicles]
     with tempfile.TemporaryDirectory() as tmp:
         fpath = Path(tmp) / "flow.json"
         fpath.write_text(json.dumps(flow))
@@ -167,6 +177,16 @@ def measure_discharge(roadnet_path: Path, net: Roadnet, route: list[str],
             raise RuntimeError(f"Queue on {lane} ran out after {len(left_per_s)} s of green; "
                                "the discharge window is not saturated")
     steady = sum(left_per_s[window[0]:])
+    # Start-up lost time: fit a straight line N(t) = s_fit * (t - l) to the cumulative number of
+    # departures N(t) at the end of green seconds t in (window[0], window[1]] (the saturated
+    # part) by least squares; l, where the line reaches N = 0, is the time at which effective
+    # green starts. Counting whole vehicles in the first seconds would only resolve l to about
+    # one saturation headway (~2.5 s); the fit uses every second of the window.
+    ts = list(range(window[0] + 1, window[1] + 1))
+    cum = [sum(left_per_s[:t]) for t in ts]
+    t_bar, n_bar = sum(ts) / len(ts), sum(cum) / len(cum)
+    slope = (sum((t - t_bar) * (n - n_bar) for t, n in zip(ts, cum))
+             / sum((t - t_bar) ** 2 for t in ts))
     return {
         "route": route,
         "lane": lane,
@@ -177,6 +197,48 @@ def measure_discharge(roadnet_path: Path, net: Roadnet, route: list[str],
         "left_in_window": steady,
         "left_from_green_onset": sum(left_per_s),
         "saturation_flow_veh_per_hour": steady * 3600 / (window[1] - window[0]),
+        "fit_saturation_flow_veh_per_hour": slope * 3600,
+        "startup_lost_time_s": t_bar - n_bar / slope,
+    }
+
+
+def random_order_vehicles(vehicle_types: dict[str, dict[str, Any]], keys: tuple[str, ...],
+                          per_s: int, duration_s: int, rng) -> list[tuple[dict[str, Any], int]]:
+    """`per_s` vehicles in every second of [0, duration_s), each of a type drawn independently
+    from the types' `share`: a queue in random order, as real arrivals form one. (mixed_feed's
+    periodic flows always build the same, regular interleaving of types.)"""
+    names = list(vehicle_types)
+    w = [float(vehicle_types[n]["share"]) for n in names]
+    total = sum(w)
+    draws = rng.choice(len(names), size=per_s * duration_s, p=[x / total for x in w])
+    return [({k: float(vehicle_types[names[d]][k]) for k in keys}, i // per_s) for i, d in enumerate(draws)]
+
+
+def measure_discharge_mixed(roadnet_path: Path, net: Roadnet, route: list[str],
+                            vehicle_types: dict[str, dict[str, Any]], keys: tuple[str, ...],
+                            reps: int, seed: int, per_s: int = 2, red: int = 900,
+                            window: tuple[int, int] = (10, 70)) -> dict[str, Any]:
+    """measure_discharge on `reps` random-order queues (numpy generator seeded with `seed`);
+    the start-up lost time depends on which vehicle types happen to be at the front, so a
+    single queue order gives a noisy value. Returns every repetition and the means."""
+    import numpy as np   # local: only this function needs it
+
+    rng = np.random.default_rng(seed)
+    runs = []
+    for _ in range(reps):
+        veh = random_order_vehicles(vehicle_types, keys, per_s, red + window[1], rng)
+        runs.append(measure_discharge(roadnet_path, net, route, None, red=red, window=window, vehicles=veh))
+    mean = lambda k: sum(r[k] for r in runs) / len(runs)   # noqa: E731
+    return {
+        "route": route,
+        "turn": runs[0]["turn"],
+        "reps": reps,
+        "seed": seed,
+        "per_rep": [{k: r[k] for k in ("queue_at_green", "left_in_window", "saturation_flow_veh_per_hour",
+                                       "fit_saturation_flow_veh_per_hour", "startup_lost_time_s")} for r in runs],
+        "saturation_flow_veh_per_hour": mean("saturation_flow_veh_per_hour"),
+        "fit_saturation_flow_veh_per_hour": mean("fit_saturation_flow_veh_per_hour"),
+        "startup_lost_time_s": mean("startup_lost_time_s"),
     }
 
 
