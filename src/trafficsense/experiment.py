@@ -60,7 +60,7 @@ def run_experiment(cfg: dict[str, Any], scenario: str, controller: str,
 
     result = metrics.summary()
     extra = ctl.provenance()
-    unknown = set(extra) - {"model", "provider", "llm"}
+    unknown = set(extra) - {"model", "provider", "llm", "controller_stats"}
     if unknown:
         raise KeyError(f"Controller provenance has unexpected keys {sorted(unknown)}")
     summary = {
@@ -70,6 +70,7 @@ def run_experiment(cfg: dict[str, Any], scenario: str, controller: str,
             "model": extra.get("model"),        # LLM controllers: name as reported by the server
             "provider": extra.get("provider"),
             "llm": extra.get("llm"),            # LLM runs: calls, failures by type, latency mean/p95
+            "controller_stats": extra.get("controller_stats"),   # e.g. preemptions
             "seed": seed,
             "scenario": scenario,
             "roadnet": str(env.roadnet_path.relative_to(repo_root())),
@@ -92,6 +93,7 @@ def run_experiment(cfg: dict[str, Any], scenario: str, controller: str,
         },
         "metrics": result["network"],
         "per_intersection": result["per_intersection"],
+        "emergency": result.get("emergency"),   # scenarios with an emergency_vehicle_type
         "metric_notes": {
             "att": "engine.get_average_travel_time(): all generated vehicles from scheduled start, incl. those still running or still waiting to enter",
             "queue_mean_per_intersection": "waiting vehicles (speed<0.1) on incoming lanes, mean over steps and intersections",

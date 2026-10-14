@@ -74,6 +74,10 @@ class TrafficEnv:
         if self.vehicle_types_path is not None and not self.vehicle_types_path.is_file():
             raise FileNotFoundError(f"scenarios.{scenario}.vehicle_types not found: {self.vehicle_types_path}")
         self._vehicle_types: VehicleTypes | None = None
+        # Vehicle type tracked as an emergency vehicle (summary.json `emergency`); needs named types.
+        self.emergency_type: str | None = sc.get("emergency_vehicle_type")
+        if self.emergency_type is not None and self.vehicle_types_path is None:
+            raise KeyError(f"scenarios.{scenario}: emergency_vehicle_type needs vehicle_types")
 
         self.roadnet: Roadnet = load_roadnet(self.roadnet_path)
         self.transition_time: dict[str, int] = {}
@@ -198,8 +202,11 @@ class TrafficEnv:
             named = None
             if self.vehicle_types_path is not None:
                 with self.vehicle_types_path.open(encoding="utf-8") as f:
-                    named = yaml.safe_load(f)["vehicle_types"]
+                    sc = yaml.safe_load(f)
+                named = {**sc["vehicle_types"], **sc.get("emergency_vehicle_types", {})}
             self._vehicle_types = VehicleTypes(self.flow_path, named)
+            if self.emergency_type is not None and self.emergency_type not in self._vehicle_types.names:
+                raise KeyError(f"emergency_vehicle_type {self.emergency_type!r} is not a named vehicle type")
         return self._vehicle_types
 
     def get_state(self, iid: str) -> dict[str, Any]:

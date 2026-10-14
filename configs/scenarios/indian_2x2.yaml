@@ -118,3 +118,27 @@ demand_levels:
     veh_per_hour: 2375
   peak:
     veh_per_hour: 4750
+
+# ---- emergency vehicles (Phase 3b) ------------------------------------------------------
+# Separate flow files flow_<level>_amb_s<seed>.json: the normal traffic of flow_<level>_s<seed>
+# unchanged (same vehicles, same order, so the same vehicle ids) with ambulances appended.
+# Ambulance arrivals and routes come from their own random generator, seeded seed + seed_offset,
+# so the normal traffic does not depend on them. Same entry weights and turn probabilities
+# as the normal traffic, Poisson arrivals over [0, duration_s).
+emergency:
+  vehicle_type: ambulance
+  veh_per_hour: 6           # ASSUMPTION (Phase 3b spec "~6/hour", whole 2x2 network, both levels)
+  seed_offset: 1000         # ASSUMPTION: any fixed offset; ambulance RNG seed = flow seed + 1000
+emergency_vehicle_types:
+  ambulance:                # van-type ambulance (e.g. Force Traveller / Tata Winger class)
+    length: 5.0             # ASSUMPTION: ~5 m van
+    width: 1.9              # ASSUMPTION
+    minGap: 2.5             # [CF]
+    headwayTime: 1.0        # ASSUMPTION: follows closely
+    maxSpeed: 12.5          # ASSUMPTION: lane limit (CityFlow lanes cap speed at 12.5 m/s)
+    usualPosAcc: 2.0        # [CF]
+    maxPosAcc: 2.5          # ASSUMPTION
+    usualNegAcc: 4.5        # [CF]
+    maxNegAcc: 6.0          # ASSUMPTION
+# CityFlow has no yielding to emergency vehicles and (with lane_change: false) no overtaking: an
+# ambulance waits in the queue like any vehicle, so only the signal can speed it up.

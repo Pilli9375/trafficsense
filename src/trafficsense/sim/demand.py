@@ -140,5 +140,49 @@ def generate(net: Roadnet, sc: dict[str, Any], level: str, seed: int) -> tuple[l
     return flows, meta
 
 
+def add_emergency(net: Roadnet, sc: dict[str, Any], base_flows: list[dict], seed: int) -> tuple[list[dict], dict]:
+    """Return (base flows + emergency vehicles, metadata) for flow seed `seed`."""
+    em = sc["emergency"]
+    name = em["vehicle_type"]
+    types = sc["emergency_vehicle_types"]
+    if name not in types:
+        raise KeyError(f"emergency.vehicle_type {name!r} is not in emergency_vehicle_types")
+    vt = types[name]
+    missing = [k for k in VEHICLE_KEYS if k not in vt]
+    if missing:
+        raise KeyError(f"emergency_vehicle_types.{name} is missing {missing}")
+    if any(tuple(float(t[k]) for k in VEHICLE_KEYS) == tuple(float(vt[k]) for k in VEHICLE_KEYS)
+           for t in sc["vehicle_types"].values()):
+        raise ValueError(f"{name} has the same parameters as a normal vehicle type; it could not be told apart")
+    rate_h = float(em["veh_per_hour"])
+    if rate_h <= 0:
+        raise ValueError(f"emergency.veh_per_hour must be positive, got {rate_h}")
+    duration = int(sc["duration_s"])
+    network = Network(net)
+    w = np.array([float(sc["entry_weights"][network.entry_side[r]]) for r in network.entry_roads])
+    road_rates = rate_h / 3600.0 * w / w.sum()
+
+    em_seed = seed + int(em["seed_offset"])
+    rng = np.random.default_rng(em_seed)
+    arrivals = []
+    for road, lam in zip(network.entry_roads, road_rates):
+        t = rng.exponential(1.0 / lam)
+        while t < duration:
+            arrivals.append((t, road))
+            t += rng.exponential(1.0 / lam)
+    arrivals.sort()
+    added = []
+    for t, road in arrivals:
+        route, turns = draw_route(rng, network, road, sc["turn_probabilities"])
+        added.append({"vehicle": {k: float(vt[k]) for k in VEHICLE_KEYS}, "route": route, "interval": 1.0,
+                      "startTime": int(t), "endTime": int(t)})
+    n0 = len(base_flows)
+    meta = {"seed": seed, "emergency_seed": em_seed, "vehicle_type": name, "veh_per_hour_target": rate_h,
+            "base_vehicles": n0, "emergency_vehicles": len(added),
+            "emergency": [{"flow_index": n0 + k, "vehicle_id": f"flow_{n0 + k}_0", "start_time": f["startTime"],
+                           "route": f["route"]} for k, f in enumerate(added)]}
+    return base_flows + added, meta
+
+
 def config_hash(sc: dict[str, Any]) -> str:
     return hashlib.sha256(json.dumps(sc, sort_keys=True).encode()).hexdigest()

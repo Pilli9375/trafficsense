@@ -15,6 +15,8 @@ Call `update()` once after every `env.step()`.
   Per intersection: vehicles that were on an incoming lane and later on an outgoing lane.
 Apart from ATT, vehicles still waiting to enter the network are not counted in these metrics;
 their number at the end is reported as vehicles_waiting_to_enter_at_end (entry backlog).
+Scenarios with an emergency_vehicle_type also get per-ambulance metrics (sim/emergency.py,
+summary key `emergency`); ambulances are counted in the network metrics like any vehicle.
 With lane changing enabled, CityFlow puts a temporary "<id>_shadow" copy of a lane-changing
 vehicle on the target lane. Shadows are not vehicles (no speed, not in get_vehicles) and are
 skipped here; CityFlow's own per-lane waiting count may include them. With lane_change: false
@@ -25,6 +27,7 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import Any
 
+from trafficsense.sim.emergency import EmergencyTracker
 from trafficsense.sim.env import TrafficEnv
 
 STOP_SPEED = 0.1   # m/s
@@ -49,6 +52,7 @@ class MetricsTracker:
         self.int_seen: dict[str, set[str]] = {i: set() for i in self.ids}
         self.int_crossed: dict[str, set[str]] = {i: set() for i in self.ids}
         self.rows: list[dict[str, Any]] = []
+        self.emergency = EmergencyTracker(env) if env.emergency_type is not None else None
 
     def update(self) -> None:
         eng = self.env.eng
@@ -59,6 +63,8 @@ class MetricsTracker:
         running = set(eng.get_vehicles(include_waiting=False))
 
         self.finished += len(self._running - running)
+        if self.emergency is not None:
+            self.emergency.update(running, self._running, speed, self.env.time, dt)
         self._running = running
         self.seen |= running
         for v in running:
@@ -110,7 +116,7 @@ class MetricsTracker:
             }
         n_seen = len(self.seen)
         waiting_to_enter = len(set(self.env.eng.get_vehicles(include_waiting=True)) - self._running)
-        return {
+        out = {
             "network": {
                 "att": self.env.eng.get_average_travel_time(),
                 "queue_mean_per_intersection": sum(p["queue_mean"] for p in per_int.values()) / len(per_int),
@@ -124,3 +130,6 @@ class MetricsTracker:
             },
             "per_intersection": per_int,
         }
+        if self.emergency is not None:
+            out["emergency"] = self.emergency.summary(self.env.time)
+        return out

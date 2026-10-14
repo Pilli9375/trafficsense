@@ -28,6 +28,19 @@ scenarios:
     flow: data/scenarios/indian_2x2/flow_peak_s{seed}.json
     vehicle_types: configs/scenarios/indian_2x2.yaml   # names the vehicle types in LLM prompts
     generate_hint: run scripts/generate_indian_flow.py --level peak --seed <seed>
+  # Same traffic with ambulances appended (configs/scenarios/indian_2x2.yaml, `emergency`).
+  indian_2x2_offpeak_amb:
+    roadnet: data/scenarios/indian_2x2/roadnet.json
+    flow: data/scenarios/indian_2x2/flow_offpeak_amb_s{seed}.json
+    vehicle_types: configs/scenarios/indian_2x2.yaml
+    emergency_vehicle_type: ambulance   # tracked separately in summary.json (`emergency`)
+    generate_hint: run scripts/generate_indian_flow.py --level offpeak --seed <seed> --emergency
+  indian_2x2_peak_amb:
+    roadnet: data/scenarios/indian_2x2/roadnet.json
+    flow: data/scenarios/indian_2x2/flow_peak_amb_s{seed}.json
+    vehicle_types: configs/scenarios/indian_2x2.yaml
+    emergency_vehicle_type: ambulance
+    generate_hint: run scripts/generate_indian_flow.py --level peak --seed <seed> --emergency
 
 sim:
   steps: 3600          # default run length (CLAUDE.md)
