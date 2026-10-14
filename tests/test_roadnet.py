@@ -64,3 +64,13 @@ def test_neighbours(net):
 def test_missing_file_raises(tmp_path):
     with pytest.raises(FileNotFoundError):
         load_roadnet(tmp_path / "nope.json")
+
+
+def test_paired_phases_detected(net):
+    for inter in net.intersections.values():
+        paired = inter.paired_phases
+        assert [p.index for p in paired] == [1, 2, 3, 4]
+        names = [sorted(inter.movements[k].name for k in p.movements
+                        if inter.movements[k].turn != "turn_right") for p in paired]
+        assert names[0] == ["E-go_straight", "W-go_straight"]
+        assert names[3] == ["N-turn_left", "S-turn_left"]

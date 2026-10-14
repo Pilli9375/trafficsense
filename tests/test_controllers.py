@@ -19,8 +19,18 @@ def _run(cfg, name, steps):
     return env, trace
 
 
-def test_fixedtime_cycle(cfg, synthetic_4x4):
-    env, trace = _run(cfg, "fixedtime", 2 * 8 * 35)
+def test_fixedtime_cycles_paired_phases(cfg, synthetic_4x4):
+    env, trace = _run(cfg, "fixedtime", 2 * 4 * 35)
+    phases = [t[IID][0] for t in trace]
+    expected = []
+    for p in range(1, 5):
+        expected += [p] * 30 + [0] * 5
+    assert phases == expected * 2
+    assert all(s.forced_switches == 0 for s in env.signals.values())
+
+
+def test_fixedtime_all_phases_cycle(cfg, synthetic_4x4):
+    env, trace = _run(cfg, "fixedtime_all_phases", 2 * 8 * 35)
     phases = [t[IID][0] for t in trace]
     expected = []
     for p in range(1, 9):
@@ -63,6 +73,19 @@ def test_phase_pressures_and_choice(synthetic_4x4):
 def test_bad_controller_config(cfg):
     with pytest.raises(KeyError):
         make_controller("nope", cfg)
-    bad = {**cfg, "controllers": {"fixedtime": {"green_time": 90}}}
+    bad = {**cfg, "controllers": {"fixedtime": {"green_time": 90, "phases": "paired"}}}
     with pytest.raises(ValueError):
         make_controller("fixedtime", bad)
+    bad = {**cfg, "controllers": {"fixedtime": {"green_time": 30, "phases": "some"}}}
+    with pytest.raises(ValueError):
+        make_controller("fixedtime", bad)
+
+
+def test_fixedtime_decision_interval(cfg, synthetic_4x4):
+    # Only switches on a 30 s grid: first green 30 s, later greens 55 s (25 s < 30 at the
+    # first check after the 5 s transition), as in CoLLMLight's 30 s action steps.
+    c = {**cfg, "controllers": {"fixedtime": {"green_time": 30, "phases": "paired",
+                                              "decision_interval": 30}}}
+    _, trace = _run(c, "fixedtime", 300)
+    phases = [t[IID][0] for t in trace]
+    assert phases == [1] * 30 + [0] * 5 + [2] * 55 + [0] * 5 + [3] * 55 + [0] * 5 + [4] * 55 + [0] * 5 + [1] * 55 + [0] * 5 + [2] * 25

@@ -63,6 +63,25 @@ class Intersection:
         return [p for p in self.phases if not p.is_transition]
 
     @property
+    def paired_phases(self) -> list[Phase]:
+        """Green phases whose non-right movements come from opposing approaches (W/E or N/S),
+        e.g. W+E straight. Raises unless they serve every non-right movement exactly once."""
+        opposite = {frozenset("WE"), frozenset("NS")}
+        non_right = {m.index for m in self.movements if m.turn != "turn_right"}
+        paired = []
+        for p in self.green_phases:
+            served = [self.movements[k] for k in p.movements if k in non_right]
+            if len(served) == 2 and frozenset(m.approach for m in served) in opposite:
+                paired.append(p)
+        covered = [k for p in paired for k in p.movements if k in non_right]
+        if sorted(covered) != sorted(non_right):
+            raise ValueError(
+                f"{self.id}: paired phases {[p.index for p in paired]} do not serve every "
+                f"non-right movement exactly once"
+            )
+        return paired
+
+    @property
     def transition_phase(self) -> Phase:
         """The single transition (yellow) phase. Raises if there is not exactly one."""
         t = [p for p in self.phases if p.is_transition]

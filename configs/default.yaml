@@ -28,6 +28,10 @@ signal:
 controllers:
   fixedtime:
     green_time: 30     # s per green phase
+    phases: paired     # the 4 opposing-approach phases that serve every non-right movement once
+  fixedtime_all_phases:
+    green_time: 30
+    phases: all        # every green phase in the roadnet (8 in the CoLLMLight roadnets)
   maxpressure:
     decision_interval: 5   # s between re-evaluations; switches only once min_green is met
 
