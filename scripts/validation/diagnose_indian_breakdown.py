@@ -87,6 +87,7 @@ def main():
     git = git_info()
     out = {
         "provenance": {"script": "scripts/validation/diagnose_indian_breakdown.py", "controller": "maxpressure",
+                       "controller_params": ctl.info(),
                        "rate_veh_per_hour": args.rate, "seed": args.seed,
                        "git_commit": git["commit"], "git_dirty": git["dirty"]},
         "mean_vehicle_spacing_m": spacing,
