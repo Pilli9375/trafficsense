@@ -16,8 +16,8 @@ def _script(name):
 
 
 def test_ranks_share_ties():
-    tune = _script("tune_maxpressure")
-    assert tune.ranks({5: 10.0, 10: 12.0, 15: 10.0, 20: 30.0}) == {5: 1.5, 15: 1.5, 10: 3, 20: 4}
+    from trafficsense.selection import ranks
+    assert ranks({5: 10.0, 10: 12.0, 15: 10.0, 20: 30.0}) == {5: 1.5, 15: 1.5, 10: 3, 20: 4}
 
 
 def test_select_mean_rank_then_relative_att_then_shorter():
@@ -146,3 +146,53 @@ def test_webster_controller_runs_its_plan(cfg, indian_flows):
             for ph in p["phases"]:
                 expected += [ph] * p["greens_s"][ph] + [tr] * 5
         assert shown[iid] == expected[:600]
+
+
+# ---- MaxPressure min_green (controller-level) ---------------------------------------------
+def test_maxpressure_min_green_defaults_to_env_and_is_validated(cfg):
+    c = copy.deepcopy(cfg)
+    c["controllers"]["maxpressure"].pop("min_green", None)
+    assert make_controller("maxpressure", c).info()["min_green"] == c["signal"]["min_green"]
+    c["controllers"]["maxpressure"]["min_green"] = c["signal"]["min_green"] - 1
+    with pytest.raises(ValueError, match="min_green"):
+        make_controller("maxpressure", c)
+    c["controllers"]["maxpressure"]["min_green"] = c["signal"]["max_green"]
+    with pytest.raises(ValueError, match="min_green"):
+        make_controller("maxpressure", c)
+
+
+@pytest.mark.parametrize("min_green", [10, 15, 20, 25])
+def test_maxpressure_shortest_green_equals_min_green_on_5s_grid(cfg, synthetic_4x4, min_green):
+    """The sweep's premise: with a 5 s grid the shortest green is exactly the controller's min_green."""
+    c = copy.deepcopy(cfg)
+    c["controllers"]["maxpressure"]["decision_interval"] = 5
+    c["controllers"]["maxpressure"]["min_green"] = min_green
+    env = TrafficEnv(c, "synthetic_4x4")
+    ctl = make_controller("maxpressure", c)
+    trace = {i: [] for i in env.intersection_ids}
+    for _ in range(1800):
+        ctl.act(env)
+        env.step()
+        for i in env.intersection_ids:
+            trace[i].append(env.shown_phase(i))
+    assert all(s.forced_switches == 0 for s in env.signals.values())
+    greens = []
+    for i, phases in trace.items():
+        tr = env.intersection(i).transition_phase.index
+        runs, run = [], 0
+        for a, b in zip(phases, phases[1:]):
+            run += 1
+            if a != tr and b == tr:
+                runs.append(run)
+            if a == tr:
+                run = 0
+        greens += runs[1:]
+    assert greens and min(greens) == min_green
+
+
+def test_min_green_sweep_uses_the_shared_rule():
+    mg = _script("tune_maxpressure_min_green")
+    assert mg.DECISION_INTERVAL == 5 and mg.MIN_GREENS == [10, 15, 20, 25]
+    from trafficsense.selection import select
+    att = {"a": {10: 101, 20: 100}, "b": {10: 100, 20: 150}}
+    assert select(att)["chosen"] == 10

@@ -28,6 +28,7 @@ import statistics
 from datetime import datetime
 from pathlib import Path
 
+from trafficsense import selection
 from trafficsense.config import load_config, repo_root
 from trafficsense.experiment import git_info, run_experiment
 
@@ -45,31 +46,12 @@ def transition_share(summary):
     return sig["switches"] * tr / (summary["metrics"]["steps"] * n_int)
 
 
-def ranks(scores: dict[int, float]) -> dict[int, float]:
-    """1 = lowest score; equal scores share the average rank."""
-    order = sorted(scores, key=scores.get)
-    out = {}
-    i = 0
-    while i < len(order):
-        j = i
-        while j + 1 < len(order) and scores[order[j + 1]] == scores[order[i]]:
-            j += 1
-        for k in order[i:j + 1]:
-            out[k] = (i + j) / 2 + 1
-        i = j + 1
-    return out
-
-
 def select(att: dict[str, dict[int, float]]) -> dict:
-    """att[scenario][interval] = mean ATT over seeds. Applies the rule in the docstring."""
-    intervals = sorted(next(iter(att.values())))
-    r = {sc: ranks(v) for sc, v in att.items()}
-    rel = {sc: {k: v[k] / min(v.values()) for k in v} for sc, v in att.items()}
-    mean_rank = {k: statistics.mean(r[sc][k] for sc in att) for k in intervals}
-    mean_rel = {k: statistics.mean(rel[sc][k] for sc in att) for k in intervals}
-    chosen = min(intervals, key=lambda k: (mean_rank[k], mean_rel[k], k))
-    return {"rank": r, "att_over_best": rel, "mean_rank": mean_rank, "mean_att_over_best": mean_rel,
-            "chosen_decision_interval": chosen}
+    """att[scenario][interval] = mean ATT over seeds. Applies the rule in the docstring
+    (trafficsense.selection, shared with tune_maxpressure_min_green.py)."""
+    sel = selection.select(att)
+    sel["chosen_decision_interval"] = sel.pop("chosen")
+    return sel
 
 
 def load_runs(root: Path) -> dict:

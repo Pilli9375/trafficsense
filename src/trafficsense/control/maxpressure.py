@@ -10,6 +10,10 @@ at least min_green after the transition: 10 s for a 5 s or 15 s interval, 15 s f
 paired phases). With `tie_break: keep_current` a tie keeps the current phase, otherwise the
 lowest index wins; `lowest_index` always takes the lowest index (as CoLLMLight's np.argmax).
 
+`min_green` (optional, default signal.min_green) is the controller's own minimum green; it may
+be longer than the env's signal.min_green, never shorter. It decouples the shortest green from
+the decision grid: with a 5 s interval, the shortest green equals `min_green` exactly.
+
 The env forces a switch when a green reaches max_green. To keep the choice pressure-based,
 the current phase is excluded when keeping it would reach max_green before the next decision;
 with a 5 s interval and 60 s max_green this caps a max-pressure green at 55 s.
@@ -66,13 +70,18 @@ class MaxPressureController(Controller):
         if self.tie_break not in TIE_BREAKS:
             raise ValueError(f"{name}.tie_break must be one of {TIE_BREAKS}, got {self.tie_break!r}")
         self.max_green = int(cfg["signal"]["max_green"])
+        env_min = int(cfg["signal"]["min_green"])
+        self.min_green = int(c.get("min_green", env_min))
+        if not env_min <= self.min_green < self.max_green:
+            raise ValueError(f"{name}.min_green must be in [signal.min_green {env_min}, max_green "
+                             f"{self.max_green}), got {self.min_green}")
         self._candidates: dict[str, list[int]] = {}
 
     def act(self, env: TrafficEnv) -> None:
         if int(round(env.time)) % self.interval != 0:
             return
         for iid in env.intersection_ids:
-            if not env.can_switch(iid):
+            if not env.can_switch(iid) or env.time_in_phase(iid) < self.min_green:
                 continue
             inter = env.intersection(iid)
             if iid not in self._candidates:
@@ -83,5 +92,5 @@ class MaxPressureController(Controller):
                                                 self.tie_break))
 
     def info(self) -> dict[str, Any]:
-        return {"name": self.name, "decision_interval": self.interval, "phases": self.phases,
-                "tie_break": self.tie_break}
+        return {"name": self.name, "decision_interval": self.interval, "min_green": self.min_green,
+                "phases": self.phases, "tie_break": self.tie_break}
