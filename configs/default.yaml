@@ -106,6 +106,12 @@ controllers:
     prompt: guided_v3
     options: 2
     tie_break: keep_current
+  llm_guarded_mp:          # llm_guided_mp_v3 + guard: the LLM's phase is applied only if its pressure
+    mode: cooperative      # >= 0.8 x the top phase's (control/guided.py), else MaxPressure's choice
+    prompt: guided_v3
+    options: 2
+    tie_break: keep_current
+    guard_ratio: 0.8
   llm_v1:                  # the Phase 3a prompt, kept for the record. Until Phase 3b this controller
     mode: cooperative      # was called llm_cooperative (runs without a `prompt` parameter are v1)
     prompt: v1

@@ -95,14 +95,23 @@ class LLMGuidedMPController(LLMControllerBase):
         if ambulances:
             rec["ambulances"] = ambulances
         out = self._ask(obs, options, rec)
-        phase = top if out is None else out[0]
+        if out is None:
+            phase = top
+        else:
+            rec["llm_phase"] = out[0]
+            phase = self._accept(out[0], top, obs, ambulances, rec)
         switched = env.request_phase(iid, phase)
         if ambulances:
             rec["serves_nearest_ambulance"] = phase in ambulances[0]["phases"]
-        rec.update(phase=phase, disagrees_with_mp=None if out is None else phase != top,
+        rec.update(phase=phase, disagrees_with_mp=None if out is None else out[0] != top,
                    action=("MaxPressure fallback (failure), " if out is None else "")
                    + ("switch" if switched else "keep"))
         self.decisions.append(rec)
+
+    def _accept(self, llm_phase: int, top: int, obs: dict[str, Any], ambulances: list[dict[str, Any]],
+                rec: dict[str, Any]) -> int:
+        """The phase applied for a valid LLM answer (the guarded subclass may override it)."""
+        return llm_phase
 
     def stats(self) -> dict[str, Any]:
         st = super().stats()
@@ -111,10 +120,10 @@ class LLMGuidedMPController(LLMControllerBase):
         st.update(
             mp_disagreements=len(dis),
             mp_disagreement_rate=len(dis) / len(ok) if ok else None,
-            mp_disagreements_kept_current=sum(1 for d in dis if d["phase"] == d["current_phase"]),
-            mp_disagreements_chose_lower_ranked=sum(1 for d in dis if d["phase"] != d["current_phase"]),
+            mp_disagreements_kept_current=sum(1 for d in dis if d["llm_phase"] == d["current_phase"]),
+            mp_disagreements_chose_lower_ranked=sum(1 for d in dis if d["llm_phase"] != d["current_phase"]),
             mp_fallbacks=len(self.decisions) - len(ok),
-            mp_disagreement_note="over successful calls: LLM's phase != MaxPressure's top choice",
+            mp_disagreement_note="over successful calls: the LLM's answer != MaxPressure's top choice",
         )
         amb = [d for d in self.decisions if "ambulances" in d]
         if amb:
@@ -128,3 +137,48 @@ class LLMGuidedMPController(LLMControllerBase):
         return {**super().info(), "options": self.n_options, "tie_break": self.tie_break,
                 "detection_range_m": self.range_m,
                 "ranking": "maxpressure (phase_pressures over all green phases)"}
+
+
+class LLMGuardedMPController(LLMGuidedMPController):
+    """`llm_guarded_mp`: llm_guided_mp whose answer is applied only if its pressure is close
+    enough to the top phase's; otherwise MaxPressure's top choice is applied.
+
+    Guard: accept the LLM's phase if pressure(phase) >= top - (1 - guard_ratio) * |top|, where
+    top is the pressure of MaxPressure's top choice. For top >= 0 this is
+    pressure >= guard_ratio * top (0.8 x top for guard_ratio 0.8); the |top| form keeps the
+    top phase itself acceptable when every pressure is negative. Pressures are the ones
+    shown to the LLM (MaxPressure's without the free turns, which every phase serves).
+    A phase that serves a listed ambulance (emergency scenarios) is always accepted, so the
+    guard cannot block ambulance priority. Overrides are counted (guard_overrides) and each
+    decision records the LLM's answer (llm_phase), the threshold and whether the guard acted.
+    """
+
+    def __init__(self, cfg: dict[str, Any], name: str = "llm_guarded_mp", client: Any = None):
+        super().__init__(cfg, name, client)
+        r = cfg["controllers"][name].get("guard_ratio")
+        if r is None or not 0 < float(r) <= 1:
+            raise ValueError(f"controllers.{name}.guard_ratio must be in (0, 1], got {r!r}")
+        self.guard_ratio = float(r)
+
+    def _accept(self, llm_phase, top, obs, ambulances, rec):
+        shown = {p["id"]: p["pressure"] for p in obs["phases"]}
+        threshold = shown[top] - (1 - self.guard_ratio) * abs(shown[top])
+        for_ambulance = any(llm_phase in a["phases"] for a in ambulances)
+        override = shown[llm_phase] < threshold and not for_ambulance
+        rec.update(guard_threshold=threshold, guard_llm_pressure=shown[llm_phase], guard_override=override,
+                   guard_ambulance_exempt=for_ambulance)
+        return top if override else llm_phase
+
+    def stats(self) -> dict[str, Any]:
+        st = super().stats()
+        ok = [d for d in self.decisions if d["ok"]]
+        n = sum(1 for d in ok if d["guard_override"])
+        st.update(guard_overrides=n, guard_override_rate=n / len(ok) if ok else None,
+                  guard_ambulance_exemptions=sum(1 for d in ok if d["guard_ambulance_exempt"]),
+                  applied_differs_from_mp=sum(1 for d in self.decisions if d["phase"] != d["mp_choice"]),
+                  guard_note="guard_override_rate over successful calls: the LLM's answer was replaced by "
+                             "MaxPressure's top choice")
+        return st
+
+    def info(self) -> dict[str, Any]:
+        return {**super().info(), "guard_ratio": self.guard_ratio}

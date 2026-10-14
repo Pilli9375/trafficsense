@@ -1,7 +1,7 @@
 from functools import partial
 
 from trafficsense.control.fixedtime import FixedTimeController
-from trafficsense.control.guided import LLMGuidedMPController
+from trafficsense.control.guided import LLMGuardedMPController, LLMGuidedMPController
 from trafficsense.control.llm import LLMController
 from trafficsense.control.maxpressure import MaxPressureController
 from trafficsense.control.preemption import PreemptionMPController
@@ -21,6 +21,7 @@ CONTROLLERS = {
     "llm_guided_mp": partial(LLMGuidedMPController, name="llm_guided_mp"),
     "llm_v3": partial(LLMController, name="llm_v3"),
     "llm_guided_mp_v3": partial(LLMGuidedMPController, name="llm_guided_mp_v3"),
+    "llm_guarded_mp": partial(LLMGuardedMPController, name="llm_guarded_mp"),
 }
 
 

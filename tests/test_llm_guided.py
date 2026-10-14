@@ -111,3 +111,53 @@ def test_config_checked(gcfg):
     bad["controllers"]["llm_guided_mp"]["prompt"] = "v2"
     with pytest.raises(ValueError, match="prompt"):
         LLMGuidedMPController(bad, client=FakeClient(first_option))
+
+
+@pytest.fixture
+def gdcfg(gcfg):
+    gcfg["controllers"]["llm_guarded_mp"]["guard_ratio"] = 0.8
+    return gcfg
+
+
+def test_guard_threshold():
+    from trafficsense.control.guided import LLMGuardedMPController
+    g = LLMGuardedMPController.__new__(LLMGuardedMPController)
+    g.guard_ratio = 0.8
+    obs = lambda pr: {"phases": [{"id": i, "pressure": v} for i, v in pr.items()]}
+    for pr, llm, top, applied in [({1: 10, 2: 8, 3: 7}, 2, 1, 2),     # 8 >= 0.8 x 10
+                                  ({1: 10, 2: 8, 3: 7}, 3, 1, 1),     # 7 < 8: overridden
+                                  ({1: 0, 2: 0, 3: -1}, 2, 1, 2),     # top 0: only pressure >= 0
+                                  ({1: 0, 2: 0, 3: -1}, 3, 1, 1),
+                                  ({1: -5, 2: -6, 3: -7}, 2, 1, 2),   # top < 0: >= -6 accepted
+                                  ({1: -5, 2: -6, 3: -7}, 3, 1, 1)]:
+        rec = {}
+        assert g._accept(llm, top, obs(pr), [], rec) == applied
+        assert rec["guard_override"] == (applied != llm)
+    rec = {}
+    assert g._accept(3, 1, obs({1: 10, 2: 8, 3: 0}), [{"phases": [3]}], rec) == 3   # serves an ambulance
+    assert rec["guard_ambulance_exempt"] and not rec["guard_override"]
+
+
+def test_guarded_overrides_low_pressure_answers(gdcfg):
+    from trafficsense.control.guided import LLMGuardedMPController
+    last = lambda m, s: json.dumps({"phase": options_in_prompt(m)[-1], "reason": "last option"})
+    ctl = LLMGuardedMPController(gdcfg, client=FakeClient(last))
+    run(gdcfg, ctl, 400)
+    st = ctl.stats()
+    assert st["guard_overrides"] > 0 and st["guard_override_rate"] == st["guard_overrides"] / st["ok"]
+    for d in ctl.decisions:
+        assert d["phase"] == (d["mp_choice"] if d["guard_override"] else d["llm_phase"])
+        assert d["guard_override"] == (d["guard_llm_pressure"] < d["guard_threshold"])
+    assert st["applied_differs_from_mp"] == sum(1 for d in ctl.decisions if d["phase"] != d["mp_choice"])
+
+
+def test_guarded_with_agreeing_llm_is_maxpressure(gdcfg):
+    from trafficsense.control.guided import LLMGuardedMPController
+    ctl = LLMGuardedMPController(gdcfg, client=FakeClient(first_option))
+    _, g = run(gdcfg, ctl)
+    _, m = run(gdcfg, make_controller("maxpressure", gdcfg))
+    assert g == m and ctl.stats()["guard_overrides"] == 0
+    bad = copy.deepcopy(gdcfg)
+    bad["controllers"]["llm_guarded_mp"]["guard_ratio"] = 1.5
+    with pytest.raises(ValueError, match="guard_ratio"):
+        LLMGuardedMPController(bad, client=FakeClient(first_option))
