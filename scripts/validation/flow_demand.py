@@ -7,10 +7,13 @@ turn split is the per-lane demand). Then measures one lane's maximum discharge r
   * estimate (analytical, NOT measured): steady car-following flow
         q = v / (L + minGap + v * headwayTime)   [veh/s/lane]
     using the flow file's vehicle parameters. Labelled as an estimate everywhere.
-  * measured: a CityFlow run where every signal permanently shows the phase serving the
-    busiest lane's movement, fed 1 veh/s along a straight route from that entry road to the
-    opposite boundary. The finished-vehicle rate over the last 40 minutes is the measured
-    saturation flow (the first 20 minutes are excluded as warm-up).
+  * measured, permanent green: every signal on a straight route from that entry road
+    permanently shows the phase serving it, fed 1 veh/s. The finished-vehicle rate over the
+    last 40 minutes (first 20 minutes = warm-up). For an entry road this is limited by
+    CityFlow's vehicle insertion (a vehicle enters at speed 0 only once the previous one is
+    length + minGap ahead), so it is the most vehicles the entry lane can ADMIT per hour.
+  * measured, stop-line saturation flow: hold the lane red for 900 s, then green, and count
+    vehicles leaving the queue in green seconds 10-70 (trafficsense.sim.capacity).
 
 A few routes list consecutive roads with no movement between them (e.g. a U-turn); CityFlow
 treats route roads as waypoints and finds a path, so their first turn is reported as
@@ -21,12 +24,8 @@ Output: outputs/validation/demand_<scenario>.json
 import argparse
 import collections
 import json
-import tempfile
-from pathlib import Path
-
-import cityflow
-
 from trafficsense.config import load_config, repo_root
+from trafficsense.sim.capacity import measure_discharge, measure_saturation, straight_route
 from trafficsense.sim.roadnet import load_roadnet
 
 
@@ -38,54 +37,6 @@ def first_turn(net, route):
             if m.in_road == route[0] and m.out_road == route[1]:
                 return inter.id, m
     return None, "non_adjacent"   # CityFlow treats route roads as waypoints and re-routes
-
-
-def straight_route(net, start_road):
-    route = [start_road]
-    while True:
-        nxt = [m for i in net.intersections.values() for m in i.movements
-               if m.in_road == route[-1] and m.turn == "go_straight"]
-        if not nxt:
-            return route
-        route.append(nxt[0].out_road)
-
-
-def measure_saturation(roadnet_path, flows, start_road, net, steps=3600, warmup=1200):
-    route = straight_route(net, start_road)
-    vehicle = flows[0]["vehicle"]
-    flow = [{"vehicle": vehicle, "route": route, "interval": 1.0, "startTime": 0, "endTime": steps}]
-    # phase that serves the straight movement out of start_road, at every intersection on the route
-    serve = {}
-    for inter in net.intersections.values():
-        for m in inter.movements:
-            if m.in_road in route and m.turn == "go_straight":
-                serve[inter.id] = next(p.index for p in inter.paired_phases if m.index in p.movements)
-    with tempfile.TemporaryDirectory() as tmp:
-        fpath = Path(tmp) / "flow.json"
-        fpath.write_text(json.dumps(flow))
-        cpath = Path(tmp) / "config.json"
-        cpath.write_text(json.dumps({"interval": 1.0, "seed": 0, "dir": "", "roadnetFile": str(roadnet_path),
-                                     "flowFile": str(fpath), "rlTrafficLight": True, "laneChange": False,
-                                     "saveReplay": False, "roadnetLogFile": "", "replayLogFile": ""}))
-        eng = cityflow.Engine(str(cpath), thread_num=1)
-    for iid in net.intersections:
-        eng.set_tl_phase(iid, serve.get(iid, net.intersections[iid].green_phases[0].index))
-    finished, prev, finished_after_warmup = 0, set(), 0
-    for t in range(steps):
-        eng.next_step()
-        run = set(eng.get_vehicles(include_waiting=False))
-        n = len(prev - run)
-        finished += n
-        if t >= warmup:
-            finished_after_warmup += n
-        prev = run
-    return {
-        "route": route,
-        "phases_held": serve,
-        "finished_total": finished,
-        "measured_veh_per_hour": finished_after_warmup * 3600 / (steps - warmup),
-        "window_s": [warmup, steps],
-    }
 
 
 def main():
@@ -112,7 +63,10 @@ def main():
     top_turn, top_turn_n = turns[top_road].most_common(1)[0]
     v = flows[0]["vehicle"]
     est = v["maxSpeed"] / (v["length"] + v["minGap"] + v["maxSpeed"] * v["headwayTime"]) * 3600
-    sat = measure_saturation(roadnet_path, flows, top_road, net)
+    # one vehicle type, fed 1 veh/s straight across from the busiest entry road
+    sat = measure_saturation(roadnet_path, net, straight_route(net, top_road), [(v, 1.0)])
+    del sat["entry_queue_at_end"]
+    dis = measure_discharge(roadnet_path, net, straight_route(net, top_road), [(v, 1.0)])
 
     out = {
         "scenario": args.scenario,
@@ -132,9 +86,12 @@ def main():
             "estimate_veh_per_hour_ESTIMATE": est,
             "estimate_formula": "maxSpeed / (length + minGap + maxSpeed * headwayTime) * 3600",
             "measured_permanent_green": sat,
+            "measured_permanent_green_note": "limited by CityFlow vehicle insertion at the network edge",
+            "measured_stop_line_discharge": dis,
         },
     }
     out["busiest_road"]["demand_over_measured_capacity"] = top_turn_n / sat["measured_veh_per_hour"]
+    out["busiest_road"]["demand_over_stop_line_saturation_flow"] = top_turn_n / dis["saturation_flow_veh_per_hour"]
     path = repo_root() / "outputs" / "validation" / f"demand_{args.scenario}.json"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(out, indent=2))

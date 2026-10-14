@@ -120,7 +120,8 @@
     "busiest_lane_movement": "go_straight",
     "busiest_lane_vehicles_per_hour": 2660,
     "lanes": 3,
-    "demand_over_measured_capacity": 2.216666666666667
+    "demand_over_measured_capacity": 2.216666666666667,
+    "demand_over_stop_line_saturation_flow": 1.8472222222222223
   },
   "lane_capacity": {
     "estimate_veh_per_hour_ESTIMATE": 1345.7909965681986,
@@ -145,6 +146,27 @@
         1200,
         3600
       ]
+    },
+    "measured_permanent_green_note": "limited by CityFlow vehicle insertion at the network edge",
+    "measured_stop_line_discharge": {
+      "route": [
+        "road_2_5_3",
+        "road_2_4_3",
+        "road_2_3_3",
+        "road_2_2_3",
+        "road_2_1_3"
+      ],
+      "lane": "road_2_5_3_1",
+      "turn": "go_straight",
+      "red_s": 900,
+      "queue_at_green": 39,
+      "window_s": [
+        10,
+        70
+      ],
+      "left_in_window": 24,
+      "left_from_green_onset": 28,
+      "saturation_flow_veh_per_hour": 1440.0
     }
   }
 }

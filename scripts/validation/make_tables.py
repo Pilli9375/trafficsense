@@ -138,11 +138,14 @@ def capacity_table():
     rows = [
         ["Demand on road_2_5_3 (all lanes)", b["vehicles_per_hour"]],
         ["Demand needing its straight lane", b["busiest_lane_vehicles_per_hour"]],
-        ["Straight-lane capacity, measured (permanent green, 1 veh/s fed)",
+        ["Most the entry lane can admit, measured (permanent green, 1 veh/s fed; CityFlow insertion limit)",
          f"{c['measured_permanent_green']['measured_veh_per_hour']:.0f}"],
-        ["Straight-lane capacity, ESTIMATE from car-following parameters",
+        ["Stop-line saturation flow, measured (queue discharge after a long red)",
+         f"{c['measured_stop_line_discharge']['saturation_flow_veh_per_hour']:.0f}"],
+        ["Steady car-following flow, ESTIMATE from vehicle parameters",
          f"{c['estimate_veh_per_hour_ESTIMATE']:.0f}"],
-        ["Demand / measured capacity", f"{b['demand_over_measured_capacity']:.2f}"],
+        ["Demand / entry-lane admission limit", f"{b['demand_over_measured_capacity']:.2f}"],
+        ["Demand / stop-line saturation flow", f"{b['demand_over_stop_line_saturation_flow']:.2f}"],
     ]
     return table(["Quantity", "veh / h"], rows)
 

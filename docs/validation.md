@@ -170,20 +170,36 @@ In these roadnets each incoming lane serves exactly one turn (lane 0 left, 1 str
 |---|---|
 | Demand on road_2_5_3 (all lanes) | 2765 |
 | Demand needing its straight lane | 2660 |
-| Straight-lane capacity, measured (permanent green, 1 veh/s fed) | 1200 |
-| Straight-lane capacity, ESTIMATE from car-following parameters | 1346 |
-| Demand / measured capacity | 2.22 |
+| Most the entry lane can admit, measured (permanent green, 1 veh/s fed; CityFlow insertion limit) | 1200 |
+| Stop-line saturation flow, measured (queue discharge after a long red) | 1440 |
+| Steady car-following flow, ESTIMATE from vehicle parameters | 1346 |
+| Demand / entry-lane admission limit | 2.22 |
+| Demand / stop-line saturation flow | 1.85 |
 <!-- END:capacity -->
 
-The measured number comes from a separate CityFlow run that holds every signal on the route
-green for that movement and feeds 1 vehicle/s along a straight route; it counts finished
-vehicles in minutes 20–60. The estimate is steady car-following flow
+Two different limits are measured (`trafficsense.sim.capacity`):
+
+* **Entry admission (1200 veh/h).** A CityFlow run that holds every signal on the route green
+  and feeds 1 vehicle/s along a straight route, counting finished vehicles in minutes 20–60.
+  Because the route starts at the network edge, this is limited by how CityFlow *inserts*
+  vehicles, not by the signal: a waiting vehicle enters the lane at speed 0 only once the
+  previous one, also starting from standstill, is `length + minGap` = 7.5 m ahead
+  (`Lane::available` in CityFlow). At 2 m/s² that takes 3 steps, hence exactly 3600 / 3 = 1200.
+* **Stop-line saturation flow (1440 veh/h).** Hold the lane red for 900 s, then green, and
+  count vehicles leaving the queue in green seconds 10–70. This is the rate a green phase
+  can serve.
+
+The estimate is steady car-following flow
 `maxSpeed / (length + minGap + maxSpeed × headwayTime)` and is only a cross-check.
 
-**Even with a permanent green, this lane can carry less than half of its demand.** No signal
-plan can clear it, so a large entry queue on Synthetic 4x4 is a property of the dataset, not
-of our simulator or controllers. This is why only ~2200–2900 of the 8000 vehicles enter the
-network within the hour.
+**Correction (Phase 2):** this table previously reported only the 1200 veh/h figure, labelled
+as "straight-lane capacity". That label was wrong: 1200 veh/h is the entry
+lane's admission limit, and the stop line itself can discharge 1440 veh/h. The conclusion
+does not change. **Even with a permanent green, this lane can carry only about half of its
+demand** (it can admit 45% of it, and its stop line could serve 54%). No signal plan can clear
+it, so a large entry queue on Synthetic 4x4 is a property of the dataset, not of our simulator
+or controllers. This is why only ~2200–2900 of the 8000 vehicles enter the network within the
+hour.
 
 ## 3. FixedTime phases
 
