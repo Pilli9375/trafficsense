@@ -1,0 +1,2032 @@
+{
+ "provenance": {
+  "script": "scripts/calibrate_indian_demand.py",
+  "controller": "maxpressure",
+  "controller_params": {
+   "name": "maxpressure",
+   "decision_interval": 5,
+   "phases": "all",
+   "tie_break": "keep_current"
+  },
+  "scenario_config": "configs/scenarios/indian_2x2.yaml",
+  "seeds": [
+   0,
+   1,
+   2
+  ],
+  "git_commit": "927049b303da583900215efcd77564b69597e644",
+  "git_dirty": true,
+  "timestamp": "2026-10-14T13:17:01+05:30",
+  "wall_time_s": 398.3
+ },
+ "capacity": {
+  "feed_veh_per_s": 2.0,
+  "saturation_flow": {
+   "go_straight": {
+    "route": [
+     "road_0_1_0",
+     "road_1_1_0",
+     "road_2_1_0"
+    ],
+    "lane": "road_0_1_0_1",
+    "turn": "go_straight",
+    "red_s": 900,
+    "queue_at_green": 39,
+    "window_s": [
+     10,
+     70
+    ],
+    "left_in_window": 35,
+    "left_from_green_onset": 39,
+    "saturation_flow_veh_per_hour": 2100.0
+   },
+   "turn_left": {
+    "route": [
+     "road_0_1_0",
+     "road_1_1_1",
+     "road_1_2_1"
+    ],
+    "lane": "road_0_1_0_0",
+    "turn": "turn_left",
+    "red_s": 900,
+    "queue_at_green": 39,
+    "window_s": [
+     10,
+     70
+    ],
+    "left_in_window": 34,
+    "left_from_green_onset": 38,
+    "saturation_flow_veh_per_hour": 2040.0
+   }
+  },
+  "entry_admission": {
+   "route": [
+    "road_0_1_0",
+    "road_1_1_0",
+    "road_2_1_0"
+   ],
+   "phases_held": {
+    "intersection_1_1": 1,
+    "intersection_2_1": 1
+   },
+   "finished_total": 1321,
+   "measured_veh_per_hour": 1341.0,
+   "window_s": [
+    1200,
+    3600
+   ],
+   "entry_queue_at_end": 5859
+  }
+ },
+ "sweep": [
+  {
+   "veh_per_hour": 1000.0,
+   "seed": 0,
+   "vehicles": 979,
+   "busiest_lane": {
+    "intersection": "intersection_2_2",
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 101.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.048095238095238094
+   },
+   "busiest_entry_lane": {
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 101.0,
+    "demand_over_admission_limit": 0.07531692766592095
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.09047619047619049,
+    "intersection_2_1": 0.09969187675070026,
+    "intersection_1_2": 0.09676470588235293,
+    "intersection_2_2": 0.10866946778711485
+   },
+   "Y_max_ANALYTIC": 0.10866946778711485,
+   "maxpressure": {
+    "generated": 979,
+    "throughput": 964,
+    "running_at_end": 15,
+    "waiting_to_enter_at_end": 0,
+    "finished_share": 0.9846782431052093,
+    "backlog_share": 0.0,
+    "att": 73.35750766087845,
+    "queue_mean_per_intersection": 1.0461111111111112,
+    "queue_max_network": 15,
+    "waiting_time_mean": 15.388151174668028,
+    "drain_s_after_arrivals_stop": 68,
+    "drains": true
+   }
+  },
+  {
+   "veh_per_hour": 1000.0,
+   "seed": 1,
+   "vehicles": 987,
+   "busiest_lane": {
+    "intersection": "intersection_2_2",
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 101.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.048095238095238094
+   },
+   "busiest_entry_lane": {
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 101.0,
+    "demand_over_admission_limit": 0.07531692766592095
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.10298319327731092,
+    "intersection_2_1": 0.09387955182072828,
+    "intersection_1_2": 0.10488795518207283,
+    "intersection_2_2": 0.10350140056022408
+   },
+   "Y_max_ANALYTIC": 0.10488795518207283,
+   "maxpressure": {
+    "generated": 987,
+    "throughput": 962,
+    "running_at_end": 25,
+    "waiting_to_enter_at_end": 0,
+    "finished_share": 0.9746707193515705,
+    "backlog_share": 0.0,
+    "att": 74.18135764944276,
+    "queue_mean_per_intersection": 1.0945138888888888,
+    "queue_max_network": 15,
+    "waiting_time_mean": 15.970618034447822,
+    "drain_s_after_arrivals_stop": 98,
+    "drains": true
+   }
+  },
+  {
+   "veh_per_hour": 1000.0,
+   "seed": 2,
+   "vehicles": 1068,
+   "busiest_lane": {
+    "intersection": "intersection_1_2",
+    "lane": "road_0_2_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 104.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.049523809523809526
+   },
+   "busiest_entry_lane": {
+    "lane": "road_0_2_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 104.0,
+    "demand_over_admission_limit": 0.07755406413124534
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.0957703081232493,
+    "intersection_2_1": 0.10539215686274511,
+    "intersection_1_2": 0.11022408963585435,
+    "intersection_2_2": 0.0991736694677871
+   },
+   "Y_max_ANALYTIC": 0.11022408963585435,
+   "maxpressure": {
+    "generated": 1068,
+    "throughput": 1048,
+    "running_at_end": 20,
+    "waiting_to_enter_at_end": 0,
+    "finished_share": 0.9812734082397003,
+    "backlog_share": 0.0,
+    "att": 73.15636704119851,
+    "queue_mean_per_intersection": 1.1569444444444446,
+    "queue_max_network": 14,
+    "waiting_time_mean": 15.600187265917603,
+    "drain_s_after_arrivals_stop": 107,
+    "drains": true
+   }
+  },
+  {
+   "veh_per_hour": 2000.0,
+   "seed": 0,
+   "vehicles": 1974,
+   "busiest_lane": {
+    "intersection": "intersection_2_2",
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 203.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.09666666666666666
+   },
+   "busiest_entry_lane": {
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 203.0,
+    "demand_over_admission_limit": 0.15137956748695003
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.18442577030812327,
+    "intersection_2_1": 0.18253501400560224,
+    "intersection_1_2": 0.19380952380952382,
+    "intersection_2_2": 0.20012605042016807
+   },
+   "Y_max_ANALYTIC": 0.20012605042016807,
+   "maxpressure": {
+    "generated": 1974,
+    "throughput": 1936,
+    "running_at_end": 38,
+    "waiting_to_enter_at_end": 0,
+    "finished_share": 0.9807497467071935,
+    "backlog_share": 0.0,
+    "att": 80.05319148936171,
+    "queue_mean_per_intersection": 2.9334722222222225,
+    "queue_max_network": 31,
+    "waiting_time_mean": 21.40628166160081,
+    "drain_s_after_arrivals_stop": 132,
+    "drains": true
+   }
+  },
+  {
+   "veh_per_hour": 2000.0,
+   "seed": 1,
+   "vehicles": 2018,
+   "busiest_lane": {
+    "intersection": "intersection_2_2",
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 204.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.09714285714285714
+   },
+   "busiest_entry_lane": {
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 204.0,
+    "demand_over_admission_limit": 0.15212527964205816
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.20641456582633053,
+    "intersection_2_1": 0.1965686274509804,
+    "intersection_1_2": 0.18827731092436975,
+    "intersection_2_2": 0.20165266106442578
+   },
+   "Y_max_ANALYTIC": 0.20641456582633053,
+   "maxpressure": {
+    "generated": 2018,
+    "throughput": 1981,
+    "running_at_end": 37,
+    "waiting_to_enter_at_end": 0,
+    "finished_share": 0.9816650148662042,
+    "backlog_share": 0.0,
+    "att": 80.48315163528245,
+    "queue_mean_per_intersection": 3.075416666666667,
+    "queue_max_network": 28,
+    "waiting_time_mean": 21.953419226957383,
+    "drain_s_after_arrivals_stop": 92,
+    "drains": true
+   }
+  },
+  {
+   "veh_per_hour": 2000.0,
+   "seed": 2,
+   "vehicles": 2048,
+   "busiest_lane": {
+    "intersection": "intersection_1_1",
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 196.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.09333333333333334
+   },
+   "busiest_entry_lane": {
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 196.0,
+    "demand_over_admission_limit": 0.14615958240119314
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.2142296918767507,
+    "intersection_2_1": 0.19599439775910366,
+    "intersection_1_2": 0.2060924369747899,
+    "intersection_2_2": 0.20366946778711484
+   },
+   "Y_max_ANALYTIC": 0.2142296918767507,
+   "maxpressure": {
+    "generated": 2048,
+    "throughput": 2002,
+    "running_at_end": 46,
+    "waiting_to_enter_at_end": 0,
+    "finished_share": 0.9775390625,
+    "backlog_share": 0.0,
+    "att": 79.3837890625,
+    "queue_mean_per_intersection": 3.0547916666666666,
+    "queue_max_network": 30,
+    "waiting_time_mean": 21.48828125,
+    "drain_s_after_arrivals_stop": 102,
+    "drains": true
+   }
+  },
+  {
+   "veh_per_hour": 3000.0,
+   "seed": 0,
+   "vehicles": 2948,
+   "busiest_lane": {
+    "intersection": "intersection_2_2",
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 286.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.1361904761904762
+   },
+   "busiest_entry_lane": {
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 286.0,
+    "demand_over_admission_limit": 0.21327367636092467
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.2788515406162465,
+    "intersection_2_1": 0.28784313725490196,
+    "intersection_1_2": 0.3046778711484594,
+    "intersection_2_2": 0.2790476190476191
+   },
+   "Y_max_ANALYTIC": 0.3046778711484594,
+   "maxpressure": {
+    "generated": 2948,
+    "throughput": 2865,
+    "running_at_end": 83,
+    "waiting_to_enter_at_end": 0,
+    "finished_share": 0.9718453188602443,
+    "backlog_share": 0.0,
+    "att": 85.37652645861601,
+    "queue_mean_per_intersection": 5.378958333333333,
+    "queue_max_network": 48,
+    "waiting_time_mean": 26.294097693351425,
+    "drain_s_after_arrivals_stop": 166,
+    "drains": true
+   }
+  },
+  {
+   "veh_per_hour": 3000.0,
+   "seed": 1,
+   "vehicles": 3037,
+   "busiest_lane": {
+    "intersection": "intersection_1_1",
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 288.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.13714285714285715
+   },
+   "busiest_entry_lane": {
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 288.0,
+    "demand_over_admission_limit": 0.21476510067114093
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.30253501400560223,
+    "intersection_2_1": 0.3026610644257703,
+    "intersection_1_2": 0.2717226890756303,
+    "intersection_2_2": 0.28557422969187674
+   },
+   "Y_max_ANALYTIC": 0.3026610644257703,
+   "maxpressure": {
+    "generated": 3037,
+    "throughput": 2967,
+    "running_at_end": 70,
+    "waiting_to_enter_at_end": 0,
+    "finished_share": 0.9769509384260784,
+    "backlog_share": 0.0,
+    "att": 86.36812644056634,
+    "queue_mean_per_intersection": 5.70888888888889,
+    "queue_max_network": 45,
+    "waiting_time_mean": 27.09186697398749,
+    "drain_s_after_arrivals_stop": 166,
+    "drains": true
+   }
+  },
+  {
+   "veh_per_hour": 3000.0,
+   "seed": 2,
+   "vehicles": 3067,
+   "busiest_lane": {
+    "intersection": "intersection_1_2",
+    "lane": "road_0_2_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 298.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.1419047619047619
+   },
+   "busiest_entry_lane": {
+    "lane": "road_0_2_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 298.0,
+    "demand_over_admission_limit": 0.2222222222222222
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.300812324929972,
+    "intersection_2_1": 0.29355742296918763,
+    "intersection_1_2": 0.30102240896358545,
+    "intersection_2_2": 0.3045658263305322
+   },
+   "Y_max_ANALYTIC": 0.3045658263305322,
+   "maxpressure": {
+    "generated": 3067,
+    "throughput": 2995,
+    "running_at_end": 72,
+    "waiting_to_enter_at_end": 0,
+    "finished_share": 0.9765242908379524,
+    "backlog_share": 0.0,
+    "att": 86.45060319530486,
+    "queue_mean_per_intersection": 5.857638888888889,
+    "queue_max_network": 49,
+    "waiting_time_mean": 27.510596674274534,
+    "drain_s_after_arrivals_stop": 148,
+    "drains": true
+   }
+  },
+  {
+   "veh_per_hour": 4000.0,
+   "seed": 0,
+   "vehicles": 3911,
+   "busiest_lane": {
+    "intersection": "intersection_1_2",
+    "lane": "road_0_2_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 384.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.18285714285714286
+   },
+   "busiest_entry_lane": {
+    "lane": "road_0_2_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 384.0,
+    "demand_over_admission_limit": 0.28635346756152125
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.3636274509803921,
+    "intersection_2_1": 0.3805882352941176,
+    "intersection_1_2": 0.388515406162465,
+    "intersection_2_2": 0.37263305322128853
+   },
+   "Y_max_ANALYTIC": 0.388515406162465,
+   "maxpressure": {
+    "generated": 3911,
+    "throughput": 3788,
+    "running_at_end": 123,
+    "waiting_to_enter_at_end": 0,
+    "finished_share": 0.968550242904628,
+    "backlog_share": 0.0,
+    "att": 98.13346970084378,
+    "queue_mean_per_intersection": 10.219652777777778,
+    "queue_max_network": 73,
+    "waiting_time_mean": 37.650984402965996,
+    "drain_s_after_arrivals_stop": 172,
+    "drains": true
+   }
+  },
+  {
+   "veh_per_hour": 4000.0,
+   "seed": 1,
+   "vehicles": 4038,
+   "busiest_lane": {
+    "intersection": "intersection_2_1",
+    "lane": "road_3_1_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 384.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.18285714285714286
+   },
+   "busiest_entry_lane": {
+    "lane": "road_3_1_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 384.0,
+    "demand_over_admission_limit": 0.28635346756152125
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.38773109243697484,
+    "intersection_2_1": 0.38516806722689073,
+    "intersection_1_2": 0.3976470588235294,
+    "intersection_2_2": 0.38701680672268907
+   },
+   "Y_max_ANALYTIC": 0.3976470588235294,
+   "maxpressure": {
+    "generated": 4038,
+    "throughput": 3939,
+    "running_at_end": 97,
+    "waiting_to_enter_at_end": 2,
+    "finished_share": 0.975482912332838,
+    "backlog_share": 0.0004952947003467063,
+    "att": 101.85562159484894,
+    "queue_mean_per_intersection": 11.468680555555554,
+    "queue_max_network": 90,
+    "waiting_time_mean": 40.95540138751239,
+    "drain_s_after_arrivals_stop": 148,
+    "drains": true
+   }
+  },
+  {
+   "veh_per_hour": 4000.0,
+   "seed": 2,
+   "vehicles": 4093,
+   "busiest_lane": {
+    "intersection": "intersection_1_1",
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 409.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.19476190476190477
+   },
+   "busiest_entry_lane": {
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 409.0,
+    "demand_over_admission_limit": 0.3049962714392245
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.40525210084033614,
+    "intersection_2_1": 0.4048459383753502,
+    "intersection_1_2": 0.39086834733893555,
+    "intersection_2_2": 0.39137254901960783
+   },
+   "Y_max_ANALYTIC": 0.40525210084033614,
+   "maxpressure": {
+    "generated": 4093,
+    "throughput": 3953,
+    "running_at_end": 137,
+    "waiting_to_enter_at_end": 3,
+    "finished_share": 0.965795260200342,
+    "backlog_share": 0.0007329587099926704,
+    "att": 103.1607622770584,
+    "queue_mean_per_intersection": 11.995555555555555,
+    "queue_max_network": 76,
+    "waiting_time_mean": 42.2520782396088,
+    "drain_s_after_arrivals_stop": 226,
+    "drains": true
+   }
+  },
+  {
+   "veh_per_hour": 4500.0,
+   "seed": 0,
+   "vehicles": 4427,
+   "busiest_lane": {
+    "intersection": "intersection_2_2",
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 433.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.2061904761904762
+   },
+   "busiest_entry_lane": {
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 433.0,
+    "demand_over_admission_limit": 0.32289336316181955
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.43823529411764706,
+    "intersection_2_1": 0.4196218487394958,
+    "intersection_1_2": 0.4126050420168067,
+    "intersection_2_2": 0.42113445378151265
+   },
+   "Y_max_ANALYTIC": 0.43823529411764706,
+   "maxpressure": {
+    "generated": 4427,
+    "throughput": 4288,
+    "running_at_end": 139,
+    "waiting_to_enter_at_end": 0,
+    "finished_share": 0.9686017619155184,
+    "backlog_share": 0.0,
+    "att": 112.14772983962051,
+    "queue_mean_per_intersection": 15.338541666666666,
+    "queue_max_network": 103,
+    "waiting_time_mean": 49.92319855432573,
+    "drain_s_after_arrivals_stop": 197,
+    "drains": true
+   }
+  },
+  {
+   "veh_per_hour": 4500.0,
+   "seed": 1,
+   "vehicles": 4537,
+   "busiest_lane": {
+    "intersection": "intersection_1_1",
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 426.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.20285714285714285
+   },
+   "busiest_entry_lane": {
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 426.0,
+    "demand_over_admission_limit": 0.31767337807606266
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.4346778711484594,
+    "intersection_2_1": 0.4439355742296919,
+    "intersection_1_2": 0.44109243697478995,
+    "intersection_2_2": 0.4314145658263305
+   },
+   "Y_max_ANALYTIC": 0.4439355742296919,
+   "maxpressure": {
+    "generated": 4537,
+    "throughput": 4383,
+    "running_at_end": 154,
+    "waiting_to_enter_at_end": 0,
+    "finished_share": 0.9660568657703328,
+    "backlog_share": 0.0,
+    "att": 118.75887150099184,
+    "queue_mean_per_intersection": 17.60597222222222,
+    "queue_max_network": 104,
+    "waiting_time_mean": 55.91404011461318,
+    "drain_s_after_arrivals_stop": 208,
+    "drains": true
+   }
+  },
+  {
+   "veh_per_hour": 4500.0,
+   "seed": 2,
+   "vehicles": 4542,
+   "busiest_lane": {
+    "intersection": "intersection_1_1",
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 478.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.2276190476190476
+   },
+   "busiest_entry_lane": {
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 478.0,
+    "demand_over_admission_limit": 0.3564504101416853
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.45623249299719887,
+    "intersection_2_1": 0.44707282913165264,
+    "intersection_1_2": 0.4268347338935574,
+    "intersection_2_2": 0.4213025210084034
+   },
+   "Y_max_ANALYTIC": 0.45623249299719887,
+   "maxpressure": {
+    "generated": 4542,
+    "throughput": 4389,
+    "running_at_end": 153,
+    "waiting_to_enter_at_end": 0,
+    "finished_share": 0.9663143989431968,
+    "backlog_share": 0.0,
+    "att": 121.23756054601498,
+    "queue_mean_per_intersection": 18.450625000000002,
+    "queue_max_network": 138,
+    "waiting_time_mean": 58.53874944958168,
+    "drain_s_after_arrivals_stop": 164,
+    "drains": true
+   }
+  },
+  {
+   "veh_per_hour": 4750.0,
+   "seed": 0,
+   "vehicles": 4667,
+   "busiest_lane": {
+    "intersection": "intersection_1_2",
+    "lane": "road_0_2_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 447.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.21285714285714286
+   },
+   "busiest_entry_lane": {
+    "lane": "road_0_2_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 447.0,
+    "demand_over_admission_limit": 0.3333333333333333
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.45728291316526615,
+    "intersection_2_1": 0.4549019607843137,
+    "intersection_1_2": 0.46029411764705885,
+    "intersection_2_2": 0.43995798319327734
+   },
+   "Y_max_ANALYTIC": 0.46029411764705885,
+   "maxpressure": {
+    "generated": 4667,
+    "throughput": 4366,
+    "running_at_end": 300,
+    "waiting_to_enter_at_end": 1,
+    "finished_share": 0.935504606813799,
+    "backlog_share": 0.00021427040925648167,
+    "att": 162.94471823441182,
+    "queue_mean_per_intersection": 31.6925,
+    "queue_max_network": 236,
+    "waiting_time_mean": 97.8448349764252,
+    "drain_s_after_arrivals_stop": 470,
+    "drains": true
+   }
+  },
+  {
+   "veh_per_hour": 4750.0,
+   "seed": 1,
+   "vehicles": 4796,
+   "busiest_lane": {
+    "intersection": "intersection_1_1",
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 455.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.21666666666666667
+   },
+   "busiest_entry_lane": {
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 455.0,
+    "demand_over_admission_limit": 0.33929903057419836
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.473655462184874,
+    "intersection_2_1": 0.4611064425770309,
+    "intersection_1_2": 0.47026610644257705,
+    "intersection_2_2": 0.4469747899159664
+   },
+   "Y_max_ANALYTIC": 0.473655462184874,
+   "maxpressure": {
+    "generated": 4796,
+    "throughput": 4610,
+    "running_at_end": 186,
+    "waiting_to_enter_at_end": 0,
+    "finished_share": 0.9612176814011676,
+    "backlog_share": 0.0,
+    "att": 136.30316930775646,
+    "queue_mean_per_intersection": 24.175069444444443,
+    "queue_max_network": 158,
+    "waiting_time_mean": 72.62218515429525,
+    "drain_s_after_arrivals_stop": 236,
+    "drains": true
+   }
+  },
+  {
+   "veh_per_hour": 4750.0,
+   "seed": 2,
+   "vehicles": 4795,
+   "busiest_lane": {
+    "intersection": "intersection_1_1",
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 472.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.22476190476190477
+   },
+   "busiest_entry_lane": {
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 472.0,
+    "demand_over_admission_limit": 0.35197613721103654
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.4748319327731092,
+    "intersection_2_1": 0.4742296918767507,
+    "intersection_1_2": 0.4684453781512605,
+    "intersection_2_2": 0.44890756302521007
+   },
+   "Y_max_ANALYTIC": 0.4748319327731092,
+   "maxpressure": {
+    "generated": 4795,
+    "throughput": 4572,
+    "running_at_end": 223,
+    "waiting_to_enter_at_end": 0,
+    "finished_share": 0.9534932221063608,
+    "backlog_share": 0.0,
+    "att": 127.85109489051095,
+    "queue_mean_per_intersection": 21.64881944444444,
+    "queue_max_network": 144,
+    "waiting_time_mean": 65.06256517205422,
+    "drain_s_after_arrivals_stop": 276,
+    "drains": true
+   }
+  },
+  {
+   "veh_per_hour": 5000.0,
+   "seed": 0,
+   "vehicles": 4912,
+   "busiest_lane": {
+    "intersection": "intersection_2_2",
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 472.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.22476190476190477
+   },
+   "busiest_entry_lane": {
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 472.0,
+    "demand_over_admission_limit": 0.35197613721103654
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.4693417366946778,
+    "intersection_2_1": 0.443515406162465,
+    "intersection_1_2": 0.4757843137254901,
+    "intersection_2_2": 0.48106442577030817
+   },
+   "Y_max_ANALYTIC": 0.48106442577030817,
+   "maxpressure": {
+    "generated": 4912,
+    "throughput": 4653,
+    "running_at_end": 259,
+    "waiting_to_enter_at_end": 0,
+    "finished_share": 0.947271986970684,
+    "backlog_share": 0.0,
+    "att": 135.65289087947883,
+    "queue_mean_per_intersection": 24.795347222222222,
+    "queue_max_network": 184,
+    "waiting_time_mean": 72.73208469055375,
+    "drain_s_after_arrivals_stop": 416,
+    "drains": true
+   }
+  },
+  {
+   "veh_per_hour": 5000.0,
+   "seed": 1,
+   "vehicles": 5026,
+   "busiest_lane": {
+    "intersection": "intersection_1_2",
+    "lane": "road_0_2_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 471.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.22428571428571428
+   },
+   "busiest_entry_lane": {
+    "lane": "road_0_2_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 471.0,
+    "demand_over_admission_limit": 0.3512304250559284
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.47956582633053224,
+    "intersection_2_1": 0.49022408963585434,
+    "intersection_1_2": 0.4921848739495798,
+    "intersection_2_2": 0.4713305322128851
+   },
+   "Y_max_ANALYTIC": 0.4921848739495798,
+   "maxpressure": {
+    "generated": 5026,
+    "throughput": 4793,
+    "running_at_end": 233,
+    "waiting_to_enter_at_end": 0,
+    "finished_share": 0.9536410664544369,
+    "backlog_share": 0.0,
+    "att": 138.32769598089934,
+    "queue_mean_per_intersection": 25.92861111111111,
+    "queue_max_network": 155,
+    "waiting_time_mean": 74.33326701153999,
+    "drain_s_after_arrivals_stop": 306,
+    "drains": true
+   }
+  },
+  {
+   "veh_per_hour": 5000.0,
+   "seed": 2,
+   "vehicles": 5066,
+   "busiest_lane": {
+    "intersection": "intersection_1_1",
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 516.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.24571428571428572
+   },
+   "busiest_entry_lane": {
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 516.0,
+    "demand_over_admission_limit": 0.38478747203579416
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.5189775910364146,
+    "intersection_2_1": 0.4922689075630252,
+    "intersection_1_2": 0.4819327731092437,
+    "intersection_2_2": 0.4943137254901961
+   },
+   "Y_max_ANALYTIC": 0.5189775910364146,
+   "maxpressure": {
+    "generated": 5066,
+    "throughput": 4787,
+    "running_at_end": 264,
+    "waiting_to_enter_at_end": 15,
+    "finished_share": 0.9449269640742203,
+    "backlog_share": 0.002960915909988156,
+    "att": 152.75838926174498,
+    "queue_mean_per_intersection": 30.665833333333335,
+    "queue_max_network": 211,
+    "waiting_time_mean": 87.47079786180954,
+    "drain_s_after_arrivals_stop": 404,
+    "drains": true
+   }
+  },
+  {
+   "veh_per_hour": 5250.0,
+   "seed": 0,
+   "vehicles": 5177,
+   "busiest_lane": {
+    "intersection": "intersection_2_2",
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 488.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.23238095238095238
+   },
+   "busiest_entry_lane": {
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 488.0,
+    "demand_over_admission_limit": 0.3639075316927666
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.5012324929971989,
+    "intersection_2_1": 0.49628851540616253,
+    "intersection_1_2": 0.4869327731092437,
+    "intersection_2_2": 0.522843137254902
+   },
+   "Y_max_ANALYTIC": 0.522843137254902,
+   "maxpressure": {
+    "generated": 5177,
+    "throughput": 4822,
+    "running_at_end": 325,
+    "waiting_to_enter_at_end": 30,
+    "finished_share": 0.9314274676453544,
+    "backlog_share": 0.005794861889124976,
+    "att": 165.21556886227546,
+    "queue_mean_per_intersection": 35.16902777777777,
+    "queue_max_network": 267,
+    "waiting_time_mean": 98.42762774431708,
+    "drain_s_after_arrivals_stop": 615,
+    "drains": true
+   }
+  },
+  {
+   "veh_per_hour": 5250.0,
+   "seed": 1,
+   "vehicles": 5274,
+   "busiest_lane": {
+    "intersection": "intersection_1_1",
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 499.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.23761904761904762
+   },
+   "busiest_entry_lane": {
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 499.0,
+    "demand_over_admission_limit": 0.372110365398956
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.49991596638655467,
+    "intersection_2_1": 0.49668067226890755,
+    "intersection_1_2": 0.5204481792717087,
+    "intersection_2_2": 0.5081232492997199
+   },
+   "Y_max_ANALYTIC": 0.5204481792717087,
+   "maxpressure": {
+    "generated": 5274,
+    "throughput": 4913,
+    "running_at_end": 342,
+    "waiting_to_enter_at_end": 19,
+    "finished_share": 0.9315510049298446,
+    "backlog_share": 0.00360257868790292,
+    "att": 167.83693591202123,
+    "queue_mean_per_intersection": 37.330486111111114,
+    "queue_max_network": 257,
+    "waiting_time_mean": 102.34481446241675,
+    "drain_s_after_arrivals_stop": 523,
+    "drains": true
+   }
+  },
+  {
+   "veh_per_hour": 5250.0,
+   "seed": 2,
+   "vehicles": 5327,
+   "busiest_lane": {
+    "intersection": "intersection_1_1",
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 544.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.259047619047619
+   },
+   "busiest_entry_lane": {
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 544.0,
+    "demand_over_admission_limit": 0.40566741237882176
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.5445658263305322,
+    "intersection_2_1": 0.4986274509803922,
+    "intersection_1_2": 0.4828711484593838,
+    "intersection_2_2": 0.5113865546218488
+   },
+   "Y_max_ANALYTIC": 0.5445658263305322,
+   "maxpressure": {
+    "generated": 5327,
+    "throughput": 4897,
+    "running_at_end": 338,
+    "waiting_to_enter_at_end": 92,
+    "finished_share": 0.9192791439834804,
+    "backlog_share": 0.017270508729115824,
+    "att": 186.6724235029097,
+    "queue_mean_per_intersection": 41.93888888888889,
+    "queue_max_network": 284,
+    "waiting_time_mean": 115.40783190066858,
+    "drain_s_after_arrivals_stop": 685,
+    "drains": true
+   }
+  },
+  {
+   "veh_per_hour": 5500.0,
+   "seed": 0,
+   "vehicles": 5443,
+   "busiest_lane": {
+    "intersection": "intersection_2_2",
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 526.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.25047619047619046
+   },
+   "busiest_entry_lane": {
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 526.0,
+    "demand_over_admission_limit": 0.39224459358687547
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.5169327731092437,
+    "intersection_2_1": 0.5019467787114845,
+    "intersection_1_2": 0.5311064425770308,
+    "intersection_2_2": 0.5448039215686274
+   },
+   "Y_max_ANALYTIC": 0.5448039215686274,
+   "maxpressure": {
+    "generated": 5443,
+    "throughput": 5020,
+    "running_at_end": 373,
+    "waiting_to_enter_at_end": 50,
+    "finished_share": 0.922285504317472,
+    "backlog_share": 0.009186110600771633,
+    "att": 169.65846040786332,
+    "queue_mean_per_intersection": 38.47944444444444,
+    "queue_max_network": 290,
+    "waiting_time_mean": 102.79714444650473,
+    "drain_s_after_arrivals_stop": 671,
+    "drains": true
+   }
+  },
+  {
+   "veh_per_hour": 5500.0,
+   "seed": 1,
+   "vehicles": 5533,
+   "busiest_lane": {
+    "intersection": "intersection_2_1",
+    "lane": "road_3_1_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 517.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.24619047619047618
+   },
+   "busiest_entry_lane": {
+    "lane": "road_3_1_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 517.0,
+    "demand_over_admission_limit": 0.3855331841909023
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.5151120448179272,
+    "intersection_2_1": 0.533921568627451,
+    "intersection_1_2": 0.5371428571428571,
+    "intersection_2_2": 0.5166806722689076
+   },
+   "Y_max_ANALYTIC": 0.5371428571428571,
+   "maxpressure": {
+    "generated": 5533,
+    "throughput": 5047,
+    "running_at_end": 422,
+    "waiting_to_enter_at_end": 64,
+    "finished_share": 0.9121633833363456,
+    "backlog_share": 0.0115669618651726,
+    "att": 197.45671425989516,
+    "queue_mean_per_intersection": 47.872708333333335,
+    "queue_max_network": 327,
+    "waiting_time_mean": 126.09105869445968,
+    "drain_s_after_arrivals_stop": 681,
+    "drains": true
+   }
+  },
+  {
+   "veh_per_hour": 5500.0,
+   "seed": 2,
+   "vehicles": 5613,
+   "busiest_lane": {
+    "intersection": "intersection_2_2",
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 561.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.2671428571428571
+   },
+   "busiest_entry_lane": {
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 561.0,
+    "demand_over_admission_limit": 0.41834451901565994
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.5549299719887955,
+    "intersection_2_1": 0.5185994397759104,
+    "intersection_1_2": 0.508921568627451,
+    "intersection_2_2": 0.5531652661064426
+   },
+   "Y_max_ANALYTIC": 0.5549299719887955,
+   "maxpressure": {
+    "generated": 5613,
+    "throughput": 5055,
+    "running_at_end": 375,
+    "waiting_to_enter_at_end": 183,
+    "finished_share": 0.9005879208979155,
+    "backlog_share": 0.03260288615713522,
+    "att": 243.57117406021734,
+    "queue_mean_per_intersection": 55.509861111111114,
+    "queue_max_network": 299,
+    "waiting_time_mean": 147.25561694290977,
+    "drain_s_after_arrivals_stop": 807,
+    "drains": false
+   }
+  },
+  {
+   "veh_per_hour": 5750.0,
+   "seed": 0,
+   "vehicles": 5719,
+   "busiest_lane": {
+    "intersection": "intersection_2_1",
+    "lane": "road_3_1_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 558.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.26571428571428574
+   },
+   "busiest_entry_lane": {
+    "lane": "road_3_1_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 558.0,
+    "demand_over_admission_limit": 0.4161073825503356
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.5450840336134455,
+    "intersection_2_1": 0.5458543417366947,
+    "intersection_1_2": 0.536078431372549,
+    "intersection_2_2": 0.5616946778711484
+   },
+   "Y_max_ANALYTIC": 0.5616946778711484,
+   "maxpressure": {
+    "generated": 5719,
+    "throughput": 5145,
+    "running_at_end": 403,
+    "waiting_to_enter_at_end": 171,
+    "finished_share": 0.8996328029375765,
+    "backlog_share": 0.029900332225913623,
+    "att": 222.0954712362301,
+    "queue_mean_per_intersection": 52.55583333333334,
+    "queue_max_network": 321,
+    "waiting_time_mean": 136.4632299927902,
+    "drain_s_after_arrivals_stop": 772,
+    "drains": false
+   }
+  },
+  {
+   "veh_per_hour": 5750.0,
+   "seed": 1,
+   "vehicles": 5758,
+   "busiest_lane": {
+    "intersection": "intersection_2_1",
+    "lane": "road_3_1_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 562.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.26761904761904765
+   },
+   "busiest_entry_lane": {
+    "lane": "road_3_1_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 562.0,
+    "demand_over_admission_limit": 0.4190902311707681
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.5562885154061624,
+    "intersection_2_1": 0.5602240896358543,
+    "intersection_1_2": 0.5573529411764705,
+    "intersection_2_2": 0.5411904761904762
+   },
+   "Y_max_ANALYTIC": 0.5602240896358543,
+   "maxpressure": {
+    "generated": 5758,
+    "throughput": 5047,
+    "running_at_end": 437,
+    "waiting_to_enter_at_end": 274,
+    "finished_share": 0.8765196248697464,
+    "backlog_share": 0.04758596734977423,
+    "att": 256.7948940604376,
+    "queue_mean_per_intersection": 59.33631944444444,
+    "queue_max_network": 364,
+    "waiting_time_mean": 155.85539752005835,
+    "drain_s_after_arrivals_stop": 972,
+    "drains": false
+   }
+  },
+  {
+   "veh_per_hour": 5750.0,
+   "seed": 2,
+   "vehicles": 5864,
+   "busiest_lane": {
+    "intersection": "intersection_2_2",
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 572.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.2723809523809524
+   },
+   "busiest_entry_lane": {
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 572.0,
+    "demand_over_admission_limit": 0.42654735272184935
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.5873249299719887,
+    "intersection_2_1": 0.5582212885154061,
+    "intersection_1_2": 0.5573529411764706,
+    "intersection_2_2": 0.5680672268907564
+   },
+   "Y_max_ANALYTIC": 0.5873249299719887,
+   "maxpressure": {
+    "generated": 5864,
+    "throughput": 4994,
+    "running_at_end": 477,
+    "waiting_to_enter_at_end": 393,
+    "finished_share": 0.8516371077762619,
+    "backlog_share": 0.06701909959072305,
+    "att": 282.53956343792635,
+    "queue_mean_per_intersection": 62.48375,
+    "queue_max_network": 398,
+    "waiting_time_mean": 164.54341071102175,
+    "drain_s_after_arrivals_stop": 1482,
+    "drains": false
+   }
+  },
+  {
+   "veh_per_hour": 6000.0,
+   "seed": 0,
+   "vehicles": 5980,
+   "busiest_lane": {
+    "intersection": "intersection_1_1",
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 570.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.2714285714285714
+   },
+   "busiest_entry_lane": {
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 570.0,
+    "demand_over_admission_limit": 0.4250559284116331
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.5730672268907562,
+    "intersection_2_1": 0.5803501400560224,
+    "intersection_1_2": 0.5628991596638655,
+    "intersection_2_2": 0.598767507002801
+   },
+   "Y_max_ANALYTIC": 0.598767507002801,
+   "maxpressure": {
+    "generated": 5980,
+    "throughput": 5209,
+    "running_at_end": 417,
+    "waiting_to_enter_at_end": 354,
+    "finished_share": 0.8710702341137124,
+    "backlog_share": 0.059197324414715716,
+    "att": 264.309364548495,
+    "queue_mean_per_intersection": 59.55194444444444,
+    "queue_max_network": 334,
+    "waiting_time_mean": 152.46960540348383,
+    "drain_s_after_arrivals_stop": 1195,
+    "drains": false
+   }
+  },
+  {
+   "veh_per_hour": 6000.0,
+   "seed": 1,
+   "vehicles": 6009,
+   "busiest_lane": {
+    "intersection": "intersection_1_2",
+    "lane": "road_0_2_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 569.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.27095238095238094
+   },
+   "busiest_entry_lane": {
+    "lane": "road_0_2_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 569.0,
+    "demand_over_admission_limit": 0.424310216256525
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.5860504201680672,
+    "intersection_2_1": 0.5826610644257704,
+    "intersection_1_2": 0.5776330532212884,
+    "intersection_2_2": 0.5896778711484595
+   },
+   "Y_max_ANALYTIC": 0.5896778711484595,
+   "maxpressure": {
+    "generated": 6009,
+    "throughput": 4745,
+    "running_at_end": 598,
+    "waiting_to_enter_at_end": 666,
+    "finished_share": 0.7896488600432684,
+    "backlog_share": 0.1108337493759361,
+    "att": 346.69246130803793,
+    "queue_mean_per_intersection": 76.29909722222222,
+    "queue_max_network": 544,
+    "waiting_time_mean": 205.79880217106495,
+    "drain_s_after_arrivals_stop": null,
+    "drains": false
+   }
+  },
+  {
+   "veh_per_hour": 6000.0,
+   "seed": 2,
+   "vehicles": 6124,
+   "busiest_lane": {
+    "intersection": "intersection_1_1",
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 625.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.2976190476190476
+   },
+   "busiest_entry_lane": {
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 625.0,
+    "demand_over_admission_limit": 0.46607009694258017
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.6226610644257704,
+    "intersection_2_1": 0.5810084033613446,
+    "intersection_1_2": 0.574873949579832,
+    "intersection_2_2": 0.5995658263305323
+   },
+   "Y_max_ANALYTIC": 0.6226610644257704,
+   "maxpressure": {
+    "generated": 6124,
+    "throughput": 4956,
+    "running_at_end": 568,
+    "waiting_to_enter_at_end": 600,
+    "finished_share": 0.8092749836708034,
+    "backlog_share": 0.09797517962116264,
+    "att": 307.13863487916393,
+    "queue_mean_per_intersection": 70.34763888888888,
+    "queue_max_network": 506,
+    "waiting_time_mean": 183.57458363504708,
+    "drain_s_after_arrivals_stop": null,
+    "drains": false
+   }
+  },
+  {
+   "veh_per_hour": 7000.0,
+   "seed": 0,
+   "vehicles": 7040,
+   "busiest_lane": {
+    "intersection": "intersection_2_2",
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 684.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.32571428571428573
+   },
+   "busiest_entry_lane": {
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 684.0,
+    "demand_over_admission_limit": 0.5100671140939598
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.6652941176470589,
+    "intersection_2_1": 0.7032492997198879,
+    "intersection_1_2": 0.6565266106442578,
+    "intersection_2_2": 0.6957703081232494
+   },
+   "Y_max_ANALYTIC": 0.7032492997198879,
+   "maxpressure": {
+    "generated": 7040,
+    "throughput": 4974,
+    "running_at_end": 775,
+    "waiting_to_enter_at_end": 1291,
+    "finished_share": 0.7065340909090909,
+    "backlog_share": 0.18338068181818182,
+    "att": 451.35823863636364,
+    "queue_mean_per_intersection": 101.60798611111112,
+    "queue_max_network": 703,
+    "waiting_time_mean": 254.54218124891287,
+    "drain_s_after_arrivals_stop": null,
+    "drains": false
+   }
+  },
+  {
+   "veh_per_hour": 7000.0,
+   "seed": 1,
+   "vehicles": 7002,
+   "busiest_lane": {
+    "intersection": "intersection_2_2",
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 663.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.3157142857142857
+   },
+   "busiest_entry_lane": {
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 663.0,
+    "demand_over_admission_limit": 0.49440715883668906
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.6749719887955182,
+    "intersection_2_1": 0.6737675070028012,
+    "intersection_1_2": 0.6742436974789916,
+    "intersection_2_2": 0.6841596638655463
+   },
+   "Y_max_ANALYTIC": 0.6841596638655463,
+   "maxpressure": {
+    "generated": 7002,
+    "throughput": 4790,
+    "running_at_end": 777,
+    "waiting_to_enter_at_end": 1435,
+    "finished_share": 0.6840902599257355,
+    "backlog_share": 0.20494144530134248,
+    "att": 493.7972007997715,
+    "queue_mean_per_intersection": 110.49062500000001,
+    "queue_max_network": 710,
+    "waiting_time_mean": 286.0750853242321,
+    "drain_s_after_arrivals_stop": null,
+    "drains": false
+   }
+  },
+  {
+   "veh_per_hour": 7000.0,
+   "seed": 2,
+   "vehicles": 7158,
+   "busiest_lane": {
+    "intersection": "intersection_1_1",
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 706.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.3361904761904762
+   },
+   "busiest_entry_lane": {
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 706.0,
+    "demand_over_admission_limit": 0.5264727815063386
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.7273389355742297,
+    "intersection_2_1": 0.6900140056022408,
+    "intersection_1_2": 0.6722689075630253,
+    "intersection_2_2": 0.7078431372549019
+   },
+   "Y_max_ANALYTIC": 0.7273389355742297,
+   "maxpressure": {
+    "generated": 7158,
+    "throughput": 4831,
+    "running_at_end": 770,
+    "waiting_to_enter_at_end": 1557,
+    "finished_share": 0.6749091925118749,
+    "backlog_share": 0.21751886001676446,
+    "att": 516.5602123498184,
+    "queue_mean_per_intersection": 111.35833333333332,
+    "queue_max_network": 705,
+    "waiting_time_mean": 286.3495804320657,
+    "drain_s_after_arrivals_stop": null,
+    "drains": false
+   }
+  },
+  {
+   "veh_per_hour": 8000.0,
+   "seed": 0,
+   "vehicles": 8067,
+   "busiest_lane": {
+    "intersection": "intersection_2_2",
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 785.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.3738095238095238
+   },
+   "busiest_entry_lane": {
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 785.0,
+    "demand_over_admission_limit": 0.5853840417598807
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.7583613445378151,
+    "intersection_2_1": 0.812703081232493,
+    "intersection_1_2": 0.7692296918767506,
+    "intersection_2_2": 0.7868767507002802
+   },
+   "Y_max_ANALYTIC": 0.812703081232493,
+   "maxpressure": {
+    "generated": 8067,
+    "throughput": 4806,
+    "running_at_end": 772,
+    "waiting_to_enter_at_end": 2489,
+    "finished_share": 0.5957605057642246,
+    "backlog_share": 0.3085409693814305,
+    "att": 647.990702863518,
+    "queue_mean_per_intersection": 127.41576388888888,
+    "queue_max_network": 744,
+    "waiting_time_mean": 330.55432054499823,
+    "drain_s_after_arrivals_stop": null,
+    "drains": false
+   }
+  },
+  {
+   "veh_per_hour": 8000.0,
+   "seed": 1,
+   "vehicles": 7960,
+   "busiest_lane": {
+    "intersection": "intersection_1_2",
+    "lane": "road_0_2_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 780.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.37142857142857144
+   },
+   "busiest_entry_lane": {
+    "lane": "road_0_2_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 780.0,
+    "demand_over_admission_limit": 0.5816554809843401
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.7793557422969187,
+    "intersection_2_1": 0.7664705882352941,
+    "intersection_1_2": 0.7928151260504201,
+    "intersection_2_2": 0.7857282913165267
+   },
+   "Y_max_ANALYTIC": 0.7928151260504201,
+   "maxpressure": {
+    "generated": 7960,
+    "throughput": 5034,
+    "running_at_end": 772,
+    "waiting_to_enter_at_end": 2154,
+    "finished_share": 0.6324120603015075,
+    "backlog_share": 0.2706030150753769,
+    "att": 592.66608040201,
+    "queue_mean_per_intersection": 126.28215277777778,
+    "queue_max_network": 719,
+    "waiting_time_mean": 313.2609369617637,
+    "drain_s_after_arrivals_stop": null,
+    "drains": false
+   }
+  },
+  {
+   "veh_per_hour": 8000.0,
+   "seed": 2,
+   "vehicles": 8151,
+   "busiest_lane": {
+    "intersection": "intersection_1_1",
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 798.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.38
+   },
+   "busiest_entry_lane": {
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 798.0,
+    "demand_over_admission_limit": 0.5950782997762863
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.7903641456582634,
+    "intersection_2_1": 0.815812324929972,
+    "intersection_1_2": 0.7706442577030812,
+    "intersection_2_2": 0.7894117647058824
+   },
+   "Y_max_ANALYTIC": 0.815812324929972,
+   "maxpressure": {
+    "generated": 8151,
+    "throughput": 5093,
+    "running_at_end": 794,
+    "waiting_to_enter_at_end": 2264,
+    "finished_share": 0.6248313090418354,
+    "backlog_share": 0.2777573303889093,
+    "att": 598.2472089314194,
+    "queue_mean_per_intersection": 123.26895833333334,
+    "queue_max_network": 720,
+    "waiting_time_mean": 301.78155257346697,
+    "drain_s_after_arrivals_stop": null,
+    "drains": false
+   }
+  },
+  {
+   "veh_per_hour": 10000.0,
+   "seed": 0,
+   "vehicles": 10062,
+   "busiest_lane": {
+    "intersection": "intersection_2_1",
+    "lane": "road_3_1_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 974.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.4638095238095238
+   },
+   "busiest_entry_lane": {
+    "lane": "road_3_1_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 974.0,
+    "demand_over_admission_limit": 0.7263236390753169
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.9650000000000001,
+    "intersection_2_1": 0.9764005602240896,
+    "intersection_1_2": 0.9408263305322129,
+    "intersection_2_2": 0.9679131652661065
+   },
+   "Y_max_ANALYTIC": 0.9764005602240896,
+   "maxpressure": {
+    "generated": 10062,
+    "throughput": 5293,
+    "running_at_end": 812,
+    "waiting_to_enter_at_end": 3957,
+    "finished_share": 0.5260385609222819,
+    "backlog_share": 0.3932617769827072,
+    "att": 784.4353011329755,
+    "queue_mean_per_intersection": 138.84319444444446,
+    "queue_max_network": 747,
+    "waiting_time_mean": 327.7320229320229,
+    "drain_s_after_arrivals_stop": null,
+    "drains": false
+   }
+  },
+  {
+   "veh_per_hour": 10000.0,
+   "seed": 1,
+   "vehicles": 9985,
+   "busiest_lane": {
+    "intersection": "intersection_2_2",
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 961.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.4576190476190476
+   },
+   "busiest_entry_lane": {
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 961.0,
+    "demand_over_admission_limit": 0.7166293810589113
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.9837394957983193,
+    "intersection_2_1": 0.9514145658263304,
+    "intersection_1_2": 0.98109243697479,
+    "intersection_2_2": 1.0017787114845937
+   },
+   "Y_max_ANALYTIC": 1.0017787114845937,
+   "maxpressure": {
+    "generated": 9985,
+    "throughput": 4973,
+    "running_at_end": 804,
+    "waiting_to_enter_at_end": 4208,
+    "finished_share": 0.49804707060590886,
+    "backlog_share": 0.4214321482223335,
+    "att": 848.6807210816224,
+    "queue_mean_per_intersection": 151.45819444444444,
+    "queue_max_network": 812,
+    "waiting_time_mean": 378.5250129825169,
+    "drain_s_after_arrivals_stop": null,
+    "drains": false
+   }
+  },
+  {
+   "veh_per_hour": 10000.0,
+   "seed": 2,
+   "vehicles": 10234,
+   "busiest_lane": {
+    "intersection": "intersection_2_1",
+    "lane": "road_3_1_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 989.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.47095238095238096
+   },
+   "busiest_entry_lane": {
+    "lane": "road_3_1_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 989.0,
+    "demand_over_admission_limit": 0.7375093214019388
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 0.9680112044817927,
+    "intersection_2_1": 1.0022128851540615,
+    "intersection_1_2": 1.0023249299719887,
+    "intersection_2_2": 0.9866526610644258
+   },
+   "Y_max_ANALYTIC": 1.0023249299719887,
+   "maxpressure": {
+    "generated": 10234,
+    "throughput": 5274,
+    "running_at_end": 806,
+    "waiting_to_enter_at_end": 4154,
+    "finished_share": 0.5153410201289819,
+    "backlog_share": 0.4059018956419777,
+    "att": 814.3525503224546,
+    "queue_mean_per_intersection": 149.7928472222222,
+    "queue_max_network": 754,
+    "waiting_time_mean": 354.82088815789473,
+    "drain_s_after_arrivals_stop": null,
+    "drains": false
+   }
+  },
+  {
+   "veh_per_hour": 12000.0,
+   "seed": 0,
+   "vehicles": 12087,
+   "busiest_lane": {
+    "intersection": "intersection_2_2",
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 1122.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.5342857142857143
+   },
+   "busiest_entry_lane": {
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 1122.0,
+    "demand_over_admission_limit": 0.8366890380313199
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 1.1563865546218488,
+    "intersection_2_1": 1.1377591036414567,
+    "intersection_1_2": 1.1304761904761906,
+    "intersection_2_2": 1.1541596638655462
+   },
+   "Y_max_ANALYTIC": 1.1563865546218488,
+   "maxpressure": {
+    "generated": 12087,
+    "throughput": 5831,
+    "running_at_end": 835,
+    "waiting_to_enter_at_end": 5421,
+    "finished_share": 0.48241912798874825,
+    "backlog_share": 0.44849838669645076,
+    "att": 872.3893439232234,
+    "queue_mean_per_intersection": 156.7564583333333,
+    "queue_max_network": 782,
+    "waiting_time_mean": 338.6866186618662,
+    "drain_s_after_arrivals_stop": null,
+    "drains": false
+   }
+  },
+  {
+   "veh_per_hour": 12000.0,
+   "seed": 1,
+   "vehicles": 12023,
+   "busiest_lane": {
+    "intersection": "intersection_1_2",
+    "lane": "road_0_2_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 1161.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.5528571428571428
+   },
+   "busiest_entry_lane": {
+    "lane": "road_0_2_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 1161.0,
+    "demand_over_admission_limit": 0.8657718120805369
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 1.178361344537815,
+    "intersection_2_1": 1.1630532212885154,
+    "intersection_1_2": 1.2091176470588234,
+    "intersection_2_2": 1.1673389355742296
+   },
+   "Y_max_ANALYTIC": 1.2091176470588234,
+   "maxpressure": {
+    "generated": 12023,
+    "throughput": 5707,
+    "running_at_end": 877,
+    "waiting_to_enter_at_end": 5439,
+    "finished_share": 0.4746735423771105,
+    "backlog_share": 0.4523829327123014,
+    "att": 889.5138484571238,
+    "queue_mean_per_intersection": 160.93277777777774,
+    "queue_max_network": 826,
+    "waiting_time_mean": 352.39292223572295,
+    "drain_s_after_arrivals_stop": null,
+    "drains": false
+   }
+  },
+  {
+   "veh_per_hour": 12000.0,
+   "seed": 2,
+   "vehicles": 12156,
+   "busiest_lane": {
+    "intersection": "intersection_1_1",
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 1165.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.5547619047619048
+   },
+   "busiest_entry_lane": {
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 1165.0,
+    "demand_over_admission_limit": 0.8687546607009694
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 1.2100000000000002,
+    "intersection_2_1": 1.1760084033613447,
+    "intersection_1_2": 1.1804481792717088,
+    "intersection_2_2": 1.1659243697478994
+   },
+   "Y_max_ANALYTIC": 1.2100000000000002,
+   "maxpressure": {
+    "generated": 12156,
+    "throughput": 5738,
+    "running_at_end": 827,
+    "waiting_to_enter_at_end": 5591,
+    "finished_share": 0.47203027311615664,
+    "backlog_share": 0.45993747943402435,
+    "att": 907.9863441921685,
+    "queue_mean_per_intersection": 159.0623611111111,
+    "queue_max_network": 797,
+    "waiting_time_mean": 349.14760091393754,
+    "drain_s_after_arrivals_stop": null,
+    "drains": false
+   }
+  },
+  {
+   "veh_per_hour": 14000.0,
+   "seed": 0,
+   "vehicles": 14070,
+   "busiest_lane": {
+    "intersection": "intersection_2_1",
+    "lane": "road_3_1_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 1345.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.6404761904761904
+   },
+   "busiest_entry_lane": {
+    "lane": "road_3_1_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 1345.0,
+    "demand_over_admission_limit": 1.0029828486204324
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 1.3139075630252102,
+    "intersection_2_1": 1.3892296918767506,
+    "intersection_1_2": 1.3225070028011205,
+    "intersection_2_2": 1.3416946778711485
+   },
+   "Y_max_ANALYTIC": 1.3892296918767506,
+   "maxpressure": {
+    "generated": 14070,
+    "throughput": 6282,
+    "running_at_end": 905,
+    "waiting_to_enter_at_end": 6883,
+    "finished_share": 0.4464818763326226,
+    "backlog_share": 0.48919687277896234,
+    "att": 946.9852167732764,
+    "queue_mean_per_intersection": 166.41541666666666,
+    "queue_max_network": 805,
+    "waiting_time_mean": 333.49116460275496,
+    "drain_s_after_arrivals_stop": null,
+    "drains": false
+   }
+  },
+  {
+   "veh_per_hour": 14000.0,
+   "seed": 1,
+   "vehicles": 14077,
+   "busiest_lane": {
+    "intersection": "intersection_2_2",
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 1337.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.6366666666666667
+   },
+   "busiest_entry_lane": {
+    "lane": "road_3_2_2_1",
+    "movement": "E-go_straight",
+    "veh_per_hour": 1337.0,
+    "demand_over_admission_limit": 0.9970171513795675
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 1.3552801120448181,
+    "intersection_2_1": 1.3449159663865546,
+    "intersection_1_2": 1.373137254901961,
+    "intersection_2_2": 1.3787394957983192
+   },
+   "Y_max_ANALYTIC": 1.3787394957983192,
+   "maxpressure": {
+    "generated": 14077,
+    "throughput": 5389,
+    "running_at_end": 1068,
+    "waiting_to_enter_at_end": 7620,
+    "finished_share": 0.3828230446828159,
+    "backlog_share": 0.5413085174397954,
+    "att": 994.4149321588407,
+    "queue_mean_per_intersection": 181.53277777777777,
+    "queue_max_network": 1078,
+    "waiting_time_mean": 408.82638996437976,
+    "drain_s_after_arrivals_stop": null,
+    "drains": false
+   }
+  },
+  {
+   "veh_per_hour": 14000.0,
+   "seed": 2,
+   "vehicles": 14183,
+   "busiest_lane": {
+    "intersection": "intersection_1_1",
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 1342.0,
+    "saturation_flow_veh_per_hour": 2100.0,
+    "demand_over_saturation_flow": 0.6390476190476191
+   },
+   "busiest_entry_lane": {
+    "lane": "road_0_1_0_1",
+    "movement": "W-go_straight",
+    "veh_per_hour": 1342.0,
+    "demand_over_admission_limit": 1.0007457121551082
+   },
+   "critical_flow_ratio_Y_ANALYTIC": {
+    "intersection_1_1": 1.3799299719887954,
+    "intersection_2_1": 1.3164565826330534,
+    "intersection_1_2": 1.3447058823529412,
+    "intersection_2_2": 1.3654761904761905
+   },
+   "Y_max_ANALYTIC": 1.3799299719887954,
+   "maxpressure": {
+    "generated": 14183,
+    "throughput": 5812,
+    "running_at_end": 907,
+    "waiting_to_enter_at_end": 7464,
+    "finished_share": 0.40978636395684975,
+    "backlog_share": 0.5262638369879433,
+    "att": 1008.6863851089332,
+    "queue_mean_per_intersection": 179.72972222222222,
+    "queue_max_network": 925,
+    "waiting_time_mean": 387.5146599196309,
+    "drain_s_after_arrivals_stop": null,
+    "drains": false
+   }
+  }
+ ],
+ "selection": {
+  "rule": {
+   "backlog_max_share": 0.02,
+   "drain_max_s": 900,
+   "peak_fraction_of_R_star": 0.9,
+   "offpeak_over_peak": 0.5
+  },
+  "drains_all_seeds": {
+   "1000.0": true,
+   "2000.0": true,
+   "3000.0": true,
+   "4000.0": true,
+   "4500.0": true,
+   "4750.0": true,
+   "5000.0": true,
+   "5250.0": true,
+   "5500.0": false,
+   "5750.0": false,
+   "6000.0": false,
+   "7000.0": false,
+   "8000.0": false,
+   "10000.0": false,
+   "12000.0": false,
+   "14000.0": false
+  },
+  "R_star": 5500.0,
+  "peak_veh_per_hour": 4750.0,
+  "offpeak_veh_per_hour": 2375.0
+ }
+}

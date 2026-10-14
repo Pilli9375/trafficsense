@@ -108,9 +108,11 @@ entry_weights:            # ASSUMPTION
   S: 0.6
 duration_s: 3600          # vehicles are generated over [0, duration_s)
 # Total arrival rate over all entry roads (veh/h), Poisson arrivals per entry road.
-# Calibrated with scripts/calibrate_indian_demand.py; see docs/indian_scenario.md.
+# Calibrated with scripts/calibrate_indian_demand.py under MaxPressure (rule in its docstring):
+# R* = 5500 veh/h (lowest swept demand that does not drain), peak = largest swept <= 0.9 R*,
+# off-peak = peak / 2. Results: outputs/validation/indian_demand_calibration.json.
 demand_levels:
   offpeak:
-    veh_per_hour: null
+    veh_per_hour: 2375
   peak:
-    veh_per_hour: null
+    veh_per_hour: 4750

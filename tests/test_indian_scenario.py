@@ -167,3 +167,14 @@ def test_env_formats_seed_into_flow_path(cfg, sc, net, tmp_path):
     assert env.flow_path == tmp_path / "flow_s3.json" and env.flow_per_seed
     with pytest.raises(FileNotFoundError, match="make it"):
         TrafficEnv(c, "x", seed=4)
+
+
+@pytest.mark.parametrize("level", ["offpeak", "peak"])
+def test_committed_flows_regenerate_exactly(sc, net, level):
+    """The flow files used in the experiments are exactly what the config + seed produce."""
+    for seed in (0, 1, 2):
+        p = repo_root() / sc["output_dir"] / f"flow_{level}_s{seed}.json"
+        if not p.is_file():
+            pytest.fail(f"{p} missing; run scripts/generate_indian_flow.py --level all --seed 0 1 2")
+        flows, _ = generate(net, sc, level, seed)
+        assert json.loads(p.read_text()) == flows
