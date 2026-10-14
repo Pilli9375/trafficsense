@@ -58,10 +58,14 @@ class TrafficEnv:
 
         root = repo_root()
         self.roadnet_path = (root / _require(sc, "roadnet", f"scenarios.{scenario}")).resolve()
-        self.flow_path = (root / _require(sc, "flow", f"scenarios.{scenario}")).resolve()
+        # A flow path may contain "{seed}": generated scenarios have one flow file per seed.
+        flow = str(_require(sc, "flow", f"scenarios.{scenario}"))
+        self.flow_per_seed = "{seed}" in flow
+        self.flow_path = (root / flow.format(seed=self.seed)).resolve()
         for p in (self.roadnet_path, self.flow_path):
             if not p.is_file():
-                raise FileNotFoundError(f"Scenario file not found: {p}")
+                hint = sc.get("generate_hint", "")
+                raise FileNotFoundError(f"Scenario file not found: {p}" + (f" ({hint})" if hint else ""))
 
         self.roadnet: Roadnet = load_roadnet(self.roadnet_path)
         self.transition_time: dict[str, int] = {}

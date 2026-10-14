@@ -13,7 +13,8 @@ Call `update()` once after every `env.step()`.
   lanes, averaged over the vehicles that were on those lanes.
 * Throughput: vehicles that finished their trip (were running and then left the network).
   Per intersection: vehicles that were on an incoming lane and later on an outgoing lane.
-Apart from ATT, vehicles still waiting to enter the network are not counted.
+Apart from ATT, vehicles still waiting to enter the network are not counted in these metrics;
+their number at the end is reported as vehicles_waiting_to_enter_at_end (entry backlog).
 With lane changing enabled, CityFlow puts a temporary "<id>_shadow" copy of a lane-changing
 vehicle on the target lane. Shadows are not vehicles (no speed, not in get_vehicles) and are
 skipped here; CityFlow's own per-lane waiting count may include them. With lane_change: false
@@ -107,6 +108,7 @@ class MetricsTracker:
                 "vehicles_seen": n,
             }
         n_seen = len(self.seen)
+        waiting_to_enter = len(set(self.env.eng.get_vehicles(include_waiting=True)) - self._running)
         return {
             "network": {
                 "att": self.env.eng.get_average_travel_time(),
@@ -116,6 +118,7 @@ class MetricsTracker:
                 "throughput": self.finished,
                 "vehicles_entered": n_seen,
                 "vehicles_running_at_end": len(self._running),
+                "vehicles_waiting_to_enter_at_end": waiting_to_enter,
                 "steps": self.steps,
             },
             "per_intersection": per_int,

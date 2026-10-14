@@ -22,6 +22,16 @@ def test_throughput_positive_after_600_steps(run600):
     assert all(p["throughput"] > 0 for p in m.summary()["per_intersection"].values())
 
 
+def test_entry_backlog_counts_generated_vehicles_not_yet_entered(run600, synthetic_4x4):
+    import json
+    env, m = run600
+    s = m.summary()["network"]
+    flows = json.loads(synthetic_4x4["flow"].read_text())
+    generated = sum(f["startTime"] < env.time for f in flows)
+    assert s["vehicles_waiting_to_enter_at_end"] > 0          # Synthetic 4x4 is oversaturated
+    assert s["throughput"] + s["vehicles_running_at_end"] + s["vehicles_waiting_to_enter_at_end"] == generated
+
+
 def test_basic_metric_sanity(run600):
     env, m = run600
     s = m.summary()["network"]

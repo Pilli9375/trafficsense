@@ -18,3 +18,99 @@ roadnet:
   lane_max_speed_mps: 12.5  # 45 km/h; Phase 2 spec range 11-13 m/s (ASSUMPTION within it)
   intersection_width_m: 12  # distance from the centre to the stop line (ASSUMPTION, see doc)
   # Phases come from the generator: phase 0 = 5 s transition (right turns only), phases 1-8 green.
+
+# ---- vehicles -----------------------------------------------------------------------------
+# Sources (full references in docs/indian_scenario.md):
+#   [DIM] Umapathi & Khatawkar (2019), JETIR 6(6), Table 2 "Vehicle classes and their
+#         dimensions" (average measurements, stated as per IRC).
+#   [MIX] Arasan et al. (2008), Road & Transport Research, modal share of traffic in Chennai
+#         (2006), as reproduced in Table 15 (p. 35) of "Two- and Three-Wheelers in India",
+#         iTrans for ICCT & ITDP, final report, June 2009: buses+trucks 3, bicycles 10,
+#         motorised 2W 41, 3W 16, cars 28, LCV 3 (% of volume).
+#   [CF]  CityFlow generator defaults (tools/generator/generate_grid_scenario.py): length 5,
+#         minGap 2.5, headwayTime 1.5, acc 2.0, dec 4.5.
+#   ASSUMPTION = our choice, not taken from a source.
+# CityFlow ignores `width` in its dynamics (only written to the replay); it is kept for the record.
+vehicle_types:
+  motorcycle:   # two-wheeler: motorcycles and scooters
+    share: 41.0           # [MIX] motorised two-wheelers
+    length: 1.67          # [DIM] two wheeler 1.67 x 0.70
+    width: 0.70           # [DIM]
+    minGap: 1.0           # ASSUMPTION
+    headwayTime: 1.0      # ASSUMPTION
+    maxSpeed: 12.5        # ASSUMPTION: lane limit
+    usualPosAcc: 2.5      # ASSUMPTION
+    maxPosAcc: 3.0        # ASSUMPTION
+    usualNegAcc: 4.0      # ASSUMPTION
+    maxNegAcc: 6.0        # ASSUMPTION
+  auto_rickshaw:
+    share: 16.0           # [MIX] motorised three-wheelers
+    length: 3.2           # [DIM] three wheeler 3.2 x 1.4
+    width: 1.4            # [DIM]
+    minGap: 1.5           # ASSUMPTION
+    headwayTime: 1.5      # ASSUMPTION
+    maxSpeed: 11.1        # ASSUMPTION: 40 km/h
+    usualPosAcc: 1.2      # ASSUMPTION
+    maxPosAcc: 1.5        # ASSUMPTION
+    usualNegAcc: 3.5      # ASSUMPTION
+    maxNegAcc: 5.0        # ASSUMPTION
+  car:
+    share: 28.0           # [MIX] cars
+    length: 3.72          # [DIM] car, jeep 3.72 x 1.44
+    width: 1.44           # [DIM]
+    minGap: 2.5           # [CF]
+    headwayTime: 1.5      # [CF]
+    maxSpeed: 12.5        # ASSUMPTION: lane limit
+    usualPosAcc: 2.0      # [CF]
+    maxPosAcc: 2.0        # [CF]
+    usualNegAcc: 4.5      # [CF]
+    maxNegAcc: 4.5        # [CF]
+  bus:
+    share: 1.5            # [MIX] half of "buses and trucks" 3 (the split is an ASSUMPTION)
+    length: 10.1          # [DIM] bus 10.1 x 2.43
+    width: 2.43           # [DIM]
+    minGap: 2.5           # [CF]
+    headwayTime: 2.0      # ASSUMPTION
+    maxSpeed: 11.1        # ASSUMPTION: 40 km/h
+    usualPosAcc: 1.0      # ASSUMPTION
+    maxPosAcc: 1.2        # ASSUMPTION
+    usualNegAcc: 3.5      # ASSUMPTION
+    maxNegAcc: 4.5        # [CF]
+  truck:
+    share: 4.5            # [MIX] other half of "buses and trucks" (1.5) + LCV (3)
+    length: 7.5           # [DIM] truck (2-/3-axle) 7.5 x 2.35; LCVs (6.1 m) are folded in here
+    width: 2.35           # [DIM]
+    minGap: 2.5           # [CF]
+    headwayTime: 2.0      # ASSUMPTION
+    maxSpeed: 11.1        # ASSUMPTION: 40 km/h
+    usualPosAcc: 0.8      # ASSUMPTION
+    maxPosAcc: 1.0        # ASSUMPTION
+    usualNegAcc: 3.5      # ASSUMPTION
+    maxNegAcc: 4.5        # [CF]
+# Bicycles (10 % in [MIX]) are not modelled: non-motorised, and CityFlow cannot let them share
+# a lane side by side with motor traffic. Shares are normalised to sum to 1 in the generator.
+
+# ---- demand -------------------------------------------------------------------------------
+# Turn probabilities at every intersection, in CityFlow's (right-hand traffic) terms. The grid
+# is mirror-symmetric, so a right-hand network is the mirror image of India's left-hand one:
+#   CityFlow turn_right  = Indian LEFT turn  (kerb side, allowed in every phase: "free left")
+#   CityFlow turn_left   = Indian RIGHT turn (crosses opposing traffic, protected phase)
+turn_probabilities:       # ASSUMPTION
+  go_straight: 0.60
+  turn_right: 0.25        # Indian free left
+  turn_left: 0.15         # Indian right turn
+# Relative arrival rate per entry road, by the side the vehicle enters from. W/E entries are
+# the major road (east-west arterials), N/S entries the minor road.
+entry_weights:            # ASSUMPTION
+  W: 1.0
+  E: 1.0
+  N: 0.6
+  S: 0.6
+duration_s: 3600          # vehicles are generated over [0, duration_s)
+# Total arrival rate over all entry roads (veh/h), Poisson arrivals per entry road.
+# Calibrated with scripts/calibrate_indian_demand.py; see docs/indian_scenario.md.
+demand_levels:
+  offpeak:
+    veh_per_hour: null
+  peak:
+    veh_per_hour: null

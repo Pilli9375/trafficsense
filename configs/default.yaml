@@ -17,6 +17,15 @@ scenarios:
   hangzhou_4x4:
     roadnet: data/external/collmlight/Hangzhou/4_4/roadnet_4_4.json
     flow: data/external/collmlight/Hangzhou/4_4/anon_4_4_hangzhou_real.json
+  # Generated scenarios: one flow file per seed ({seed} is filled in by the env).
+  indian_2x2_offpeak:
+    roadnet: data/scenarios/indian_2x2/roadnet.json
+    flow: data/scenarios/indian_2x2/flow_offpeak_s{seed}.json
+    generate_hint: run scripts/generate_indian_flow.py --level offpeak --seed <seed>
+  indian_2x2_peak:
+    roadnet: data/scenarios/indian_2x2/roadnet.json
+    flow: data/scenarios/indian_2x2/flow_peak_s{seed}.json
+    generate_hint: run scripts/generate_indian_flow.py --level peak --seed <seed>
 
 sim:
   steps: 3600          # default run length (CLAUDE.md)

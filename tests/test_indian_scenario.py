@@ -76,3 +76,94 @@ def test_vehicle_crosses_both_intersections(roadnet_path, tmp_path):
     assert seen
     assert eng.get_vehicles(include_waiting=True) == []
     assert eng.get_average_travel_time() < 200
+
+
+# ---- flow generation ---------------------------------------------------------------------
+
+from trafficsense.sim.demand import Network, generate   # noqa: E402
+
+
+@pytest.fixture(scope="module")
+def net(roadnet_path):
+    return load_roadnet(roadnet_path)
+
+
+def with_rate(sc, rate=2000.0):
+    levels = {k: {"veh_per_hour": rate} for k in sc["demand_levels"]}
+    return {**sc, "demand_levels": levels}
+
+
+def test_entry_roads(net):
+    nw = Network(net)
+    assert len(nw.entry_roads) == 8
+    assert sorted(nw.entry_side.values()) == sorted("EENNSSWW")
+
+
+def test_generation_is_seeded(sc, net):
+    s = with_rate(sc)
+    a, _ = generate(net, s, "peak", 0)
+    b, _ = generate(net, s, "peak", 0)
+    c, _ = generate(net, s, "peak", 1)
+    assert a == b
+    assert a != c
+
+
+def test_unset_demand_level_fails_loudly(sc, net):
+    s = {**sc, "demand_levels": {"peak": {"veh_per_hour": None}}}
+    with pytest.raises(ValueError):
+        generate(net, s, "peak", 0)
+    with pytest.raises(KeyError):
+        generate(net, with_rate(sc), "rush", 0)
+
+
+def test_routes_are_valid_and_times_in_range(sc, net):
+    flows, meta = generate(net, with_rate(sc), "peak", 0)
+    nw = Network(net)
+    links = {(m.in_road, m.out_road) for opts in nw.from_road.values() for _, m in opts}
+    for f in flows:
+        r = f["route"]
+        assert r[0] in nw.entry_roads
+        assert r[-1] not in nw.from_road                 # ends on an exit road
+        assert all((a, b) in links for a, b in zip(r, r[1:]))
+        assert f["startTime"] == f["endTime"] and 0 <= f["startTime"] < sc["duration_s"]
+        assert isinstance(f["startTime"], int)
+    assert len(meta["vehicle_type_of_flow"]) == len(flows)
+
+
+def test_mix_rate_and_turns_match_config(sc, net):
+    flows, meta = generate(net, with_rate(sc, 8000.0), "peak", 0)
+    n = len(flows)
+    assert abs(n - 8000) < 5 * 8000 ** 0.5               # Poisson count
+    shares = {k: v["share"] for k, v in sc["vehicle_types"].items()}
+    tot = sum(shares.values())
+    for k, c in meta["vehicles_by_type"].items():
+        p = shares[k] / tot
+        assert abs(c / n - p) < 5 * (p * (1 - p) / n) ** 0.5
+        # each flow carries its type's parameters
+    for f, vt in zip(flows, meta["vehicle_type_of_flow"]):
+        assert f["vehicle"]["length"] == sc["vehicle_types"][vt]["length"]
+    turns = meta["turns_realised"]
+    tt = sum(turns.values())
+    for k, p in sc["turn_probabilities"].items():
+        assert abs(turns[k] / tt - p) < 0.02             # loop rejection shifts this only slightly
+    side = Network(net).entry_side
+    w = sc["entry_weights"]
+    per_side = {}
+    for road, c in meta["vehicles_by_entry_road"].items():
+        per_side[side[road]] = per_side.get(side[road], 0) + c
+    wsum = sum(w[s] * 2 for s in w)                       # two entry roads per side
+    for s_, c in per_side.items():
+        assert abs(c / n - 2 * w[s_] / wsum) < 0.02
+
+
+def test_env_formats_seed_into_flow_path(cfg, sc, net, tmp_path):
+    from trafficsense.sim.env import TrafficEnv
+    flows, _ = generate(net, with_rate(sc, 500.0), "peak", 3)
+    (tmp_path / "flow_s3.json").write_text(json.dumps(flows))
+    c = {**cfg, "scenarios": {"x": {"roadnet": sc["roadnet"]["file"],
+                                    "flow": str(tmp_path / "flow_s{seed}.json"),
+                                    "generate_hint": "make it"}}}
+    env = TrafficEnv(c, "x", seed=3)
+    assert env.flow_path == tmp_path / "flow_s3.json" and env.flow_per_seed
+    with pytest.raises(FileNotFoundError, match="make it"):
+        TrafficEnv(c, "x", seed=4)

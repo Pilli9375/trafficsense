@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
 import platform
 import subprocess
@@ -62,6 +63,8 @@ def run_experiment(cfg: dict[str, Any], scenario: str, controller: str,
             "scenario": scenario,
             "roadnet": str(env.roadnet_path.relative_to(repo_root())),
             "flow": str(env.flow_path.relative_to(repo_root())),
+            "flow_sha256": hashlib.sha256(env.flow_path.read_bytes()).hexdigest(),
+            "flow_per_seed": env.flow_per_seed,
             "sim_steps": steps,
             "git_commit": git["commit"],
             "git_dirty": git["dirty"],
