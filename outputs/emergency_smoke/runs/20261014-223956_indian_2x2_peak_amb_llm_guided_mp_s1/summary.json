@@ -1,0 +1,164 @@
+{
+  "provenance": {
+    "controller": "llm_guided_mp",
+    "controller_params": {
+      "name": "llm_guided_mp",
+      "mode": "cooperative",
+      "prompt": "guided",
+      "decision_interval": 5,
+      "min_green": 15,
+      "phases": "all",
+      "client": {
+        "host": "http://localhost:11434",
+        "endpoint": "/api/chat",
+        "timeout_s": 60.0,
+        "options": {
+          "temperature": 0.0,
+          "seed": 0,
+          "num_ctx": 2048,
+          "num_predict": 128
+        },
+        "keep_alive": "30m"
+      },
+      "max_consecutive_failures": 20,
+      "options": 2,
+      "tie_break": "keep_current",
+      "detection_range_m": 150.0,
+      "ranking": "maxpressure (phase_pressures over all green phases)"
+    },
+    "model": "llama3.2:3b",
+    "provider": "ollama",
+    "llm": {
+      "calls": 271,
+      "ok": 271,
+      "failures": 0,
+      "failures_by_type": {},
+      "failure_rate": 0.0,
+      "switches_requested": 67,
+      "latency_n": 271,
+      "latency_mean_s": 1.0670292569705409,
+      "latency_p95_s": 1.212987699002042,
+      "latency_max_s": 1.284481931998016,
+      "prompt_tokens_mean": 280.98154981549817,
+      "response_tokens_mean": 22.671586715867157,
+      "server_reported_models": [
+        "llama3.2:3b"
+      ],
+      "latency_note": "wall clock per call, over calls that returned a response (timeouts excluded, counted as failures)",
+      "mp_disagreements": 264,
+      "mp_disagreement_rate": 0.974169741697417,
+      "mp_disagreements_kept_current": 203,
+      "mp_disagreements_chose_lower_ranked": 61,
+      "mp_fallbacks": 0,
+      "mp_disagreement_note": "over successful calls: LLM's phase != MaxPressure's top choice",
+      "model_digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+      "model_details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "llama",
+        "families": [
+          "llama"
+        ],
+        "parameter_size": "3.2B",
+        "quantization_level": "Q4_K_M",
+        "context_length": 131072,
+        "embedding_length": 3072,
+        "runner": "ggml"
+      },
+      "server_version": "0.40.3",
+      "decisions_log": "decisions.jsonl"
+    },
+    "controller_stats": null,
+    "seed": 1,
+    "scenario": "indian_2x2_peak_amb",
+    "roadnet": "data/scenarios/indian_2x2/roadnet.json",
+    "flow": "data/scenarios/indian_2x2/flow_peak_amb_s1.json",
+    "flow_sha256": "93122e787a379bb6caa7d455caf189a4f263dc7293ce75e554f1d8c22427a01b",
+    "flow_per_seed": true,
+    "sim_steps": 600,
+    "git_commit": "3977fc43e5075d75e14b8472573bb7204d559a7d",
+    "git_dirty": false,
+    "timestamp": "2026-10-14T22:39:56+05:30",
+    "wall_time_s": 290.02,
+    "python": "3.10.12"
+  },
+  "signal": {
+    "min_green": 10,
+    "max_green": 60,
+    "transition_s": [
+      5
+    ],
+    "switches": 67,
+    "forced_switches": 0
+  },
+  "metrics": {
+    "att": 124.51463414634146,
+    "queue_mean_per_intersection": 25.187916666666666,
+    "queue_mean_total": 100.75166666666667,
+    "waiting_time_mean": 73.96088019559902,
+    "throughput": 592,
+    "vehicles_entered": 818,
+    "vehicles_running_at_end": 226,
+    "vehicles_waiting_to_enter_at_end": 2,
+    "steps": 600
+  },
+  "per_intersection": {
+    "intersection_1_1": {
+      "queue_mean": 24.27,
+      "waiting_time_mean": 41.13559322033898,
+      "throughput": 302,
+      "vehicles_seen": 354
+    },
+    "intersection_2_1": {
+      "queue_mean": 24.035,
+      "waiting_time_mean": 39.50958904109589,
+      "throughput": 313,
+      "vehicles_seen": 365
+    },
+    "intersection_1_2": {
+      "queue_mean": 23.27166666666667,
+      "waiting_time_mean": 40.23919308357349,
+      "throughput": 298,
+      "vehicles_seen": 347
+    },
+    "intersection_2_2": {
+      "queue_mean": 29.175,
+      "waiting_time_mean": 49.309859154929576,
+      "throughput": 296,
+      "vehicles_seen": 355
+    }
+  },
+  "emergency": {
+    "vehicle_type": "ambulance",
+    "scheduled_in_run": 1,
+    "entered": 1,
+    "finished": 1,
+    "travel_time_mean_s": 37.0,
+    "stopped_time_mean_s": 0.0,
+    "entry_wait_mean_s": 3.0,
+    "vehicles": [
+      {
+        "vehicle": "flow_4796_0",
+        "scheduled_start": 257,
+        "entered": 260.0,
+        "finished": 294.0,
+        "travel_time_s": 37.0,
+        "time_so_far_s": null,
+        "stopped_s": 0.0,
+        "entry_wait_s": 3.0,
+        "route": [
+          "road_3_2_2",
+          "road_2_2_1"
+        ]
+      }
+    ],
+    "notes": "means over ambulances that finished in the run; travel time from scheduled start (incl. entry wait); stopped = speed < 0.1 m/s while in the network"
+  },
+  "metric_notes": {
+    "att": "engine.get_average_travel_time(): all generated vehicles from scheduled start, incl. those still running or still waiting to enter",
+    "queue_mean_per_intersection": "waiting vehicles (speed<0.1) on incoming lanes, mean over steps and intersections",
+    "queue_mean_total": "same, summed over intersections",
+    "waiting_time_mean": "seconds with speed<0.1 per vehicle, mean over vehicles that entered",
+    "throughput": "vehicles that finished their trip"
+  }
+}

@@ -85,11 +85,35 @@ none, the hybrid-arm model with the lowest failure rate (ties: lower p95 latency
 interval 5 s, min green 15 s.
 
 <!-- BEGIN:emergency_smoke -->
+| Controller | Seed | ATT at 600 s (s) | Queue / int. (veh) | Finished trips | Ambulances scheduled / finished | Ambulance travel time, mean (s) | Ambulance stopped time, mean (s) | Controller notes |
+|---|---|---|---|---|---|---|---|---|
+| maxpressure | 0 | 92.5 | 11.85 | 623 | 0 / 0 | – | – | – |
+| maxpressure | 1 | 92.5 | 13.23 | 656 | 1 / 1 | 37.0 | 0.0 | – |
+| maxpressure | 2 | 102.0 | 16.23 | 680 | 1 / 1 | 101.0 | 31.0 | – |
+| fixedtime_webster | 0 | 97.4 | 13.49 | 626 | 0 / 0 | – | – | – |
+| fixedtime_webster | 1 | 96.5 | 14.64 | 654 | 1 / 1 | 37.0 | 0.0 | – |
+| fixedtime_webster | 2 | 101.0 | 15.91 | 685 | 1 / 1 | 123.0 | 59.0 | – |
+| preemption_mp | 0 | 92.5 | 11.85 | 623 | 0 / 0 | – | – | 0 preemption decisions (0 differ from MaxPressure) |
+| preemption_mp | 1 | 92.5 | 13.23 | 656 | 1 / 1 | 37.0 | 0.0 | 0 preemption decisions (0 differ from MaxPressure) |
+| preemption_mp | 2 | 104.2 | 17.03 | 672 | 1 / 1 | 77.0 | 12.0 | 2 preemption decisions (1 differ from MaxPressure) |
+| llm_guided_mp | 0 | 133.8 | 25.80 | 545 | 0 / 0 | – | – | `llama3.2:3b`: 270 calls, 0.0% failed, p95 1.19 s, 96.3% differ from MaxPressure; 0 decisions with an ambulance in view (0 gave it green) |
+| llm_guided_mp | 1 | 124.5 | 25.19 | 592 | 1 / 1 | 37.0 | 0.0 | `llama3.2:3b`: 271 calls, 0.0% failed, p95 1.21 s, 97.4% differ from MaxPressure; 0 decisions with an ambulance in view (0 gave it green) |
+| llm_guided_mp | 2 | 139.6 | 30.27 | 584 | 1 / 1 | 250.0 | 156.0 | `llama3.2:3b`: 274 calls, 0.0% failed, p95 1.29 s, 96.7% differ from MaxPressure; 24 decisions with an ambulance in view (11 gave it green) |
 <!-- END:emergency_smoke -->
 
 Each ambulance:
 
 <!-- BEGIN:emergency_ambulances -->
+| Controller | Seed | Ambulance | Scheduled start (s) | Route (roads) | Travel time (s) | Stopped (s) | Entry wait (s) |
+|---|---|---|---|---|---|---|---|
+| maxpressure | 1 | `flow_4796_0` | 257 | road_3_2_2 → road_2_2_1 | 37 | 0 | 3 |
+| maxpressure | 2 | `flow_4795_0` | 253 | road_3_2_2 → road_2_2_2 → road_1_2_2 | 101 | 31 | 1 |
+| fixedtime_webster | 1 | `flow_4796_0` | 257 | road_3_2_2 → road_2_2_1 | 37 | 0 | 3 |
+| fixedtime_webster | 2 | `flow_4795_0` | 253 | road_3_2_2 → road_2_2_2 → road_1_2_2 | 123 | 59 | 1 |
+| preemption_mp | 1 | `flow_4796_0` | 257 | road_3_2_2 → road_2_2_1 | 37 | 0 | 3 |
+| preemption_mp | 2 | `flow_4795_0` | 253 | road_3_2_2 → road_2_2_2 → road_1_2_2 | 77 | 12 | 1 |
+| llm_guided_mp | 1 | `flow_4796_0` | 257 | road_3_2_2 → road_2_2_1 | 37 | 0 | 3 |
+| llm_guided_mp | 2 | `flow_4795_0` | 253 | road_3_2_2 → road_2_2_2 → road_1_2_2 | 250 | 156 | 1 |
 <!-- END:emergency_ambulances -->
 
 **What these runs can and cannot show.** Across the three 600 s windows there are two
@@ -97,3 +121,24 @@ ambulances, and only one (seed 2) passes a signal that can affect it. The runs s
 ambulances are generated, detected, measured and acted on; they say nothing about which
 controller serves ambulances better. A comparison needs full-length runs (3600 s: 3, 14 and
 6 ambulances for seeds 0–2) or more seeds, which has not been done yet.
+
+What the smoke tests show (one ambulance per run at most; observations, not results):
+
+* **The pieces work.** Ambulances are generated, tracked and measured; the seed 1 ambulance,
+  which leaves by a free turn, takes 37 s under every controller (no signal can affect it),
+  and seed 0 has none in the window, so `preemption_mp` equals MaxPressure there exactly.
+* **Seed 2, the one ambulance a signal can help** (east to west, straight through
+  intersection_2_2 and intersection_1_2): travel time 77 s with `preemption_mp` (12 s
+  stopped), 101 s with MaxPressure (31 s), 123 s with Webster (59 s) and 250 s with
+  `llm_guided_mp` (156 s). Preemption changed 1 of MaxPressure's decisions
+  (`preemptions.jsonl`), at a small cost to the rest of the traffic in this run (queue 17.03
+  against 16.23).
+* **`llm_guided_mp` (`llama3.2:3b`, the rule's choice) did not help the ambulance.** It had
+  it in view in 24 decisions and gave it green in 11. Its decision log shows it switching
+  intersection_2_2 away from the ambulance's phase while the ambulance was 46 m from the stop
+  line (t = 330 s), then keeping phase 2 until max green ended it (t = 390 s) while the
+  ambulance waited 17 m from the stop line from t = 350 s, with reasons such as "S+N straight, low queue and pressure, suitable for ambulances".
+  This is the misreading found in the benchmark (`docs/llm_benchmark.md`, hybrid findings):
+  the model prefers low pressure. As in the benchmark, it overruled MaxPressure in 96–97% of
+  its calls and its queues (25.19–30.27) are about twice MaxPressure's.
+

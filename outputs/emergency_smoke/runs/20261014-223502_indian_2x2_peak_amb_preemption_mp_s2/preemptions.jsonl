@@ -1,0 +1,2 @@
+{"step": 265, "intersection": "intersection_2_2", "vehicle": "flow_4795_0", "distance_m": 70.0, "approach": "E", "turn": "go_straight", "current_phase": 1, "phase": 6, "maxpressure_choice": 2, "changed_decision": true}
+{"step": 300, "intersection": "intersection_1_2", "vehicle": "flow_4795_0", "distance_m": 13.9, "approach": "E", "turn": "go_straight", "current_phase": 2, "phase": 6, "maxpressure_choice": 6, "changed_decision": false}

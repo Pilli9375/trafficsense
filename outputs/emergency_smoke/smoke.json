@@ -1,0 +1,349 @@
+{
+ "provenance": {
+  "script": "scripts/run_emergency_smoke.py",
+  "scenario": "indian_2x2_peak_amb",
+  "seeds": [
+   0,
+   1,
+   2
+  ],
+  "steps": 600,
+  "git_commit_of_this_summary": "3977fc43e5075d75e14b8472573bb7204d559a7d"
+ },
+ "runs": [
+  {
+   "run": "20261014-223330_indian_2x2_peak_amb_maxpressure_s0",
+   "controller": "maxpressure",
+   "seed": 0,
+   "git_commit": "3977fc43e5075d75e14b8472573bb7204d559a7d",
+   "att_s": 92.53703703703704,
+   "queue_mean_per_intersection": 11.850416666666666,
+   "throughput": 623,
+   "switches": 115,
+   "ambulances_scheduled": 0,
+   "ambulances_finished": 0,
+   "ambulance_travel_time_mean_s": null,
+   "ambulance_stopped_time_mean_s": null,
+   "ambulances": []
+  },
+  {
+   "run": "20261014-223331_indian_2x2_peak_amb_maxpressure_s1",
+   "controller": "maxpressure",
+   "seed": 1,
+   "git_commit": "3977fc43e5075d75e14b8472573bb7204d559a7d",
+   "att_s": 92.47926829268293,
+   "queue_mean_per_intersection": 13.2325,
+   "throughput": 656,
+   "switches": 115,
+   "ambulances_scheduled": 1,
+   "ambulances_finished": 1,
+   "ambulance_travel_time_mean_s": 37.0,
+   "ambulance_stopped_time_mean_s": 0.0,
+   "ambulances": [
+    {
+     "vehicle": "flow_4796_0",
+     "scheduled_start": 257,
+     "entered": 260.0,
+     "finished": 294.0,
+     "travel_time_s": 37.0,
+     "time_so_far_s": null,
+     "stopped_s": 0.0,
+     "entry_wait_s": 3.0,
+     "route": [
+      "road_3_2_2",
+      "road_2_2_1"
+     ]
+    }
+   ]
+  },
+  {
+   "run": "20261014-223331_indian_2x2_peak_amb_maxpressure_s2",
+   "controller": "maxpressure",
+   "seed": 2,
+   "git_commit": "3977fc43e5075d75e14b8472573bb7204d559a7d",
+   "att_s": 102.01927710843374,
+   "queue_mean_per_intersection": 16.229583333333334,
+   "throughput": 680,
+   "switches": 113,
+   "ambulances_scheduled": 1,
+   "ambulances_finished": 1,
+   "ambulance_travel_time_mean_s": 101.0,
+   "ambulance_stopped_time_mean_s": 31.0,
+   "ambulances": [
+    {
+     "vehicle": "flow_4795_0",
+     "scheduled_start": 253,
+     "entered": 254.0,
+     "finished": 354.0,
+     "travel_time_s": 101.0,
+     "time_so_far_s": null,
+     "stopped_s": 31.0,
+     "entry_wait_s": 1.0,
+     "route": [
+      "road_3_2_2",
+      "road_2_2_2",
+      "road_1_2_2"
+     ]
+    }
+   ]
+  },
+  {
+   "run": "20261014-223332_indian_2x2_peak_amb_fixedtime_webster_s0",
+   "controller": "fixedtime_webster",
+   "seed": 0,
+   "git_commit": "3977fc43e5075d75e14b8472573bb7204d559a7d",
+   "att_s": 97.42989417989418,
+   "queue_mean_per_intersection": 13.485833333333334,
+   "throughput": 626,
+   "switches": 110,
+   "ambulances_scheduled": 0,
+   "ambulances_finished": 0,
+   "ambulance_travel_time_mean_s": null,
+   "ambulance_stopped_time_mean_s": null,
+   "ambulances": []
+  },
+  {
+   "run": "20261014-223401_indian_2x2_peak_amb_fixedtime_webster_s1",
+   "controller": "fixedtime_webster",
+   "seed": 1,
+   "git_commit": "3977fc43e5075d75e14b8472573bb7204d559a7d",
+   "att_s": 96.47804878048781,
+   "queue_mean_per_intersection": 14.64,
+   "throughput": 654,
+   "switches": 103,
+   "ambulances_scheduled": 1,
+   "ambulances_finished": 1,
+   "ambulance_travel_time_mean_s": 37.0,
+   "ambulance_stopped_time_mean_s": 0.0,
+   "ambulances": [
+    {
+     "vehicle": "flow_4796_0",
+     "scheduled_start": 257,
+     "entered": 260.0,
+     "finished": 294.0,
+     "travel_time_s": 37.0,
+     "time_so_far_s": null,
+     "stopped_s": 0.0,
+     "entry_wait_s": 3.0,
+     "route": [
+      "road_3_2_2",
+      "road_2_2_1"
+     ]
+    }
+   ]
+  },
+  {
+   "run": "20261014-223431_indian_2x2_peak_amb_fixedtime_webster_s2",
+   "controller": "fixedtime_webster",
+   "seed": 2,
+   "git_commit": "3977fc43e5075d75e14b8472573bb7204d559a7d",
+   "att_s": 101.04939759036145,
+   "queue_mean_per_intersection": 15.909583333333334,
+   "throughput": 685,
+   "switches": 105,
+   "ambulances_scheduled": 1,
+   "ambulances_finished": 1,
+   "ambulance_travel_time_mean_s": 123.0,
+   "ambulance_stopped_time_mean_s": 59.0,
+   "ambulances": [
+    {
+     "vehicle": "flow_4795_0",
+     "scheduled_start": 253,
+     "entered": 254.0,
+     "finished": 376.0,
+     "travel_time_s": 123.0,
+     "time_so_far_s": null,
+     "stopped_s": 59.0,
+     "entry_wait_s": 1.0,
+     "route": [
+      "road_3_2_2",
+      "road_2_2_2",
+      "road_1_2_2"
+     ]
+    }
+   ]
+  },
+  {
+   "run": "20261014-223500_indian_2x2_peak_amb_preemption_mp_s0",
+   "controller": "preemption_mp",
+   "seed": 0,
+   "git_commit": "3977fc43e5075d75e14b8472573bb7204d559a7d",
+   "att_s": 92.53703703703704,
+   "queue_mean_per_intersection": 11.850416666666666,
+   "throughput": 623,
+   "switches": 115,
+   "ambulances_scheduled": 0,
+   "ambulances_finished": 0,
+   "ambulance_travel_time_mean_s": null,
+   "ambulance_stopped_time_mean_s": null,
+   "ambulances": [],
+   "preemption_decisions": 0,
+   "preemption_changed_maxpressure": 0
+  },
+  {
+   "run": "20261014-223501_indian_2x2_peak_amb_preemption_mp_s1",
+   "controller": "preemption_mp",
+   "seed": 1,
+   "git_commit": "3977fc43e5075d75e14b8472573bb7204d559a7d",
+   "att_s": 92.47926829268293,
+   "queue_mean_per_intersection": 13.2325,
+   "throughput": 656,
+   "switches": 115,
+   "ambulances_scheduled": 1,
+   "ambulances_finished": 1,
+   "ambulance_travel_time_mean_s": 37.0,
+   "ambulance_stopped_time_mean_s": 0.0,
+   "ambulances": [
+    {
+     "vehicle": "flow_4796_0",
+     "scheduled_start": 257,
+     "entered": 260.0,
+     "finished": 294.0,
+     "travel_time_s": 37.0,
+     "time_so_far_s": null,
+     "stopped_s": 0.0,
+     "entry_wait_s": 3.0,
+     "route": [
+      "road_3_2_2",
+      "road_2_2_1"
+     ]
+    }
+   ],
+   "preemption_decisions": 0,
+   "preemption_changed_maxpressure": 0
+  },
+  {
+   "run": "20261014-223502_indian_2x2_peak_amb_preemption_mp_s2",
+   "controller": "preemption_mp",
+   "seed": 2,
+   "git_commit": "3977fc43e5075d75e14b8472573bb7204d559a7d",
+   "att_s": 104.1843373493976,
+   "queue_mean_per_intersection": 17.025416666666665,
+   "throughput": 672,
+   "switches": 113,
+   "ambulances_scheduled": 1,
+   "ambulances_finished": 1,
+   "ambulance_travel_time_mean_s": 77.0,
+   "ambulance_stopped_time_mean_s": 12.0,
+   "ambulances": [
+    {
+     "vehicle": "flow_4795_0",
+     "scheduled_start": 253,
+     "entered": 254.0,
+     "finished": 330.0,
+     "travel_time_s": 77.0,
+     "time_so_far_s": null,
+     "stopped_s": 12.0,
+     "entry_wait_s": 1.0,
+     "route": [
+      "road_3_2_2",
+      "road_2_2_2",
+      "road_1_2_2"
+     ]
+    }
+   ],
+   "preemption_decisions": 2,
+   "preemption_changed_maxpressure": 1
+  },
+  {
+   "run": "20261014-223505_indian_2x2_peak_amb_llm_guided_mp_s0",
+   "controller": "llm_guided_mp",
+   "seed": 0,
+   "git_commit": "3977fc43e5075d75e14b8472573bb7204d559a7d",
+   "att_s": 133.7962962962963,
+   "queue_mean_per_intersection": 25.799166666666665,
+   "throughput": 545,
+   "switches": 68,
+   "ambulances_scheduled": 0,
+   "ambulances_finished": 0,
+   "ambulance_travel_time_mean_s": null,
+   "ambulance_stopped_time_mean_s": null,
+   "ambulances": [],
+   "model": "llama3.2:3b",
+   "calls": 270,
+   "failures": 0,
+   "failure_rate": 0.0,
+   "latency_p95_s": 1.192617915250412,
+   "mp_disagreement_rate": 0.9629629629629629,
+   "ambulance_decisions": 0,
+   "ambulance_decisions_serving_nearest": 0
+  },
+  {
+   "run": "20261014-223956_indian_2x2_peak_amb_llm_guided_mp_s1",
+   "controller": "llm_guided_mp",
+   "seed": 1,
+   "git_commit": "3977fc43e5075d75e14b8472573bb7204d559a7d",
+   "att_s": 124.51463414634146,
+   "queue_mean_per_intersection": 25.187916666666666,
+   "throughput": 592,
+   "switches": 67,
+   "ambulances_scheduled": 1,
+   "ambulances_finished": 1,
+   "ambulance_travel_time_mean_s": 37.0,
+   "ambulance_stopped_time_mean_s": 0.0,
+   "ambulances": [
+    {
+     "vehicle": "flow_4796_0",
+     "scheduled_start": 257,
+     "entered": 260.0,
+     "finished": 294.0,
+     "travel_time_s": 37.0,
+     "time_so_far_s": null,
+     "stopped_s": 0.0,
+     "entry_wait_s": 3.0,
+     "route": [
+      "road_3_2_2",
+      "road_2_2_1"
+     ]
+    }
+   ],
+   "model": "llama3.2:3b",
+   "calls": 271,
+   "failures": 0,
+   "failure_rate": 0.0,
+   "latency_p95_s": 1.212987699002042,
+   "mp_disagreement_rate": 0.974169741697417,
+   "ambulance_decisions": 0,
+   "ambulance_decisions_serving_nearest": 0
+  },
+  {
+   "run": "20261014-224446_indian_2x2_peak_amb_llm_guided_mp_s2",
+   "controller": "llm_guided_mp",
+   "seed": 2,
+   "git_commit": "3977fc43e5075d75e14b8472573bb7204d559a7d",
+   "att_s": 139.62409638554217,
+   "queue_mean_per_intersection": 30.27166666666667,
+   "throughput": 584,
+   "switches": 65,
+   "ambulances_scheduled": 1,
+   "ambulances_finished": 1,
+   "ambulance_travel_time_mean_s": 250.0,
+   "ambulance_stopped_time_mean_s": 156.0,
+   "ambulances": [
+    {
+     "vehicle": "flow_4795_0",
+     "scheduled_start": 253,
+     "entered": 254.0,
+     "finished": 503.0,
+     "travel_time_s": 250.0,
+     "time_so_far_s": null,
+     "stopped_s": 156.0,
+     "entry_wait_s": 1.0,
+     "route": [
+      "road_3_2_2",
+      "road_2_2_2",
+      "road_1_2_2"
+     ]
+    }
+   ],
+   "model": "llama3.2:3b",
+   "calls": 274,
+   "failures": 0,
+   "failure_rate": 0.0,
+   "latency_p95_s": 1.2859020720496117,
+   "mp_disagreement_rate": 0.9671532846715328,
+   "ambulance_decisions": 24,
+   "ambulance_decisions_serving_nearest": 11
+  }
+ ]
+}
