@@ -1,0 +1,112 @@
+{
+ "provenance": {
+  "script": "scripts/validation/diagnose_indian_breakdown.py",
+  "controller": "maxpressure",
+  "controller_params": {
+   "name": "maxpressure",
+   "decision_interval": 15,
+   "phases": "all",
+   "tie_break": "keep_current"
+  },
+  "rate_veh_per_hour": 5500.0,
+  "seed": 2,
+  "git_commit": "a88ccfa856928ecc3599e19472815aa5047e7c22",
+  "git_dirty": false
+ },
+ "mean_vehicle_spacing_m": 4.645384615384616,
+ "snapshots": [
+  {
+   "t": 600,
+   "running": 284,
+   "waiting_to_enter": 4,
+   "lanes_at_storage": []
+  },
+  {
+   "t": 1200,
+   "running": 342,
+   "waiting_to_enter": 4,
+   "lanes_at_storage": []
+  },
+  {
+   "t": 1800,
+   "running": 349,
+   "waiting_to_enter": 8,
+   "lanes_at_storage": []
+  },
+  {
+   "t": 2400,
+   "running": 346,
+   "waiting_to_enter": 26,
+   "lanes_at_storage": []
+  },
+  {
+   "t": 3000,
+   "running": 351,
+   "waiting_to_enter": 90,
+   "lanes_at_storage": []
+  },
+  {
+   "t": 3600,
+   "running": 368,
+   "waiting_to_enter": 140,
+   "lanes_at_storage": []
+  }
+ ],
+ "phase_time_share": {
+  "intersection_1_1": {
+   "0": 0.30416666666666664,
+   "1": 0.2513888888888889,
+   "2": 0.17083333333333334,
+   "3": 0.044444444444444446,
+   "4": 0.008333333333333333,
+   "5": 0.0625,
+   "6": 0.08611111111111111,
+   "7": 0.05,
+   "8": 0.022222222222222223
+  },
+  "intersection_2_1": {
+   "0": 0.3194444444444444,
+   "1": 0.25,
+   "2": 0.17083333333333334,
+   "3": 0.016666666666666666,
+   "4": 0.027777777777777776,
+   "5": 0.025,
+   "6": 0.09027777777777778,
+   "7": 0.025,
+   "8": 0.075
+  },
+  "intersection_1_2": {
+   "0": 0.3194444444444444,
+   "1": 0.24583333333333332,
+   "2": 0.16805555555555557,
+   "3": 0.025,
+   "4": 0.041666666666666664,
+   "5": 0.08888888888888889,
+   "6": 0.019444444444444445,
+   "7": 0.075,
+   "8": 0.016666666666666666
+  },
+  "intersection_2_2": {
+   "0": 0.30833333333333335,
+   "1": 0.24027777777777778,
+   "2": 0.16805555555555557,
+   "3": 0.027777777777777776,
+   "4": 0.019444444444444445,
+   "5": 0.09444444444444444,
+   "6": 0.06666666666666667,
+   "7": 0.025,
+   "8": 0.05
+  }
+ },
+ "transition_phase": {
+  "intersection_1_1": 0,
+  "intersection_2_1": 0,
+  "intersection_1_2": 0,
+  "intersection_2_2": 0
+ },
+ "backlog_by_first_hop": {
+  "road_3_2_2 -> road_2_2_2": 80,
+  "road_0_1_0 -> road_1_1_0": 50,
+  "road_2_0_1 -> road_2_1_1": 10
+ }
+}

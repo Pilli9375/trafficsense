@@ -11,6 +11,7 @@
     "20261014-133008_indian_2x2_offpeak_fixedtime_s1",
     "20261014-133011_indian_2x2_offpeak_fixedtime_s2"
    ],
+   "label": "FixedTime, 4 paired phases, 30 s",
    "git_commits": [
     "dc1debc6fe387b95ddd551edaec7c1ce2ac15623"
    ],
@@ -80,6 +81,7 @@
     "20261014-133016_indian_2x2_offpeak_fixedtime_all_phases_s1",
     "20261014-133017_indian_2x2_offpeak_fixedtime_all_phases_s2"
    ],
+   "label": "FixedTime, all 8 phases, 30 s",
    "git_commits": [
     "dc1debc6fe387b95ddd551edaec7c1ce2ac15623"
    ],
@@ -138,6 +140,76 @@
     "std": 0.0
    }
   },
+  "fixedtime_webster": {
+   "seeds": [
+    0,
+    1,
+    2
+   ],
+   "runs": [
+    "20261014-144229_indian_2x2_offpeak_fixedtime_webster_s0",
+    "20261014-144300_indian_2x2_offpeak_fixedtime_webster_s1",
+    "20261014-144332_indian_2x2_offpeak_fixedtime_webster_s2"
+   ],
+   "label": "FixedTime, 4 paired phases, Webster plan",
+   "git_commits": [
+    "8929100ea54e4026158b925f97a95cd9c71df858"
+   ],
+   "att": {
+    "values": [
+     104.4051172707889,
+     100.65349417637272,
+     96.14115226337448
+    ],
+    "mean": 100.39992123684537,
+    "std": 4.137813895970666
+   },
+   "queue_mean_per_intersection": {
+    "values": [
+     7.328749999999999,
+     6.852083333333333,
+     6.283055555555555
+    ],
+    "mean": 6.821296296296296,
+    "std": 0.5235265981997796
+   },
+   "waiting_time_mean": {
+    "values": [
+     45.01705756929638,
+     41.06405990016639,
+     37.239506172839505
+    ],
+    "mean": 41.10687454743409,
+    "std": 3.8889524619937887
+   },
+   "throughput": {
+    "values": [
+     2280,
+     2329,
+     2350
+    ],
+    "mean": 2319.6666666666665,
+    "std": 35.92121007612819
+   },
+   "vehicles_waiting_to_enter_at_end": {
+    "values": [
+     0,
+     0,
+     0
+    ],
+    "mean": 0,
+    "std": 0.0
+   },
+   "transition_share": {
+    "values": [
+     0.33194444444444443,
+     0.3263888888888889,
+     0.3194444444444444
+    ],
+    "mean": 0.3259259259259259,
+    "std": 0.006262846878920693
+   }
+  },
   "maxpressure": {
    "seeds": [
     0,
@@ -145,12 +217,83 @@
     2
    ],
    "runs": [
-    "20261014-133020_indian_2x2_offpeak_maxpressure_s0",
-    "20261014-133022_indian_2x2_offpeak_maxpressure_s1",
-    "20261014-133024_indian_2x2_offpeak_maxpressure_s2"
+    "20261014-144404_indian_2x2_offpeak_maxpressure_s0",
+    "20261014-144406_indian_2x2_offpeak_maxpressure_s1",
+    "20261014-144408_indian_2x2_offpeak_maxpressure_s2"
    ],
+   "label": "MaxPressure (8 phases, 15 s, min 10 / max 60)",
    "git_commits": [
-    "dc1debc6fe387b95ddd551edaec7c1ce2ac15623"
+    "8929100ea54e4026158b925f97a95cd9c71df858"
+   ],
+   "att": {
+    "values": [
+     81.03837953091684,
+     81.55033277870216,
+     81.28477366255144
+    ],
+    "mean": 81.29116199072348,
+    "std": 0.2560364037243689
+   },
+   "queue_mean_per_intersection": {
+    "values": [
+     3.7267361111111112,
+     3.8236805555555557,
+     3.857222222222222
+    ],
+    "mean": 3.8025462962962964,
+    "std": 0.06776170735786906
+   },
+   "waiting_time_mean": {
+    "values": [
+     22.894669509594884,
+     22.919301164725457,
+     22.867489711934155
+    ],
+    "mean": 22.8938201287515,
+    "std": 0.025916167655522737
+   },
+   "throughput": {
+    "values": [
+     2289,
+     2345,
+     2362
+    ],
+    "mean": 2332,
+    "std": 38.19685850956856
+   },
+   "vehicles_waiting_to_enter_at_end": {
+    "values": [
+     0,
+     0,
+     0
+    ],
+    "mean": 0,
+    "std": 0.0
+   },
+   "transition_share": {
+    "values": [
+     0.31527777777777777,
+     0.3104166666666667,
+     0.31666666666666665
+    ],
+    "mean": 0.3141203703703704,
+    "std": 0.003281816407119855
+   }
+  },
+  "maxpressure_5s": {
+   "seeds": [
+    0,
+    1,
+    2
+   ],
+   "runs": [
+    "20261014-144411_indian_2x2_offpeak_maxpressure_5s_s0",
+    "20261014-144413_indian_2x2_offpeak_maxpressure_5s_s1",
+    "20261014-144416_indian_2x2_offpeak_maxpressure_5s_s2"
+   ],
+   "label": "MaxPressure (8 phases, 5 s, min 10 / max 60)",
+   "git_commits": [
+    "8929100ea54e4026158b925f97a95cd9c71df858"
    ],
    "att": {
     "values": [
@@ -220,6 +363,7 @@
     "20261014-133031_indian_2x2_peak_fixedtime_s1",
     "20261014-133035_indian_2x2_peak_fixedtime_s2"
    ],
+   "label": "FixedTime, 4 paired phases, 30 s",
    "git_commits": [
     "dc1debc6fe387b95ddd551edaec7c1ce2ac15623"
    ],
@@ -289,6 +433,7 @@
     "20261014-133043_indian_2x2_peak_fixedtime_all_phases_s1",
     "20261014-133047_indian_2x2_peak_fixedtime_all_phases_s2"
    ],
+   "label": "FixedTime, all 8 phases, 30 s",
    "git_commits": [
     "dc1debc6fe387b95ddd551edaec7c1ce2ac15623"
    ],
@@ -347,6 +492,76 @@
     "std": 0.0
    }
   },
+  "fixedtime_webster": {
+   "seeds": [
+    0,
+    1,
+    2
+   ],
+   "runs": [
+    "20261014-144418_indian_2x2_peak_fixedtime_webster_s0",
+    "20261014-144451_indian_2x2_peak_fixedtime_webster_s1",
+    "20261014-144523_indian_2x2_peak_fixedtime_webster_s2"
+   ],
+   "label": "FixedTime, 4 paired phases, Webster plan",
+   "git_commits": [
+    "8929100ea54e4026158b925f97a95cd9c71df858"
+   ],
+   "att": {
+    "values": [
+     118.25541032783373,
+     119.55879899916597,
+     111.06736183524505
+    ],
+    "mean": 116.29385705408158,
+    "std": 4.5729525157747
+   },
+   "queue_mean_per_intersection": {
+    "values": [
+     18.465416666666666,
+     19.43888888888889,
+     16.905069444444443
+    ],
+    "mean": 18.269791666666666,
+    "std": 1.278187036286138
+   },
+   "waiting_time_mean": {
+    "values": [
+     57.02186026575225,
+     58.41805671392827,
+     50.825860271115744
+    ],
+    "mean": 55.42192575026542,
+    "std": 4.041064778860686
+   },
+   "throughput": {
+    "values": [
+     4477,
+     4637,
+     4617
+    ],
+    "mean": 4577,
+    "std": 87.17797887081348
+   },
+   "vehicles_waiting_to_enter_at_end": {
+    "values": [
+     1,
+     0,
+     0
+    ],
+    "mean": 0.3333333333333333,
+    "std": 0.5773502691896257
+   },
+   "transition_share": {
+    "values": [
+     0.23194444444444445,
+     0.22569444444444445,
+     0.22395833333333334
+    ],
+    "mean": 0.22719907407407408,
+    "std": 0.004200288729542606
+   }
+  },
   "maxpressure": {
    "seeds": [
     0,
@@ -354,12 +569,83 @@
     2
    ],
    "runs": [
-    "20261014-133050_indian_2x2_peak_maxpressure_s0",
-    "20261014-133053_indian_2x2_peak_maxpressure_s1",
-    "20261014-133057_indian_2x2_peak_maxpressure_s2"
+    "20261014-144555_indian_2x2_peak_maxpressure_s0",
+    "20261014-144559_indian_2x2_peak_maxpressure_s1",
+    "20261014-144602_indian_2x2_peak_maxpressure_s2"
    ],
+   "label": "MaxPressure (8 phases, 15 s, min 10 / max 60)",
    "git_commits": [
-    "dc1debc6fe387b95ddd551edaec7c1ce2ac15623"
+    "8929100ea54e4026158b925f97a95cd9c71df858"
+   ],
+   "att": {
+    "values": [
+     151.96443111206344,
+     122.15116763969975,
+     127.35662148070907
+    ],
+    "mean": 133.8240734108241,
+    "std": 15.924152114615241
+   },
+   "queue_mean_per_intersection": {
+    "values": [
+     28.467569444444443,
+     19.781527777777775,
+     21.483333333333334
+    ],
+    "mean": 23.244143518518516,
+    "std": 4.60295224176357
+   },
+   "waiting_time_mean": {
+    "values": [
+     87.88598371195886,
+     59.43536280233528,
+     64.56704900938477
+    ],
+    "mean": 70.62946517455964,
+    "std": 15.163249152329053
+   },
+   "throughput": {
+    "values": [
+     4410,
+     4634,
+     4575
+    ],
+    "mean": 4539.666666666667,
+    "std": 116.10483768273109
+   },
+   "vehicles_waiting_to_enter_at_end": {
+    "values": [
+     1,
+     0,
+     0
+    ],
+    "mean": 0.3333333333333333,
+    "std": 0.5773502691896257
+   },
+   "transition_share": {
+    "values": [
+     0.3194444444444444,
+     0.3215277777777778,
+     0.3232638888888889
+    ],
+    "mean": 0.321412037037037,
+    "std": 0.0019123508844743628
+   }
+  },
+  "maxpressure_5s": {
+   "seeds": [
+    0,
+    1,
+    2
+   ],
+   "runs": [
+    "20261014-144606_indian_2x2_peak_maxpressure_5s_s0",
+    "20261014-144609_indian_2x2_peak_maxpressure_5s_s1",
+    "20261014-144613_indian_2x2_peak_maxpressure_5s_s2"
+   ],
+   "label": "MaxPressure (8 phases, 5 s, min 10 / max 60)",
+   "git_commits": [
+    "8929100ea54e4026158b925f97a95cd9c71df858"
    ],
    "att": {
     "values": [

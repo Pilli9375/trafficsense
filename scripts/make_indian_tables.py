@@ -4,7 +4,8 @@
     python scripts/make_indian_tables.py --check  # exit 1 if the doc or results.json is out of date
 
 Inputs: outputs/indian_2x2/runs/*/summary.json (scripts/run_indian_experiments.py),
-outputs/validation/indian_demand_calibration.json (scripts/calibrate_indian_demand.py),
+outputs/validation/indian_demand_calibration.json (scripts/calibrate_indian_demand.py) and the
+earlier 5 s MaxPressure calibration (indian_demand_calibration_maxpressure_5s.json),
 the flow files and their .meta.json, and configs/scenarios/indian_2x2.yaml.
 Each table sits between <!-- BEGIN:name --> and <!-- END:name --> markers in the doc.
 Mean ± std is over seeds; std is the sample standard deviation (ddof = 1).
@@ -31,7 +32,10 @@ SC_CFG = "configs/scenarios/indian_2x2.yaml"
 
 CONTROLLERS = [("fixedtime", "FixedTime, 4 paired phases, 30 s"),
                ("fixedtime_all_phases", "FixedTime, all 8 phases, 30 s"),
-               ("maxpressure", "MaxPressure (8 phases, 5 s, min 10 / max 60)")]
+               ("fixedtime_webster", "FixedTime, 4 paired phases, Webster plan"),
+               ("maxpressure", "MaxPressure (8 phases, {decision_interval} s, min 10 / max 60)"),
+               ("maxpressure_5s", "MaxPressure (8 phases, {decision_interval} s, min 10 / max 60)")]
+CALIB_5S = ROOT / "outputs" / "validation" / "indian_demand_calibration_maxpressure_5s.json"
 LEVELS = ["offpeak", "peak"]
 METRICS = [("att", "ATT (s)", 1), ("queue_mean_per_intersection", "Queue / intersection (veh)", 2),
            ("waiting_time_mean", "Waiting time / vehicle (s)", 1), ("throughput", "Throughput (finished trips)", 0),
@@ -77,6 +81,11 @@ def load_runs(sc):
     return runs
 
 
+def label_of(ctl, summary):
+    """Label with the settings recorded in the run, so it cannot go stale."""
+    return dict(CONTROLLERS)[ctl].format(**summary["provenance"]["controller_params"])
+
+
 def aggregate(runs):
     res = {}
     for level in LEVELS:
@@ -85,7 +94,12 @@ def aggregate(runs):
             rs = sorted(((k[2], v) for k, v in runs.items() if k[0] == sc_name and k[1] == ctl))
             if not rs:
                 raise SystemExit(f"No runs for {sc_name} / {ctl}; run scripts/run_indian_experiments.py")
+            params = {json.dumps(v["summary"]["provenance"]["controller_params"].get("decision_interval"))
+                      for _, v in rs}
+            if len(params) != 1:
+                raise SystemExit(f"{sc_name} / {ctl}: runs with different settings {params}")
             entry = {"seeds": [s for s, _ in rs], "runs": [v["dir"] for _, v in rs],
+                     "label": label_of(ctl, rs[0][1]["summary"]),
                      "git_commits": sorted({v["summary"]["provenance"]["git_commit"] for _, v in rs})}
             for m, _, _ in METRICS:
                 xs = [metric(v["summary"], m) for _, v in rs]
@@ -97,19 +111,19 @@ def aggregate(runs):
 
 def results_table(res, level):
     rows = []
-    for ctl, label in CONTROLLERS:
+    for ctl, _ in CONTROLLERS:
         e = res[level][ctl]
-        rows.append([label] + [mean_std(e[m]["values"], nd) for m, _, nd in METRICS])
+        rows.append([e["label"]] + [mean_std(e[m]["values"], nd) for m, _, nd in METRICS])
     return table(["Controller"] + [h for _, h, _ in METRICS], rows)
 
 
 def per_seed_table(res):
     rows = []
     for level in LEVELS:
-        for ctl, label in CONTROLLERS:
+        for ctl, _ in CONTROLLERS:
             e = res[level][ctl]
             for i, seed in enumerate(e["seeds"]):
-                rows.append([level, label, seed, f"{e['att']['values'][i]:.1f}",
+                rows.append([level, e["label"], seed, f"{e['att']['values'][i]:.1f}",
                              f"{e['queue_mean_per_intersection']['values'][i]:.2f}",
                              f"{e['waiting_time_mean']['values'][i]:.1f}", e["throughput"]["values"][i],
                              e["vehicles_waiting_to_enter_at_end"]["values"][i], e["runs"][i]])
@@ -121,12 +135,15 @@ def capacity_table(cal):
     c = cal["capacity"]
     st, lt = c["saturation_flow"]["go_straight"], c["saturation_flow"]["turn_left"]
     a = c["entry_admission"]
-    return table(["Quantity (mixed traffic, measured)", "veh / h", "How"], [
-        ["Saturation flow, straight lane", f"{st['saturation_flow_veh_per_hour']:.0f}",
-         f"queue discharge, green s {st['window_s'][0]}–{st['window_s'][1]} after {st['red_s']} s red"],
-        ["Saturation flow, protected-turn lane (Indian right turn)", f"{lt['saturation_flow_veh_per_hour']:.0f}",
+    return table(["Quantity (mixed traffic, measured)", "Value", "How"], [
+        ["Saturation flow, straight lane", f"{st['fit_saturation_flow_veh_per_hour']:.0f} veh/h",
+         f"queue discharge after 900 s red; slope of a line fitted to cumulative departures in green "
+         f"s 10–70; mean of {st['reps']} random-order queues"],
+        ["Saturation flow, protected-turn lane (Indian right turn)", f"{lt['fit_saturation_flow_veh_per_hour']:.0f} veh/h",
          "same"],
-        ["Entry admission limit (CityFlow insertion)", f"{a['measured_veh_per_hour']:.0f}",
+        ["Start-up lost time (mean of both lanes)", f"{c['startup_lost_time_s']:.2f} s",
+         "same fit: time at which the line crosses zero departures"],
+        ["Entry admission limit (CityFlow insertion)", f"{a['measured_veh_per_hour']:.0f} veh/h",
          f"permanent green, fed {c['feed_veh_per_s']:.0f} veh/s, minutes 20–60"],
     ])
 
@@ -168,8 +185,52 @@ def selection_table(cal, sc):
     ])
 
 
+def calibration_compare_table(cal, cal5):
+    def by_rate(c):
+        out = {}
+        for r in c["sweep"]:
+            out.setdefault(r["veh_per_hour"], []).append(r["maxpressure"])
+        return out
+    a, b = by_rate(cal5), by_rate(cal)
+    if sorted(a) != sorted(b):
+        raise SystemExit("The 5 s and 15 s calibrations swept different demands")
+    lab = {k: f"{c['provenance']['controller_params']['decision_interval']} s"
+           for k, c in (("a", cal5), ("b", cal))}
+    rows = []
+    for R in sorted(b):
+        cells = [f"{R:.0f}"]
+        for mp in (a[R], b[R]):
+            cells += [f"{statistics.mean(m['att'] for m in mp):.0f}", f"{max(m['backlog_share'] for m in mp):.3f}",
+                      "yes" if all(m["drains"] for m in mp) else "**no**"]
+        rows.append(cells)
+    hdr = ["Demand (veh/h)"]
+    for k in ("a", "b"):
+        hdr += [f"{lab[k]}: ATT (s)", f"{lab[k]}: backlog (worst seed)", f"{lab[k]}: drains"]
+    sel = [c["selection"] for c in (cal5, cal)]
+    rows.append(["**Selected**"] + sum(([f"R* {x['R_star']:.0f}", f"peak {x['peak_veh_per_hour']:.0f}",
+                                         f"off-peak {x['offpeak_veh_per_hour']:.0f}"] for x in sel), []))
+    return table(hdr, rows)
+
+
+def webster_reference_table(cal):
+    w = cal["selection"]["webster_reference_ANALYTIC"]
+    rows = [["Lost time per cycle L = 4 × (5 s transition + start-up lost time)", f"{w['lost_time_L_s']:.1f} s"],
+            [f"Webster capacity limit Y_cap = (C − L) / C at the longest allowed cycle C = {w['cycle_max_s']:.0f} s",
+             f"{w['Y_cap']:.3f}"],
+            ["Demand at which Y max reaches Y_cap (interpolated over the sweep)",
+             "not reached in the sweep" if w["R_at_Y_cap_veh_per_hour"] is None
+             else f"{w['R_at_Y_cap_veh_per_hour']:.0f} veh/h"]]
+    for key, name in (("R_star", "R* (MaxPressure breakdown)"), ("peak_veh_per_hour", "Peak"),
+                      ("offpeak_veh_per_hour", "Off-peak")):
+        x = w[key]
+        note = "" if x["Y_from_swept_rate"] == x["veh_per_hour"] else f", scaled from {x['Y_from_swept_rate']:.0f} veh/h"
+        rows.append([f"{name}, {x['veh_per_hour']:.0f} veh/h: Y max (mean over seeds{note}) and Y max / Y_cap",
+                     f"{x['Y_max']:.2f} and {x['Y_max_over_Y_cap']:.2f}"])
+    return table(["Item (ANALYTIC)", "Value"], rows)
+
+
 def level_demand_table(cal, sc, net):
-    s = {t: cal["capacity"]["saturation_flow"][t]["saturation_flow_veh_per_hour"] for t in ("go_straight", "turn_left")}
+    s = {t: cal["capacity"]["saturation_flow"][t]["fit_saturation_flow_veh_per_hour"] for t in ("go_straight", "turn_left")}
     admit = cal["capacity"]["entry_admission"]["measured_veh_per_hour"]
     entry = set(Network(net).entry_roads)
     rows = []
@@ -246,6 +307,8 @@ def build():
         "capacity": capacity_table(cal),
         "sweep": sweep_table(cal),
         "selection": selection_table(cal, sc),
+        "calibration_compare": calibration_compare_table(cal, json.loads(CALIB_5S.read_text())),
+        "webster_reference": webster_reference_table(cal),
         "breakdown": breakdown_table(),
         "level_demand": level_demand_table(cal, sc, net),
         "results_offpeak": results_table(res, "offpeak"),
