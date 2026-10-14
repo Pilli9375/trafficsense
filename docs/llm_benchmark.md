@@ -61,15 +61,15 @@ benchmark was run, and kept unchanged for Phase 3b:
 | hybrid | `gemma4:e4b` | 284 | 0.4% (reason_too_long 1) | 4.44 | 4.84 | 270 | 2850 | 217 / 217 | 125.8 | 23.38 | 546 | 62 | 82.3% (233; 209 kept current) | – | no |
 | hybrid | `llama3.2:3b` | 287 | 0.3% (reason_too_long 1) | 1.03 | 1.13 | 260 | 2280 | 2210 / 2210 | 135.3 | 26.64 | 519 | 61 | 99.0% (283; 225 kept current) | – | yes |
 | hybrid | `qwen2.5:3b` | 249 | 11.2% (reason_too_long 28) | 1.12 | 1.27 | 255 | 2058 | 1985 / 1985 | 123.3 | 22.05 | 570 | 74 | 75.6% (167; 159 kept current) | – | no |
-| v3 | `gemma4:e4b` | not run |  |  |  |  |  |  |  |  |  |  |  |  |  |
-| v3 | `llama3.2:3b` | not run |  |  |  |  |  |  |  |  |  |  |  |  |  |
-| v3 | `qwen2.5:3b` | not run |  |  |  |  |  |  |  |  |  |  |  |  |  |
-| hybrid_v3 | `gemma4:e4b` | not run |  |  |  |  |  |  |  |  |  |  |  |  |  |
-| hybrid_v3 | `llama3.2:3b` | not run |  |  |  |  |  |  |  |  |  |  |  |  |  |
-| hybrid_v3 | `qwen2.5:3b` | not run |  |  |  |  |  |  |  |  |  |  |  |  |  |
-| guarded_v3 | `gemma4:e4b` | not run |  |  |  |  |  |  |  |  |  |  |  |  |  |
-| guarded_v3 | `llama3.2:3b` | not run |  |  |  |  |  |  |  |  |  |  |  |  |  |
-| guarded_v3 | `qwen2.5:3b` | not run |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| v3 | `gemma4:e4b` | 122 | 0.0% (none) | 4.79 | 5.22 | 313 | 2852 | 217 / 217 | 103.1 | 15.12 | 598 | 117 | – | – | no |
+| v3 | `llama3.2:3b` | 350 | 0.0% (none) | 1.22 | 1.40 | 308 | 2280 | 2210 / 2210 | 163.5 | 36.62 | 457 | 41 | – | – | yes |
+| v3 | `qwen2.5:3b` | 360 | 1.4% (reason_too_long 5) | 1.38 | 1.53 | 307 | 2060 | 1985 / 1985 | 156.1 | 33.67 | 504 | 40 | – | – | yes |
+| hybrid_v3 | `gemma4:e4b` | 151 | 0.0% (none) | 4.45 | 4.80 | 283 | 2852 | 217 / 217 | 93.6 | 12.46 | 610 | 108 | 23.2% (35; 31 kept current) | – | no |
+| hybrid_v3 | `llama3.2:3b` | 299 | 0.0% (none) | 1.03 | 1.19 | 278 | 2280 | 2210 / 2210 | 140.8 | 28.34 | 485 | 57 | 97.7% (292; 241 kept current) | – | yes |
+| hybrid_v3 | `qwen2.5:3b` | 273 | 7.7% (reason_too_long 21) | 1.13 | 1.32 | 274 | 2058 | 1985 / 1985 | 120.0 | 21.44 | 551 | 66 | 80.2% (202; 192 kept current) | – | no |
+| guarded_v3 | `gemma4:e4b` | 127 | 0.0% (none) | 4.47 | 4.81 | 282 | 2852 | 217 / 217 | 91.6 | 11.56 | 626 | 115 | 11.8% (15; 10 kept current) | 11.0% (14); applied phase differs from MaxPressure's in 1 of 127 decisions | no |
+| guarded_v3 | `llama3.2:3b` | 121 | 0.0% (none) | 1.00 | 1.18 | 277 | 2280 | 2210 / 2210 | 92.2 | 11.62 | 621 | 116 | 95.9% (116; 79 kept current) | 83.5% (101); applied phase differs from MaxPressure's in 15 of 121 decisions | yes |
+| guarded_v3 | `qwen2.5:3b` | 127 | 10.2% (reason_too_long 13) | 1.08 | 1.23 | 271 | 2058 | 1985 / 1985 | 92.5 | 11.85 | 623 | 115 | 73.7% (84; 73 kept current) | 73.7% (84); applied phase differs from MaxPressure's in 0 of 127 decisions | no |
 | baseline | maxpressure | – | – | – | – | – | – | – | 92.5 | 11.85 | 623 | 115 | – | – | – |
 | baseline | fixedtime_webster | – | – | – | – | – | – | – | 97.4 | 13.49 | 626 | 110 | – | – | – |
 <!-- END:llm_benchmark -->
@@ -80,9 +80,9 @@ Same model across arms, queue per intersection (veh) / ATT at 600 s (s):
 | Model | v1 | v2 | hybrid | v3 | hybrid_v3 | guarded_v3 |
 |---|---|---|---|---|---|---|
 | `gemma3:4b` | 46.35 / 197.4 | – | – | – | – | – |
-| `gemma4:e4b` | 19.44 / 112.2 | 17.95 / 111.1 | 23.38 / 125.8 | – | – | – |
-| `llama3.2:3b` | 40.94 / 181.1 | 42.26 / 181.5 | 26.64 / 135.3 | – | – | – |
-| `qwen2.5:3b` | 29.15 / 141.2 | 31.11 / 146.8 | 22.05 / 123.3 | – | – | – |
+| `gemma4:e4b` | 19.44 / 112.2 | 17.95 / 111.1 | 23.38 / 125.8 | 15.12 / 103.1 | 12.46 / 93.6 | 11.56 / 91.6 |
+| `llama3.2:3b` | 40.94 / 181.1 | 42.26 / 181.5 | 26.64 / 135.3 | 36.62 / 163.5 | 28.34 / 140.8 | 11.62 / 92.2 |
+| `qwen2.5:3b` | 29.15 / 141.2 | 31.11 / 146.8 | 22.05 / 123.3 | 33.67 / 156.1 | 21.44 / 120.0 | 11.85 / 92.5 |
 <!-- END:llm_compare -->
 
 Same model across arms, latency p95 (s) / failure rate:
@@ -91,9 +91,9 @@ Same model across arms, latency p95 (s) / failure rate:
 | Model | v1 | v2 | hybrid | v3 | hybrid_v3 | guarded_v3 |
 |---|---|---|---|---|---|---|
 | `gemma3:4b` | 5.43 / 0.0% | – | – | – | – | – |
-| `gemma4:e4b` | 8.36 / 0.6% | 5.32 / 0.0% | 4.84 / 0.4% | – | – | – |
-| `llama3.2:3b` | 3.35 / 6.2% | 1.52 / 0.3% | 1.13 / 0.3% | – | – | – |
-| `qwen2.5:3b` | 3.34 / 0.0% | 1.65 / 29.3% | 1.27 / 11.2% | – | – | – |
+| `gemma4:e4b` | 8.36 / 0.6% | 5.32 / 0.0% | 4.84 / 0.4% | 5.22 / 0.0% | 4.80 / 0.0% | 4.81 / 0.0% |
+| `llama3.2:3b` | 3.35 / 6.2% | 1.52 / 0.3% | 1.13 / 0.3% | 1.40 / 0.0% | 1.19 / 0.0% | 1.18 / 0.0% |
+| `qwen2.5:3b` | 3.34 / 0.0% | 1.65 / 29.3% | 1.27 / 11.2% | 1.53 / 1.4% | 1.32 / 7.7% | 1.23 / 10.2% |
 <!-- END:llm_compare_latency -->
 
 What the models chose, replayed from each run's decision log
@@ -114,6 +114,15 @@ The LLM's own answer is scored (for the guarded arm, before the guard):
 | hybrid (guided) | `gemma4:e4b` | 283 | 78% | 18% | 83% | 84% |
 | hybrid (guided) | `llama3.2:3b` | 286 | 79% | 4% | 86% | 86% |
 | hybrid (guided) | `qwen2.5:3b` | 221 | 78% | 25% | 77% | 80% |
+| v3 (v3) | `gemma4:e4b` | 122 | 4% | 57% | 9% | 3% |
+| v3 (v3) | `llama3.2:3b` | 350 | 88% | 9% | 50% | 99% |
+| v3 (v3) | `qwen2.5:3b` | 355 | 89% | 5% | 48% | 100% |
+| hybrid_v3 (guided_v3) | `gemma4:e4b` | 151 | 28% | 78% | 22% | 23% |
+| hybrid_v3 (guided_v3) | `llama3.2:3b` | 299 | 81% | 5% | 90% | 90% |
+| hybrid_v3 (guided_v3) | `qwen2.5:3b` | 252 | 82% | 20% | 81% | 86% |
+| guarded_v3 (guided_v3) | `gemma4:e4b` | 127 | 17% | 88% | 9% | 9% |
+| guarded_v3 (guided_v3) | `llama3.2:3b` | 121 | 66% | 13% | 71% | 70% |
+| guarded_v3 (guided_v3) | `qwen2.5:3b` | 114 | 75% | 26% | 72% | 72% |
 <!-- END:llm_decisions -->
 
 ## Selection
@@ -124,11 +133,11 @@ The LLM's own answer is scored (for the guarded arm, before the guard):
 | v1 | none | none | – |
 | v2 | llama3.2:3b | llama3.2:3b | 10 s (p95 × intersections = 6.1 s) |
 | hybrid | llama3.2:3b | llama3.2:3b | 5 s (p95 × intersections = 4.5 s) |
-| v3 | arm incomplete | – | – |
-| hybrid_v3 | arm incomplete | – | – |
-| guarded_v3 | arm incomplete | – | – |
+| v3 | llama3.2:3b, qwen2.5:3b | qwen2.5:3b | 10 s (p95 × intersections = 6.1 s) |
+| hybrid_v3 | llama3.2:3b | llama3.2:3b | 5 s (p95 × intersections = 4.8 s) |
+| guarded_v3 | llama3.2:3b | llama3.2:3b | 5 s (p95 × intersections = 4.7 s) |
 | Phase 3b: all of v1, v2, hybrid | hybrid llama3.2:3b, v2 llama3.2:3b | hybrid llama3.2:3b | 5 s (p95 × intersections = 4.5 s) |
-| **Final decision** | final round incomplete | – | – |
+| **Final decision** (final-round arms) | guarded_v3 llama3.2:3b, hybrid_v3 llama3.2:3b, v3 llama3.2:3b, v3 qwen2.5:3b | **guarded_v3 llama3.2:3b** (`llm_guarded_mp`); queue 11.62 vs MaxPressure 11.85 | 5 s (p95 × intersections = 4.7 s) |
 <!-- END:llm_selection -->
 
 ## Phase 3a: prompt v1
@@ -314,3 +323,40 @@ setup and selection rule as before. **Final decision:**
 2. If no final-round pair is eligible: the same rule over every (arm, model) pair of every
    round (v1, v2, hybrid and the final round).
 3. If nothing is eligible at all, no LLM controller goes to the full experiments.
+
+### Final round results
+
+**Final decision (pre-registered rule): `llm_guarded_mp` with `llama3.2:3b`, decision interval
+5 s** (p95 1.18 s × 4 = 4.7 s), with min green 15 s. Eligible were guarded_v3, hybrid_v3 and
+v3 `llama3.2:3b` and v3 `qwen2.5:3b`; the guarded one has the lowest queue: 11.62 vehicles per
+intersection against MaxPressure's 11.85 (ATT 92.2 s against 92.5 s). Per the
+pre-registration it goes to the full experiments, and LLM design work stops here.
+
+What that result is, and is not:
+
+* **The chosen controller is almost entirely MaxPressure.** The guard replaced 101 of
+  `llama3.2:3b`'s 121 answers (83.5%); in only 15 of the 121 decisions does the applied phase
+  differ from MaxPressure's. The other guarded runs are closer still: `qwen2.5:3b` applied
+  MaxPressure's choice in all 127 decisions (its run is MaxPressure's: queue 11.85, ATT 92.5 s),
+  and `gemma4:e4b` in all but 1.
+* **The 0.23-vehicle lower queue is not evidence that the LLM improves on MaxPressure.** It
+  is one seed and 600 s, and a single changed decision moves the queue by that much here:
+  guarded `gemma4:e4b` differed from MaxPressure in one decision and ended 0.29 lower. The full
+  experiments (more seeds, 3600 s) will show whether the 1-in-8 changed decisions help, hurt
+  or do nothing.
+* **Prompt v3 fixed the format defect for every model and the pressure defect only for
+  `gemma4:e4b`.** No answer copies the old placeholder any more (0 of the 1,930 final-round calls contain
+  "at most"); `qwen2.5:3b`'s failures fell from 29.3% (v2) to 1.4% (v3), but in the hybrid and
+  guarded arms it still wrote too-long reasons (7.7% and 10.2%, 16–22 words). `gemma4:e4b`
+  now follows pressure: plain v3 queue 15.12 (v2 17.95), hybrid_v3 12.46 (hybrid 23.38), its
+  answers differing from MaxPressure's choice in 23.2% of calls (hybrid: 82.3%). The 3B models
+  did not change: with v3 `llama3.2:3b` and `qwen2.5:3b` kept the current phase in 88% and 89%
+  of calls and chose the lowest-pressure phase in 50% and 48% (v2: 48% and 49%), and
+  `llama3.2:3b`'s most common v3 reason is still "Low pressure, short queues" (147 of 350).
+* **The guard works as a safety net, not as a source of improvement.** It turns the hybrid's
+  queue of 28.34 (`llama3.2:3b`, hybrid_v3) into 11.62 by overriding most answers. The best
+  LLM-led controller is `gemma4:e4b` (guarded_v3 11.56, hybrid_v3 12.46, plain v3 15.12), which
+  is not eligible: p95 4.8–5.2 s on this GPU.
+* Fewer calls in the guarded arm (121–127 against 151–299 for hybrid_v3): MaxPressure's choices
+  switch more often, and an intersection is not asked again for 20 s after a switch.
+

@@ -1,0 +1,131 @@
+{
+  "provenance": {
+    "controller": "llm_v3",
+    "controller_params": {
+      "name": "llm_v3",
+      "mode": "cooperative",
+      "prompt": "v3",
+      "decision_interval": 5,
+      "min_green": 15,
+      "phases": "all",
+      "client": {
+        "host": "http://localhost:11434",
+        "endpoint": "/api/chat",
+        "timeout_s": 60.0,
+        "options": {
+          "temperature": 0.0,
+          "seed": 0,
+          "num_ctx": 2048,
+          "num_predict": 128
+        },
+        "keep_alive": "30m"
+      },
+      "max_consecutive_failures": 20
+    },
+    "model": "qwen2.5:3b",
+    "provider": "ollama",
+    "llm": {
+      "calls": 360,
+      "ok": 355,
+      "failures": 5,
+      "failures_by_type": {
+        "reason_too_long": 5
+      },
+      "failure_rate": 0.013888888888888888,
+      "switches_requested": 40,
+      "latency_n": 360,
+      "latency_mean_s": 1.3764605582748624,
+      "latency_p95_s": 1.533063995849443,
+      "latency_max_s": 2.0728185910011234,
+      "prompt_tokens_mean": 307.2527777777778,
+      "response_tokens_mean": 26.219444444444445,
+      "server_reported_models": [
+        "qwen2.5:3b"
+      ],
+      "latency_note": "wall clock per call, over calls that returned a response (timeouts excluded, counted as failures)",
+      "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+      "model_details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "qwen2",
+        "families": [
+          "qwen2"
+        ],
+        "parameter_size": "3.1B",
+        "quantization_level": "Q4_K_M",
+        "context_length": 32768,
+        "embedding_length": 2048,
+        "runner": "ggml"
+      },
+      "server_version": "0.40.3",
+      "decisions_log": "decisions.jsonl"
+    },
+    "controller_stats": null,
+    "seed": 0,
+    "scenario": "indian_2x2_peak",
+    "roadnet": "data/scenarios/indian_2x2/roadnet.json",
+    "flow": "data/scenarios/indian_2x2/flow_peak_s0.json",
+    "flow_sha256": "9a45e9fdad4c5991de887ec3df95bdea7a89587c47c5657b830e88c29c86f951",
+    "flow_per_seed": true,
+    "sim_steps": 600,
+    "git_commit": "ce92a14769919a352b9416c82974f76f99813e61",
+    "git_dirty": false,
+    "timestamp": "2026-10-14T23:32:43+05:30",
+    "wall_time_s": 496.43,
+    "python": "3.10.12"
+  },
+  "signal": {
+    "min_green": 10,
+    "max_green": 60,
+    "transition_s": [
+      5
+    ],
+    "switches": 40,
+    "forced_switches": 0
+  },
+  "metrics": {
+    "att": 156.1441798941799,
+    "queue_mean_per_intersection": 33.66625,
+    "queue_mean_total": 134.665,
+    "waiting_time_mean": 106.89814814814815,
+    "throughput": 504,
+    "vehicles_entered": 756,
+    "vehicles_running_at_end": 252,
+    "vehicles_waiting_to_enter_at_end": 0,
+    "steps": 600
+  },
+  "per_intersection": {
+    "intersection_1_1": {
+      "queue_mean": 31.361666666666668,
+      "waiting_time_mean": 56.6777108433735,
+      "throughput": 261,
+      "vehicles_seen": 332
+    },
+    "intersection_2_1": {
+      "queue_mean": 35.95666666666666,
+      "waiting_time_mean": 64.4,
+      "throughput": 278,
+      "vehicles_seen": 335
+    },
+    "intersection_1_2": {
+      "queue_mean": 34.305,
+      "waiting_time_mean": 62.18429003021148,
+      "throughput": 282,
+      "vehicles_seen": 331
+    },
+    "intersection_2_2": {
+      "queue_mean": 33.041666666666664,
+      "waiting_time_mean": 59.3562874251497,
+      "throughput": 267,
+      "vehicles_seen": 334
+    }
+  },
+  "emergency": null,
+  "metric_notes": {
+    "att": "engine.get_average_travel_time(): all generated vehicles from scheduled start, incl. those still running or still waiting to enter",
+    "queue_mean_per_intersection": "waiting vehicles (speed<0.1) on incoming lanes, mean over steps and intersections",
+    "queue_mean_total": "same, summed over intersections",
+    "waiting_time_mean": "seconds with speed<0.1 per vehicle, mean over vehicles that entered",
+    "throughput": "vehicles that finished their trip"
+  }
+}

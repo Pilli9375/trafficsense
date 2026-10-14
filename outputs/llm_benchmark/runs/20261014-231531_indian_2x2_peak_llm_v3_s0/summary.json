@@ -1,0 +1,129 @@
+{
+  "provenance": {
+    "controller": "llm_v3",
+    "controller_params": {
+      "name": "llm_v3",
+      "mode": "cooperative",
+      "prompt": "v3",
+      "decision_interval": 5,
+      "min_green": 15,
+      "phases": "all",
+      "client": {
+        "host": "http://localhost:11434",
+        "endpoint": "/api/chat",
+        "timeout_s": 60.0,
+        "options": {
+          "temperature": 0.0,
+          "seed": 0,
+          "num_ctx": 2048,
+          "num_predict": 128
+        },
+        "keep_alive": "30m"
+      },
+      "max_consecutive_failures": 20
+    },
+    "model": "gemma4:e4b",
+    "provider": "ollama",
+    "llm": {
+      "calls": 122,
+      "ok": 122,
+      "failures": 0,
+      "failures_by_type": {},
+      "failure_rate": 0.0,
+      "switches_requested": 117,
+      "latency_n": 122,
+      "latency_mean_s": 4.793486835893597,
+      "latency_p95_s": 5.222022241549894,
+      "latency_max_s": 5.336862578998989,
+      "prompt_tokens_mean": 312.91803278688525,
+      "response_tokens_mean": 27.959016393442624,
+      "server_reported_models": [
+        "gemma4:e4b"
+      ],
+      "latency_note": "wall clock per call, over calls that returned a response (timeouts excluded, counted as failures)",
+      "model_digest": "dc35e8d9c6061baa6f0fa870975ab6932e2542b579b13ea0f199fa4bb7300c9c",
+      "model_details": {
+        "parent_model": "gemma4-validation-20260929:e4b-imatrix-attention-q6-q8-draft2",
+        "format": "gguf",
+        "family": "gemma4",
+        "families": [
+          "gemma4"
+        ],
+        "parameter_size": "7.5B",
+        "quantization_level": "Q4_K_M",
+        "context_length": 131072,
+        "embedding_length": 2560,
+        "runner": "llamacpp"
+      },
+      "server_version": "0.40.3",
+      "decisions_log": "decisions.jsonl"
+    },
+    "controller_stats": null,
+    "seed": 0,
+    "scenario": "indian_2x2_peak",
+    "roadnet": "data/scenarios/indian_2x2/roadnet.json",
+    "flow": "data/scenarios/indian_2x2/flow_peak_s0.json",
+    "flow_sha256": "9a45e9fdad4c5991de887ec3df95bdea7a89587c47c5657b830e88c29c86f951",
+    "flow_per_seed": true,
+    "sim_steps": 600,
+    "git_commit": "ce92a14769919a352b9416c82974f76f99813e61",
+    "git_dirty": false,
+    "timestamp": "2026-10-14T23:15:31+05:30",
+    "wall_time_s": 585.47,
+    "python": "3.10.12"
+  },
+  "signal": {
+    "min_green": 10,
+    "max_green": 60,
+    "transition_s": [
+      5
+    ],
+    "switches": 117,
+    "forced_switches": 0
+  },
+  "metrics": {
+    "att": 103.14021164021165,
+    "queue_mean_per_intersection": 15.115,
+    "queue_mean_total": 60.46,
+    "waiting_time_mean": 48.02513227513227,
+    "throughput": 598,
+    "vehicles_entered": 756,
+    "vehicles_running_at_end": 158,
+    "vehicles_waiting_to_enter_at_end": 0,
+    "steps": 600
+  },
+  "per_intersection": {
+    "intersection_1_1": {
+      "queue_mean": 12.9,
+      "waiting_time_mean": 22.114285714285714,
+      "throughput": 313,
+      "vehicles_seen": 350
+    },
+    "intersection_2_1": {
+      "queue_mean": 12.22,
+      "waiting_time_mean": 21.06896551724138,
+      "throughput": 321,
+      "vehicles_seen": 348
+    },
+    "intersection_1_2": {
+      "queue_mean": 21.168333333333333,
+      "waiting_time_mean": 34.988980716253444,
+      "throughput": 317,
+      "vehicles_seen": 363
+    },
+    "intersection_2_2": {
+      "queue_mean": 14.171666666666667,
+      "waiting_time_mean": 23.952112676056338,
+      "throughput": 326,
+      "vehicles_seen": 355
+    }
+  },
+  "emergency": null,
+  "metric_notes": {
+    "att": "engine.get_average_travel_time(): all generated vehicles from scheduled start, incl. those still running or still waiting to enter",
+    "queue_mean_per_intersection": "waiting vehicles (speed<0.1) on incoming lanes, mean over steps and intersections",
+    "queue_mean_total": "same, summed over intersections",
+    "waiting_time_mean": "seconds with speed<0.1 per vehicle, mean over vehicles that entered",
+    "throughput": "vehicles that finished their trip"
+  }
+}

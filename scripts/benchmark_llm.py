@@ -339,7 +339,8 @@ def guard(e: dict) -> str:
     """Guarded arm only: successful calls whose answer the guard replaced by MaxPressure's choice."""
     if e.get("guard_override_rate") is None:
         return "–"
-    return f"{100 * e['guard_override_rate']:.1f}% ({e['guard_overrides']})"
+    return (f"{100 * e['guard_override_rate']:.1f}% ({e['guard_overrides']}); applied phase differs from "
+            f"MaxPressure's in {e['applied_differs_from_mp']} of {e['calls']} decisions")
 
 
 def interval(s: dict | None) -> str:
