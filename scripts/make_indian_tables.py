@@ -35,7 +35,17 @@ CONTROLLERS = [("fixedtime", "FixedTime, 4 paired phases, 30 s"),
 LEVELS = ["offpeak", "peak"]
 METRICS = [("att", "ATT (s)", 1), ("queue_mean_per_intersection", "Queue / intersection (veh)", 2),
            ("waiting_time_mean", "Waiting time / vehicle (s)", 1), ("throughput", "Throughput (finished trips)", 0),
-           ("vehicles_waiting_to_enter_at_end", "Still waiting to enter at 3600 s", 0)]
+           ("vehicles_waiting_to_enter_at_end", "Still waiting to enter at 3600 s", 1),
+           ("transition_share", "Time in transition phase", 3)]
+
+
+def metric(summary, m):
+    if m == "transition_share":
+        # measured: every switch shows the transition phase for its full duration
+        sig, n_int = summary["signal"], len(summary["per_intersection"])
+        (tr,) = sig["transition_s"]
+        return sig["switches"] * tr / (summary["metrics"]["steps"] * n_int)
+    return summary["metrics"][m]
 
 
 def table(header, rows):
@@ -78,7 +88,7 @@ def aggregate(runs):
             entry = {"seeds": [s for s, _ in rs], "runs": [v["dir"] for _, v in rs],
                      "git_commits": sorted({v["summary"]["provenance"]["git_commit"] for _, v in rs})}
             for m, _, _ in METRICS:
-                xs = [v["summary"]["metrics"][m] for _, v in rs]
+                xs = [metric(v["summary"], m) for _, v in rs]
                 entry[m] = {"values": xs, "mean": statistics.mean(xs),
                             "std": statistics.stdev(xs) if len(xs) > 1 else 0.0}
             res.setdefault(level, {})[ctl] = entry
