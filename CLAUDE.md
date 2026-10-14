@@ -65,7 +65,7 @@ Install as a package (`pyproject.toml`, `pip install -e .`) — no `sys.path.ins
 pip install -e ".[dev]"
 pytest -q
 python scripts/run_experiment.py --config configs/default.yaml --controller maxpressure --scenario synthetic_4x4
-python scripts/benchmark_llm.py --model gemma3:4b
+python scripts/benchmark_llm.py --models gemma3:4b   # or no args: all 4 models + baselines
 streamlit run src/trafficsense/dashboard/app.py
 ```
 
