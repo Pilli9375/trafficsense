@@ -55,10 +55,15 @@ controllers:
     measurement_reps: 30   # random-order queues averaged for saturation flow / start-up loss
     measurement_seed: 0    # seed of those queue orders (not the run seed)
   maxpressure:
-    decision_interval: 15  # s between re-evaluations; switches only once min_green is met.
-                           # Chosen by scripts/tune_maxpressure.py (docs/baselines.md)
+    decision_interval: 5   # s between re-evaluations
+    min_green: 15          # s, controller's own minimum green (>= signal.min_green).
+                           # Chosen by scripts/tune_maxpressure_min_green.py (docs/baselines.md)
     phases: all            # all | paired (CoLLMLight's MaxPressure uses the 4 paired phases)
     tie_break: keep_current  # keep_current | lowest_index (CoLLMLight: np.argmax -> lowest)
+  maxpressure_15s:         # previous default (scripts/tune_maxpressure.py), kept for comparison
+    decision_interval: 15
+    phases: all
+    tie_break: keep_current
   maxpressure_5s:          # the original 5 s setting, kept for comparison
     decision_interval: 5
     phases: all

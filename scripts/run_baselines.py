@@ -1,6 +1,6 @@
 """Run the baseline controllers on the CoLLMLight real-world datasets.
 
-    python scripts/run_baselines.py      # 4 controllers x {jinan_3x4, hangzhou_4x4} x seeds 0 1 2
+    python scripts/run_baselines.py      # 5 controllers x {jinan_3x4, hangzhou_4x4} x seeds 0 1 2
 
 Each run is a normal run_experiment() folder (summary.json + metrics.csv) under
 outputs/baselines/runs/. The Indian 2x2 baselines are run by scripts/run_indian_experiments.py.
@@ -11,7 +11,7 @@ import argparse
 from trafficsense.config import load_config, repo_root
 from trafficsense.experiment import git_info, run_experiment
 
-CONTROLLERS = ["fixedtime", "fixedtime_webster", "maxpressure", "maxpressure_5s"]
+CONTROLLERS = ["fixedtime", "fixedtime_webster", "maxpressure", "maxpressure_15s", "maxpressure_5s"]
 SCENARIOS = ["jinan_3x4", "hangzhou_4x4"]
 
 

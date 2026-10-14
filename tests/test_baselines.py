@@ -50,6 +50,7 @@ def test_maxpressure_shortest_green_on_decision_grid(cfg, synthetic_4x4, interva
     first grid point at least min_green after the transition ends."""
     c = copy.deepcopy(cfg)
     c["controllers"]["maxpressure"]["decision_interval"] = interval
+    c["controllers"]["maxpressure"]["min_green"] = c["signal"]["min_green"]   # the grid alone sets it
     env = TrafficEnv(c, "synthetic_4x4")
     ctl = make_controller("maxpressure", c)
     trace = {i: [] for i in env.intersection_ids}

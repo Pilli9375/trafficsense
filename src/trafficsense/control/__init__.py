@@ -9,6 +9,7 @@ CONTROLLERS = {
     "fixedtime_all_phases": partial(FixedTimeController, name="fixedtime_all_phases"),
     "fixedtime_webster": WebsterFixedTimeController,
     "maxpressure": partial(MaxPressureController, name="maxpressure"),
+    "maxpressure_15s": partial(MaxPressureController, name="maxpressure_15s"),
     "maxpressure_5s": partial(MaxPressureController, name="maxpressure_5s"),
 }
 

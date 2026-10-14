@@ -1,6 +1,6 @@
 """Run the Indian 2x2 baseline experiments: controllers x demand levels x seeds.
 
-    python scripts/run_indian_experiments.py            # 5 controllers x {offpeak, peak} x seeds 0 1 2
+    python scripts/run_indian_experiments.py            # 6 controllers x {offpeak, peak} x seeds 0 1 2
 
 Each run is a normal run_experiment() folder (summary.json + metrics.csv) under
 outputs/indian_2x2/runs/. Refuses to start from a dirty git tree, so every summary.json records
@@ -11,7 +11,7 @@ import argparse
 from trafficsense.config import load_config, repo_root
 from trafficsense.experiment import git_info, run_experiment
 
-CONTROLLERS = ["fixedtime", "fixedtime_all_phases", "fixedtime_webster", "maxpressure", "maxpressure_5s"]
+CONTROLLERS = ["fixedtime", "fixedtime_all_phases", "fixedtime_webster", "maxpressure", "maxpressure_15s", "maxpressure_5s"]
 LEVELS = ["offpeak", "peak"]
 
 
