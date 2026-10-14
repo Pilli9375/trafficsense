@@ -17,3 +17,15 @@ def test_run_writes_summary_and_metrics(cfg, synthetic_4x4, tmp_path):
     with (out / "metrics.csv").open() as f:
         rows = list(csv.DictReader(f))
     assert len(rows) == 60 * 16
+
+
+def test_git_dirty_ignores_outputs():
+    from trafficsense.config import repo_root
+    from trafficsense.experiment import git_info
+    before = git_info()["dirty"]
+    p = repo_root() / "outputs" / "_test_untracked_marker.txt"
+    p.write_text("x")
+    try:
+        assert git_info()["dirty"] == before
+    finally:
+        p.unlink()

@@ -21,7 +21,10 @@ def git_info() -> dict[str, Any]:
     def git(*args: str) -> str:
         return subprocess.check_output(["git", *args], cwd=repo_root(), text=True).strip()
     try:
-        return {"commit": git("rev-parse", "HEAD"), "dirty": bool(git("status", "--porcelain"))}
+        # Dirty = uncommitted changes to anything except outputs/: result files written by
+        # earlier runs in a batch are not code and must not mark later runs as dirty.
+        return {"commit": git("rev-parse", "HEAD"),
+                "dirty": bool(git("status", "--porcelain", "--", ".", ":!outputs"))}
     except (subprocess.CalledProcessError, FileNotFoundError) as e:
         raise RuntimeError(f"Cannot read git commit for provenance: {e}") from e
 
