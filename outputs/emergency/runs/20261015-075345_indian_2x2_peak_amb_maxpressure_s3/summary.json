@@ -1,0 +1,183 @@
+{
+  "provenance": {
+    "controller": "maxpressure",
+    "controller_params": {
+      "name": "maxpressure",
+      "decision_interval": 5,
+      "min_green": 15,
+      "phases": "all",
+      "tie_break": "keep_current"
+    },
+    "model": null,
+    "provider": null,
+    "llm": null,
+    "controller_stats": null,
+    "seed": 3,
+    "scenario": "indian_2x2_peak_amb",
+    "roadnet": "data/scenarios/indian_2x2/roadnet.json",
+    "flow": "data/scenarios/indian_2x2/flow_peak_amb_s3.json",
+    "flow_sha256": "a0115a92a1ff7212bdd50ab7fe31abf5b163287f75fb480d4f652c8da363ac12",
+    "flow_per_seed": true,
+    "sim_steps": 3600,
+    "git_commit": "159d480cad362402a7c821a65e8158dd387e6de6",
+    "git_dirty": false,
+    "timestamp": "2026-10-15T07:53:45+05:30",
+    "wall_time_s": 3.09,
+    "python": "3.10.12"
+  },
+  "signal": {
+    "min_green": 10,
+    "max_green": 60,
+    "transition_s": [
+      5
+    ],
+    "switches": 711,
+    "forced_switches": 0
+  },
+  "metrics": {
+    "att": 112.84065478657273,
+    "queue_mean_per_intersection": 17.223958333333336,
+    "queue_mean_total": 68.89583333333333,
+    "waiting_time_mean": 51.447253886010365,
+    "throughput": 4668,
+    "vehicles_entered": 4825,
+    "vehicles_running_at_end": 157,
+    "vehicles_waiting_to_enter_at_end": 1,
+    "steps": 3600
+  },
+  "per_intersection": {
+    "intersection_1_1": {
+      "queue_mean": 16.974166666666665,
+      "waiting_time_mean": 25.991918332624415,
+      "throughput": 2307,
+      "vehicles_seen": 2351
+    },
+    "intersection_2_1": {
+      "queue_mean": 16.761111111111113,
+      "waiting_time_mean": 25.841541755888652,
+      "throughput": 2303,
+      "vehicles_seen": 2335
+    },
+    "intersection_1_2": {
+      "queue_mean": 16.594444444444445,
+      "waiting_time_mean": 25.442930153321978,
+      "throughput": 2325,
+      "vehicles_seen": 2348
+    },
+    "intersection_2_2": {
+      "queue_mean": 18.566111111111113,
+      "waiting_time_mean": 28.309191020753918,
+      "throughput": 2328,
+      "vehicles_seen": 2361
+    }
+  },
+  "emergency": {
+    "vehicle_type": "ambulance",
+    "scheduled_in_run": 6,
+    "entered": 6,
+    "finished": 6,
+    "travel_time_mean_s": 119.5,
+    "stopped_time_mean_s": 60.166666666666664,
+    "entry_wait_mean_s": 1.3333333333333333,
+    "vehicles": [
+      {
+        "vehicle": "flow_4820_0",
+        "scheduled_start": 623,
+        "entered": 624.0,
+        "finished": 765.0,
+        "travel_time_s": 142.0,
+        "time_so_far_s": null,
+        "stopped_s": 83.0,
+        "entry_wait_s": 1.0,
+        "route": [
+          "road_0_1_0",
+          "road_1_1_0",
+          "road_2_1_0"
+        ]
+      },
+      {
+        "vehicle": "flow_4821_0",
+        "scheduled_start": 1334,
+        "entered": 1337.0,
+        "finished": 1434.0,
+        "travel_time_s": 100.0,
+        "time_so_far_s": null,
+        "stopped_s": 33.0,
+        "entry_wait_s": 3.0,
+        "route": [
+          "road_2_3_3",
+          "road_2_2_3",
+          "road_2_1_3"
+        ]
+      },
+      {
+        "vehicle": "flow_4822_0",
+        "scheduled_start": 1888,
+        "entered": 1889.0,
+        "finished": 1990.0,
+        "travel_time_s": 102.0,
+        "time_so_far_s": null,
+        "stopped_s": 45.0,
+        "entry_wait_s": 1.0,
+        "route": [
+          "road_0_2_0",
+          "road_1_2_3",
+          "road_1_1_3"
+        ]
+      },
+      {
+        "vehicle": "flow_4823_0",
+        "scheduled_start": 2631,
+        "entered": 2632.0,
+        "finished": 2836.0,
+        "travel_time_s": 205.0,
+        "time_so_far_s": null,
+        "stopped_s": 128.0,
+        "entry_wait_s": 1.0,
+        "route": [
+          "road_1_3_3",
+          "road_1_2_0",
+          "road_2_2_3",
+          "road_2_1_3"
+        ]
+      },
+      {
+        "vehicle": "flow_4824_0",
+        "scheduled_start": 3032,
+        "entered": 3033.0,
+        "finished": 3070.0,
+        "travel_time_s": 38.0,
+        "time_so_far_s": null,
+        "stopped_s": 0.0,
+        "entry_wait_s": 1.0,
+        "route": [
+          "road_1_3_3",
+          "road_1_2_2"
+        ]
+      },
+      {
+        "vehicle": "flow_4825_0",
+        "scheduled_start": 3151,
+        "entered": 3152.0,
+        "finished": 3281.0,
+        "travel_time_s": 130.0,
+        "time_so_far_s": null,
+        "stopped_s": 72.0,
+        "entry_wait_s": 1.0,
+        "route": [
+          "road_0_1_0",
+          "road_1_1_0",
+          "road_2_1_3"
+        ]
+      }
+    ],
+    "notes": "means over ambulances that finished in the run; travel time from scheduled start (incl. entry wait); stopped = speed < 0.1 m/s while in the network"
+  },
+  "metric_notes": {
+    "att": "engine.get_average_travel_time(): all generated vehicles from scheduled start, incl. those still running or still waiting to enter",
+    "queue_mean_per_intersection": "waiting vehicles (speed<0.1) on incoming lanes, mean over steps and intersections",
+    "queue_mean_total": "same, summed over intersections",
+    "waiting_time_mean": "seconds with speed<0.1 per vehicle, mean over vehicles that entered",
+    "throughput": "vehicles that finished their trip"
+  }
+}

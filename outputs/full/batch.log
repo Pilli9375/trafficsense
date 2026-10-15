@@ -1,0 +1,148 @@
+2026-10-15 07:46:31 67 runs in the plan, 0 done, 67 to do; estimated 16.9 h left
+2026-10-15 07:46:31 [1/67] start baseline indian_2x2_offpeak seed 0 maxpressure
+2026-10-15 07:46:34 [1/67] done in 2 s: outputs/full/runs/20261015-074631_indian_2x2_offpeak_maxpressure_s0
+2026-10-15 07:46:34 [2/67] start baseline indian_2x2_offpeak seed 0 fixedtime_webster
+2026-10-15 07:47:06 67 runs in the plan, 1 done, 66 to do; estimated 16.9 h left
+2026-10-15 07:47:06 [1/66] start baseline indian_2x2_offpeak seed 0 fixedtime_webster
+2026-10-15 07:47:38 [1/66] done in 33 s: outputs/full/runs/20261015-074706_indian_2x2_offpeak_fixedtime_webster_s0
+2026-10-15 07:47:38 [2/66] start baseline indian_2x2_offpeak seed 0 fixedtime
+2026-10-15 07:47:40 [2/66] done in 2 s: outputs/full/runs/20261015-074738_indian_2x2_offpeak_fixedtime_s0
+2026-10-15 07:47:40 [3/66] start baseline indian_2x2_offpeak seed 1 maxpressure
+2026-10-15 07:47:42 [3/66] done in 2 s: outputs/full/runs/20261015-074740_indian_2x2_offpeak_maxpressure_s1
+2026-10-15 07:47:42 [4/66] start baseline indian_2x2_offpeak seed 1 fixedtime_webster
+2026-10-15 07:48:13 [4/66] done in 33 s: outputs/full/runs/20261015-074742_indian_2x2_offpeak_fixedtime_webster_s1
+2026-10-15 07:48:13 [5/66] start baseline indian_2x2_offpeak seed 1 fixedtime
+2026-10-15 07:48:16 [5/66] done in 2 s: outputs/full/runs/20261015-074813_indian_2x2_offpeak_fixedtime_s1
+2026-10-15 07:48:16 [6/66] start baseline indian_2x2_offpeak seed 2 maxpressure
+2026-10-15 07:48:18 [6/66] done in 2 s: outputs/full/runs/20261015-074816_indian_2x2_offpeak_maxpressure_s2
+2026-10-15 07:48:18 [7/66] start baseline indian_2x2_offpeak seed 2 fixedtime_webster
+2026-10-15 07:48:49 [7/66] done in 32 s: outputs/full/runs/20261015-074818_indian_2x2_offpeak_fixedtime_webster_s2
+2026-10-15 07:48:49 [8/66] start baseline indian_2x2_offpeak seed 2 fixedtime
+2026-10-15 07:48:52 [8/66] done in 3 s: outputs/full/runs/20261015-074849_indian_2x2_offpeak_fixedtime_s2
+2026-10-15 07:48:52 [9/66] start baseline indian_2x2_peak seed 0 maxpressure
+2026-10-15 07:48:55 [9/66] done in 3 s: outputs/full/runs/20261015-074852_indian_2x2_peak_maxpressure_s0
+2026-10-15 07:48:55 [10/66] start baseline indian_2x2_peak seed 0 fixedtime_webster
+2026-10-15 07:49:27 [10/66] done in 33 s: outputs/full/runs/20261015-074855_indian_2x2_peak_fixedtime_webster_s0
+2026-10-15 07:49:27 [11/66] start baseline indian_2x2_peak seed 0 fixedtime
+2026-10-15 07:49:31 [11/66] done in 4 s: outputs/full/runs/20261015-074927_indian_2x2_peak_fixedtime_s0
+2026-10-15 07:49:31 [12/66] start baseline indian_2x2_peak seed 1 maxpressure
+2026-10-15 07:49:34 [12/66] done in 3 s: outputs/full/runs/20261015-074931_indian_2x2_peak_maxpressure_s1
+2026-10-15 07:49:34 [13/66] start baseline indian_2x2_peak seed 1 fixedtime_webster
+2026-10-15 07:50:06 [13/66] done in 33 s: outputs/full/runs/20261015-074934_indian_2x2_peak_fixedtime_webster_s1
+2026-10-15 07:50:06 [14/66] start baseline indian_2x2_peak seed 1 fixedtime
+2026-10-15 07:50:10 [14/66] done in 4 s: outputs/full/runs/20261015-075006_indian_2x2_peak_fixedtime_s1
+2026-10-15 07:50:10 [15/66] start baseline indian_2x2_peak seed 2 maxpressure
+2026-10-15 07:50:13 [15/66] done in 3 s: outputs/full/runs/20261015-075010_indian_2x2_peak_maxpressure_s2
+2026-10-15 07:50:13 [16/66] start baseline indian_2x2_peak seed 2 fixedtime_webster
+2026-10-15 07:50:45 [16/66] done in 33 s: outputs/full/runs/20261015-075013_indian_2x2_peak_fixedtime_webster_s2
+2026-10-15 07:50:45 [17/66] start baseline indian_2x2_peak seed 2 fixedtime
+2026-10-15 07:50:47 [17/66] done in 4 s: outputs/full/runs/20261015-075045_indian_2x2_peak_fixedtime_s2
+2026-10-15 07:50:47 [18/66] start baseline jinan_3x4 seed 0 maxpressure
+2026-10-15 07:50:53 [18/66] done in 6 s: outputs/full/runs/20261015-075047_jinan_3x4_maxpressure_s0
+2026-10-15 07:50:53 [19/66] start baseline jinan_3x4 seed 0 fixedtime_webster
+2026-10-15 07:51:02 [19/66] done in 8 s: outputs/full/runs/20261015-075053_jinan_3x4_fixedtime_webster_s0
+2026-10-15 07:51:02 [20/66] start baseline jinan_3x4 seed 0 fixedtime
+2026-10-15 07:51:09 [20/66] done in 7 s: outputs/full/runs/20261015-075102_jinan_3x4_fixedtime_s0
+2026-10-15 07:51:09 [21/66] start baseline jinan_3x4 seed 1 maxpressure
+2026-10-15 07:51:15 [21/66] done in 6 s: outputs/full/runs/20261015-075109_jinan_3x4_maxpressure_s1
+2026-10-15 07:51:15 [22/66] start baseline jinan_3x4 seed 1 fixedtime_webster
+2026-10-15 07:51:22 [22/66] done in 8 s: outputs/full/runs/20261015-075115_jinan_3x4_fixedtime_webster_s1
+2026-10-15 07:51:22 [23/66] start baseline jinan_3x4 seed 1 fixedtime
+2026-10-15 07:51:29 [23/66] done in 7 s: outputs/full/runs/20261015-075122_jinan_3x4_fixedtime_s1
+2026-10-15 07:51:29 [24/66] start baseline jinan_3x4 seed 2 maxpressure
+2026-10-15 07:51:36 [24/66] done in 7 s: outputs/full/runs/20261015-075129_jinan_3x4_maxpressure_s2
+2026-10-15 07:51:36 [25/66] start baseline jinan_3x4 seed 2 fixedtime_webster
+2026-10-15 07:51:44 [25/66] done in 8 s: outputs/full/runs/20261015-075136_jinan_3x4_fixedtime_webster_s2
+2026-10-15 07:51:44 [26/66] start baseline jinan_3x4 seed 2 fixedtime
+2026-10-15 07:51:50 [26/66] done in 7 s: outputs/full/runs/20261015-075144_jinan_3x4_fixedtime_s2
+2026-10-15 07:51:50 [27/66] start baseline indian_2x2_peak_amb seed 0 maxpressure
+2026-10-15 07:51:53 [27/66] done in 3 s: outputs/emergency/runs/20261015-075150_indian_2x2_peak_amb_maxpressure_s0
+2026-10-15 07:51:53 [28/66] start baseline indian_2x2_peak_amb seed 0 fixedtime_webster
+2026-10-15 07:52:25 [28/66] done in 33 s: outputs/emergency/runs/20261015-075153_indian_2x2_peak_amb_fixedtime_webster_s0
+2026-10-15 07:52:25 [29/66] start baseline indian_2x2_peak_amb seed 0 preemption_mp
+2026-10-15 07:52:28 [29/66] done in 3 s: outputs/emergency/runs/20261015-075225_indian_2x2_peak_amb_preemption_mp_s0
+2026-10-15 07:52:28 [30/66] start baseline indian_2x2_peak_amb seed 1 maxpressure
+2026-10-15 07:52:32 [30/66] done in 3 s: outputs/emergency/runs/20261015-075228_indian_2x2_peak_amb_maxpressure_s1
+2026-10-15 07:52:32 [31/66] start baseline indian_2x2_peak_amb seed 1 fixedtime_webster
+2026-10-15 07:53:03 [31/66] done in 33 s: outputs/emergency/runs/20261015-075232_indian_2x2_peak_amb_fixedtime_webster_s1
+2026-10-15 07:53:03 [32/66] start baseline indian_2x2_peak_amb seed 1 preemption_mp
+2026-10-15 07:53:06 [32/66] done in 3 s: outputs/emergency/runs/20261015-075303_indian_2x2_peak_amb_preemption_mp_s1
+2026-10-15 07:53:06 [33/66] start baseline indian_2x2_peak_amb seed 2 maxpressure
+2026-10-15 07:53:10 [33/66] done in 3 s: outputs/emergency/runs/20261015-075306_indian_2x2_peak_amb_maxpressure_s2
+2026-10-15 07:53:10 [34/66] start baseline indian_2x2_peak_amb seed 2 fixedtime_webster
+2026-10-15 07:53:41 [34/66] done in 33 s: outputs/emergency/runs/20261015-075310_indian_2x2_peak_amb_fixedtime_webster_s2
+2026-10-15 07:53:41 [35/66] start baseline indian_2x2_peak_amb seed 2 preemption_mp
+2026-10-15 07:53:45 [35/66] done in 3 s: outputs/emergency/runs/20261015-075341_indian_2x2_peak_amb_preemption_mp_s2
+2026-10-15 07:53:45 [36/66] start baseline indian_2x2_peak_amb seed 3 maxpressure
+2026-10-15 07:53:48 [36/66] done in 3 s: outputs/emergency/runs/20261015-075345_indian_2x2_peak_amb_maxpressure_s3
+2026-10-15 07:53:48 [37/66] start baseline indian_2x2_peak_amb seed 3 fixedtime_webster
+2026-10-15 07:54:20 [37/66] done in 33 s: outputs/emergency/runs/20261015-075348_indian_2x2_peak_amb_fixedtime_webster_s3
+2026-10-15 07:54:20 [38/66] start baseline indian_2x2_peak_amb seed 3 preemption_mp
+2026-10-15 07:54:23 [38/66] done in 3 s: outputs/emergency/runs/20261015-075420_indian_2x2_peak_amb_preemption_mp_s3
+2026-10-15 07:54:23 [39/66] start baseline indian_2x2_peak_amb seed 4 maxpressure
+2026-10-15 07:54:27 [39/66] done in 3 s: outputs/emergency/runs/20261015-075423_indian_2x2_peak_amb_maxpressure_s4
+2026-10-15 07:54:27 [40/66] start baseline indian_2x2_peak_amb seed 4 fixedtime_webster
+2026-10-15 07:54:58 [40/66] done in 34 s: outputs/emergency/runs/20261015-075427_indian_2x2_peak_amb_fixedtime_webster_s4
+2026-10-15 07:54:58 [41/66] start baseline indian_2x2_peak_amb seed 4 preemption_mp
+2026-10-15 07:55:01 [41/66] done in 3 s: outputs/emergency/runs/20261015-075458_indian_2x2_peak_amb_preemption_mp_s4
+2026-10-15 07:55:04 [42/66] start main indian_2x2_offpeak seed 0 llm_guarded_mp (llama3.2:3b)
+2026-10-15 08:07:35 [42/66] done in 775 s: outputs/full/runs/20261015-075504_indian_2x2_offpeak_llm_guarded_mp_s0
+2026-10-15 08:07:35 [43/66] start main indian_2x2_offpeak seed 1 llm_guarded_mp (llama3.2:3b)
+2026-10-15 08:19:54 [43/66] done in 760 s: outputs/full/runs/20261015-080735_indian_2x2_offpeak_llm_guarded_mp_s1
+2026-10-15 08:19:54 [44/66] start main indian_2x2_offpeak seed 2 llm_guarded_mp (llama3.2:3b)
+2026-10-15 08:32:24 [44/66] done in 771 s: outputs/full/runs/20261015-081954_indian_2x2_offpeak_llm_guarded_mp_s2
+2026-10-15 08:32:24 [45/66] start main indian_2x2_peak seed 0 llm_guarded_mp (llama3.2:3b)
+2026-10-15 08:44:31 [45/66] done in 744 s: outputs/full/runs/20261015-083224_indian_2x2_peak_llm_guarded_mp_s0
+2026-10-15 08:44:31 [46/66] start main indian_2x2_peak seed 1 llm_guarded_mp (llama3.2:3b)
+2026-10-15 08:56:39 [46/66] done in 745 s: outputs/full/runs/20261015-084431_indian_2x2_peak_llm_guarded_mp_s1
+2026-10-15 08:56:39 [47/66] start main indian_2x2_peak seed 2 llm_guarded_mp (llama3.2:3b)
+2026-10-15 09:08:43 [47/66] done in 739 s: outputs/full/runs/20261015-085639_indian_2x2_peak_llm_guarded_mp_s2
+2026-10-15 09:08:43 [48/66] start main indian_2x2_peak_amb seed 0 llm_guarded_mp (llama3.2:3b)
+2026-10-15 09:21:21 [48/66] done in 774 s: outputs/emergency/runs/20261015-090843_indian_2x2_peak_amb_llm_guarded_mp_s0
+2026-10-15 09:21:21 [49/66] start main indian_2x2_peak_amb seed 1 llm_guarded_mp (llama3.2:3b)
+2026-10-15 09:34:07 [49/66] done in 782 s: outputs/emergency/runs/20261015-092121_indian_2x2_peak_amb_llm_guarded_mp_s1
+2026-10-15 09:34:07 [50/66] start main indian_2x2_peak_amb seed 2 llm_guarded_mp (llama3.2:3b)
+2026-10-15 09:46:46 [50/66] done in 774 s: outputs/emergency/runs/20261015-093407_indian_2x2_peak_amb_llm_guarded_mp_s2
+2026-10-15 09:46:46 [51/66] start main indian_2x2_peak_amb seed 3 llm_guarded_mp (llama3.2:3b)
+2026-10-15 09:59:20 [51/66] done in 769 s: outputs/emergency/runs/20261015-094646_indian_2x2_peak_amb_llm_guarded_mp_s3
+2026-10-15 09:59:20 [52/66] start main indian_2x2_peak_amb seed 4 llm_guarded_mp (llama3.2:3b)
+2026-10-15 10:11:57 [52/66] done in 774 s: outputs/emergency/runs/20261015-095920_indian_2x2_peak_amb_llm_guarded_mp_s4
+2026-10-15 10:11:57 [53/66] start main jinan_3x4 seed 0 llm_guarded_mp (llama3.2:3b)
+2026-10-15 10:37:51 LLM failure #1 (reason_too_long) at t=2305 intersection_3_2: reason has 16 words (max 15)
+2026-10-15 10:51:55 [53/66] done in 2440 s: outputs/full/runs/20261015-101157_jinan_3x4_llm_guarded_mp_s0
+2026-10-15 10:51:55 [54/66] start main jinan_3x4 seed 1 llm_guarded_mp (llama3.2:3b)
+2026-10-15 11:31:40 [54/66] done in 2443 s: outputs/full/runs/20261015-105155_jinan_3x4_llm_guarded_mp_s1
+2026-10-15 11:31:40 [55/66] start main jinan_3x4 seed 2 llm_guarded_mp (llama3.2:3b)
+2026-10-15 12:11:27 [55/66] done in 2454 s: outputs/full/runs/20261015-113140_jinan_3x4_llm_guarded_mp_s2
+2026-10-15 12:11:31 [56/66] start exploratory indian_2x2_offpeak seed 0 llm_guided_mp_v3 (gemma4:e4b)
+2026-10-15 12:13:51 LLM failure #1 (reason_too_long) at t=55 intersection_2_2: reason has 16 words (max 15)
+2026-10-15 12:40:08 LLM failure #2 (reason_too_long) at t=1425 intersection_1_1: reason has 17 words (max 15)
+2026-10-15 13:03:45 LLM failure #3 (reason_too_long) at t=2710 intersection_1_2: reason has 16 words (max 15)
+2026-10-15 13:20:52 [56/66] done in 4301 s: outputs/full/runs/20261015-121131_indian_2x2_offpeak_llm_guided_mp_v3_s0
+2026-10-15 13:20:52 [57/66] start exploratory indian_2x2_offpeak seed 1 llm_guided_mp_v3 (gemma4:e4b)
+2026-10-15 14:28:24 [57/66] done in 4188 s: outputs/full/runs/20261015-132052_indian_2x2_offpeak_llm_guided_mp_v3_s1
+2026-10-15 14:28:24 [58/66] start exploratory indian_2x2_offpeak seed 2 llm_guided_mp_v3 (gemma4:e4b)
+2026-10-15 15:27:44 LLM failure #1 (reason_too_long) at t=2990 intersection_1_2: reason has 19 words (max 15)
+2026-10-15 15:39:19 [58/66] done in 4443 s: outputs/full/runs/20261015-142824_indian_2x2_offpeak_llm_guided_mp_v3_s2
+2026-10-15 15:39:19 [59/66] start exploratory indian_2x2_peak seed 0 llm_guided_mp_v3 (gemma4:e4b)
+2026-10-15 16:22:11 LLM failure #1 (reason_too_long) at t=2475 intersection_1_1: reason has 16 words (max 15)
+2026-10-15 16:40:41 [59/66] done in 3825 s: outputs/full/runs/20261015-153919_indian_2x2_peak_llm_guided_mp_v3_s0
+2026-10-15 16:40:41 [60/66] start exploratory indian_2x2_peak seed 1 llm_guided_mp_v3 (gemma4:e4b)
+2026-10-15 16:42:16 LLM failure #1 (reason_too_long) at t=50 intersection_1_2: reason has 16 words (max 15)
+2026-10-15 17:45:10 [60/66] done in 3929 s: outputs/full/runs/20261015-164041_indian_2x2_peak_llm_guided_mp_v3_s1
+2026-10-15 17:45:10 [61/66] start exploratory indian_2x2_peak seed 2 llm_guided_mp_v3 (gemma4:e4b)
+2026-10-15 18:32:48 LLM failure #1 (reason_too_long) at t=2670 intersection_2_1: reason has 17 words (max 15)
+2026-10-15 18:48:14 [61/66] done in 3785 s: outputs/full/runs/20261015-174510_indian_2x2_peak_llm_guided_mp_v3_s2
+2026-10-15 18:48:14 [62/66] start exploratory indian_2x2_peak_amb seed 0 llm_guided_mp_v3 (gemma4:e4b)
+2026-10-15 19:53:38 [62/66] done in 3923 s: outputs/emergency/runs/20261015-184814_indian_2x2_peak_amb_llm_guided_mp_v3_s0
+2026-10-15 19:53:38 [63/66] start exploratory indian_2x2_peak_amb seed 1 llm_guided_mp_v3 (gemma4:e4b)
+2026-10-15 20:59:04 [63/66] done in 3926 s: outputs/emergency/runs/20261015-195338_indian_2x2_peak_amb_llm_guided_mp_v3_s1
+2026-10-15 20:59:04 [64/66] start exploratory indian_2x2_peak_amb seed 2 llm_guided_mp_v3 (gemma4:e4b)
+2026-10-15 22:03:12 [64/66] done in 3860 s: outputs/emergency/runs/20261015-205904_indian_2x2_peak_amb_llm_guided_mp_v3_s2
+2026-10-15 22:03:12 [65/66] start exploratory indian_2x2_peak_amb seed 3 llm_guided_mp_v3 (gemma4:e4b)
+2026-10-15 22:40:58 LLM failure #1 (reason_too_long) at t=2020 intersection_1_2: reason has 19 words (max 15)
+2026-10-15 23:08:02 [65/66] done in 3928 s: outputs/emergency/runs/20261015-220312_indian_2x2_peak_amb_llm_guided_mp_v3_s3
+2026-10-15 23:08:02 [66/66] start exploratory indian_2x2_peak_amb seed 4 llm_guided_mp_v3 (gemma4:e4b)
+2026-10-15 23:33:17 LLM failure #1 (reason_too_long) at t=1370 intersection_1_2: reason has 19 words (max 15)
+2026-10-16 00:12:25 [66/66] done in 3948 s: outputs/emergency/runs/20261015-230802_indian_2x2_peak_amb_llm_guided_mp_v3_s4
+2026-10-16 00:12:25 All 67 runs of the plan are complete

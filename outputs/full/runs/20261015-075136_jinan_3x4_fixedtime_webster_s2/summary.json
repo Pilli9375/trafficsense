@@ -1,0 +1,652 @@
+{
+  "provenance": {
+    "controller": "fixedtime_webster",
+    "controller_params": {
+      "name": "fixedtime_webster",
+      "phases": "paired",
+      "cycle_min": 60.0,
+      "cycle_max": 180.0,
+      "demand_window_s": 3600,
+      "measurement_reps": 30,
+      "measurement_seed": 0,
+      "inputs": {
+        "vehicle_types": {
+          "type_0": 4365
+        },
+        "discharge": {
+          "go_straight": {
+            "route": [
+              "road_0_1_0",
+              "road_1_1_0",
+              "road_2_1_0",
+              "road_3_1_0",
+              "road_4_1_0"
+            ],
+            "turn": "go_straight",
+            "reps": 1,
+            "seed": 0,
+            "per_rep": [
+              {
+                "queue_at_green": 52,
+                "left_in_window": 24,
+                "saturation_flow_veh_per_hour": 1440.0,
+                "fit_saturation_flow_veh_per_hour": 1459.2053348152265,
+                "startup_lost_time_s": 0.7797504798464487
+              }
+            ],
+            "saturation_flow_veh_per_hour": 1440.0,
+            "fit_saturation_flow_veh_per_hour": 1459.2053348152265,
+            "startup_lost_time_s": 0.7797504798464487
+          },
+          "turn_left": {
+            "route": [
+              "road_0_1_0",
+              "road_1_1_1",
+              "road_1_2_1",
+              "road_1_3_1"
+            ],
+            "turn": "turn_left",
+            "reps": 1,
+            "seed": 0,
+            "per_rep": [
+              {
+                "queue_at_green": 52,
+                "left_in_window": 23,
+                "saturation_flow_veh_per_hour": 1380.0,
+                "fit_saturation_flow_veh_per_hour": 1395.6876910252847,
+                "startup_lost_time_s": 0.13280298143767766
+              }
+            ],
+            "saturation_flow_veh_per_hour": 1380.0,
+            "fit_saturation_flow_veh_per_hour": 1395.6876910252847,
+            "startup_lost_time_s": 0.13280298143767766
+          }
+        },
+        "saturation_flow_veh_per_hour": {
+          "go_straight": 1459.2053348152265,
+          "turn_left": 1395.6876910252847
+        },
+        "startup_lost_time_s": 0.4562767306420632,
+        "demand_window_s": 3600,
+        "vehicles_in_window": 4365
+      },
+      "plans": {
+        "intersection_1_1": {
+          "phases": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "y": {
+            "1": 0.15419351521798738,
+            "2": 0.1281519437589495,
+            "3": 0.05588642824721088,
+            "4": 0.03367515548229373
+          },
+          "Y": 0.3719070427064415,
+          "lost_time_L_s": 21.825106922568253,
+          "C0_s": 60.082922353505275,
+          "cycle_webster_s": 60.082922353505275,
+          "oversaturated": false,
+          "cycle_clipped": false,
+          "greens_unrounded_s": {
+            "3": 10,
+            "4": 10,
+            "2": 10,
+            "1": 10.082922353505275
+          },
+          "greens_s": {
+            "1": 10,
+            "2": 10,
+            "3": 10,
+            "4": 10
+          },
+          "greens_clipped": [
+            2,
+            3,
+            4
+          ],
+          "cycle_run_s": 60
+        },
+        "intersection_1_2": {
+          "phases": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "y": {
+            "1": 0.18982934984614447,
+            "2": 0.1562494287542272,
+            "3": 0.04012358951081807,
+            "4": 0.03009269213311355
+          },
+          "Y": 0.4162950602443033,
+          "lost_time_L_s": 21.825106922568253,
+          "C0_s": 64.65194623784932,
+          "cycle_webster_s": 64.65194623784932,
+          "oversaturated": false,
+          "cycle_clipped": false,
+          "greens_unrounded_s": {
+            "3": 10,
+            "4": 10,
+            "1": 13.477686233827326,
+            "2": 11.17426000402199
+          },
+          "greens_s": {
+            "1": 13,
+            "2": 11,
+            "3": 10,
+            "4": 10
+          },
+          "greens_clipped": [
+            3,
+            4
+          ],
+          "cycle_run_s": 64
+        },
+        "intersection_1_3": {
+          "phases": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "y": {
+            "1": 0.19736769947902386,
+            "2": 0.15419351521798738,
+            "3": 0.04012358951081807,
+            "4": 0.02794321412360544
+          },
+          "Y": 0.41962801833143476,
+          "lost_time_L_s": 21.825106922568253,
+          "C0_s": 65.02322919751721,
+          "cycle_webster_s": 65.02322919751721,
+          "oversaturated": false,
+          "cycle_clipped": false,
+          "greens_unrounded_s": {
+            "3": 10,
+            "4": 10,
+            "1": 13.992094687825547,
+            "2": 11.031134509691661
+          },
+          "greens_s": {
+            "1": 14,
+            "2": 11,
+            "3": 10,
+            "4": 10
+          },
+          "greens_clipped": [
+            3,
+            4
+          ],
+          "cycle_run_s": 65
+        },
+        "intersection_2_1": {
+          "phases": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "y": {
+            "1": 0.1439139475367882,
+            "2": 0.1356902933918289,
+            "3": 0.03940709684098203,
+            "4": 0.028659706793441476
+          },
+          "Y": 0.34767104456304065,
+          "lost_time_L_s": 21.825106922568253,
+          "C0_s": 57.850659654643096,
+          "cycle_webster_s": 60.0,
+          "oversaturated": false,
+          "cycle_clipped": true,
+          "greens_unrounded_s": {
+            "3": 10,
+            "4": 10,
+            "2": 10,
+            "1": 10.0
+          },
+          "greens_s": {
+            "1": 10,
+            "2": 10,
+            "3": 10,
+            "4": 10
+          },
+          "greens_clipped": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "cycle_run_s": 60
+        },
+        "intersection_2_2": {
+          "phases": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "y": {
+            "1": 0.18845874082198458,
+            "2": 0.158990646802547,
+            "3": 0.02794321412360544,
+            "4": 0.022211272764917144
+          },
+          "Y": 0.3976038745130542,
+          "lost_time_L_s": 21.825106922568253,
+          "C0_s": 62.645921491190215,
+          "cycle_webster_s": 62.645921491190215,
+          "oversaturated": false,
+          "cycle_clipped": false,
+          "greens_unrounded_s": {
+            "3": 10,
+            "4": 10,
+            "1": 12.244592723194675,
+            "2": 10.401328767995539
+          },
+          "greens_s": {
+            "1": 12,
+            "2": 10,
+            "3": 10,
+            "4": 10
+          },
+          "greens_clipped": [
+            3,
+            4
+          ],
+          "cycle_run_s": 62
+        },
+        "intersection_2_3": {
+          "phases": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "y": {
+            "1": 0.10759280839655119,
+            "2": 0.08018062791335344,
+            "3": 0.06161836960589917,
+            "4": 0.048005008879014474
+          },
+          "Y": 0.2973968147948183,
+          "lost_time_L_s": 21.825106922568253,
+          "C0_s": 53.7112002599758,
+          "cycle_webster_s": 60.0,
+          "oversaturated": false,
+          "cycle_clipped": true,
+          "greens_unrounded_s": {
+            "3": 10,
+            "4": 10,
+            "2": 10,
+            "1": 10.0
+          },
+          "greens_s": {
+            "1": 10,
+            "2": 10,
+            "3": 10,
+            "4": 10
+          },
+          "greens_clipped": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "cycle_run_s": 60
+        },
+        "intersection_3_1": {
+          "phases": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "y": {
+            "1": 0.11924298510191024,
+            "2": 0.11033402644487098,
+            "3": 0.03940709684098203,
+            "4": 0.04585553086950636
+          },
+          "Y": 0.31483963925726965,
+          "lost_time_L_s": 21.825106922568253,
+          "C0_s": 55.07858093679536,
+          "cycle_webster_s": 60.0,
+          "oversaturated": false,
+          "cycle_clipped": true,
+          "greens_unrounded_s": {
+            "3": 10,
+            "4": 10,
+            "2": 10,
+            "1": 10.0
+          },
+          "greens_s": {
+            "1": 10,
+            "2": 10,
+            "3": 10,
+            "4": 10
+          },
+          "greens_clipped": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "cycle_run_s": 60
+        },
+        "intersection_3_2": {
+          "phases": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "y": {
+            "1": 0.22066805288974195,
+            "2": 0.1809203911891052,
+            "3": 0.01146388271737659,
+            "4": 0.013613360726884701
+          },
+          "Y": 0.4266656875231084,
+          "lost_time_L_s": 21.825106922568253,
+          "C0_s": 65.82138825918152,
+          "cycle_webster_s": 65.82138825918152,
+          "oversaturated": false,
+          "cycle_clipped": false,
+          "greens_unrounded_s": {
+            "3": 10,
+            "4": 10,
+            "1": 14.143383906278515,
+            "2": 11.678004352903004
+          },
+          "greens_s": {
+            "1": 14,
+            "2": 12,
+            "3": 10,
+            "4": 10
+          },
+          "greens_clipped": [
+            3,
+            4
+          ],
+          "cycle_run_s": 66
+        },
+        "intersection_3_3": {
+          "phases": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "y": {
+            "1": 0.1356902933918289,
+            "2": 0.12335481217438991,
+            "3": 0.03367515548229373,
+            "4": 0.03510814082196581
+          },
+          "Y": 0.32782840187047835,
+          "lost_time_L_s": 21.825106922568253,
+          "C0_s": 56.142896380725475,
+          "cycle_webster_s": 60.0,
+          "oversaturated": false,
+          "cycle_clipped": true,
+          "greens_unrounded_s": {
+            "3": 10,
+            "4": 10,
+            "2": 10,
+            "1": 10.0
+          },
+          "greens_s": {
+            "1": 10,
+            "2": 10,
+            "3": 10,
+            "4": 10
+          },
+          "greens_clipped": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "cycle_run_s": 60
+        },
+        "intersection_4_1": {
+          "phases": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "y": {
+            "1": 0.07127166925631417,
+            "2": 0.08703367303415288,
+            "3": 0.05015448688852258,
+            "4": 0.04943799421868655
+          },
+          "Y": 0.2578978233976762,
+          "lost_time_L_s": 21.825106922568253,
+          "C0_s": 50.85237797931316,
+          "cycle_webster_s": 60.0,
+          "oversaturated": false,
+          "cycle_clipped": true,
+          "greens_unrounded_s": {
+            "3": 10,
+            "4": 10,
+            "1": 10,
+            "2": 10.0
+          },
+          "greens_s": {
+            "1": 10,
+            "2": 10,
+            "3": 10,
+            "4": 10
+          },
+          "greens_clipped": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "cycle_run_s": 60
+        },
+        "intersection_4_2": {
+          "phases": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "y": {
+            "1": 0.18640282728574475,
+            "2": 0.16173186485086677,
+            "3": 0.027226721453769403,
+            "4": 0.014329853396720738
+          },
+          "Y": 0.38969126698710166,
+          "lost_time_L_s": 21.825106922568253,
+          "C0_s": 61.833721758418335,
+          "cycle_webster_s": 61.833721758418335,
+          "oversaturated": false,
+          "cycle_clipped": false,
+          "greens_unrounded_s": {
+            "3": 10,
+            "4": 10,
+            "1": 11.658162118084002,
+            "2": 10.175559640334333
+          },
+          "greens_s": {
+            "1": 12,
+            "2": 10,
+            "3": 10,
+            "4": 10
+          },
+          "greens_clipped": [
+            3,
+            4
+          ],
+          "cycle_run_s": 62
+        },
+        "intersection_4_3": {
+          "phases": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "y": {
+            "1": 0.056880274502635345,
+            "2": 0.05962149255095512,
+            "3": 0.05158747222819466,
+            "4": 0.047288516209178434
+          },
+          "Y": 0.21537775549096355,
+          "lost_time_L_s": 21.825106922568253,
+          "C0_s": 48.096597627646986,
+          "cycle_webster_s": 60.0,
+          "oversaturated": false,
+          "cycle_clipped": true,
+          "greens_unrounded_s": {
+            "3": 10,
+            "4": 10,
+            "1": 10,
+            "2": 10.0
+          },
+          "greens_s": {
+            "1": 10,
+            "2": 10,
+            "3": 10,
+            "4": 10
+          },
+          "greens_clipped": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "cycle_run_s": 60
+        }
+      }
+    },
+    "model": null,
+    "provider": null,
+    "llm": null,
+    "controller_stats": null,
+    "seed": 2,
+    "scenario": "jinan_3x4",
+    "roadnet": "data/external/collmlight/Jinan/3_4/roadnet_3_4.json",
+    "flow": "data/external/collmlight/Jinan/3_4/anon_3_4_jinan_real_2000.json",
+    "flow_sha256": "d0931c1b759479f9e748d69c16414020bfba03d555dcc6cdf7223a0c18cb9e69",
+    "flow_per_seed": false,
+    "sim_steps": 3600,
+    "git_commit": "159d480cad362402a7c821a65e8158dd387e6de6",
+    "git_dirty": false,
+    "timestamp": "2026-10-15T07:51:36+05:30",
+    "wall_time_s": 8.34,
+    "python": "3.10.12"
+  },
+  "signal": {
+    "min_green": 10,
+    "max_green": 60,
+    "transition_s": [
+      5
+    ],
+    "switches": 2808,
+    "forced_switches": 0
+  },
+  "metrics": {
+    "att": 416.1298969072165,
+    "queue_mean_per_intersection": 16.41914351851852,
+    "queue_mean_total": 197.02972222222223,
+    "waiting_time_mean": 162.58739977090494,
+    "throughput": 3965,
+    "vehicles_entered": 4365,
+    "vehicles_running_at_end": 400,
+    "vehicles_waiting_to_enter_at_end": 0,
+    "steps": 3600
+  },
+  "per_intersection": {
+    "intersection_1_1": {
+      "queue_mean": 15.116111111111111,
+      "waiting_time_mean": 39.92516507703595,
+      "throughput": 1337,
+      "vehicles_seen": 1363
+    },
+    "intersection_1_2": {
+      "queue_mean": 24.790555555555557,
+      "waiting_time_mean": 67.61060606060606,
+      "throughput": 1288,
+      "vehicles_seen": 1320
+    },
+    "intersection_1_3": {
+      "queue_mean": 20.174444444444443,
+      "waiting_time_mean": 55.653639846743296,
+      "throughput": 1282,
+      "vehicles_seen": 1305
+    },
+    "intersection_2_1": {
+      "queue_mean": 15.31,
+      "waiting_time_mean": 45.36296296296296,
+      "throughput": 1194,
+      "vehicles_seen": 1215
+    },
+    "intersection_2_2": {
+      "queue_mean": 24.279166666666665,
+      "waiting_time_mean": 72.95909849749583,
+      "throughput": 1150,
+      "vehicles_seen": 1198
+    },
+    "intersection_2_3": {
+      "queue_mean": 4.912222222222222,
+      "waiting_time_mean": 14.530813475760066,
+      "throughput": 1202,
+      "vehicles_seen": 1217
+    },
+    "intersection_3_1": {
+      "queue_mean": 6.240555555555556,
+      "waiting_time_mean": 19.846289752650176,
+      "throughput": 1110,
+      "vehicles_seen": 1132
+    },
+    "intersection_3_2": {
+      "queue_mean": 43.51027777777778,
+      "waiting_time_mean": 139.97944593386953,
+      "throughput": 1042,
+      "vehicles_seen": 1119
+    },
+    "intersection_3_3": {
+      "queue_mean": 8.83388888888889,
+      "waiting_time_mean": 27.920983318700614,
+      "throughput": 1123,
+      "vehicles_seen": 1139
+    },
+    "intersection_4_1": {
+      "queue_mean": 3.444722222222222,
+      "waiting_time_mean": 11.408463661453542,
+      "throughput": 1074,
+      "vehicles_seen": 1087
+    },
+    "intersection_4_2": {
+      "queue_mean": 27.118055555555557,
+      "waiting_time_mean": 90.64531104921078,
+      "throughput": 1032,
+      "vehicles_seen": 1077
+    },
+    "intersection_4_3": {
+      "queue_mean": 3.299722222222222,
+      "waiting_time_mean": 11.133083411433926,
+      "throughput": 1057,
+      "vehicles_seen": 1067
+    }
+  },
+  "emergency": null,
+  "metric_notes": {
+    "att": "engine.get_average_travel_time(): all generated vehicles from scheduled start, incl. those still running or still waiting to enter",
+    "queue_mean_per_intersection": "waiting vehicles (speed<0.1) on incoming lanes, mean over steps and intersections",
+    "queue_mean_total": "same, summed over intersections",
+    "waiting_time_mean": "seconds with speed<0.1 per vehicle, mean over vehicles that entered",
+    "throughput": "vehicles that finished their trip"
+  }
+}
