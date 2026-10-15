@@ -105,9 +105,12 @@ def run_experiment(cfg: dict[str, Any], scenario: str, controller: str,
 
     out_dir.mkdir(parents=True)
     ctl.write_artifacts(out_dir)
-    (out_dir / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     with (out_dir / "metrics.csv").open("w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(metrics.rows[0]))
         w.writeheader()
         w.writerows(metrics.rows)
+    # summary.json last and atomically: a run folder with a summary.json is complete (resumable batches).
+    tmp = out_dir / "summary.json.tmp"
+    tmp.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    tmp.replace(out_dir / "summary.json")
     return out_dir

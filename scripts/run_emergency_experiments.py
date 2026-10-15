@@ -1,8 +1,12 @@
-"""Emergency-vehicle full experiments (pre-registered; NOT run until the user says so).
+"""Emergency-vehicle full experiments: design and report.
 
-    python scripts/run_emergency_experiments.py              # run every missing run (clean git tree; free GPU)
+    python scripts/run_full_experiments.py                   # runs them (with the other full runs)
     python scripts/run_emergency_experiments.py --report-only
     python scripts/run_emergency_experiments.py --check      # exit 1 if docs/emergency.md is out of date
+
+Added at the user's request after this design was committed (Phase 3c): the exploratory arm
+llm_guided_mp_v3 with gemma4:e4b (5 s), labelled "exploratory, NOT selected by the rule"
+(scripts/run_full_experiments.py says why). Everything below is unchanged.
 
 Design, fixed and committed BEFORE any run:
   * scenario indian_2x2_peak_amb: peak traffic plus ambulances at 6/h (ASSUMPTION), seeds
@@ -30,23 +34,20 @@ Outputs: outputs/emergency/runs/<run>/, outputs/emergency/results.json, tables i
 docs/emergency.md.
 """
 import argparse
-import copy
 import json
 import re
 import statistics
 import sys
 from pathlib import Path
 
-from trafficsense.config import load_config, repo_root
-from trafficsense.experiment import git_info, run_experiment
-from trafficsense.llm.client import OllamaClient
-from trafficsense.llm.gpu import free_gpu
+from trafficsense.config import repo_root
+from trafficsense.experiment import git_info
 from trafficsense.sim.emergency import signal_relevant
 from trafficsense.sim.roadnet import load_roadnet
 
 SCENARIO, SEEDS, STEPS = "indian_2x2_peak_amb", (0, 1, 2, 3, 4), 3600
 BASE_CONTROLLERS = ["maxpressure", "fixedtime_webster", "preemption_mp"]
-LLM_MIN_GREEN = 15
+EXPLORATORY = "llm_guided_mp_v3"   # gemma4:e4b; exploratory, NOT selected by the rule
 BENCHMARK = Path("outputs/llm_benchmark/benchmark.json")
 RUNS = Path("outputs/emergency/runs")
 OUT = Path("outputs/emergency/results.json")
@@ -67,7 +68,7 @@ def llm_arm(root: Path) -> dict | None:
 
 def controllers(root: Path) -> list[str]:
     arm = llm_arm(root)
-    return BASE_CONTROLLERS + ([arm["controller"]] if arm else [])
+    return BASE_CONTROLLERS + ([arm["controller"]] if arm else []) + [EXPLORATORY]
 
 
 def load_runs(root: Path) -> dict:
@@ -171,7 +172,6 @@ def render(doc: str, tabs: dict[str, str]) -> str:
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--config", default="configs/default.yaml")
     ap.add_argument("--report-only", action="store_true")
     ap.add_argument("--check", action="store_true")
     args = ap.parse_args()
@@ -191,24 +191,7 @@ def main():
         sys.exit(0 if ok else 1)
 
     if not args.report_only:
-        if git_info()["dirty"]:
-            raise SystemExit("Git tree is dirty: commit first so the runs' provenance points at the exact code")
-        cfg = load_config(args.config)
-        have = load_runs(root)
-        arm = llm_arm(root)
-        for ctl in controllers(root):
-            todo = [s for s in SEEDS if (ctl, s) not in have]
-            if not todo:
-                continue
-            c = cfg
-            if ctl.startswith("llm_"):
-                c = copy.deepcopy(cfg)
-                c["llm"].update(model=arm["model"], decision_interval=arm["decision_interval_s"],
-                                min_green=LLM_MIN_GREEN)
-                free_gpu(OllamaClient.from_config(c["llm"]))
-            for seed in todo:
-                out = run_experiment(c, SCENARIO, ctl, steps=STEPS, seed=seed, out_root=root / RUNS)
-                print(f"Wrote {out.relative_to(root)}", flush=True)
+        raise SystemExit("Runs are made by scripts/run_full_experiments.py; use --report-only or --check here")
 
     b = report(root)
     (root / OUT).parent.mkdir(parents=True, exist_ok=True)

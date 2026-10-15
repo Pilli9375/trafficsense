@@ -53,7 +53,7 @@ def full():
 def test_full_design_is_pinned(full):
     assert (full.SCENARIO, full.SEEDS, full.STEPS) == ("indian_2x2_peak_amb", (0, 1, 2, 3, 4), 3600)
     assert full.BASE_CONTROLLERS == ["maxpressure", "fixedtime_webster", "preemption_mp"]
-    assert full.LLM_MIN_GREEN == 15
+    assert full.EXPLORATORY == "llm_guided_mp_v3"
     doc = (repo_root() / "docs/emergency.md").read_text()
     assert "37 ambulances, 29 of them **signal-relevant**" in doc and "| 4 | 8 | (full runs only) |" in doc
 
@@ -64,9 +64,9 @@ def test_full_llm_arm_comes_from_the_final_decision(full, tmp_path):
     p.write_text(json.dumps({"final": {"chosen_model": "hybrid_v3 x", "controller": "llm_guided_mp_v3",
                                        "model": "x", "decision_interval_s": 5}}))
     assert full.llm_arm(tmp_path) == {"controller": "llm_guided_mp_v3", "model": "x", "decision_interval_s": 5}
-    assert full.controllers(tmp_path)[-1] == "llm_guided_mp_v3"
+    assert full.controllers(tmp_path)[-2:] == ["llm_guided_mp_v3", "llm_guided_mp_v3"]
     p.write_text(json.dumps({"final": {"chosen_model": None, "step": 3}}))
-    assert full.controllers(tmp_path) == full.BASE_CONTROLLERS
+    assert full.controllers(tmp_path) == full.BASE_CONTROLLERS + [full.EXPLORATORY]
     p.write_text(json.dumps({"final": None}))
     with pytest.raises(SystemExit):
         full.llm_arm(tmp_path)
@@ -81,7 +81,7 @@ def test_full_report_pools_ambulances(full, tmp_path):
     b.write_text(json.dumps({"final": {"chosen_model": None, "step": 3}}))
     relevant = ["road_3_2_2", "road_2_2_2", "road_1_2_2"]
     free = ["road_3_2_2", "road_2_2_1"]
-    for c, base in (("maxpressure", 100), ("fixedtime_webster", 120), ("preemption_mp", 80)):
+    for c, base in (("maxpressure", 100), ("fixedtime_webster", 120), ("preemption_mp", 80), (full.EXPLORATORY, 90)):
         for seed in full.SEEDS:
             d = tmp_path / full.RUNS / f"{c}_{seed}"
             d.mkdir(parents=True)
@@ -94,7 +94,7 @@ def test_full_report_pools_ambulances(full, tmp_path):
                 "metrics": {"att": base, "queue_mean_per_intersection": 10.0, "throughput": 1000},
                 "emergency": {"vehicles": veh}}))
     r = full.report(tmp_path)["controllers"]
-    assert list(r) == full.BASE_CONTROLLERS
+    assert list(r) == full.BASE_CONTROLLERS + [full.EXPLORATORY]
     rel = r["maxpressure"]["ambulances_relevant"]
     assert (rel["n"], rel["finished"], rel["not_finished"]) == (10, 5, 5)
     assert rel["travel_time_mean_s"] == 102 and r["maxpressure"]["ambulances_all"]["n"] == 15

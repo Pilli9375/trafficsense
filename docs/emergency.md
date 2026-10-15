@@ -165,6 +165,10 @@ Design and analysis committed before any run (`scripts/run_emergency_experiments
   5 s (`docs/llm_benchmark.md`). Its prompt lists ambulances, and a phase serving a listed
   ambulance is exempt from the guard, so the guard cannot block ambulance priority. In the
   benchmark this controller applied MaxPressure's choice in 106 of its 121 decisions.
+* **Added at the user's request after this design was committed (Phase 3c):** the exploratory
+  arm `llm_guided_mp_v3` with `gemma4:e4b` (5 s), **exploratory, NOT selected by the rule**
+  (see `docs/results.md` for why it is included). Everything else above is unchanged. The runs
+  are made by `scripts/run_full_experiments.py`.
 * **Primary ambulance metric:** mean travel time of the signal-relevant ambulances that
   finished, pooled over the 5 seeds; also the median, the mean stopped time and how many did
   not finish by t = 3600 s. All 37 ambulances are reported too.
