@@ -1,0 +1,237 @@
+{
+ "provenance": {
+  "script": "scripts/run_emergency_experiments.py",
+  "scenario": "indian_2x2_peak_amb",
+  "seeds": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ],
+  "steps": 3600,
+  "llm_arm": {
+   "controller": "llm_guarded_mp",
+   "model": "llama3.2:3b",
+   "decision_interval_s": 5
+  },
+  "git_commit_of_this_summary": "207bf980294839dab82db5c67dec819725744c77"
+ },
+ "controllers": {
+  "maxpressure": {
+   "runs": [
+    "20261015-075150_indian_2x2_peak_amb_maxpressure_s0",
+    "20261015-075228_indian_2x2_peak_amb_maxpressure_s1",
+    "20261015-075306_indian_2x2_peak_amb_maxpressure_s2",
+    "20261015-075345_indian_2x2_peak_amb_maxpressure_s3",
+    "20261015-075423_indian_2x2_peak_amb_maxpressure_s4"
+   ],
+   "att_s": [
+    115.71720356160684,
+    2.333964353635437
+   ],
+   "queue_mean_per_intersection": [
+    17.974583333333335,
+    0.8571799646525208
+   ],
+   "throughput": [
+    4604.6,
+    65.9416408652378
+   ],
+   "ambulances_relevant": {
+    "n": 29,
+    "finished": 29,
+    "not_finished": 0,
+    "travel_time_mean_s": 130.10344827586206,
+    "travel_time_median_s": 126.0,
+    "stopped_time_mean_s": 62.310344827586206
+   },
+   "ambulances_all": {
+    "n": 37,
+    "finished": 37,
+    "not_finished": 0,
+    "travel_time_mean_s": 110.10810810810811,
+    "travel_time_median_s": 103.0,
+    "stopped_time_mean_s": 48.83783783783784
+   },
+   "vs_preemption_relevant": {
+    "n_paired": 29,
+    "mean_diff_s": 48.93103448275862,
+    "faster": 1,
+    "slower": 28
+   }
+  },
+  "fixedtime_webster": {
+   "runs": [
+    "20261015-075153_indian_2x2_peak_amb_fixedtime_webster_s0",
+    "20261015-075232_indian_2x2_peak_amb_fixedtime_webster_s1",
+    "20261015-075310_indian_2x2_peak_amb_fixedtime_webster_s2",
+    "20261015-075348_indian_2x2_peak_amb_fixedtime_webster_s3",
+    "20261015-075427_indian_2x2_peak_amb_fixedtime_webster_s4"
+   ],
+   "att_s": [
+    115.1957751723181,
+    2.661919687691698
+   ],
+   "queue_mean_per_intersection": [
+    18.00761111111111,
+    0.6380952944077958
+   ],
+   "throughput": [
+    4605.8,
+    73.37370101064822
+   ],
+   "ambulances_relevant": {
+    "n": 29,
+    "finished": 29,
+    "not_finished": 0,
+    "travel_time_mean_s": 123.51724137931035,
+    "travel_time_median_s": 123.0,
+    "stopped_time_mean_s": 55.03448275862069
+   },
+   "ambulances_all": {
+    "n": 37,
+    "finished": 37,
+    "not_finished": 0,
+    "travel_time_mean_s": 104.94594594594595,
+    "travel_time_median_s": 110.0,
+    "stopped_time_mean_s": 43.13513513513514
+   },
+   "vs_preemption_relevant": {
+    "n_paired": 29,
+    "mean_diff_s": 42.3448275862069,
+    "faster": 4,
+    "slower": 25
+   }
+  },
+  "preemption_mp": {
+   "runs": [
+    "20261015-075225_indian_2x2_peak_amb_preemption_mp_s0",
+    "20261015-075303_indian_2x2_peak_amb_preemption_mp_s1",
+    "20261015-075341_indian_2x2_peak_amb_preemption_mp_s2",
+    "20261015-075420_indian_2x2_peak_amb_preemption_mp_s3",
+    "20261015-075458_indian_2x2_peak_amb_preemption_mp_s4"
+   ],
+   "att_s": [
+    116.02468982394986,
+    0.7127239781597973
+   ],
+   "queue_mean_per_intersection": [
+    18.076097222222224,
+    0.4130086574614595
+   ],
+   "throughput": [
+    4605.8,
+    61.116282609465046
+   ],
+   "ambulances_relevant": {
+    "n": 29,
+    "finished": 29,
+    "not_finished": 0,
+    "travel_time_mean_s": 81.17241379310344,
+    "travel_time_median_s": 80.0,
+    "stopped_time_mean_s": 14.137931034482758
+   },
+   "ambulances_all": {
+    "n": 37,
+    "finished": 37,
+    "not_finished": 0,
+    "travel_time_mean_s": 71.75675675675676,
+    "travel_time_median_s": 75.0,
+    "stopped_time_mean_s": 11.08108108108108
+   },
+   "vs_preemption_relevant": {
+    "n_paired": 29,
+    "mean_diff_s": 0.0,
+    "faster": 0,
+    "slower": 0
+   }
+  },
+  "llm_guarded_mp": {
+   "runs": [
+    "20261015-090843_indian_2x2_peak_amb_llm_guarded_mp_s0",
+    "20261015-092121_indian_2x2_peak_amb_llm_guarded_mp_s1",
+    "20261015-093407_indian_2x2_peak_amb_llm_guarded_mp_s2",
+    "20261015-094646_indian_2x2_peak_amb_llm_guarded_mp_s3",
+    "20261015-095920_indian_2x2_peak_amb_llm_guarded_mp_s4"
+   ],
+   "att_s": [
+    116.40417771078704,
+    3.054519561203309
+   ],
+   "queue_mean_per_intersection": [
+    18.1625,
+    0.7188726646535601
+   ],
+   "throughput": [
+    4604.4,
+    64.2674100925189
+   ],
+   "ambulances_relevant": {
+    "n": 29,
+    "finished": 29,
+    "not_finished": 0,
+    "travel_time_mean_s": 88.89655172413794,
+    "travel_time_median_s": 87.0,
+    "stopped_time_mean_s": 21.24137931034483
+   },
+   "ambulances_all": {
+    "n": 37,
+    "finished": 37,
+    "not_finished": 0,
+    "travel_time_mean_s": 77.8108108108108,
+    "travel_time_median_s": 78.0,
+    "stopped_time_mean_s": 16.64864864864865
+   },
+   "vs_preemption_relevant": {
+    "n_paired": 29,
+    "mean_diff_s": 7.724137931034483,
+    "faster": 12,
+    "slower": 15
+   }
+  },
+  "llm_guided_mp_v3": {
+   "runs": [
+    "20261015-184814_indian_2x2_peak_amb_llm_guided_mp_v3_s0",
+    "20261015-195338_indian_2x2_peak_amb_llm_guided_mp_v3_s1",
+    "20261015-205904_indian_2x2_peak_amb_llm_guided_mp_v3_s2",
+    "20261015-220312_indian_2x2_peak_amb_llm_guided_mp_v3_s3",
+    "20261015-230802_indian_2x2_peak_amb_llm_guided_mp_v3_s4"
+   ],
+   "att_s": [
+    112.85003756197801,
+    1.8942076881324617
+   ],
+   "queue_mean_per_intersection": [
+    17.110527777777776,
+    0.2969340568290182
+   ],
+   "throughput": [
+    4610,
+    70.45211139490426
+   ],
+   "ambulances_relevant": {
+    "n": 29,
+    "finished": 29,
+    "not_finished": 0,
+    "travel_time_mean_s": 82.24137931034483,
+    "travel_time_median_s": 78.0,
+    "stopped_time_mean_s": 15.275862068965518
+   },
+   "ambulances_all": {
+    "n": 37,
+    "finished": 37,
+    "not_finished": 0,
+    "travel_time_mean_s": 72.5945945945946,
+    "travel_time_median_s": 72.0,
+    "stopped_time_mean_s": 11.972972972972974
+   },
+   "vs_preemption_relevant": {
+    "n_paired": 29,
+    "mean_diff_s": 1.0689655172413792,
+    "faster": 16,
+    "slower": 12
+   }
+  }
+ }
+}

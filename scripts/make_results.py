@@ -10,7 +10,8 @@ std, ddof = 1). LLM decision statistics are pooled over the seeds of a scenario:
 summed, mean latency is weighted by the number of answered calls, and p95 is given as the range
 of the per-run p95 values. "Reproduces earlier runs" compares each baseline run with the earlier
 run of the same scenario, controller, seed, parameters and flow file (outputs/indian_2x2/runs,
-outputs/baselines/runs) and reports whether every metric is identical.
+outputs/baselines/runs) and reports whether every metric is identical. The paired table gives,
+per seed, each arm's ATT minus MaxPressure's ATT on the same seed (same flow file).
 """
 import argparse
 import importlib.util
@@ -111,6 +112,19 @@ def llm_stats(summaries: list[dict]) -> dict:
     return out
 
 
+def paired(rs: dict, scenario: str) -> dict:
+    """Per seed: ATT of each arm minus MaxPressure's ATT on the same seed."""
+    out = {}
+    for arm in arms_of(scenario):
+        if arm[0] == "maxpressure":
+            continue
+        d = [rs[(scenario, arm[0], s, arm[1])]["summary"]["metrics"]["att"]
+             - rs[(scenario, "maxpressure", s, None)]["summary"]["metrics"]["att"] for s in seeds_of(scenario, arm)]
+        out[label(*arm)] = {"seeds": seeds_of(scenario, arm), "att_minus_mp": d,
+                            "seeds_lower_att": sum(x < 0 for x in d), "seeds_higher_att": sum(x > 0 for x in d)}
+    return out
+
+
 def earlier_runs() -> dict[tuple, dict]:
     out = {}
     for root in EARLIER:
@@ -127,7 +141,7 @@ def report() -> dict:
     rs = runs()
     res = {"provenance": {"script": "scripts/make_results.py", "git_commit_of_this_summary": git_info()["commit"],
                           "runs": len(rs)},
-           "scenarios": {}, "llm": {}, "reproduction": []}
+           "scenarios": {}, "llm": {}, "paired": {}, "reproduction": []}
     for sc, _ in SCENARIOS:
         res["scenarios"][sc] = {}
         for arm in arms_of(sc):
@@ -138,6 +152,7 @@ def report() -> dict:
                 **{m: mean_std([s["metrics"][m] for s in ss]) for m, _, _ in METRICS},
                 "per_seed_att": [s["metrics"]["att"] for s in ss]}
     for sc in [s for s, _ in SCENARIOS] + ["indian_2x2_peak_amb"]:
+        res["paired"][sc] = paired(rs, sc)
         for arm in arms_of(sc):
             if arm[1] is None:
                 continue
@@ -185,6 +200,13 @@ def tables(b: dict) -> dict[str, str]:
     out["results_llm"] = table(["Scenario", "Arm", "Calls", "Failures", "Latency mean (s)", "p95 per run (s)",
                                 "LLM's answer differs from MaxPressure", "Guard replaced the answer",
                                 "Applied phase differs from MaxPressure", "Wall time, all seeds (h)"], rows)
+    rows = []
+    for sc, arms in b["paired"].items():
+        for name, a in arms.items():
+            rows.append([sc, name, " / ".join(f"{x:+.2f}" for x in a["att_minus_mp"]),
+                         f"{a['seeds_lower_att']} lower, {a['seeds_higher_att']} higher of {len(a['seeds'])}"])
+    out["results_paired"] = table(["Scenario", "Controller", "ATT minus MaxPressure, per seed (s)",
+                                   "Seeds with lower / higher ATT than MaxPressure"], rows)
     rep = b["reproduction"]
     out["results_reproduction"] = table(
         ["Baseline runs compared with an earlier identical run", "Identical metrics"],
@@ -216,7 +238,7 @@ def main():
     em_tabs = emergency.tables(b["emergency"])
     if args.check:
         stored = json.loads((ROOT / OUT).read_text())
-        same = all(stored[k] == b[k] for k in ("scenarios", "llm", "reproduction", "emergency"))
+        same = all(stored[k] == b[k] for k in ("scenarios", "llm", "paired", "reproduction", "emergency"))
         ok = (same and render((ROOT / DOC).read_text(), tabs) == (ROOT / DOC).read_text()
               and emergency.render(em_doc.read_text(), em_tabs) == em_doc.read_text())
         print("docs/results.md and docs/emergency.md match the full runs" if ok else

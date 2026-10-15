@@ -174,8 +174,9 @@ TrafficSense/
 | Training Time | 3.7 min (RTX 4050) |
 | Model Size | 5.97 MB |
 | Vehicle Classes | 11+ (Indian-specific) |
-| LLM | Gemma 3 4B (local, zero API cost) |
-| Decision Latency | ~12s per cooperative decision |
+| LLM controller (pre-registered pick) | `llama3.2:3b`, guarded hybrid with MaxPressure (local, Ollama) |
+| LLM decision latency | ~1.0–1.1 s mean per call (GTX 1650) |
+| Signal-control results | [`docs/results.md`](docs/results.md) (generated from `outputs/`) |
 | Dashboard | 3-page Streamlit app |
 
 ---

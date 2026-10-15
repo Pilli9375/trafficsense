@@ -149,7 +149,7 @@ What the smoke tests show (one ambulance per run at most; observations, not resu
   the model prefers low pressure. As in the benchmark, it overruled MaxPressure in 96–97% of
   its calls and its queues (25.19–30.27) are about twice MaxPressure's.
 
-## Full runs (pre-registered, not run yet)
+## Full runs (pre-registered; run in Phase 3c)
 
 Design and analysis committed before any run (`scripts/run_emergency_experiments.py`):
 
@@ -179,13 +179,30 @@ Design and analysis committed before any run (`scripts/run_emergency_experiments
 * No significance test is pre-registered; with 29 relevant ambulances the numbers are
   reported as measured, with their spread.
 
+All runs finished (`scripts/run_full_experiments.py`); the reading of these tables, with the
+per-seed comparison and the LLM decision statistics, is in `docs/results.md`.
+
 Normal traffic (mean ± std over seeds 0–4):
 
 <!-- BEGIN:emergency_full -->
+| Controller | ATT (s) | Queue / int. (veh) | Finished trips |
+|---|---|---|---|
+| maxpressure | 115.7 ± 2.3 | 17.97 ± 0.86 | 4605 ± 66 |
+| fixedtime_webster | 115.2 ± 2.7 | 18.01 ± 0.64 | 4606 ± 73 |
+| preemption_mp | 116.0 ± 0.7 | 18.08 ± 0.41 | 4606 ± 61 |
+| llm_guarded_mp | 116.4 ± 3.1 | 18.16 ± 0.72 | 4604 ± 64 |
+| llm_guided_mp_v3 | 112.9 ± 1.9 | 17.11 ± 0.30 | 4610 ± 70 |
 <!-- END:emergency_full -->
 
 Ambulances:
 
 <!-- BEGIN:emergency_full_ambulances -->
+| Controller | Relevant ambulances finished / total | Travel time mean (s) | Median (s) | Stopped mean (s) | All ambulances: travel time mean (s) | Per ambulance vs preemption_mp (s) |
+|---|---|---|---|---|---|---|
+| maxpressure | 29 / 29 | 130.1 | 126.0 | 62.3 | 110.1 | 48.9 (1 faster, 28 slower of 29) |
+| fixedtime_webster | 29 / 29 | 123.5 | 123.0 | 55.0 | 104.9 | 42.3 (4 faster, 25 slower of 29) |
+| preemption_mp | 29 / 29 | 81.2 | 80.0 | 14.1 | 71.8 | – |
+| llm_guarded_mp | 29 / 29 | 88.9 | 87.0 | 21.2 | 77.8 | 7.7 (12 faster, 15 slower of 29) |
+| llm_guided_mp_v3 | 29 / 29 | 82.2 | 78.0 | 15.3 | 72.6 | 1.1 (16 faster, 12 slower of 29) |
 <!-- END:emergency_full_ambulances -->
 

@@ -37,3 +37,16 @@ def test_labels(mr):
     assert mr.label("llm_guarded_mp", "llama3.2:3b").startswith("LLM main")
     assert mr.arms_of("jinan_3x4") == [("maxpressure", None), ("fixedtime_webster", None), ("fixedtime", None),
                                        ("llm_guarded_mp", "llama3.2:3b")]
+
+
+def test_paired_differences_use_the_same_seed(mr):
+    att = {"maxpressure": [300, 301, 302], "fixedtime_webster": [310, 311, 312], "fixedtime": [299, 301, 312],
+           "llm_guarded_mp": [301, 300, 302]}
+    model = {"llm_guarded_mp": "llama3.2:3b"}
+    rs = {("jinan_3x4", c, s, model.get(c)): {"summary": {"metrics": {"att": a[s]}}}
+          for c, a in att.items() for s in range(3)}
+    p = mr.paired(rs, "jinan_3x4")
+    assert "MaxPressure" not in p
+    assert p["FixedTime (4 phases, 30 s)"]["att_minus_mp"] == [-1, 0, 10]
+    assert (p["FixedTime (4 phases, 30 s)"]["seeds_lower_att"], p["FixedTime (4 phases, 30 s)"]["seeds_higher_att"]) == (1, 1)
+    assert p[mr.label("llm_guarded_mp", "llama3.2:3b")]["att_minus_mp"] == [1, -1, 0]
