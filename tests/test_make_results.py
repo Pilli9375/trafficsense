@@ -50,3 +50,11 @@ def test_paired_differences_use_the_same_seed(mr):
     assert p["FixedTime (4 phases, 30 s)"]["att_minus_mp"] == [-1, 0, 10]
     assert (p["FixedTime (4 phases, 30 s)"]["seeds_lower_att"], p["FixedTime (4 phases, 30 s)"]["seeds_higher_att"]) == (1, 1)
     assert p[mr.label("llm_guarded_mp", "llama3.2:3b")]["att_minus_mp"] == [1, -1, 0]
+
+
+def test_check_ignores_the_commit_results_were_generated_at(mr):
+    b = {"scenarios": {"x": 1}, "llm": {}, "paired": {}, "reproduction": [], "provenance": {"git": "a"},
+         "emergency": {"runs": [1], "provenance": {"git_commit_of_this_summary": "a"}}}
+    later = {**b, "provenance": {"git": "b"}, "emergency": {"runs": [1], "provenance": {"git_commit_of_this_summary": "b"}}}
+    assert mr.comparable(b) == mr.comparable(later)
+    assert mr.comparable(b) != mr.comparable({**b, "emergency": {"runs": [2], "provenance": {}}})

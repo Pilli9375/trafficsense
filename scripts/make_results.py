@@ -227,6 +227,13 @@ def render(doc: str, tabs: dict[str, str]) -> str:
     return doc
 
 
+def comparable(b: dict) -> dict:
+    """The parts of results.json --check compares: the data, not the commit it was generated at."""
+    out = {k: b[k] for k in ("scenarios", "llm", "paired", "reproduction")}
+    out["emergency"] = {k: v for k, v in b["emergency"].items() if k != "provenance"}
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--check", action="store_true")
@@ -238,7 +245,7 @@ def main():
     em_tabs = emergency.tables(b["emergency"])
     if args.check:
         stored = json.loads((ROOT / OUT).read_text())
-        same = all(stored[k] == b[k] for k in ("scenarios", "llm", "paired", "reproduction", "emergency"))
+        same = comparable(stored) == comparable(b)
         ok = (same and render((ROOT / DOC).read_text(), tabs) == (ROOT / DOC).read_text()
               and emergency.render(em_doc.read_text(), em_tabs) == em_doc.read_text())
         print("docs/results.md and docs/emergency.md match the full runs" if ok else
