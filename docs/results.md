@@ -38,3 +38,52 @@ disagree.
 
 67 runs, estimated ~17 h on the GTX 1650 (baselines and the main arm first, ~4 h; the gemma4
 runs last). The batch is resumable: finished runs are skipped.
+
+## Results
+
+Mean ± std over seeds, 3600 s. ATT is CityFlow's average travel time over all generated
+vehicles (including those still driving or waiting to enter at the end).
+
+### Indian 2x2, off-peak
+
+<!-- BEGIN:results_indian_2x2_offpeak -->
+<!-- END:results_indian_2x2_offpeak -->
+
+### Indian 2x2, peak
+
+<!-- BEGIN:results_indian_2x2_peak -->
+<!-- END:results_indian_2x2_peak -->
+
+### Jinan 3x4
+
+<!-- BEGIN:results_jinan_3x4 -->
+<!-- END:results_jinan_3x4 -->
+
+### Emergency (Indian 2x2 peak + ambulances, seeds 0–4)
+
+Normal traffic:
+
+<!-- BEGIN:results_emergency -->
+<!-- END:results_emergency -->
+
+Ambulances (signal-relevant: their route crosses a movement a signal controls; the primary
+metric is their mean travel time, pooled over seeds):
+
+<!-- BEGIN:results_emergency_ambulances -->
+<!-- END:results_emergency_ambulances -->
+
+### LLM decisions
+
+Pooled over the seeds of each scenario. "LLM's answer differs" is over successful calls;
+"Applied phase differs" is over all calls (a failed call applies MaxPressure's choice).
+
+<!-- BEGIN:results_llm -->
+<!-- END:results_llm -->
+
+### Reproducibility
+
+Each baseline run that has an earlier run with the same scenario, controller, parameters, seed
+and flow file (`outputs/indian_2x2/runs`, `outputs/baselines/runs`) is compared with it:
+
+<!-- BEGIN:results_reproduction -->
+<!-- END:results_reproduction -->
