@@ -4,7 +4,7 @@
     python scripts/run_full_experiments.py             # run every run not done yet (clean git tree)
 
 Restart after an interruption (laptop restart, crash): start Ollama, then run the same command
-again. Finished runs are skipped: run_experiment() writes summary.json last (atomic rename), so
+again (detached: setsid nohup .venv/bin/python scripts/run_full_experiments.py >/dev/null 2>&1 &). Finished runs are skipped: run_experiment() writes summary.json last (atomic rename), so
 a run folder with a readable summary.json and metrics.csv is complete; an interrupted run
 leaves no summary.json and is simply run again (its partial folder is reported in the log and
 left in place). Progress goes to stdout and to outputs/full/batch.log.
@@ -177,4 +177,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except BaseException:       # also KeyboardInterrupt / SystemExit: the log says why the batch stopped
+        logging.getLogger("batch").exception("Batch stopped")
+        raise
