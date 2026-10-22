@@ -1,0 +1,8 @@
+2026-10-22 12:33:15 1 runs selected, 0 done, 1 to do; estimated 0.2 h left
+2026-10-22 12:33:15 [1/1] start bench nvidia/nemotron-3-ultra-550b-a55b indian_2x2_peak seed 0
+2026-10-22 12:38:42 [1/1] done in 327 s: outputs/model_size/runs/20261022-123317_indian_2x2_peak_llm_guided_mp_v3_s0 (128 calls, 0 failures, 0 retries, p95 6.79 s, served ['nvidia/nemotron-3-ultra-550b-a55b'])
+2026-10-22 12:38:42 All 1 selected runs are complete
+2026-10-22 19:09:19 1 runs selected, 0 done, 1 to do; estimated 0.2 h left
+2026-10-22 19:09:20 [1/1] start bench llama3.1:8b indian_2x2_peak seed 0
+2026-10-22 19:17:04 [1/1] done in 484 s: outputs/model_size/runs/20261022-190933_indian_2x2_peak_llm_guided_mp_v3_s0 (127 calls, 0 failures, 0 retries, p95 4.48 s, served ['llama3.1:8b'])
+2026-10-22 19:17:04 All 1 selected runs are complete

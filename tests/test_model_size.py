@@ -77,3 +77,28 @@ def test_study_runs_are_invisible_to_the_main_results(ms):
     mod = importlib.util.module_from_spec(full)
     full.loader.exec_module(mod)
     assert ms.RUNS not in (mod.FULL_RUNS, mod.EMERGENCY_RUNS)
+
+
+@pytest.fixture(scope="module")
+def mk():
+    spec = importlib.util.spec_from_file_location("make_model_size", repo_root() / "scripts" / "make_model_size.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def test_report_covers_every_model_and_labels_it_exploratory(mk, ms):
+    assert list(mk.SIZES) == list(ms.MODELS)                       # one size per model, same order
+    assert [mk.SIZES[m]["total_b"] for m in ms.MODELS] == sorted(mk.SIZES[m]["total_b"] for m in ms.MODELS)
+    doc = (repo_root() / mk.DOC).read_text()
+    assert "exploratory, added after the main results" in doc.lower()
+    assert "<!-- BEGIN:model_size_bench -->" in doc
+
+
+def test_bench_table_marks_models_not_run(mk):
+    b = {"sizes": mk.SIZES, "bench": {"models": {}, "not_run": ["llama3.1:8b"],
+                                       "maxpressure": {"att_s": 92.5, "queue_mean_per_intersection": 11.85}}}
+    t = mk.tables(b)["model_size_bench"]
+    rows = t.splitlines()
+    assert len({r.count("|") for r in rows}) == 1                  # every row has the header's columns
+    assert "`llama3.1:8b` | not run yet" in t and "MaxPressure (baseline)" in t

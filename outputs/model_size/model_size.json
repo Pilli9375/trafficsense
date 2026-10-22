@@ -1,0 +1,197 @@
+{
+ "provenance": {
+  "script": "scripts/make_model_size.py",
+  "git_commit_of_this_summary": "e2b7aef411919cf9eff6fed65e88d8e0cd13cf42",
+  "label": "exploratory, added after the main results"
+ },
+ "sizes": {
+  "qwen2.5:3b": {
+   "total_b": 3.1,
+   "active": "3.1 (dense)"
+  },
+  "llama3.2:3b": {
+   "total_b": 3.2,
+   "active": "3.2 (dense)"
+  },
+  "gemma4:e4b": {
+   "total_b": 7.5,
+   "active": "E4B: effective 4"
+  },
+  "llama3.1:8b": {
+   "total_b": 8.0,
+   "active": "8.0 (dense)"
+  },
+  "nvidia/nemotron-3-ultra-550b-a55b": {
+   "total_b": 550,
+   "active": "55 (MoE)"
+  }
+ },
+ "bench": {
+  "models": {
+   "qwen2.5:3b": {
+    "run": "outputs/llm_benchmark/runs/20261014-235820_indian_2x2_peak_llm_guided_mp_v3_s0",
+    "git_commit": "ce92a14769919a352b9416c82974f76f99813e61",
+    "timestamp": "2026-10-14T23:58:20+05:30",
+    "provider": "ollama",
+    "served_models": [
+     "qwen2.5:3b"
+    ],
+    "calls": 273,
+    "ok": 252,
+    "failures": 21,
+    "failures_by_type": {
+     "reason_too_long": 21
+    },
+    "failure_rate": 0.07692307692307693,
+    "retries": null,
+    "retries_by_reason": null,
+    "calls_with_reasoning_output": null,
+    "latency_mean_s": 1.1340299208241715,
+    "latency_p95_s": 1.3166630599997005,
+    "call_wall_p95_s": null,
+    "wall_time_s": 310.45,
+    "att_s": 120.0026455026455,
+    "queue_mean_per_intersection": 21.437083333333334,
+    "throughput": 551,
+    "follows_pressure_rate": 0.1984126984126984,
+    "keep_rate": 0.8174603174603174,
+    "mp_disagreement_rate": 0.8015873015873016,
+    "vram_peak_minus_idle_mib": 2058,
+    "ollama_size_vram_mib": 1985.3399991989136,
+    "ollama_size_mib": 1985.3399991989136,
+    "att_vs_mp": 0.29680665542182455
+   },
+   "llama3.2:3b": {
+    "run": "outputs/llm_benchmark/runs/20261014-235304_indian_2x2_peak_llm_guided_mp_v3_s0",
+    "git_commit": "ce92a14769919a352b9416c82974f76f99813e61",
+    "timestamp": "2026-10-14T23:53:04+05:30",
+    "provider": "ollama",
+    "served_models": [
+     "llama3.2:3b"
+    ],
+    "calls": 299,
+    "ok": 299,
+    "failures": 0,
+    "failures_by_type": {},
+    "failure_rate": 0.0,
+    "retries": null,
+    "retries_by_reason": null,
+    "calls_with_reasoning_output": null,
+    "latency_mean_s": 1.0285898057490004,
+    "latency_p95_s": 1.1946249062006244,
+    "call_wall_p95_s": null,
+    "wall_time_s": 308.48,
+    "att_s": 140.76190476190476,
+    "queue_mean_per_intersection": 28.344583333333333,
+    "throughput": 485,
+    "follows_pressure_rate": 0.046822742474916385,
+    "keep_rate": 0.8093645484949833,
+    "mp_disagreement_rate": 0.9765886287625418,
+    "vram_peak_minus_idle_mib": 2280,
+    "ollama_size_vram_mib": 2210.359998703003,
+    "ollama_size_mib": 2210.359998703003,
+    "att_vs_mp": 0.5211412561822808
+   },
+   "gemma4:e4b": {
+    "run": "outputs/llm_benchmark/runs/20261014-234143_indian_2x2_peak_llm_guided_mp_v3_s0",
+    "git_commit": "ce92a14769919a352b9416c82974f76f99813e61",
+    "timestamp": "2026-10-14T23:41:43+05:30",
+    "provider": "ollama",
+    "served_models": [
+     "gemma4:e4b"
+    ],
+    "calls": 151,
+    "ok": 151,
+    "failures": 0,
+    "failures_by_type": {},
+    "failure_rate": 0.0,
+    "retries": null,
+    "retries_by_reason": null,
+    "calls_with_reasoning_output": null,
+    "latency_mean_s": 4.44965257170857,
+    "latency_p95_s": 4.798827588001586,
+    "call_wall_p95_s": null,
+    "wall_time_s": 672.61,
+    "att_s": 93.61772486772487,
+    "queue_mean_per_intersection": 12.455833333333333,
+    "throughput": 610,
+    "follows_pressure_rate": 0.7814569536423841,
+    "keep_rate": 0.2847682119205298,
+    "mp_disagreement_rate": 0.23178807947019867,
+    "vram_peak_minus_idle_mib": 2852,
+    "ollama_size_vram_mib": 217.23999881744385,
+    "ollama_size_mib": 217.23999881744385,
+    "att_vs_mp": 0.011678435632808314
+   },
+   "llama3.1:8b": {
+    "run": "outputs/model_size/runs/20261022-190933_indian_2x2_peak_llm_guided_mp_v3_s0",
+    "git_commit": "d33be98f0991202378b2f0160f8b4b1f3e92c72c",
+    "timestamp": "2026-10-22T19:09:33+05:30",
+    "provider": "ollama",
+    "served_models": [
+     "llama3.1:8b"
+    ],
+    "calls": 127,
+    "ok": 127,
+    "failures": 0,
+    "failures_by_type": {},
+    "failure_rate": 0.0,
+    "retries": 0,
+    "retries_by_reason": {},
+    "calls_with_reasoning_output": 0,
+    "latency_mean_s": 3.704673959204687,
+    "latency_p95_s": 4.479373152197149,
+    "call_wall_p95_s": 4.4794205451999,
+    "wall_time_s": 471.21,
+    "att_s": 94.29761904761905,
+    "queue_mean_per_intersection": 12.529583333333333,
+    "throughput": 613,
+    "follows_pressure_rate": 0.6062992125984252,
+    "keep_rate": 0.08661417322834646,
+    "mp_disagreement_rate": 0.4409448818897638,
+    "vram_peak_minus_idle_mib": 2368,
+    "ollama_size_vram_mib": 2273.6499996185303,
+    "ollama_size_mib": 5073.309998512268,
+    "att_vs_mp": 0.01902570113496672
+   },
+   "nvidia/nemotron-3-ultra-550b-a55b": {
+    "run": "outputs/model_size/runs/20261022-123317_indian_2x2_peak_llm_guided_mp_v3_s0",
+    "git_commit": "d33be98f0991202378b2f0160f8b4b1f3e92c72c",
+    "timestamp": "2026-10-22T12:33:17+05:30",
+    "provider": "nvidia_nim",
+    "served_models": [
+     "nvidia/nemotron-3-ultra-550b-a55b"
+    ],
+    "calls": 128,
+    "ok": 128,
+    "failures": 0,
+    "failures_by_type": {},
+    "failure_rate": 0.0,
+    "retries": 0,
+    "retries_by_reason": {},
+    "calls_with_reasoning_output": 0,
+    "latency_mean_s": 2.2965047316484295,
+    "latency_p95_s": 6.787647874499951,
+    "call_wall_p95_s": 7.359465350700014,
+    "wall_time_s": 324.76,
+    "att_s": 92.41931216931216,
+    "queue_mean_per_intersection": 11.786666666666665,
+    "throughput": 626,
+    "follows_pressure_rate": 0.9921875,
+    "keep_rate": 0.1015625,
+    "mp_disagreement_rate": 0.015625,
+    "vram_peak_minus_idle_mib": null,
+    "ollama_size_vram_mib": null,
+    "ollama_size_mib": null,
+    "att_vs_mp": -0.0012721918865605767
+   }
+  },
+  "not_run": [],
+  "maxpressure": {
+   "run": "outputs/llm_benchmark/runs/20261014-173434_indian_2x2_peak_maxpressure_s0",
+   "att_s": 92.53703703703704,
+   "queue_mean_per_intersection": 11.850416666666666,
+   "throughput": 623
+  }
+ }
+}

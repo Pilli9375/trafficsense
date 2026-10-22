@@ -112,9 +112,24 @@ are reported as measured, with their spread.
 "Follows pressure" = share of successful calls whose answer is the highest-pressure allowed
 phase, from a replay of the run that reproduces its ATT exactly
 (`scripts/analyze_llm_decisions.py`). It describes the decisions; it is not a simulator metric.
+"Latency" is the answered request; "whole call" adds rate-limit waits, backoff and retried
+attempts (recorded only by runs of this study). The earlier runs (qwen2.5, llama3.2, gemma4)
+are reused from the final design round.
+
+GPU memory: nvidia-smi peak minus idle is measured during the run. Ollama's `/api/ps` numbers
+are shown as reported, but for `gemma4:e4b` they cannot be right: 217 MiB for a model whose
+file is 6278 MiB, the same anomaly as in `docs/llm_benchmark.md`. So its GPU/CPU split is
+unknown; nvidia-smi saw 2852 MiB.
 
 <!-- BEGIN:model_size_bench -->
-(not run yet)
+| Model | Where | Parameters total / active (B) | GPU memory: nvidia-smi peak − idle (Ollama size_vram / size), MiB | Calls | Failures | Retries | Latency mean / p95 (s) | Whole call p95 (s) | ATT at 600 s (s) | ATT vs MaxPressure | Queue / int. (veh) | Follows pressure | Answer differs from MaxPressure | Wall time (min) | Model id the server returned |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `qwen2.5:3b` | local (Ollama) | 3.1 / 3.1 (dense) | 2058 (1985 / 1985) | 273 | 7.7% (reason_too_long 21) | – | 1.13 / 1.32 | – | 120.0 | +29.7% | 21.44 | 20% | 80% | 5 | `qwen2.5:3b` |
+| `llama3.2:3b` | local (Ollama) | 3.2 / 3.2 (dense) | 2280 (2210 / 2210) | 299 | 0.0% (none) | – | 1.03 / 1.19 | – | 140.8 | +52.1% | 28.34 | 5% | 98% | 5 | `llama3.2:3b` |
+| `gemma4:e4b` | local (Ollama) | 7.5 / E4B: effective 4 | 2852 (217 / 217) | 151 | 0.0% (none) | – | 4.45 / 4.80 | – | 93.6 | +1.2% | 12.46 | 78% | 23% | 11 | `gemma4:e4b` |
+| `llama3.1:8b` | local (Ollama) | 8 / 8.0 (dense) | 2368 (2274 / 5073) | 127 | 0.0% (none) | 0 | 3.70 / 4.48 | 4.48 | 94.3 | +1.9% | 12.53 | 61% | 44% | 8 | `llama3.1:8b` |
+| `nvidia/nemotron-3-ultra-550b-a55b` | hosted (NIM) | 550 / 55 (MoE) | – | 128 | 0.0% (none) | 0 | 2.30 / 6.79 | 7.36 | 92.4 | -0.1% | 11.79 | 99% | 2% | 5 | `nvidia/nemotron-3-ultra-550b-a55b` |
+| MaxPressure (baseline) | – | – | – | – | – | – | – | – | 92.5 | +0.0% | 11.85 | – | – | – | – |
 <!-- END:model_size_bench -->
 
 ## Step 2: full runs
