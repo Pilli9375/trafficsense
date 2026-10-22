@@ -1,0 +1,46 @@
+{
+ "what": "Which hosted models answer the user's NVIDIA NIM key, checked before choosing arm B",
+ "date": "2026-10-22",
+ "timezone": "IST (UTC+05:30)",
+ "endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
+ "how": "Ad-hoc probe scripts run before scripts/probe_hosted.py existed; lines transcribed from their console output. The 404 messages also named an account identifier, left out here. API key not recorded.",
+ "deepseek-ai/deepseek-v4.1-flash": {
+  "listed_by_GET_models": true,
+  "attempts": [
+   {"time": "~11:35", "request": "non-streaming, temperature 0, max_tokens 256", "result": "ReadTimeout after 120 s"},
+   {"time": "~11:38", "request": "same + chat_template_kwargs thinking=false", "result": "ReadTimeout after 120 s"},
+   {"time": "~11:41", "request": "streaming, max_tokens 64", "result": "ReadTimeout after 280 s, no response headers"},
+   {"time": "11:56:59", "request": "non-streaming, max_tokens 64", "result": "ReadTimeout after 300.5 s"},
+   {"time": "12:04:00", "request": "same", "result": "ReadTimeout after 301.2 s"},
+   {"time": "12:11:01", "request": "same", "result": "ReadTimeout after 300.3 s"},
+   {"time": "12:18:01", "request": "same", "result": "ReadTimeout after 300.2 s"}
+  ],
+  "answered": 0
+ },
+ "controls": {
+  "nvidia/nemotron-3.5-lightning-30b-a3b": "HTTP 200, first chunk after 1.7 s (key and account work)",
+  "openai/gpt-oss-20b": "no answer within 100 s",
+  "mistralai/mistral-7b-instruct-v0.3": "HTTP 404 Function not found for account",
+  "google/gemma-3-4b-it": "HTTP 404 Function not found for account"
+ },
+ "scan_one_call_each_max_tokens_8_timeout_30s": {
+  "nvidia/nemotron-3-ultra-550b-a55b": "200 in 3.1 s, served as nvidia/nemotron-3-ultra-550b-a55b",
+  "nvidia/nemotron-3.5-super-vl-120b-a12b": "200 in 2.2 s, served as private/nvidia/nemotron-3.5-super-120b-a12b",
+  "nvidia/nemotron-3.5-lightning-30b-a3b": "200 in 1.9 s",
+  "stepfun-ai/step-5-preview": "200 in 18.3 s",
+  "meta/muse-glimmer-30b": "200 in 15.4 s",
+  "z-ai/glm-5.3": "ReadTimeout after 31 s",
+  "z-ai/glm-5.3-flash": "ReadTimeout after 31 s",
+  "google/gemma-4-31b-it": "ReadTimeout after 31 s",
+  "poolside/laguna-xs-2.1": "503 ResourceExhausted",
+  "nvidia/nemotron-nano-3-30b-a3b": "404 not found for account",
+  "moonshotai/kimi-k2.6": "404 not found for account",
+  "nvidia/llama-3.1-nemotron-ultra-253b-v1": "404 not found for account",
+  "mistralai/mistral-large-2-instruct": "404 not found for account",
+  "nvidia/nemotron-4-340b-instruct": "404 not found for account",
+  "writer/palmyra-creative-122b": "404 not found for account",
+  "nvidia/llama-3.1-nemotron-70b-instruct": "404 not found for account"
+ },
+ "nvidia/nemotron-3-super-120b-a12b": "listed; HTTP 404 Function not found for account (2 calls)",
+ "decision": "The user chose nvidia/nemotron-3-ultra-550b-a55b for arm B (second change; first DeepSeek, then Nemotron 3 Super)."
+}

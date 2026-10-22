@@ -1,0 +1,967 @@
+{
+ "script": "scripts/probe_hosted.py",
+ "model_requested": "nvidia/nemotron-3-ultra-550b-a55b",
+ "endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
+ "started_utc": "2026-10-22T06:51:02+00:00",
+ "note": "API key not recorded",
+ "sequential": [
+  {
+   "sent_unix": 1792651862.5106096,
+   "status": 200,
+   "latency_s": 1.9461369249997915,
+   "headers": {
+    "Date": "Thu, 22 Oct 2026 06:51:04 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+    "Connection": "keep-alive",
+    "Access-Control-Expose-Headers": "nvcf-reqid",
+    "Nvcf-Reqid": "972fffbb-746c-49fe-a493-75c4d36215c9",
+    "Nvcf-Status": "fulfilled",
+    "Vary": "Origin"
+   },
+   "model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+   "finish_reason": "stop",
+   "usage": {
+    "prompt_tokens": 80,
+    "completion_tokens": 22,
+    "total_tokens": 102
+   },
+   "reasoning_chars": 0,
+   "reasoning_head": "",
+   "content": "{\"phase\": 1, \"reason\": \"Phase 1 has significantly higher pressure and queue length\"}",
+   "parsed": [
+    1,
+    "Phase 1 has significantly higher pressure and queue length"
+   ]
+  },
+  {
+   "sent_unix": 1792651864.4574072,
+   "status": 200,
+   "latency_s": 2.1875435279998783,
+   "headers": {
+    "Date": "Thu, 22 Oct 2026 06:51:06 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+    "Connection": "keep-alive",
+    "Access-Control-Expose-Headers": "nvcf-reqid",
+    "Nvcf-Reqid": "7bf14907-6211-4a29-ad3a-f0df17f91402",
+    "Nvcf-Status": "fulfilled",
+    "Vary": "Origin"
+   },
+   "model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+   "finish_reason": "stop",
+   "usage": {
+    "prompt_tokens": 80,
+    "completion_tokens": 22,
+    "total_tokens": 102
+   },
+   "reasoning_chars": 0,
+   "reasoning_head": "",
+   "content": "{\"phase\": 1, \"reason\": \"Phase 1 has significantly higher pressure and queue length\"}",
+   "parsed": [
+    1,
+    "Phase 1 has significantly higher pressure and queue length"
+   ]
+  },
+  {
+   "sent_unix": 1792651866.6458037,
+   "status": 200,
+   "latency_s": 0.7149036780001552,
+   "headers": {
+    "Date": "Thu, 22 Oct 2026 06:51:07 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+    "Connection": "keep-alive",
+    "Access-Control-Expose-Headers": "nvcf-reqid",
+    "Nvcf-Reqid": "3f0ee639-5215-48cb-bc12-69e0cd77e230",
+    "Nvcf-Status": "fulfilled",
+    "Vary": "Origin"
+   },
+   "model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+   "finish_reason": "stop",
+   "usage": {
+    "prompt_tokens": 80,
+    "completion_tokens": 19,
+    "total_tokens": 99
+   },
+   "reasoning_chars": 0,
+   "reasoning_head": "",
+   "content": "{\"phase\": 1, \"reason\": \"Phase 1 has significantly higher pressure\"}",
+   "parsed": [
+    1,
+    "Phase 1 has significantly higher pressure"
+   ]
+  },
+  {
+   "sent_unix": 1792651867.3615236,
+   "status": 200,
+   "latency_s": 1.851260719000038,
+   "headers": {
+    "Date": "Thu, 22 Oct 2026 06:51:08 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+    "Connection": "keep-alive",
+    "Access-Control-Expose-Headers": "nvcf-reqid",
+    "Nvcf-Reqid": "36a8e662-54ab-4197-aac8-19840fca7608",
+    "Nvcf-Status": "fulfilled",
+    "Vary": "Origin"
+   },
+   "model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+   "finish_reason": "stop",
+   "usage": {
+    "prompt_tokens": 80,
+    "completion_tokens": 22,
+    "total_tokens": 102
+   },
+   "reasoning_chars": 0,
+   "reasoning_head": "",
+   "content": "{\"phase\": 1, \"reason\": \"Phase 1 has significantly higher pressure and queue.\"}",
+   "parsed": [
+    1,
+    "Phase 1 has significantly higher pressure and queue."
+   ]
+  },
+  {
+   "sent_unix": 1792651869.2134552,
+   "status": 200,
+   "latency_s": 1.0122280440000395,
+   "headers": {
+    "Date": "Thu, 22 Oct 2026 06:51:09 GMT",
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+    "Connection": "keep-alive",
+    "Access-Control-Expose-Headers": "nvcf-reqid",
+    "Nvcf-Reqid": "65b72f3e-eaf3-4cf2-9d0d-8ff2ba554666",
+    "Nvcf-Status": "fulfilled",
+    "Vary": "Origin"
+   },
+   "model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+   "finish_reason": "stop",
+   "usage": {
+    "prompt_tokens": 80,
+    "completion_tokens": 22,
+    "total_tokens": 102
+   },
+   "reasoning_chars": 0,
+   "reasoning_head": "",
+   "content": "{\"phase\": 1, \"reason\": \"Phase 1 has significantly higher pressure and queue.\"}",
+   "parsed": [
+    1,
+    "Phase 1 has significantly higher pressure and queue."
+   ]
+  }
+ ],
+ "burst": {
+  "n": 50,
+  "threads": 8,
+  "calls": [
+   {
+    "sent_unix": 1792651870.2267773,
+    "status": 200,
+    "latency_s": 0.593334571000014,
+    "model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+    "finish_reason": "length",
+    "usage": {
+     "prompt_tokens": 80,
+     "completion_tokens": 1,
+     "total_tokens": 81
+    },
+    "reasoning_chars": 0,
+    "reasoning_head": "",
+    "content": "{\"",
+    "parse_error": "invalid_json: not JSON: '{\"'"
+   },
+   {
+    "sent_unix": 1792651870.2283738,
+    "status": 200,
+    "latency_s": 0.8912894780000897,
+    "model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+    "finish_reason": "length",
+    "usage": {
+     "prompt_tokens": 80,
+     "completion_tokens": 1,
+     "total_tokens": 81
+    },
+    "reasoning_chars": 0,
+    "reasoning_head": "",
+    "content": "{\"",
+    "parse_error": "invalid_json: not JSON: '{\"'"
+   },
+   {
+    "sent_unix": 1792651870.2301793,
+    "status": 200,
+    "latency_s": 0.6025046280001334,
+    "model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+    "finish_reason": "length",
+    "usage": {
+     "prompt_tokens": 80,
+     "completion_tokens": 1,
+     "total_tokens": 81
+    },
+    "reasoning_chars": 0,
+    "reasoning_head": "",
+    "content": "{\"",
+    "parse_error": "invalid_json: not JSON: '{\"'"
+   },
+   {
+    "sent_unix": 1792651870.2318702,
+    "status": 200,
+    "latency_s": 0.7869697819996873,
+    "model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+    "finish_reason": "length",
+    "usage": {
+     "prompt_tokens": 80,
+     "completion_tokens": 1,
+     "total_tokens": 81
+    },
+    "reasoning_chars": 0,
+    "reasoning_head": "",
+    "content": "{\"",
+    "parse_error": "invalid_json: not JSON: '{\"'"
+   },
+   {
+    "sent_unix": 1792651870.2335503,
+    "status": 200,
+    "latency_s": 0.5964710950001972,
+    "model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+    "finish_reason": "length",
+    "usage": {
+     "prompt_tokens": 80,
+     "completion_tokens": 1,
+     "total_tokens": 81
+    },
+    "reasoning_chars": 0,
+    "reasoning_head": "",
+    "content": "{\"",
+    "parse_error": "invalid_json: not JSON: '{\"'"
+   },
+   {
+    "sent_unix": 1792651870.2350729,
+    "status": 200,
+    "latency_s": 1.1961555160000898,
+    "model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+    "finish_reason": "length",
+    "usage": {
+     "prompt_tokens": 80,
+     "completion_tokens": 1,
+     "total_tokens": 81
+    },
+    "reasoning_chars": 0,
+    "reasoning_head": "",
+    "content": "{\"",
+    "parse_error": "invalid_json: not JSON: '{\"'"
+   },
+   {
+    "sent_unix": 1792651870.235766,
+    "status": 200,
+    "latency_s": 0.8395857509999587,
+    "model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+    "finish_reason": "length",
+    "usage": {
+     "prompt_tokens": 80,
+     "completion_tokens": 1,
+     "total_tokens": 81
+    },
+    "reasoning_chars": 0,
+    "reasoning_head": "",
+    "content": "{\"",
+    "parse_error": "invalid_json: not JSON: '{\"'"
+   },
+   {
+    "sent_unix": 1792651870.238482,
+    "status": 200,
+    "latency_s": 1.4868020819999401,
+    "model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+    "finish_reason": "length",
+    "usage": {
+     "prompt_tokens": 80,
+     "completion_tokens": 1,
+     "total_tokens": 81
+    },
+    "reasoning_chars": 0,
+    "reasoning_head": "",
+    "content": "{\"",
+    "parse_error": "invalid_json: not JSON: '{\"'"
+   },
+   {
+    "sent_unix": 1792651870.8212805,
+    "status": 200,
+    "latency_s": 1.662064958999963,
+    "model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+    "finish_reason": "length",
+    "usage": {
+     "prompt_tokens": 80,
+     "completion_tokens": 1,
+     "total_tokens": 81
+    },
+    "reasoning_chars": 0,
+    "reasoning_head": "",
+    "content": "{\"",
+    "parse_error": "invalid_json: not JSON: '{\"'"
+   },
+   {
+    "sent_unix": 1792651870.8307645,
+    "status": 200,
+    "latency_s": 0.9983762080000815,
+    "model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+    "finish_reason": "length",
+    "usage": {
+     "prompt_tokens": 80,
+     "completion_tokens": 1,
+     "total_tokens": 81
+    },
+    "reasoning_chars": 0,
+    "reasoning_head": "",
+    "content": "{\"",
+    "parse_error": "invalid_json: not JSON: '{\"'"
+   },
+   {
+    "sent_unix": 1792651870.8334394,
+    "status": 429,
+    "latency_s": 1.9095679189999828,
+    "headers": {
+     "Date": "Thu, 22 Oct 2026 06:51:11 GMT",
+     "Content-Type": "application/problem+json",
+     "Content-Length": "42",
+     "Connection": "keep-alive",
+     "Vary": "Origin"
+    },
+    "body": {
+     "status": 429,
+     "title": "Too Many Requests"
+    }
+   },
+   {
+    "sent_unix": 1792651871.0195034,
+    "status": 200,
+    "latency_s": 0.6462244379999902,
+    "model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+    "finish_reason": "length",
+    "usage": {
+     "prompt_tokens": 80,
+     "completion_tokens": 1,
+     "total_tokens": 81
+    },
+    "reasoning_chars": 0,
+    "reasoning_head": "",
+    "content": "{\"",
+    "parse_error": "invalid_json: not JSON: '{\"'"
+   },
+   {
+    "sent_unix": 1792651871.0761127,
+    "status": 200,
+    "latency_s": 0.7895142140000644,
+    "model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+    "finish_reason": "length",
+    "usage": {
+     "prompt_tokens": 80,
+     "completion_tokens": 1,
+     "total_tokens": 81
+    },
+    "reasoning_chars": 0,
+    "reasoning_head": "",
+    "content": "{\"",
+    "parse_error": "invalid_json: not JSON: '{\"'"
+   },
+   {
+    "sent_unix": 1792651871.1204581,
+    "status": 200,
+    "latency_s": 0.5148092889999134,
+    "model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+    "finish_reason": "length",
+    "usage": {
+     "prompt_tokens": 80,
+     "completion_tokens": 1,
+     "total_tokens": 81
+    },
+    "reasoning_chars": 0,
+    "reasoning_head": "",
+    "content": "{\"",
+    "parse_error": "invalid_json: not JSON: '{\"'"
+   },
+   {
+    "sent_unix": 1792651871.4325166,
+    "status": 200,
+    "latency_s": 0.6042420910002875,
+    "model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+    "finish_reason": "length",
+    "usage": {
+     "prompt_tokens": 80,
+     "completion_tokens": 1,
+     "total_tokens": 81
+    },
+    "reasoning_chars": 0,
+    "reasoning_head": "",
+    "content": "{\"",
+    "parse_error": "invalid_json: not JSON: '{\"'"
+   },
+   {
+    "sent_unix": 1792651871.6360776,
+    "status": 200,
+    "latency_s": 11.147407206000025,
+    "model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+    "finish_reason": "length",
+    "usage": {
+     "prompt_tokens": 80,
+     "completion_tokens": 1,
+     "total_tokens": 81
+    },
+    "reasoning_chars": 0,
+    "reasoning_head": "",
+    "content": "{\"",
+    "parse_error": "invalid_json: not JSON: '{\"'"
+   },
+   {
+    "sent_unix": 1792651871.666403,
+    "status": 200,
+    "latency_s": 1.271931300000233,
+    "model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+    "finish_reason": "length",
+    "usage": {
+     "prompt_tokens": 80,
+     "completion_tokens": 1,
+     "total_tokens": 81
+    },
+    "reasoning_chars": 0,
+    "reasoning_head": "",
+    "content": "{\"",
+    "parse_error": "invalid_json: not JSON: '{\"'"
+   },
+   {
+    "sent_unix": 1792651871.7262816,
+    "status": 200,
+    "latency_s": 2.5636819259998447,
+    "model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+    "finish_reason": "length",
+    "usage": {
+     "prompt_tokens": 80,
+     "completion_tokens": 1,
+     "total_tokens": 81
+    },
+    "reasoning_chars": 0,
+    "reasoning_head": "",
+    "content": "{\"",
+    "parse_error": "invalid_json: not JSON: '{\"'"
+   },
+   {
+    "sent_unix": 1792651871.8297966,
+    "status": 429,
+    "latency_s": 0.4470581079999647,
+    "headers": {
+     "Date": "Thu, 22 Oct 2026 06:51:12 GMT",
+     "Content-Type": "application/problem+json",
+     "Content-Length": "42",
+     "Connection": "keep-alive",
+     "Vary": "Origin"
+    },
+    "body": {
+     "status": 429,
+     "title": "Too Many Requests"
+    }
+   },
+   {
+    "sent_unix": 1792651871.8662922,
+    "status": 429,
+    "latency_s": 2.54769166899996,
+    "headers": {
+     "Date": "Thu, 22 Oct 2026 06:51:14 GMT",
+     "Content-Type": "application/problem+json",
+     "Content-Length": "42",
+     "Connection": "keep-alive",
+     "Vary": "Origin"
+    },
+    "body": {
+     "status": 429,
+     "title": "Too Many Requests"
+    }
+   },
+   {
+    "sent_unix": 1792651872.0375657,
+    "status": 429,
+    "latency_s": 0.1921924189996389,
+    "headers": {
+     "Date": "Thu, 22 Oct 2026 06:51:12 GMT",
+     "Content-Type": "application/problem+json",
+     "Content-Length": "42",
+     "Connection": "keep-alive",
+     "Vary": "Origin"
+    },
+    "body": {
+     "status": 429,
+     "title": "Too Many Requests"
+    }
+   },
+   {
+    "sent_unix": 1792651872.230371,
+    "status": 200,
+    "latency_s": 6.4505032690003645,
+    "model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+    "finish_reason": "length",
+    "usage": {
+     "prompt_tokens": 80,
+     "completion_tokens": 1,
+     "total_tokens": 81
+    },
+    "reasoning_chars": 0,
+    "reasoning_head": "",
+    "content": "{\"",
+    "parse_error": "invalid_json: not JSON: '{\"'"
+   },
+   {
+    "sent_unix": 1792651872.2775252,
+    "status": 429,
+    "latency_s": 0.2100360089998503,
+    "headers": {
+     "Date": "Thu, 22 Oct 2026 06:51:12 GMT",
+     "Content-Type": "application/problem+json",
+     "Content-Length": "42",
+     "Connection": "keep-alive",
+     "Vary": "Origin"
+    },
+    "body": {
+     "status": 429,
+     "title": "Too Many Requests"
+    }
+   },
+   {
+    "sent_unix": 1792651872.4846492,
+    "status": 200,
+    "latency_s": 0.7688841680001133,
+    "model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+    "finish_reason": "length",
+    "usage": {
+     "prompt_tokens": 80,
+     "completion_tokens": 1,
+     "total_tokens": 81
+    },
+    "reasoning_chars": 0,
+    "reasoning_head": "",
+    "content": "{\"",
+    "parse_error": "invalid_json: not JSON: '{\"'"
+   },
+   {
+    "sent_unix": 1792651872.4882245,
+    "status": 429,
+    "latency_s": 0.248060914999769,
+    "headers": {
+     "Date": "Thu, 22 Oct 2026 06:51:12 GMT",
+     "Content-Type": "application/problem+json",
+     "Content-Length": "42",
+     "Connection": "keep-alive",
+     "Vary": "Origin"
+    },
+    "body": {
+     "status": 429,
+     "title": "Too Many Requests"
+    }
+   },
+   {
+    "sent_unix": 1792651872.7369332,
+    "status": 429,
+    "latency_s": 0.2133125889999974,
+    "headers": {
+     "Date": "Thu, 22 Oct 2026 06:51:12 GMT",
+     "Content-Type": "application/problem+json",
+     "Content-Length": "42",
+     "Connection": "keep-alive",
+     "Vary": "Origin"
+    },
+    "body": {
+     "status": 429,
+     "title": "Too Many Requests"
+    }
+   },
+   {
+    "sent_unix": 1792651872.7437382,
+    "status": 429,
+    "latency_s": 0.41930257000012716,
+    "headers": {
+     "Date": "Thu, 22 Oct 2026 06:51:12 GMT",
+     "Content-Type": "application/problem+json",
+     "Content-Length": "42",
+     "Connection": "keep-alive",
+     "Vary": "Origin"
+    },
+    "body": {
+     "status": 429,
+     "title": "Too Many Requests"
+    }
+   },
+   {
+    "sent_unix": 1792651872.939122,
+    "status": 429,
+    "latency_s": 0.20296114000029775,
+    "headers": {
+     "Date": "Thu, 22 Oct 2026 06:51:12 GMT",
+     "Content-Type": "application/problem+json",
+     "Content-Length": "42",
+     "Connection": "keep-alive",
+     "Vary": "Origin"
+    },
+    "body": {
+     "status": 429,
+     "title": "Too Many Requests"
+    }
+   },
+   {
+    "sent_unix": 1792651872.9509273,
+    "status": 429,
+    "latency_s": 0.19053261699991708,
+    "headers": {
+     "Date": "Thu, 22 Oct 2026 06:51:12 GMT",
+     "Content-Type": "application/problem+json",
+     "Content-Length": "42",
+     "Connection": "keep-alive",
+     "Vary": "Origin"
+    },
+    "body": {
+     "status": 429,
+     "title": "Too Many Requests"
+    }
+   },
+   {
+    "sent_unix": 1792651873.1429567,
+    "status": 429,
+    "latency_s": 0.5414479920000304,
+    "headers": {
+     "Date": "Thu, 22 Oct 2026 06:51:13 GMT",
+     "Content-Type": "application/problem+json",
+     "Content-Length": "42",
+     "Connection": "keep-alive",
+     "Vary": "Origin"
+    },
+    "body": {
+     "status": 429,
+     "title": "Too Many Requests"
+    }
+   },
+   {
+    "sent_unix": 1792651873.1455014,
+    "status": 429,
+    "latency_s": 0.294554380000136,
+    "headers": {
+     "Date": "Thu, 22 Oct 2026 06:51:13 GMT",
+     "Content-Type": "application/problem+json",
+     "Content-Length": "42",
+     "Connection": "keep-alive",
+     "Vary": "Origin"
+    },
+    "body": {
+     "status": 429,
+     "title": "Too Many Requests"
+    }
+   },
+   {
+    "sent_unix": 1792651873.1636746,
+    "status": 429,
+    "latency_s": 0.2790216509997663,
+    "headers": {
+     "Date": "Thu, 22 Oct 2026 06:51:13 GMT",
+     "Content-Type": "application/problem+json",
+     "Content-Length": "42",
+     "Connection": "keep-alive",
+     "Vary": "Origin"
+    },
+    "body": {
+     "status": 429,
+     "title": "Too Many Requests"
+    }
+   },
+   {
+    "sent_unix": 1792651873.2543318,
+    "status": 200,
+    "latency_s": 0.6003910869999345,
+    "model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+    "finish_reason": "length",
+    "usage": {
+     "prompt_tokens": 80,
+     "completion_tokens": 1,
+     "total_tokens": 81
+    },
+    "reasoning_chars": 0,
+    "reasoning_head": "",
+    "content": "{\"",
+    "parse_error": "invalid_json: not JSON: '{\"'"
+   },
+   {
+    "sent_unix": 1792651873.4408016,
+    "status": 429,
+    "latency_s": 0.3082415960002436,
+    "headers": {
+     "Date": "Thu, 22 Oct 2026 06:51:13 GMT",
+     "Content-Type": "application/problem+json",
+     "Content-Length": "42",
+     "Connection": "keep-alive",
+     "Vary": "Origin"
+    },
+    "body": {
+     "status": 429,
+     "title": "Too Many Requests"
+    }
+   },
+   {
+    "sent_unix": 1792651873.443724,
+    "status": 429,
+    "latency_s": 1.3228542310002922,
+    "headers": {
+     "Date": "Thu, 22 Oct 2026 06:51:14 GMT",
+     "Content-Type": "application/problem+json",
+     "Content-Length": "42",
+     "Connection": "keep-alive",
+     "Vary": "Origin"
+    },
+    "body": {
+     "status": 429,
+     "title": "Too Many Requests"
+    }
+   },
+   {
+    "sent_unix": 1792651873.685159,
+    "status": 429,
+    "latency_s": 0.21538248299975749,
+    "headers": {
+     "Date": "Thu, 22 Oct 2026 06:51:13 GMT",
+     "Content-Type": "application/problem+json",
+     "Content-Length": "42",
+     "Connection": "keep-alive",
+     "Vary": "Origin"
+    },
+    "body": {
+     "status": 429,
+     "title": "Too Many Requests"
+    }
+   },
+   {
+    "sent_unix": 1792651873.7498379,
+    "status": 429,
+    "latency_s": 0.202420064999842,
+    "headers": {
+     "Date": "Thu, 22 Oct 2026 06:51:13 GMT",
+     "Content-Type": "application/problem+json",
+     "Content-Length": "42",
+     "Connection": "keep-alive",
+     "Vary": "Origin"
+    },
+    "body": {
+     "status": 429,
+     "title": "Too Many Requests"
+    }
+   },
+   {
+    "sent_unix": 1792651873.8553953,
+    "status": 429,
+    "latency_s": 0.4184706229998483,
+    "headers": {
+     "Date": "Thu, 22 Oct 2026 06:51:13 GMT",
+     "Content-Type": "application/problem+json",
+     "Content-Length": "42",
+     "Connection": "keep-alive",
+     "Vary": "Origin"
+    },
+    "body": {
+     "status": 429,
+     "title": "Too Many Requests"
+    }
+   },
+   {
+    "sent_unix": 1792651873.9012966,
+    "status": 429,
+    "latency_s": 0.41193541299981007,
+    "headers": {
+     "Date": "Thu, 22 Oct 2026 06:51:13 GMT",
+     "Content-Type": "application/problem+json",
+     "Content-Length": "42",
+     "Connection": "keep-alive",
+     "Vary": "Origin"
+    },
+    "body": {
+     "status": 429,
+     "title": "Too Many Requests"
+    }
+   },
+   {
+    "sent_unix": 1792651873.953131,
+    "status": 200,
+    "latency_s": 0.5518590299998323,
+    "model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+    "finish_reason": "length",
+    "usage": {
+     "prompt_tokens": 80,
+     "completion_tokens": 1,
+     "total_tokens": 81
+    },
+    "reasoning_chars": 0,
+    "reasoning_head": "",
+    "content": "{\"",
+    "parse_error": "invalid_json: not JSON: '{\"'"
+   },
+   {
+    "sent_unix": 1792651874.2744987,
+    "status": 429,
+    "latency_s": 0.22685352200005582,
+    "headers": {
+     "Date": "Thu, 22 Oct 2026 06:51:14 GMT",
+     "Content-Type": "application/problem+json",
+     "Content-Length": "42",
+     "Connection": "keep-alive",
+     "Vary": "Origin"
+    },
+    "body": {
+     "status": 429,
+     "title": "Too Many Requests"
+    }
+   },
+   {
+    "sent_unix": 1792651874.2906854,
+    "status": 429,
+    "latency_s": 0.2699373540003762,
+    "headers": {
+     "Date": "Thu, 22 Oct 2026 06:51:14 GMT",
+     "Content-Type": "application/problem+json",
+     "Content-Length": "42",
+     "Connection": "keep-alive",
+     "Vary": "Origin"
+    },
+    "body": {
+     "status": 429,
+     "title": "Too Many Requests"
+    }
+   },
+   {
+    "sent_unix": 1792651874.3143053,
+    "status": 429,
+    "latency_s": 0.5527937010001551,
+    "headers": {
+     "Date": "Thu, 22 Oct 2026 06:51:14 GMT",
+     "Content-Type": "application/problem+json",
+     "Content-Length": "42",
+     "Connection": "keep-alive",
+     "Vary": "Origin"
+    },
+    "body": {
+     "status": 429,
+     "title": "Too Many Requests"
+    }
+   },
+   {
+    "sent_unix": 1792651874.4146173,
+    "status": 200,
+    "latency_s": 0.9741512999999031,
+    "model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+    "finish_reason": "length",
+    "usage": {
+     "prompt_tokens": 80,
+     "completion_tokens": 1,
+     "total_tokens": 81
+    },
+    "reasoning_chars": 0,
+    "reasoning_head": "",
+    "content": "{\"",
+    "parse_error": "invalid_json: not JSON: '{\"'"
+   },
+   {
+    "sent_unix": 1792651874.5020964,
+    "status": 429,
+    "latency_s": 0.26987843500000963,
+    "headers": {
+     "Date": "Thu, 22 Oct 2026 06:51:14 GMT",
+     "Content-Type": "application/problem+json",
+     "Content-Length": "42",
+     "Connection": "keep-alive",
+     "Vary": "Origin"
+    },
+    "body": {
+     "status": 429,
+     "title": "Too Many Requests"
+    }
+   },
+   {
+    "sent_unix": 1792651874.505675,
+    "status": 429,
+    "latency_s": 0.25872695899988685,
+    "headers": {
+     "Date": "Thu, 22 Oct 2026 06:51:14 GMT",
+     "Content-Type": "application/problem+json",
+     "Content-Length": "42",
+     "Connection": "keep-alive",
+     "Vary": "Origin"
+    },
+    "body": {
+     "status": 429,
+     "title": "Too Many Requests"
+    }
+   },
+   {
+    "sent_unix": 1792651874.5614405,
+    "status": 429,
+    "latency_s": 0.2097725100002208,
+    "headers": {
+     "Date": "Thu, 22 Oct 2026 06:51:14 GMT",
+     "Content-Type": "application/problem+json",
+     "Content-Length": "42",
+     "Connection": "keep-alive",
+     "Vary": "Origin"
+    },
+    "body": {
+     "status": 429,
+     "title": "Too Many Requests"
+    }
+   },
+   {
+    "sent_unix": 1792651874.7657917,
+    "status": 200,
+    "latency_s": 0.5237761650000721,
+    "model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+    "finish_reason": "length",
+    "usage": {
+     "prompt_tokens": 80,
+     "completion_tokens": 1,
+     "total_tokens": 81
+    },
+    "reasoning_chars": 0,
+    "reasoning_head": "",
+    "content": "{\"",
+    "parse_error": "invalid_json: not JSON: '{\"'"
+   },
+   {
+    "sent_unix": 1792651874.7686365,
+    "status": 429,
+    "latency_s": 0.20364001100006135,
+    "headers": {
+     "Date": "Thu, 22 Oct 2026 06:51:14 GMT",
+     "Content-Type": "application/problem+json",
+     "Content-Length": "42",
+     "Connection": "keep-alive",
+     "Vary": "Origin"
+    },
+    "body": {
+     "status": 429,
+     "title": "Too Many Requests"
+    }
+   },
+   {
+    "sent_unix": 1792651874.772693,
+    "status": 429,
+    "latency_s": 0.19898296200017285,
+    "headers": {
+     "Date": "Thu, 22 Oct 2026 06:51:14 GMT",
+     "Content-Type": "application/problem+json",
+     "Content-Length": "42",
+     "Connection": "keep-alive",
+     "Vary": "Origin"
+    },
+    "body": {
+     "status": 429,
+     "title": "Too Many Requests"
+    }
+   }
+  ],
+  "status_counts": {
+   "200": 23,
+   "429": 27
+  },
+  "ok_within_60s_of_first": 23,
+  "first_429_after_s": 0.6066620349884033,
+  "ok_before_first_429": 10
+ }
+}
