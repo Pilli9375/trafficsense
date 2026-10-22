@@ -1,0 +1,126 @@
+{
+  "source": "/mnt/d/trafficsense/datasets/idd-detection/IDD_Detection",
+  "classes": [
+    "car",
+    "motorcycle",
+    "autorickshaw",
+    "bus",
+    "truck",
+    "bicycle",
+    "person"
+  ],
+  "mapping": {
+    "car": "car",
+    "motorcycle": "motorcycle",
+    "autorickshaw": "autorickshaw",
+    "bus": "bus",
+    "truck": "truck",
+    "bicycle": "bicycle",
+    "person": "person",
+    "rider": null,
+    "vehicle fallback": null,
+    "caravan": null,
+    "trailer": null,
+    "train": null,
+    "animal": null,
+    "traffic sign": null,
+    "traffic light": null
+  },
+  "val_fraction": 0.1,
+  "split_seed": 0,
+  "splits": {
+    "train": {
+      "official_split": "train",
+      "images": 28384,
+      "sequences": 393,
+      "background_images": 1203,
+      "boxes": {
+        "car": 58508,
+        "motorcycle": 69602,
+        "autorickshaw": 21793,
+        "bus": 12534,
+        "truck": 18645,
+        "bicycle": 2240,
+        "person": 63729
+      },
+      "boxes_total": 247051,
+      "source_boxes": 342067,
+      "dropped_by_class": {
+        "animal": 4494,
+        "caravan": 115,
+        "rider": 65981,
+        "traffic light": 2522,
+        "traffic sign": 8404,
+        "trailer": 11,
+        "train": 39,
+        "vehicle fallback": 13450
+      },
+      "dropped_degenerate": 0,
+      "clipped": 155
+    },
+    "val": {
+      "official_split": "train",
+      "images": 3185,
+      "sequences": 45,
+      "background_images": 189,
+      "boxes": {
+        "car": 7168,
+        "motorcycle": 8517,
+        "autorickshaw": 2705,
+        "bus": 1295,
+        "truck": 2114,
+        "bicycle": 333,
+        "person": 6590
+      },
+      "boxes_total": 28722,
+      "source_boxes": 39449,
+      "dropped_by_class": {
+        "animal": 270,
+        "caravan": 10,
+        "rider": 7127,
+        "traffic light": 258,
+        "traffic sign": 1512,
+        "train": 8,
+        "vehicle fallback": 1542
+      },
+      "dropped_degenerate": 0,
+      "clipped": 15
+    },
+    "test": {
+      "official_split": "val",
+      "images": 10225,
+      "sequences": 119,
+      "background_images": 382,
+      "boxes": {
+        "car": 24843,
+        "motorcycle": 25489,
+        "autorickshaw": 7782,
+        "bus": 4916,
+        "truck": 7078,
+        "bicycle": 569,
+        "person": 18078
+      },
+      "boxes_total": 88755,
+      "source_boxes": 126060,
+      "dropped_by_class": {
+        "animal": 1460,
+        "caravan": 11,
+        "rider": 24518,
+        "traffic light": 919,
+        "traffic sign": 4287,
+        "trailer": 7,
+        "train": 13,
+        "vehicle fallback": 6089
+      },
+      "dropped_degenerate": 1,
+      "clipped": 39
+    }
+  },
+  "verified_label_files": 41794,
+  "provenance": {
+    "script": "scripts/prepare_idd.py",
+    "git_commit": "51a2b5e7ec1bda186bd10036803805756144a4f8",
+    "git_dirty": true,
+    "timestamp": "2026-10-22T06:50:27+00:00"
+  }
+}

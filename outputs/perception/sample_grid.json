@@ -1,0 +1,27 @@
+{
+  "split": "train",
+  "seed": 0,
+  "images": [
+    "highquality_16k/HYD-2018-07-24_18-03-48/0000434.jpg",
+    "sideLeft/BLR-2018-06-05_08-50-18_sideLeft/001315_r.jpg",
+    "highquality_16k/BLR-2018-06-22-05-05-26_part_26/0001275.jpg",
+    "sideRight/BLR-2018-03-22_17-39-26_3_sideRight/000336_r.jpg",
+    "frontFar/BLR-2018-04-16_15-54-27_frontFar/0007380.jpg",
+    "sideLeft/BLR-2018-04-16_16-14-27_sideLeft/000774_r.jpg",
+    "sideRight/BLR-2018-05-22_12-04-54_sideRight/000897_r.jpg",
+    "sideRight/BLR-2018-05-09_12-20-55_sideRight/000876_r.jpg",
+    "sideLeft/BLR-2018-06-06_16-30-25_sideLeft/0009195.jpg",
+    "highquality_16k/BLR-2018-06-29-10-07-38_part_31/0001050.jpg",
+    "highquality_16k/HYD-2018-06-11_13-44-41_frontNear_left/0007110.jpg",
+    "sideLeft/BLR-2018-05-17_15-23-02_sideLeft/0006480.jpg",
+    "sideRight/BLR-2018-05-08_10-11-11_sideRight/0004860.jpg",
+    "sideLeft/BLR-2018-05-29_11-55-34_sideLeft/0000780.jpg",
+    "highquality_16k/BLR-2018-04-19_17-26-55/0008758.jpg",
+    "rearNear/BLR-2018-05-22_13-21-45_rearNear/0001230.jpg"
+  ],
+  "alignment_images": [
+    "highquality_16k/HYD-2018-07-24_18-03-48/0000434.jpg",
+    "sideLeft/BLR-2018-06-05_08-50-18_sideLeft/001315_r.jpg",
+    "highquality_16k/BLR-2018-06-22-05-05-26_part_26/0001275.jpg"
+  ]
+}
