@@ -6,6 +6,11 @@ paths:
   scenario_configs: configs/scenarios
   outputs: outputs
   runs: outputs/runs
+  # IDD Detection: a gitignored symlink to the extracted dataset (it lives outside the repo,
+  # on D). Create it once: ln -s <...>/IDD_Detection data/external/idd_detection
+  idd_root: data/external/idd_detection
+  idd_yolo: data/external/idd_yolo     # converted labels + data.yaml (gitignored, no image copies)
+  perception_outputs: outputs/perception
 
 scenarios:
   synthetic_4x4:
@@ -41,6 +46,12 @@ scenarios:
     vehicle_types: configs/scenarios/indian_2x2.yaml
     emergency_vehicle_type: ambulance
     generate_hint: run scripts/generate_indian_flow.py --level peak --seed <seed> --emergency
+
+# Perception dataset prep (docs/perception.md, pre-registered).
+perception:
+  val_fraction: 0.10   # of official-train sequences, per camera group, held out as our val
+  split_seed: 0
+  imgsz: 640
 
 sim:
   steps: 3600          # default run length (CLAUDE.md)

@@ -55,3 +55,6 @@ outputs/baselines/**/metrics.csv
 # Per-step metrics of the full experiments (large; summary.json and decisions.jsonl are tracked)
 outputs/full/runs/*/metrics.csv
 outputs/emergency/runs/*/metrics.csv
+
+# Perception images (sample grids, alignment checks) stay local; reports (.json) are tracked
+outputs/perception/*.jpg
