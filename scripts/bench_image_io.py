@@ -9,7 +9,8 @@
    with `workers` processes. Each run gets its own shuffle seed, so runs read mostly
    different files (Ultralytics' own loader shuffles with a fixed seed, which would make
    later runs read files the earlier ones had just pulled into the Windows file cache).
-   Throughput = images per second over --batches batches, after the first batch.
+   Throughput = images per second over --batches batches, after skipping the first
+   2 x workers batches (those were being prepared in parallel before timing started).
 3. Cache check: raw reads of train images that the label scan just read, compared with (1).
 
 Building the train dataset the first time scans every image (Ultralytics' label check) and
@@ -57,12 +58,12 @@ def main() -> None:
     ap.add_argument("--threads", type=int, nargs="+", default=[1, 2, 4, 8, 16])
     ap.add_argument("--raw-n", type=int, default=300, help="images per raw-read run")
     ap.add_argument("--workers", type=int, nargs="+", default=[2, 4, 6, 8])
-    ap.add_argument("--batches", type=int, default=75)
+    ap.add_argument("--batches", type=int, default=250)
     ap.add_argument("--batch", type=int, default=8)
     ap.add_argument("--seed", type=int, default=0)
     args = ap.parse_args()
-    if torch.cuda.is_available():
-        raise RuntimeError("GPU visible despite CUDA_VISIBLE_DEVICES=''; refusing to run")
+    # No torch.cuda call here: with CUDA_VISIBLE_DEVICES="" torch.cuda.is_available() aborts
+    # with "double free" on this WSL setup (torch 2.14.1+cu126). Nothing below uses CUDA.
 
     from ultralytics.cfg import get_cfg
     from ultralytics.data import build_yolo_dataset
@@ -98,16 +99,23 @@ def main() -> None:
         g = torch.Generator().manual_seed(rng.randrange(2**31))
         dl = DataLoader(ds, batch_size=args.batch, sampler=RandomSampler(ds, generator=g), num_workers=w,
                         collate_fn=ds.collate_fn, persistent_workers=False)
+        # Steady state only: while the first batch is made, the other workers are already
+        # making theirs, so the first 2 x workers batches are excluded from the rate.
+        skip = 2 * w
         it = iter(dl)
         t0 = time.perf_counter()
         next(it)
+        first = time.perf_counter() - t0
+        for _ in range(skip - 1):
+            next(it)
         t1 = time.perf_counter()
         for _ in range(args.batches):
             next(it)
         t2 = time.perf_counter()
         del it, dl
-        r = {"workers": w, "batch": args.batch, "batches": args.batches, "first_batch_s": round(t1 - t0, 1),
-             "seconds": round(t2 - t1, 1), "img_per_s": round(args.batches * args.batch / (t2 - t1), 1)}
+        r = {"workers": w, "batch": args.batch, "skipped_batches": skip, "batches": args.batches,
+             "first_batch_s": round(first, 1), "seconds": round(t2 - t1, 1),
+             "img_per_s": round(args.batches * args.batch / (t2 - t1), 1)}
         result["dataloader"].append(r)
         print("dataloader", r, flush=True)
 
