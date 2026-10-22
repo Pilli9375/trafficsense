@@ -13,7 +13,7 @@ from trafficsense.sim.env import TrafficEnv
 
 class FakeClient:
     """`policy(messages, schema)` returns the answer text, or raises."""
-    provider = "fake"
+    provider, model = "fake", "fake:1b"
     host, endpoint, timeout_s, options, keep_alive = "fake://", "/api/chat", 1.0, {"temperature": 0}, "0"
 
     def __init__(self, policy):
@@ -154,3 +154,31 @@ def test_run_experiment_records_llm_provenance_and_decisions(lcfg, tmp_path):
 def test_registered_names(lcfg):
     with pytest.raises(Exception):
         make_controller("llm_cooperative", dict(lcfg, llm=dict(lcfg["llm"], host="http://127.0.0.1:9")))
+
+
+def test_retries_are_counted_apart_from_failures(lcfg):
+    """Hosted client: a retried call that ends with a valid answer is a success with retries; a
+    call whose retries ran out is a failure that still reports its retries."""
+    from trafficsense.llm.hosted import LLMRetriesExhausted
+
+    class RetryingClient(FakeClient):
+        def chat(self, messages, schema):
+            self.calls.append((messages, schema))
+            if len(self.calls) == 2:
+                e = LLMRetriesExhausted("HTTP 429 after 2 retries")
+                e.retries = ("429", "429")
+                raise e
+            return ChatResult(lowest_allowed(messages, schema), "fake:1b", 0.5, 400, 20, None, None, "stop",
+                              retries=("503",) if len(self.calls) == 1 else (), wait_s=2.0)
+
+    env = TrafficEnv(lcfg, "indian_2x2_peak", seed=0)
+    ctl = LLMController(lcfg, "llm_cooperative", client=RetryingClient(None))
+    for _ in range(100):
+        ctl.act(env)
+        env.step()
+    st = ctl.stats()
+    assert st["failures"] == 1 and st["failures_by_type"] == {"retries_exhausted": 1}
+    assert st["retries"] == 3 and st["retries_by_reason"] == {"429": 2, "503": 1} and st["calls_with_retries"] == 2
+    assert st["wait_s_total"] == 2.0 * (st["calls"] - 1) and st["calls_with_reasoning_output"] == 0
+    assert ctl.decisions[0]["retries"] == ["503"] and "call_wall_s" in ctl.decisions[1]
+    assert ctl.info()["client"]["model"] == "fake:1b"

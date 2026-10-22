@@ -155,3 +155,27 @@ llm:
   decision_interval: null  # s; decided after scripts/benchmark_llm.py
   min_green: null          # s; LLM controller's own min green (>= signal.min_green)
   max_consecutive_failures: 20  # this many failed calls in a row stops the run with an error
+
+# Hosted LLM for the exploratory model-size study only (scripts/run_model_size.py). NOT local:
+# prompts leave the machine. Merged over llm.* for that arm (decision interval, min green, seed
+# and max_consecutive_failures come from there). The API key is read from api_key_env, else
+# from env_file (gitignored; never printed, logged or committed).
+llm_hosted:
+  nvidia_nim:
+    provider: nvidia_nim
+    base_url: https://integrate.api.nvidia.com/v1
+    endpoint: /chat/completions
+    model: nvidia/nemotron-3-ultra-550b-a55b
+    api_key_env: NVIDIA_API_KEY
+    env_file: .env
+    timeout_s: 60            # per request; a timeout is a failed decision, as for Ollama
+    temperature: 0
+    max_tokens: 128          # same cap as llm.num_predict
+    extra_body:              # reasoning off (on by default; probe: 0 reasoning characters with this)
+      chat_template_kwargs: {enable_thinking: false}
+    structured_output: json_schema  # OpenAI response_format (accepted; nvext.guided_json is rejected).
+                                    # prompt.parse_response validates every answer either way
+    rate_limit_rpm: 30       # client-side limiter, every attempt counts (probe: ~30/min sustained)
+    max_retries: 5           # on HTTP 429/5xx and dropped connections; counted, not failures
+    backoff_s: 2             # exponential: 2, 4, 8, ... s
+    backoff_max_s: 60

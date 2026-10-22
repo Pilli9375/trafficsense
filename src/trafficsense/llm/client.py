@@ -28,6 +28,7 @@ import requests
 
 class LLMError(Exception):
     failure_type = "llm_error"
+    retries: tuple[str, ...] = ()   # hosted client: why each retry of this call happened (e.g. "429")
 
 
 class LLMUnavailable(LLMError):
@@ -52,6 +53,9 @@ class ChatResult:
     total_duration_s: float | None
     load_duration_s: float | None
     done_reason: str | None
+    reasoning_chars: int = 0      # thinking/reasoning text the server returned (0 when it is off)
+    retries: tuple[str, ...] = ()  # hosted client: one entry per retried attempt (HTTP status or error)
+    wait_s: float = 0.0            # hosted client: rate-limiter and backoff waits before the answered attempt
 
 
 REQUIRED = ("host", "endpoint", "model", "timeout_s", "temperature", "seed", "num_ctx", "num_predict",
@@ -158,4 +162,4 @@ class OllamaClient:
         return ChatResult(content=msg["content"], model=str(resp.get("model", "")), latency_s=latency,
                           prompt_tokens=resp.get("prompt_eval_count"), response_tokens=resp.get("eval_count"),
                           total_duration_s=secs("total_duration"), load_duration_s=secs("load_duration"),
-                          done_reason=resp.get("done_reason"))
+                          done_reason=resp.get("done_reason"), reasoning_chars=len(msg.get("thinking") or ""))

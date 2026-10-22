@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import json
 import logging
+import time
 from pathlib import Path
 from typing import Any
 
@@ -31,7 +32,8 @@ import numpy as np
 
 from trafficsense.control.base import Controller
 from trafficsense.llm import prompt
-from trafficsense.llm.client import LLMError, LLMUnavailable, OllamaClient
+from trafficsense.llm.client import LLMError, LLMUnavailable
+from trafficsense.llm.hosted import make_client
 from trafficsense.sim.env import TrafficEnv
 
 log = logging.getLogger(__name__)
@@ -68,7 +70,7 @@ class LLMControllerBase(Controller):
         if not env_min <= self.min_green < self.max_green:
             raise ValueError(f"llm.min_green must be in [signal.min_green {env_min}, max_green {self.max_green}), "
                              f"got {self.min_green}")
-        self.client = client if client is not None else OllamaClient.from_config(llm)
+        self.client = client if client is not None else make_client(llm)
         self.model_info = self.client.model_info()          # raises if the server or model is missing
         self.server_version = self.client.server_version()
         self.decisions: list[dict[str, Any]] = []
@@ -86,14 +88,19 @@ class LLMControllerBase(Controller):
         """One LLM call. Returns (phase, reason), or None after a counted failure (recorded in
         `rec`, which the caller completes and appends). LLMUnavailable propagates; too many
         failures in a row raise."""
+        t0 = time.perf_counter()
         try:
             res = self.client.chat(prompt.messages(obs, self.prompt), prompt.response_schema(allowed, self.prompt))
             rec.update(latency_s=res.latency_s, prompt_tokens=res.prompt_tokens,
-                       response_tokens=res.response_tokens, server_model=res.model, raw=res.content)
+                       response_tokens=res.response_tokens, server_model=res.model, raw=res.content,
+                       reasoning_chars=res.reasoning_chars, retries=list(res.retries), wait_s=res.wait_s,
+                       call_wall_s=time.perf_counter() - t0)
             out = prompt.parse_response(res.content, allowed, prompt.MAX_REASON_WORDS[self.prompt])
         except LLMUnavailable:
             raise
         except (LLMError, prompt.InvalidResponse) as e:
+            if isinstance(e, LLMError):
+                rec.update(retries=list(e.retries), call_wall_s=time.perf_counter() - t0)
             self._consecutive += 1
             rec.update(ok=False, failure_type=e.failure_type, error=str(e), reason=None)
             n = sum(1 for d in self.decisions if not d["ok"]) + 1
@@ -117,6 +124,11 @@ class LLMControllerBase(Controller):
         pt = [x["prompt_tokens"] for x in d if x.get("prompt_tokens") is not None]
         rt = [x["response_tokens"] for x in d if x.get("response_tokens") is not None]
         served = sorted({x["server_model"] for x in d if "server_model" in x})
+        retries: dict[str, int] = {}
+        for x in d:
+            for r in x.get("retries", []):
+                retries[r] = retries.get(r, 0) + 1
+        wall = [x["call_wall_s"] for x in d if "call_wall_s" in x]
         return {
             "calls": len(d),
             "ok": sum(1 for x in d if x["ok"]),
@@ -131,13 +143,24 @@ class LLMControllerBase(Controller):
             "prompt_tokens_mean": float(np.mean(pt)) if pt else None,
             "response_tokens_mean": float(np.mean(rt)) if rt else None,
             "server_reported_models": served,
+            "calls_with_reasoning_output": sum(1 for x in d if x.get("reasoning_chars")),
+            "retries": sum(retries.values()),
+            "retries_by_reason": dict(sorted(retries.items())),
+            "calls_with_retries": sum(1 for x in d if x.get("retries")),
+            "wait_s_total": float(sum(x.get("wait_s", 0.0) for x in d)),
+            "call_wall_mean_s": float(np.mean(wall)) if wall else None,
+            "call_wall_p95_s": float(np.percentile(wall, 95)) if wall else None,
+            "retry_note": "retries (HTTP 429/5xx, dropped connection) are not failures; a call fails only "
+                          "when it ends without a valid answer. call_wall = whole call incl. rate-limit "
+                          "waits, backoff and retried attempts",
             "latency_note": "wall clock per call, over calls that returned a response (timeouts excluded, counted as failures)",
         }
 
     def info(self) -> dict[str, Any]:
         return {"name": self.name, "mode": self.mode, "prompt": self.prompt, "decision_interval": self.interval,
                 "min_green": self.min_green, "phases": "all",
-                "client": {"host": self.client.host, "endpoint": self.client.endpoint,
+                "client": {"provider": self.client.provider, "model": self.client.model,
+                           "host": self.client.host, "endpoint": self.client.endpoint,
                            "timeout_s": self.client.timeout_s, "options": self.client.options,
                            "keep_alive": self.client.keep_alive},
                 "max_consecutive_failures": self.max_consecutive}
