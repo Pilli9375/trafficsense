@@ -139,18 +139,26 @@ def label_path_for(image_path: str) -> str:
     return sb.join(image_path.rsplit(sa, 1)).rsplit(".", 1)[0] + ".txt"
 
 
-def convert(idd_root: Path, out_dir: Path, val_fraction: float, seed: int, workers: int = 32) -> dict:
-    """Write labels, image lists, data.yaml and conversion_report.json to out_dir."""
+def convert(idd_root: Path, out_dir: Path, val_fraction: float, seed: int, workers: int = 32,
+            images_dir: Path | None = None) -> dict:
+    """Write labels, image lists, data.yaml and conversion_report.json to out_dir.
+
+    images_dir: the JPEGImages tree the image lists point to (default: the original one in
+    idd_root; the resized copy from scripts/resize_idd.py has the same layout).
+    """
     idd_root = idd_root.resolve()
-    images_src = idd_root / "JPEGImages"
-    if not images_src.is_dir() or not (idd_root / "Annotations").is_dir():
+    if not (idd_root / "JPEGImages").is_dir() or not (idd_root / "Annotations").is_dir():
         raise FileNotFoundError(f"{idd_root} is not an IDD_Detection folder (JPEGImages/ and Annotations/)")
+    images_src = (images_dir or idd_root / "JPEGImages").resolve()
+    if not images_src.is_dir():
+        raise FileNotFoundError(f"Image folder not found: {images_src}")
     out_dir.mkdir(parents=True, exist_ok=True)
 
     link = out_dir / "images"
     if link.is_symlink():
-        if link.resolve() != images_src:
-            raise FileExistsError(f"{link} points to {link.resolve()}, expected {images_src}")
+        if link.resolve() != images_src:   # our own link from an earlier run: retarget it
+            link.unlink()
+            link.symlink_to(images_src, target_is_directory=True)
     elif link.exists():
         raise FileExistsError(f"{link} exists and is not a symlink; refusing to touch it")
     else:
@@ -170,7 +178,7 @@ def convert(idd_root: Path, out_dir: Path, val_fraction: float, seed: int, worke
         stats["source_boxes"] += len(objs)
         return stats, len(lines)
 
-    report: dict = {"source": str(idd_root), "classes": list(CLASSES), "mapping": IDD_TO_OURS,
+    report: dict = {"source": str(idd_root), "images": str(images_src), "classes": list(CLASSES), "mapping": IDD_TO_OURS,
                     "val_fraction": val_fraction, "split_seed": seed, "splits": {}}
     for split, ids in splits.items():
         with ThreadPoolExecutor(workers) as ex:

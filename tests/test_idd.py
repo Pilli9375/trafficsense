@@ -94,6 +94,21 @@ def test_convert_end_to_end(tmp_path):
     idd.convert(src, out, 0.1, 0)   # rerun is idempotent (existing symlink accepted)
 
 
+def test_convert_with_resized_images_dir_retargets_link(tmp_path):
+    src = tmp_path / "IDD_Detection"
+    make_tree(src, {"train": {"frontFar/a/1": (10, 10, [obj("car", 0, 0, 5, 5)])}, "val": {"frontFar/b/1": (10, 10, [])}})
+    resized = tmp_path / "IDD_640" / "JPEGImages"
+    for image_id in ("frontFar/a/1", "frontFar/b/1"):
+        (resized / f"{image_id}.jpg").parent.mkdir(parents=True, exist_ok=True)
+        (resized / f"{image_id}.jpg").write_text("")
+    out = tmp_path / "out"
+    idd.convert(src, out, 0.1, 0)
+    report = idd.convert(src, out, 0.1, 0, images_dir=resized)
+    assert (out / "images").resolve() == resized.resolve() and report["images"] == str(resized.resolve())
+    with pytest.raises(FileNotFoundError):
+        idd.convert(src, out, 0.1, 0, images_dir=tmp_path / "nope")
+
+
 def test_convert_refuses_foreign_images_dir(tmp_path):
     src = tmp_path / "IDD_Detection"
     make_tree(src, {"train": {"frontFar/a/1": (10, 10, [])}, "val": {"frontFar/b/1": (10, 10, [])}})

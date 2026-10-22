@@ -3,7 +3,8 @@
     python scripts/prepare_idd.py [--config configs/default.yaml]
 
 Reads the dataset through paths.idd_root, writes labels, image lists and data.yaml to
-paths.idd_yolo (no image copies), then re-reads every label file and checks it against the
+paths.idd_yolo (no image copies; the image lists point to the original or the resized
+JPEGImages, perception.images), then re-reads every label file and checks it against the
 XML it came from. The conversion report, with provenance, also goes to
 paths.perception_outputs/idd_conversion.json.
 """
@@ -45,7 +46,17 @@ def main() -> None:
     pcfg = cfg["perception"]
     git = git_info()
 
-    report = idd.convert(idd_root, out_dir, float(pcfg["val_fraction"]), int(pcfg["split_seed"]))
+    if pcfg["images"] == "resized":
+        images_dir = resolve_path(cfg, "idd_resized") / "JPEGImages"
+        if not (images_dir.parent / "resize_manifest.json").is_file():
+            raise FileNotFoundError(f"No finished resized copy at {images_dir.parent}; run scripts/resize_idd.py")
+    elif pcfg["images"] == "original":
+        images_dir = idd_root / "JPEGImages"
+    else:
+        raise ValueError(f"perception.images must be resized or original, got {pcfg['images']!r}")
+
+    report = idd.convert(idd_root, out_dir, float(pcfg["val_fraction"]), int(pcfg["split_seed"]),
+                         images_dir=images_dir)
     splits, _ = idd.our_splits(idd_root.resolve(), float(pcfg["val_fraction"]), int(pcfg["split_seed"]))
     report["verified_label_files"] = verify(idd_root.resolve(), out_dir, splits)
     report["provenance"] = {"script": "scripts/prepare_idd.py", "git_commit": git["commit"],
