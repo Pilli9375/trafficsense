@@ -1,0 +1,15 @@
+# Run 1 of scripts/bench_image_io.py at commit 20f7622 (before the steady-state fix in 389bac5;
+# its loader rates include warm-up). Result lines copied from the console log; the JSON was
+# overwritten before run 2. Defender exclusion in place. 2026-10-22.
+raw cold {'threads': 1, 'images': 300, 'seconds': 13.39, 'img_per_s': 22.4, 'mb_per_s': 1.99}
+raw cold {'threads': 2, 'images': 300, 'seconds': 8.66, 'img_per_s': 34.7, 'mb_per_s': 3.13}
+raw cold {'threads': 4, 'images': 300, 'seconds': 7.15, 'img_per_s': 42.0, 'mb_per_s': 3.81}
+raw cold {'threads': 8, 'images': 300, 'seconds': 6.74, 'img_per_s': 44.5, 'mb_per_s': 4.03}
+raw cold {'threads': 16, 'images': 300, 'seconds': 6.61, 'img_per_s': 45.4, 'mb_per_s': 4.03}
+WARNING ⚠️ train: Slow image access detected (ping: 5.4±1.0 ms, read: 3.0±1.0 MB/s, size: 96.6 KB). Use local storage instead of remote/mounted storage for better performance. See https://docs.ultralytics.com/guides/model-training-tips
+train dataset: 28384 images, built in 409.9 s
+dataloader {'workers': 2, 'batch': 8, 'batches': 75, 'first_batch_s': 0.9, 'seconds': 16.9, 'img_per_s': 35.5}
+dataloader {'workers': 4, 'batch': 8, 'batches': 75, 'first_batch_s': 0.9, 'seconds': 12.1, 'img_per_s': 49.6}
+dataloader {'workers': 6, 'batch': 8, 'batches': 75, 'first_batch_s': 1.0, 'seconds': 11.4, 'img_per_s': 52.6}
+dataloader {'workers': 8, 'batch': 8, 'batches': 75, 'first_batch_s': 1.5, 'seconds': 10.8, 'img_per_s': 55.4}
+raw train (scanned) 8 threads {'threads': 8, 'images': 300, 'seconds': 5.78, 'img_per_s': 51.9, 'mb_per_s': 4.71}

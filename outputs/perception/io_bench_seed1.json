@@ -1,0 +1,92 @@
+{
+  "image_dir": "/mnt/d/trafficsense/datasets/idd-detection/IDD_Detection_640/JPEGImages",
+  "provenance": {
+    "script": "scripts/bench_image_io.py",
+    "git_commit": "389bac5df08d4fb7cb0bb21823446690dba0d6db",
+    "git_dirty": true,
+    "timestamp": "2026-10-22T12:53:20+00:00"
+  },
+  "raw_cold": [
+    {
+      "threads": 1,
+      "images": 300,
+      "seconds": 10.26,
+      "img_per_s": 29.2,
+      "mb_per_s": 2.59
+    },
+    {
+      "threads": 2,
+      "images": 300,
+      "seconds": 6.92,
+      "img_per_s": 43.4,
+      "mb_per_s": 4.02
+    },
+    {
+      "threads": 4,
+      "images": 300,
+      "seconds": 5.37,
+      "img_per_s": 55.9,
+      "mb_per_s": 4.96
+    },
+    {
+      "threads": 8,
+      "images": 300,
+      "seconds": 5.39,
+      "img_per_s": 55.6,
+      "mb_per_s": 4.91
+    },
+    {
+      "threads": 16,
+      "images": 300,
+      "seconds": 4.85,
+      "img_per_s": 61.8,
+      "mb_per_s": 5.65
+    }
+  ],
+  "dataset_build_s": 123.5,
+  "dataloader": [
+    {
+      "workers": 2,
+      "batch": 8,
+      "skipped_batches": 4,
+      "batches": 250,
+      "first_batch_s": 0.9,
+      "seconds": 52.1,
+      "img_per_s": 38.4
+    },
+    {
+      "workers": 4,
+      "batch": 8,
+      "skipped_batches": 8,
+      "batches": 250,
+      "first_batch_s": 0.6,
+      "seconds": 36.4,
+      "img_per_s": 54.9
+    },
+    {
+      "workers": 6,
+      "batch": 8,
+      "skipped_batches": 12,
+      "batches": 250,
+      "first_batch_s": 0.8,
+      "seconds": 31.7,
+      "img_per_s": 63.1
+    },
+    {
+      "workers": 8,
+      "batch": 8,
+      "skipped_batches": 16,
+      "batches": 250,
+      "first_batch_s": 1.0,
+      "seconds": 29.3,
+      "img_per_s": 68.3
+    }
+  ],
+  "raw_after_scan_train": {
+    "threads": 8,
+    "images": 300,
+    "seconds": 4.08,
+    "img_per_s": 73.5,
+    "mb_per_s": 6.77
+  }
+}

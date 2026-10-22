@@ -174,7 +174,7 @@ first run before that commit produced identical counts.
 | batch | 8 | Fits in 4 GB in FP32 with headroom. Try 16 in the probe (below) and keep it only if peak memory stays under ~3.5 GB. |
 | AMP | **off** (`amp=False`) | GTX 16-series cards produce NaN losses under FP16 AMP. Ultralytics' own AMP check also disables it on the 1650. FP32 costs speed and memory, not accuracy. |
 | epochs | 50, `patience=10` on our val mAP50-95 | Fine-tuning from COCO converges in tens of epochs. Early stopping uses our val split only. |
-| workers | 8 | 12 logical CPUs. Reading is the limit (6.2), and more parallel readers help a little. |
+| workers | 8 | 12 logical CPUs. Fastest of 2/4/6/8 in every run (6.3). |
 | cache | off | RAM caching needs about 28,384 × 640×360×3 B ≈ 20 GB; WSL has 11 GB. |
 | other | defaults (SGD/auto, mosaic, `close_mosaic=10`), `seed=0`, `deterministic=True` | No tuning before a first baseline exists. |
 
@@ -230,23 +230,74 @@ Windows, plus probably Windows Defender's on-access scan, which is on). It is no
 of bytes. The plan above assumed ~350 files/s from how fast the XMLs read; that was wrong for
 images. The resize still gives ~1.5× faster reads and much less JPEG decoding.
 
-### 6.3 Revised time estimate
+### 6.3 After the Defender exclusion (2026-10-22)
 
-Training will read ~20-25 img/s, which is less than the GPU can process (assumed ~45 img/s
-in FP32, still to be measured), so reading is the limit:
+The user added a Windows Defender exclusion for `D:\trafficsense\datasets`. Everything was
+then re-measured with `scripts/bench_image_io.py`, CPU only with the GPU hidden (GPU memory
+stayed at 13 MiB throughout):
 
-- one epoch: 28,384 train images at ~22 img/s ≈ 21 min, plus val (3,185 images) ≈ 2-3 min
-  → **~24 min per epoch**
-- 50 epochs ≈ **20 h**, fewer if early stopping fires
+- **Raw reads:** whole files, N threads, a fresh random sample of 300 test-split images per
+  row. These images were not read by anything earlier the same day.
+- **Ultralytics loader:** our train split through `YOLODataset` with the training
+  augmentations (mosaic etc., 640, batch 8). The rate is measured in steady state over 250
+  batches = 2,000 images, after skipping the first 2 × workers batches, and each row has its
+  own shuffle seed. Mosaic takes its 3 extra images from an in-memory buffer, so training
+  opens about one file per image.
 
-The probe measures the real number. Ways to go faster, all for the user to decide and none
-done:
+Three runs were made. Run 1 timed only 75 batches and included the warm-up, which overstates
+the loader at high worker counts; the script was then fixed. Results:
+`outputs/perception/io_bench_seed1.json` and `io_bench_seed2.json`. Run 1's JSON was
+overwritten, and its result lines are kept in `io_bench_run1.log`.
 
-1. A Defender exclusion for `D:\trafficsense\datasets` (admin), then re-measure. Free if
-   Defender is a large part of the 50 ms.
-2. Copy the 3.8 GB resized set into the WSL disk (SSD). It would be fast, but that disk lives
-   on C, which now has 8.4 GB free.
-3. Accept ~20 h. The run is resumable (`resume=True`), so it can be split over nights.
+| | run 1 | run 2 (seed 1) | run 3 (seed 2) |
+|---|---:|---:|---:|
+| Ultralytics' per-file "ping" | 5.4 ms | | |
+| raw, 1 thread | 22.4 | 29.2 | 34.2 |
+| raw, 2 threads | 34.7 | 43.4 | 52.9 |
+| raw, 4 threads | 42.0 | 55.9 | 63.4 |
+| raw, 8 threads | 44.5 | 55.6 | 72.1 |
+| raw, 16 threads | 45.4 | 61.8 | 64.5 |
+| **loader, workers = 2** | 35.5* | 38.4 | 48.9 |
+| **loader, workers = 4** | 49.6* | 54.9 | 74.7 |
+| **loader, workers = 6** | 52.6* | 63.1 | 85.4 |
+| **loader, workers = 8** | 55.4* | 68.3 | 90.8 |
+| raw, 8 threads, train images already read by the label scan | 51.9 | 73.5 | 102.8 |
+
+(images/s; * = run 1's biased loader timing.)
+
+What this shows:
+
+- **The exclusion helped a lot.** Per-file latency fell from ~51 ms to ~5 ms (Ultralytics'
+  own probe). One thread now reads 22-34 img/s against 8.8 before, and 8 threads 44-72
+  against 20-23. Defender was most of the ~50 ms.
+- **Parallel workers hide much of the remaining latency.** Going from 2 to 4 workers adds the
+  most (+40-50%), and 6 → 8 still adds 5-8%. Use **workers = 8**: the CPU has 12 logical
+  cores, which leaves room for the main training process.
+- **The numbers drift upward from run to run, by up to 30-60%,** even for images never read
+  before. The likely causes are the Windows file cache filling with this dataset (images
+  already read come back 15-40% faster than unread ones in each run) and varying load from
+  the other session. The cause is not pinned down, so the planning number is the **low end:
+  ~55-70 img/s with 8 workers**. Later epochs may run faster if Windows keeps the 3.8 GB
+  cached; WSL can take up to 12 GB of the 16 GB, so that is not guaranteed.
+- The one-time label scan of the 28,384 training images took 410 s. Its cache
+  (`labels/frontFar/BLR-2018-03-22_17-39-26_2_frontFar.cache`) now exists, so later runs only
+  check file sizes (~2 min).
+
+### 6.3.1 New training-time estimate
+
+With 8 workers the loader supplies ~55-90 img/s. FP32 yolov8n at 640 on the GTX 1650 is
+assumed to run at ~45 img/s, an **estimate** to be measured. So **the GPU is now expected
+to be the limit, not the disk.**
+
+| case | train epoch (28,384 imgs) | + val (3,185, no augmentation) | 50 epochs |
+|---|---|---|---|
+| GPU at 45 img/s (expected limit) | ~10.5 min | ~1 min | **~9.5 h** |
+| if the GPU proves faster, disk at the low end, ~55 img/s | ~8.6 min | ~1 min | ~8 h |
+| previous estimate, before the exclusion (6.2) | ~21 min | 2-3 min | ~20 h |
+
+Early stopping (`patience=10`) can end it sooner. The 1-epoch probe on 10% of train will
+replace the assumed GPU speed with a measured one; if the GPU turns out faster than the disk,
+the disk row applies.
 
 ### 6.4 Software (installed 2026-10-22)
 
@@ -266,7 +317,7 @@ files are deleted.
 ### 6.5 Next: probe, then the full run (waiting for the GPU)
 
 Probe: 1 epoch on `fraction=0.1` of train, `amp=False`, batch 8 (then 16 if memory allows),
-`workers=8`. It measures img/s, peak VRAM and whether the loss stays finite. Then the
+`workers=8`, Defender exclusion in place. It measures img/s, peak VRAM and whether the loss stays finite. Then the
 50-epoch run, with nothing else on the GPU (no Ollama).
 
 ## 7. Measuring the detector's errors for the camera-error experiment (proposal)
