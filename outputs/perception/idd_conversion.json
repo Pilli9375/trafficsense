@@ -1,5 +1,6 @@
 {
   "source": "/mnt/d/trafficsense/datasets/idd-detection/IDD_Detection",
+  "images": "/mnt/d/trafficsense/datasets/idd-detection/IDD_Detection_640/JPEGImages",
   "classes": [
     "car",
     "motorcycle",
@@ -119,8 +120,8 @@
   "verified_label_files": 41794,
   "provenance": {
     "script": "scripts/prepare_idd.py",
-    "git_commit": "51a2b5e7ec1bda186bd10036803805756144a4f8",
+    "git_commit": "546b0016955f7542cefed071edcccb83fc5d00f8",
     "git_dirty": true,
-    "timestamp": "2026-10-22T06:50:27+00:00"
+    "timestamp": "2026-10-22T09:31:18+00:00"
   }
 }

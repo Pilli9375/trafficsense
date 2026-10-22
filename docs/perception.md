@@ -174,7 +174,7 @@ first run before that commit produced identical counts.
 | batch | 8 | Fits in 4 GB in FP32 with headroom. Try 16 in the probe (below) and keep it only if peak memory stays under ~3.5 GB. |
 | AMP | **off** (`amp=False`) | GTX 16-series cards produce NaN losses under FP16 AMP. Ultralytics' own AMP check also disables it on the 1650. FP32 costs speed and memory, not accuracy. |
 | epochs | 50, `patience=10` on our val mAP50-95 | Fine-tuning from COCO converges in tens of epochs. Early stopping uses our val split only. |
-| workers | 6 | 12 logical CPUs. JPEG decode of a 1920×1080 frame takes ~9 ms (measured). |
+| workers | 8 | 12 logical CPUs. Reading is the limit (6.2), and more parallel readers help a little. |
 | cache | off | RAM caching needs about 28,384 × 640×360×3 B ≈ 20 GB; WSL has 11 GB. |
 | other | defaults (SGD/auto, mosaic, `close_mosaic=10`), `seed=0`, `deterministic=True` | No tuning before a first baseline exists. |
 
@@ -184,24 +184,90 @@ another session using the machine: 7.3 MB/s ≈ 14 img/s with 4 or 8 threads in 
 9.8 MB/s ≈ 18 img/s sequential. Full-size frames average 520 KB. Many small files read
 faster: the 41,794 XMLs took about 2 min with 32 threads, ≈ 350 files/s.
 
-Time estimate (FP32 yolov8n at 640 on a GTX 1650 is assumed to run at ~45 img/s. That is an
-**estimate**, to be measured in the probe):
+### 6.1 Resized copy (done, 2026-10-22)
 
-| image source | epoch (train + val) | 50 epochs |
+`python scripts/resize_idd.py` wrote every image of our three splits (41,794) to
+`/mnt/d/trafficsense/datasets/idd-detection/IDD_Detection_640/JPEGImages`, with the same
+layout. The repo reaches it through the gitignored symlink `data/external/idd_detection_640`
+(`paths.idd_resized`).
+
+| setting | value |
+|---|---|
+| size | long side 640 (= `imgsz`), aspect kept, never upscaled: 1920×1080 → 640×360, 1280×964 → 640×482, 1280×720 → 640×360 |
+| filter | Pillow `BOX` (area averaging, like OpenCV's `INTER_AREA`, which Ultralytics uses to shrink) |
+| JPEG | quality 95, no EXIF |
+| result | 41,794 images, 3.81 GB (≈ 91 KB/img), about 1.6 h on the HDD |
+| check | every output re-opened and its size compared with the expected size: all correct |
+
+The originals in `IDD_Detection/` are untouched. The settings are `perception.resize` in
+`configs/default.yaml`, and the manifest (with provenance, commit `b2fd6ac`) is at
+`outputs/perception/idd_resize.json`. `perception.images: resized` makes `prepare_idd.py`
+point `data/external/idd_yolo/images` at this copy. The labels did not change: they are
+normalised, and the regenerated report has the same counts as section 5.
+
+Ultralytics' own loader was run on our val split on the CPU, with the GPU hidden
+(`CUDA_VISIBLE_DEVICES=""`). It found all 3,185 images and their labels, 7 classes, at sizes
+640×360 and 640×482. It also drops **exact duplicate boxes**: IDD has 4 boxes annotated
+twice with identical coordinates (1 car in train, 1 person in val, 1 truck and 1 bus in
+test). We keep the labels 1:1 with IDD; Ultralytics ignores the duplicates in training and
+in validation.
+
+### 6.2 Image reading speed: the resize helped less than expected
+
+Measured after the resize, 600 random training images per run:
+
+| source | threads | img/s |
 |---|---|---|
-| full-size JPEGs on D (as now) | I/O bound at ~14-18 img/s: **~30 min** | **~25 h** |
-| one-time resized copy on D (long side 640, ~60 KB/img, ~2.5 GB) | GPU bound: **~11 min** | **~9-10 h** (fewer if early stopping fires) |
+| full-size originals (≈ 520 KB) | 4-8 | 14 |
+| resized copy (≈ 91 KB) | 1 | 8.8 |
+| resized copy | 8 | 20-23 |
+| resized copy | 32 | 26 |
+| resized copy, sequential in folder order | 1 | 19 |
 
-Recommendation: before training, make the resized copy **on D** with a CPU-only script.
-The labels are normalised, so they stay valid unchanged. This puts a second, smaller copy of
-the images on D, which the conversion deliberately avoided, so it is the user's decision. The
-copy is derived and can be regenerated.
+Ultralytics measured the same thing independently: "ping 51 ms" per file. The limit is a
+fixed **~50 ms cost per file opened** on D (laptop HDD seeks, plus WSL's 9p bridge to
+Windows, plus probably Windows Defender's on-access scan, which is on). It is not the number
+of bytes. The plan above assumed ~350 files/s from how fast the XMLs read; that was wrong for
+images. The resize still gives ~1.5× faster reads and much less JPEG decoding.
 
-Before training also: install `torch` (CUDA build) and `ultralytics` into `.venv`. That adds
-about 3-4 GB inside the WSL disk, which lives on the nearly full C drive (20 GB free).
+### 6.3 Revised time estimate
 
-Probe first: 1 epoch on `fraction=0.1` of train, to measure img/s, peak VRAM and that the
-loss is finite. Then the real run, with nothing else on the GPU (no Ollama).
+Training will read ~20-25 img/s, which is less than the GPU can process (assumed ~45 img/s
+in FP32, still to be measured), so reading is the limit:
+
+- one epoch: 28,384 train images at ~22 img/s ≈ 21 min, plus val (3,185 images) ≈ 2-3 min
+  → **~24 min per epoch**
+- 50 epochs ≈ **20 h**, fewer if early stopping fires
+
+The probe measures the real number. Ways to go faster, all for the user to decide and none
+done:
+
+1. A Defender exclusion for `D:\trafficsense\datasets` (admin), then re-measure. Free if
+   Defender is a large part of the 50 ms.
+2. Copy the 3.8 GB resized set into the WSL disk (SSD). It would be fast, but that disk lives
+   on C, which now has 8.4 GB free.
+3. Accept ~20 h. The run is resumable (`resume=True`), so it can be split over nights.
+
+### 6.4 Software (installed 2026-10-22)
+
+`.venv` now has `torch 2.14.1+cu126`, `torchvision 0.29.1+cu126` and `ultralytics 8.4.183`
+(with `opencv-python 5.0.0`). Torch's requirements also upgraded `setuptools` 59.6 → 78.1.
+CUDA 12.6 runs on driver 576.88 (which supports up to 12.9). The build's architecture list
+includes `sm_75`, the GTX 1650, and `torch.cuda.is_available()` is True. No CUDA context was
+created and nothing ran on the GPU. pip ran with `--no-cache-dir`, its temporary files went
+to D, and the pip cache was purged afterwards.
+
+Disk cost: `.venv` grew from 196 MB to 6.9 GB, mostly NVIDIA CUDA libraries. That is more
+than the 3-4 GB estimated above. Windows C free space went from 16,701 MiB to 8,454 MiB
+during this step; other activity on the machine accounts for the ~1.4 GB not explained by
+the venv. The WSL disk image (`ext4.vhdx`) is now 13.2 GB. It does not shrink by itself when
+files are deleted.
+
+### 6.5 Next: probe, then the full run (waiting for the GPU)
+
+Probe: 1 epoch on `fraction=0.1` of train, `amp=False`, batch 8 (then 16 if memory allows),
+`workers=8`. It measures img/s, peak VRAM and whether the loss stays finite. Then the
+50-epoch run, with nothing else on the GPU (no Ollama).
 
 ## 7. Measuring the detector's errors for the camera-error experiment (proposal)
 

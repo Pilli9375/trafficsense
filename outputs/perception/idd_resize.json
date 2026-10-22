@@ -1,0 +1,20 @@
+{
+  "source": "/mnt/d/trafficsense/datasets/idd-detection/IDD_Detection/JPEGImages",
+  "dest": "/mnt/d/trafficsense/datasets/idd-detection/IDD_Detection_640/JPEGImages",
+  "images": 41794,
+  "bytes": 3809996935,
+  "long_side": 640,
+  "jpeg_quality": 95,
+  "filter": "PIL BOX",
+  "this_run": {
+    "written": 41471,
+    "kept": 323
+  },
+  "seconds": 5757,
+  "provenance": {
+    "script": "scripts/resize_idd.py",
+    "git_commit": "b2fd6ac17ce7cae1b59c9ee7faefb91e2ecde937",
+    "git_dirty": true,
+    "timestamp": "2026-10-22T08:37:18+00:00"
+  }
+}
