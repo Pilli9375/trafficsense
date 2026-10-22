@@ -67,6 +67,8 @@ pytest -q
 python scripts/run_experiment.py --config configs/default.yaml --controller maxpressure --scenario synthetic_4x4
 python scripts/benchmark_llm.py --arm v2 --models qwen2.5:3b   # or --arm v2: every model of the arm
 python scripts/run_full_experiments.py            # full experiments (resumable; --dry-run lists runs)
+python scripts/run_model_size.py --bench          # exploratory model-size study (--full, --dry-run)
+python scripts/probe_hosted.py --capabilities     # hosted (NVIDIA NIM) endpoint checks; key in gitignored .env
 streamlit run src/trafficsense/dashboard/app.py
 ```
 
