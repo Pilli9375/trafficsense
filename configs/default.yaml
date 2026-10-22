@@ -10,6 +10,7 @@ paths:
   # on D). Create it once: ln -s <...>/IDD_Detection data/external/idd_detection
   idd_root: data/external/idd_detection
   idd_yolo: data/external/idd_yolo     # converted labels + data.yaml (gitignored, no image copies)
+  idd_resized: data/external/idd_detection_640   # symlink to the resized copy on D (scripts/resize_idd.py)
   perception_outputs: outputs/perception
 
 scenarios:
@@ -52,6 +53,10 @@ perception:
   val_fraction: 0.10   # of official-train sequences, per camera group, held out as our val
   split_seed: 0
   imgsz: 640
+  images: resized       # resized | original: which JPEGImages the YOLO image lists point to
+  resize:               # scripts/resize_idd.py; originals are never modified
+    long_side: 640      # = imgsz, so Ultralytics does no further resize
+    jpeg_quality: 95    # high, so re-encoding adds little loss on top of the dataset's own JPEG
 
 sim:
   steps: 3600          # default run length (CLAUDE.md)
