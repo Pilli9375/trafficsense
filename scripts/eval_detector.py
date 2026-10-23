@@ -121,6 +121,9 @@ def predictions(cfg, split: str, weights: Path, eval_dir: Path) -> tuple[dict, l
 
 
 def per_class(values: np.ndarray, digits: int = 4) -> dict:
+    """Per-class dict; digits=0 gives ints (counts)."""
+    if digits == 0:
+        return {c: int(v) for c, v in zip(CLASSES, values)}
     return {c: (None if np.isnan(v) else round(float(v), digits)) for c, v in zip(CLASSES, values)}
 
 
