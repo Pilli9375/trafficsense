@@ -58,7 +58,9 @@ def probe(cfg: dict, args) -> None:
     yolo = resolve_path(cfg, "idd_yolo")
     runs = resolve_path(cfg, "detector_runs")
     overrides = detector.train_overrides(tcfg, pcfg["imgsz"])
-    overrides.update(epochs=1, batch=args.batch or overrides["batch"])
+    # close_mosaic=0 keeps mosaic on, as in the first epochs of the full run (with epochs=1 the
+    # default close_mosaic=10 would switch it off from the start).
+    overrides.update(epochs=1, batch=args.batch or overrides["batch"], close_mosaic=0)
     name = f"probe_b{overrides['batch']}"
     run_dir = runs / "detector" / name
     if run_dir.exists():
@@ -84,7 +86,7 @@ def probe(cfg: dict, args) -> None:
     weights = pretrained(runs, tcfg["model"])
     model = YOLO(str(weights))
     log = run_dir / "train_log.jsonl"
-    detector.TrainMonitor(log).attach(model)
+    detector.TrainMonitor(log, overrides["batch"]).attach(model)
     gpu = detector.GpuSampler(run_dir / "gpu.csv").start()
     try:
         model.train(data=str(probe_yaml), project=str(runs / "detector"), name=name, exist_ok=True,
@@ -146,12 +148,12 @@ def full(cfg: dict) -> None:
             last = run_dir / "weights" / "last.pt"
             print(f"resuming from {last}")
             model = YOLO(str(last))
-            detector.TrainMonitor(log).attach(model)
+            detector.TrainMonitor(log, int(tcfg["batch"])).attach(model)
             model.train(resume=True)
         else:
             overrides = detector.train_overrides(tcfg, pcfg["imgsz"])
             model = YOLO(str(weights))
-            detector.TrainMonitor(log).attach(model)
+            detector.TrainMonitor(log, overrides["batch"]).attach(model)
             model.train(data=str(yolo / "data.yaml"), project=str(runs / "detector"), name=name,
                         exist_ok=True, **overrides)
     finally:

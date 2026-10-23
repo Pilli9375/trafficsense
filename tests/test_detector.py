@@ -55,3 +55,51 @@ def test_read_log_and_gpu_summary(tmp_path):
 
 def test_batch_images_last_batch_is_remainder():
     assert [detector.batch_images(i, 8, 20) for i in (1, 2, 3, 4)] == [8, 8, 4, 0]
+
+
+def _stub_trainer(loss_items, batch_size=8, n_images=20):
+    import types
+    import torch
+    return types.SimpleNamespace(batch_size=batch_size, train_loader=types.SimpleNamespace(dataset=range(n_images)),
+                                 epoch=0, epochs=1, loss=torch.tensor(1.0), loss_items=loss_items,
+                                 tloss=loss_items, metrics={"metrics/mAP50(B)": 0.1}, fitness=0.1)
+
+
+@pytest.fixture
+def no_cuda(monkeypatch):
+    import torch
+    for name in ("reset_peak_memory_stats", "synchronize"):
+        monkeypatch.setattr(torch.cuda, name, lambda: None)
+    for name in ("max_memory_allocated", "max_memory_reserved"):
+        monkeypatch.setattr(torch.cuda, name, lambda: 0)
+
+
+def test_train_monitor_logs_epoch_and_stops_on_nan(tmp_path, no_cuda):
+    import torch
+    mon = detector.TrainMonitor(tmp_path / "log.jsonl", batch=8, skip=1)
+    t = _stub_trainer({"box_loss": torch.tensor(1.0), "cls_loss": torch.tensor(2.0)})
+    mon.on_train_epoch_start(t)
+    for _ in range(3):
+        mon.on_train_batch_start(t)
+        mon.on_train_batch_end(t)
+    mon.on_train_epoch_end(t)
+    mon.on_fit_epoch_end(t)
+    rec = detector.read_log(tmp_path / "log.jsonl")[0]
+    assert rec["train_images"] == 20 and rec["batch"] == 8
+    assert rec["train_losses"] == {"box_loss": 1.0, "cls_loss": 2.0} and rec["losses_finite"]
+
+    t.loss_items = {"box_loss": torch.tensor(float("nan"))}
+    mon.on_train_batch_start(t)
+    with pytest.raises(RuntimeError, match="Non-finite"):
+        mon.on_train_batch_end(t)
+    assert detector.read_log(tmp_path / "log.jsonl")[-1]["event"] == "nonfinite_loss"
+
+
+def test_train_monitor_stops_when_batch_is_halved(tmp_path, no_cuda):
+    import torch
+    mon = detector.TrainMonitor(tmp_path / "log.jsonl", batch=8)
+    t = _stub_trainer({"box_loss": torch.tensor(1.0)}, batch_size=4)
+    mon.on_train_epoch_start(t)
+    mon.on_train_batch_start(t)
+    with pytest.raises(RuntimeError, match="Batch size changed"):
+        mon.on_train_batch_end(t)

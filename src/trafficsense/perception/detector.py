@@ -113,8 +113,8 @@ class TrainMonitor:
     epoch (worker start-up) are left out of the steady-state rates.
     """
 
-    def __init__(self, log_path: Path, skip: int = 20):
-        self.log_path, self.skip = log_path, skip
+    def __init__(self, log_path: Path, batch: int, skip: int = 20):
+        self.log_path, self.batch, self.skip = log_path, batch, skip
 
     def attach(self, model) -> None:
         for ev in ("on_train_epoch_start", "on_train_batch_start", "on_train_batch_end",
@@ -149,12 +149,16 @@ class TrainMonitor:
             self.ss_wait += wait
             self.ss_gpu += gpu
         self.t_last_end = t
-        if not torch.isfinite(trainer.loss).all() or not torch.isfinite(trainer.loss_items).all():
+        if trainer.batch_size != self.batch:
+            raise RuntimeError(f"Batch size changed from {self.batch} to {trainer.batch_size} (Ultralytics halves "
+                               f"it after a CUDA out-of-memory error). Stopping: the run would not match its plan.")
+        items = {k: float(v) for k, v in trainer.loss_items.items()}
+        if not torch.isfinite(trainer.loss).all() or not all(math.isfinite(v) for v in items.values()):
             self.nonfinite += 1
             self._write({"event": "nonfinite_loss", "epoch": trainer.epoch + 1, "batch": self.batches,
-                         "loss_items": [float(x) for x in trainer.loss_items]})
+                         "loss_items": items})
             raise RuntimeError(f"Non-finite training loss at epoch {trainer.epoch + 1}, batch {self.batches}: "
-                               f"{trainer.loss_items.tolist()}. Stopping (no silent recovery).")
+                               f"{items}. Stopping (no silent recovery).")
 
     def on_train_epoch_end(self, trainer) -> None:
         import torch
@@ -165,9 +169,9 @@ class TrainMonitor:
     def on_fit_epoch_end(self, trainer) -> None:
         t = time.perf_counter()
         train_s = self.t_train_end - self.t_epoch
-        losses = dict(zip(trainer.loss_names, (float(x) for x in trainer.tloss)))
+        losses = {k: float(v) for k, v in trainer.tloss.items()}
         rec = {
-            "event": "epoch", "epoch": trainer.epoch + 1, "epochs": trainer.epochs,
+            "event": "epoch", "epoch": trainer.epoch + 1, "epochs": trainer.epochs, "batch": trainer.batch_size,
             "train_images": self.images, "batches": self.batches,
             "train_s": round(train_s, 1), "val_and_save_s": round(t - self.t_train_end, 1),
             "img_per_s": round(self.images / train_s, 1),
