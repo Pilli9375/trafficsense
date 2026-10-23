@@ -72,6 +72,7 @@ class Matched:
     gt_image: np.ndarray = field(repr=False)
     gt_cls: np.ndarray = field(repr=False)
     gt_size: np.ndarray = field(repr=False)
+    gt_area: np.ndarray = field(repr=False)        # box area in pixels
     gt_match_conf: np.ndarray = field(repr=False)  # conf of the matched detection, -1 if none
     gt_match_cls: np.ndarray = field(repr=False)   # class of the matched detection, -1 if none
 
@@ -86,7 +87,7 @@ def match_split(images: list[dict], n_classes: int, iou_thr: float = 0.5) -> Mat
     cameras = sorted({im["camera"] for im in images})
     gi, ci = {g: i for i, g in enumerate(groups)}, {c: i for i, c in enumerate(cameras)}
     cols: dict[str, list] = {k: [] for k in ("det_image", "det_cls", "det_conf", "det_matched", "det_size",
-                                            "gt_image", "gt_cls", "gt_size", "gt_match_conf", "gt_match_cls")}
+                                            "gt_image", "gt_cls", "gt_size", "gt_area", "gt_match_conf", "gt_match_cls")}
     for i, im in enumerate(images):
         det_gt, gt_det = greedy_match(im["det_xyxy"], im["det_conf"], im["gt_xyxy"], iou_thr)
         nd, ng = len(im["det_conf"]), len(im["gt_cls"])
@@ -98,6 +99,7 @@ def match_split(images: list[dict], n_classes: int, iou_thr: float = 0.5) -> Mat
         cols["gt_image"].append(np.full(ng, i))
         cols["gt_cls"].append(im["gt_cls"].astype(np.int64))
         cols["gt_size"].append(size_bucket(im["gt_xyxy"]) if ng else np.zeros(0, np.int64))
+        cols["gt_area"].append(np.prod(im["gt_xyxy"][:, 2:] - im["gt_xyxy"][:, :2], axis=1) if ng else np.zeros(0))
         hit = gt_det >= 0
         cols["gt_match_conf"].append(np.where(hit, im["det_conf"][np.maximum(gt_det, 0)] if nd else -1.0, -1.0))
         cols["gt_match_cls"].append(np.where(hit, im["det_cls"][np.maximum(gt_det, 0)] if nd else -1, -1)

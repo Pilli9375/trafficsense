@@ -85,7 +85,8 @@ def save_preds(path: Path, images: list[dict]) -> None:
 
 
 def load_preds(path: Path) -> list[dict]:
-    z = np.load(path)
+    with np.load(path) as f:
+        z = {k: f[k] for k in f.files}   # each NpzFile access decompresses the whole array: read once
     od, og = np.concatenate([[0], np.cumsum(z["n_det"])]), np.concatenate([[0], np.cumsum(z["n_gt"])])
     return [{"im_file": str(f), "shape": tuple(z["shape"][i]),
              "det_xyxy": z["det_xyxy"][od[i]:od[i + 1]], "det_conf": z["det_conf"][od[i]:od[i + 1]],
@@ -150,7 +151,11 @@ def error_stats(m: errors.Matched, thr: float) -> dict:
     for gi, cam in enumerate(m.cameras):
         cc = errors.counts(m, thr, m.image_camera == gi)
         rr = errors.rates(cc)
-        by_camera[cam] = {"images": int(cc["images"]), "gt": per_class(cc["gt"], 0),
+        sel = m.image_camera[m.gt_image] == gi
+        by_camera[cam] = {"images": int(cc["images"]), "gt_total": int(sel.sum()),
+                          "gt_small_share": round(float((m.gt_size[sel] == 0).mean()), 4) if sel.any() else None,
+                          "gt_median_area_px": round(float(np.median(m.gt_area[sel])), 1) if sel.any() else None,
+                          "gt": per_class(cc["gt"], 0),
                           "miss_rate": per_class(rr["miss_rate"]),
                           "false_det_per_image": per_class(rr["false_det_per_image"])}
     ce = errors.count_error(m, thr)

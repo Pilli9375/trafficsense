@@ -84,8 +84,9 @@ def tables(train, val, test, model) -> dict[str, str]:
         [[c, num(ce["mean_abs"][c]), num(ce["mean_signed"][c])] for c in classes])
     cams = e["by_camera"]
     t["detector_test_cameras"] = table(
-        ["camera group", "images"] + [f"{c} miss" for c in classes],
-        [[cam, f"{v['images']:,}"] + [pct(v["miss_rate"][c], 0) for c in classes] for cam, v in cams.items()])
+        ["camera group", "images", "GT boxes", "small share", "median box area (px)"] + [f"{c} miss" for c in classes],
+        [[cam, f"{v['images']:,}", f"{v['gt_total']:,}", pct(v["gt_small_share"], 0), f"{v['gt_median_area_px']:,.0f}"]
+         + [pct(v["miss_rate"][c], 0) for c in classes] for cam, v in cams.items()])
     t["detector_error_model"] = table(
         ["class", "p_detect", "false det. / image (Poisson mean)"],
         [[c, num(model["p_detect"][c]), num(model["false_det_per_image"][c]["value"])] for c in classes])

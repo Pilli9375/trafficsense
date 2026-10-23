@@ -69,6 +69,9 @@ python scripts/benchmark_llm.py --arm v2 --models qwen2.5:3b   # or --arm v2: ev
 python scripts/run_full_experiments.py            # full experiments (resumable; --dry-run lists runs)
 python scripts/run_model_size.py --bench          # exploratory model-size study (--full, --dry-run)
 python scripts/probe_hosted.py --capabilities     # hosted (NVIDIA NIM) endpoint checks; key in gitignored .env
+python scripts/train_detector.py --full            # YOLO detector on IDD (resumable; --probe, --summarize)
+python scripts/eval_detector.py --stage val        # then --stage test (once); writes the camera error model
+python scripts/make_perception_results.py --check  # docs/perception.md tables vs outputs/perception
 streamlit run src/trafficsense/dashboard/app.py
 ```
 
