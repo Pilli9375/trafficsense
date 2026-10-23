@@ -55,6 +55,14 @@ def train_overrides(tcfg: dict[str, Any], imgsz: int) -> dict[str, Any]:
     return {"imgsz": int(imgsz), **{k: tcfg[k] for k in keys}}
 
 
+def batch_images(i: int, batch_size: int, n_images: int) -> int:
+    """Images in batch i (1-based) of an epoch; the last batch holds the remainder.
+
+    Ultralytics keeps the batch in a local variable, so callbacks cannot count it directly.
+    """
+    return max(0, min(batch_size, n_images - (i - 1) * batch_size))
+
+
 class GpuSampler:
     """Polls nvidia-smi every `period` s into a CSV (GPU utilisation and memory used, MiB)."""
 
@@ -130,7 +138,7 @@ class TrainMonitor:
         import torch
         torch.cuda.synchronize()
         t = time.perf_counter()
-        n = len(trainer.batch["im_file"])
+        n = batch_images(self.batches + 1, trainer.batch_size, len(trainer.train_loader.dataset))
         wait, gpu = self.t_start - self.t_last_end, t - self.t_start
         self.batches += 1
         self.images += n

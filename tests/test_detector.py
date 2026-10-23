@@ -51,3 +51,7 @@ def test_read_log_and_gpu_summary(tmp_path):
     csv = tmp_path / "gpu.csv"
     csv.write_text("time,gpu_util_pct,mem_used_mib\n1,90,2000\n2,100,2500\n")
     assert detector.summarize_gpu_csv(csv) == {"samples": 2, "util_mean_pct": 95.0, "mem_used_max_mib": 2500.0}
+
+
+def test_batch_images_last_batch_is_remainder():
+    assert [detector.batch_images(i, 8, 20) for i in (1, 2, 3, 4)] == [8, 8, 4, 0]
