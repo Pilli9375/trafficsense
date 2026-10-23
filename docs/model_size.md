@@ -132,8 +132,96 @@ unknown; nvidia-smi saw 2852 MiB.
 | MaxPressure (baseline) | – | – | – | – | – | – | – | – | 92.5 | +0.0% | 11.85 | – | – | – | – |
 <!-- END:model_size_bench -->
 
-## Step 2: full runs
+## Step 2: full runs (3600 s)
+
+Indian 2x2 peak (seeds 0–2) and the same peak with ambulances (`indian_2x2_peak_amb`, the
+emergency scenario of `docs/emergency.md`, seeds 0–4). `gemma4:e4b`'s runs and the baselines
+are those of the full experiments; the other models' runs are this study's. "ATT vs
+MaxPressure" is the mean over seeds of each run's difference from MaxPressure on the same seed.
+"Follows pressure" and "differs from MaxPressure" are pooled over all successful calls of the
+model's runs, counted from `decisions.jsonl`, which records MaxPressure's pressures at every
+decision. On the benchmark runs this count equals the replay's. When a call fails, MaxPressure's
+choice is applied, and the failure is counted. A model whose runs are not all finished is
+listed without numbers.
+
+**Indian 2x2 peak (3 seeds)**
 
 <!-- BEGIN:model_size_full -->
-(not run yet)
+| Model | Total params (B) | ATT (s), mean ± std | ATT vs MaxPressure, mean (range over seeds) | Seeds worse than MaxPressure | Queue / int. (veh) | Follows pressure | Answer differs from MaxPressure | Failed calls → MaxPressure's choice applied | Retries | Wall time / run (min) | Model id the server returned |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| `qwen2.5:3b` | 3.1 | 174.4 ± 2.8 | +51.0% (+47.6 to +53.5) | 3 of 3 | 36.52 ± 1.37 | 17% | 83% | 308 of 5229 (5.9%): reason_too_long 308 | 0 | 33 | `qwen2.5:3b` |
+| `llama3.2:3b` | 3.2 | 209.6 ± 8.9 | +81.4% (+74.1 to +86.1) | 3 of 3 | 46.86 ± 2.22 | 2% | 99% | 0 of 5393 (0.0%) | 0 | 31 | `llama3.2:3b` |
+| `gemma4:e4b` | 7.5 | 113.7 ± 0.3 | -1.5% (-2.2 to -0.5) | 0 of 3 | 17.33 ± 0.44 | 80% | 21% | 3 of 2541 (0.1%): reason_too_long 3 | – | 64 | `gemma4:e4b` |
+| `llama3.1:8b` | 8 | 117.1 ± 2.6 | +1.4% (-1.4 to +4.3) | 2 of 3 | 18.34 ± 1.10 | 62% | 43% | 0 of 2207 (0.0%) | 0 | 44 | `llama3.1:8b` |
+| `nvidia/nemotron-3-ultra-550b-a55b` | 550 | 114.8 ± 3.6 | -0.6% (-3.1 to +3.9) | 1 of 3 | 17.60 ± 1.31 | 99% | 2% | 39 of 2205 (1.8%): retries_exhausted 37, timeout 2 | 2560 | 136 | `nvidia/nemotron-3-ultra-550b-a55b` |
+| MaxPressure (baseline) | – | 115.5 ± 0.9 | +0.0% | – | 17.83 ± 0.32 | – | – | – | – | – | – |
 <!-- END:model_size_full -->
+
+**Emergency scenario (peak with ambulances, 5 seeds)**
+
+<!-- BEGIN:model_size_full_amb -->
+| Model | Total params (B) | ATT (s), mean ± std | ATT vs MaxPressure, mean (range over seeds) | Seeds worse than MaxPressure | Queue / int. (veh) | Follows pressure | Answer differs from MaxPressure | Failed calls → MaxPressure's choice applied | Retries | Wall time / run (min) | Model id the server returned |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| `qwen2.5:3b` | 3.1 | 183.5 ± 2.7 | +58.7% (+54.0 to +64.8) | 5 of 5 | 40.09 ± 0.33 | 11% | 90% | 206 of 10031 (2.1%): reason_too_long 206 | 0 | 41 | `qwen2.5:3b` |
+| `llama3.2:3b` | 3.2 | 197.8 ± 3.8 | +71.0% (+65.1 to +76.2) | 5 of 5 | 43.63 ± 1.30 | 4% | 98% | 0 of 8013 (0.0%) | 0 | 29 | `llama3.2:3b` |
+| `gemma4:e4b` | 7.5 | 112.9 ± 1.9 | -2.4% (-5.3 to +1.6) | 1 of 5 | 17.11 ± 0.30 | 81% | 20% | 2 of 4146 (0.0%): reason_too_long 2 | – | 65 | `gemma4:e4b` |
+| `llama3.1:8b` | 8 | 115.5 ± 1.8 | -0.1% (-2.6 to +1.2) | 3 of 5 | 17.92 ± 0.58 | 71% | 33% | 2 of 3619 (0.1%): reason_too_long 2 | 0 | 46 | `llama3.1:8b` |
+| `nvidia/nemotron-3-ultra-550b-a55b` | 550 | not finished (0 of 5 seeds) |  |  |  |  |  |  |  |  |  |
+| MaxPressure (baseline) | – | 115.7 ± 2.3 | +0.0% | – | 17.97 ± 0.86 | – | – | – | – | – | – |
+| MaxPressure + preemption (baseline) | – | 116.0 ± 0.7 | – | – | 18.08 ± 0.41 | – | – | – | – | – | – |
+<!-- END:model_size_full_amb -->
+
+**Ambulances (emergency scenario).** The primary ambulance metric of `docs/emergency.md`:
+travel time of the signal-relevant ambulances (routes through at least one signal), pooled over
+the 5 seeds. "Paired" compares the same ambulance (same seed and vehicle) under the two
+controllers. None of the hybrid_v3 runs preempt. The LLM sees the ambulances in its prompt and
+picks among MaxPressure's top two phases or keeping the current one.
+
+<!-- BEGIN:model_size_ambulances -->
+| Controller / model | Signal-relevant ambulances finished | Travel time, mean (s) | Stopped time, mean (s) | vs MaxPressure, paired | vs MaxPressure + preemption, paired |
+|---|---|---|---|---|---|
+| `qwen2.5:3b` | 29 of 29 | 148.5 | 77.5 | +18.4 s (11 faster, 18 slower, of 29) | +67.3 s (3 faster, 26 slower, of 29) |
+| `llama3.2:3b` | 29 of 29 | 161.8 | 86.4 | +31.7 s (13 faster, 16 slower, of 29) | +80.6 s (5 faster, 24 slower, of 29) |
+| `gemma4:e4b` | 29 of 29 | 82.2 | 15.3 | -47.9 s (27 faster, 2 slower, of 29) | +1.1 s (16 faster, 12 slower, of 29) |
+| `llama3.1:8b` | 29 of 29 | 97.0 | 29.7 | -33.1 s (23 faster, 6 slower, of 29) | +15.8 s (9 faster, 19 slower, of 29) |
+| `nvidia/nemotron-3-ultra-550b-a55b` | not finished (0 of 5 seeds) |  |  |  |  |
+| MaxPressure (baseline) | 29 of 29 | 130.1 | 62.3 | +0.0 s (0 faster, 0 slower, of 29) | +48.9 s (1 faster, 28 slower, of 29) |
+| MaxPressure + preemption (baseline) | 29 of 29 | 81.2 | 14.1 | -48.9 s (28 faster, 1 slower, of 29) | +0.0 s (0 faster, 0 slower, of 29) |
+<!-- END:model_size_ambulances -->
+
+## Chart
+
+![Control quality vs model size: ATT vs MaxPressure, ambulance travel time and share of
+pressure-following decisions, per model ordered by total parameters](figures/model_size.svg)
+
+Models are ordered by total parameters; the spacing is not to scale. The hosted model is
+mixture-of-experts, with 55 B parameters active per token, and the local models are 4-bit
+quantized. "Size" therefore mixes several things (see the sizes table above). The tables above
+hold the numbers.
+
+## Hosted API reliability (arm B)
+
+The benchmark run (2026-10-22) needed no retries. During the full runs (from 2026-10-23) NVIDIA's
+endpoint throttled the key far below what the probes measured the day before. Many calls got
+HTTP 429 (sometimes 503) several times before being answered, and the server answered only a
+few calls per minute, well below the client's own 30/min limit. Three things follow:
+
+* **Waiting does not change the traffic.** The simulator stands still while a call is in
+  progress, so throttling stretches wall time but not the simulated traffic.
+* **Calls that ran out of retries are failures.** After 5 retries with backoff (or a 60 s
+  timeout), MaxPressure's choice is applied for that decision. These are counted as failures,
+  apart from the retries, in the tables above and below.
+* **The batch was left unchanged.** Every arm B run uses the pre-registered settings (30/min,
+  5 retries), so the eight full runs stay comparable with each other. A run under heavier
+  throttling simply has more MaxPressure fallbacks, and the table shows how many.
+
+<!-- BEGIN:model_size_hosted -->
+| Started (IST) | Run | Sim steps | Calls | Calls that needed retries | Retries (HTTP status) | Failed calls → MaxPressure's choice applied | Wall time (min) | Wall s per sim s | Client waits: rate limiter + backoff (min) | Model id the server returned |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 2026-10-22 12:33 | indian_2x2_peak s0 | 600 | 128 | 0 (0%) | 0 | 0 (0.0%) | 5 | 0.54 | 0 | `nvidia/nemotron-3-ultra-550b-a55b` |
+| 2026-10-23 10:23 | indian_2x2_peak s0 | 3600 | 736 | 286 (39%) | 718 (429: 714, 503: 4) | 11 (1.5%): retries_exhausted 10, timeout 1 | 121 | 2.02 | 75 | `nvidia/nemotron-3-ultra-550b-a55b` |
+| 2026-10-23 12:22 | indian_2x2_peak s1 | 3600 | 734 | 351 (48%) | 854 (429: 849, 503: 5) | 12 (1.6%): retries_exhausted 11, timeout 1 | 135 | 2.25 | 86 | `nvidia/nemotron-3-ultra-550b-a55b` |
+| 2026-10-23 14:36 | indian_2x2_peak s2 | 3600 | 735 | 417 (57%) | 988 (429: 985, 503: 3) | 16 (2.2%): retries_exhausted 16 | 150 | 2.51 | 97 | `nvidia/nemotron-3-ultra-550b-a55b` |
+
+4 of 9 arm B runs finished.
+<!-- END:model_size_hosted -->

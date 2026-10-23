@@ -1,7 +1,7 @@
 {
  "provenance": {
   "script": "scripts/make_model_size.py",
-  "git_commit_of_this_summary": "e2b7aef411919cf9eff6fed65e88d8e0cd13cf42",
+  "git_commit_of_this_summary": "f336509cab9b7511bb5e05c520bcab4394623b72",
   "label": "exploratory, added after the main results"
  },
  "sizes": {
@@ -193,5 +193,762 @@
    "queue_mean_per_intersection": 11.850416666666666,
    "throughput": 623
   }
- }
+ },
+ "full": {
+  "indian_2x2_peak": {
+   "seeds": [
+    0,
+    1,
+    2
+   ],
+   "baselines": {
+    "maxpressure": {
+     "runs": [
+      "outputs/full/runs/20261015-074852_indian_2x2_peak_maxpressure_s0",
+      "outputs/full/runs/20261015-074931_indian_2x2_peak_maxpressure_s1",
+      "outputs/full/runs/20261015-075010_indian_2x2_peak_maxpressure_s2"
+     ],
+     "att_s": [
+      115.53740016460706,
+      0.8800224831088314
+     ],
+     "queue_mean_per_intersection": [
+      17.829467592592593,
+      0.3196951788728579
+     ],
+     "throughput": [
+      4576.333333333333,
+      68.23733093647006
+     ]
+    }
+   },
+   "models": {
+    "qwen2.5:3b": {
+     "runs": [
+      "outputs/model_size/runs/20261022-193451_indian_2x2_peak_llm_guided_mp_v3_s0",
+      "outputs/model_size/runs/20261022-200725_indian_2x2_peak_llm_guided_mp_v3_s1",
+      "outputs/model_size/runs/20261022-203944_indian_2x2_peak_llm_guided_mp_v3_s2"
+     ],
+     "timestamps": [
+      "2026-10-22T19:34:51+05:30",
+      "2026-10-22T20:07:25+05:30",
+      "2026-10-22T20:39:44+05:30"
+     ],
+     "served_models": [
+      "qwen2.5:3b"
+     ],
+     "att_s": [
+      174.4282932048936,
+      2.8460984512117116
+     ],
+     "att_vs_mp": {
+      "mean": 0.5098156454799977,
+      "min": 0.47564753630470646,
+      "max": 0.5348245161971743,
+      "seeds_worse": 3
+     },
+     "queue_mean_per_intersection": [
+      36.51773148148148,
+      1.3739677528482144
+     ],
+     "throughput": [
+      4481.666666666667,
+      76.64419960658036
+     ],
+     "calls": 5229,
+     "failures": 308,
+     "failures_by_type": {
+      "reason_too_long": 308
+     },
+     "fallback_to_mp_rate": 0.058902275769745646,
+     "retries": 0,
+     "calls_with_retries": 0,
+     "follows_pressure_rate": 0.17374517374517376,
+     "follows_pressure_per_seed": [
+      0.17109326744904263,
+      0.17947141979102643,
+      0.1707462686567164
+     ],
+     "mp_disagreement_rate": 0.8268644584434058,
+     "wall_time_s_mean": 1999.6333333333332
+    },
+    "llama3.2:3b": {
+     "runs": [
+      "outputs/model_size/runs/20261023-003505_indian_2x2_peak_llm_guided_mp_v3_s0",
+      "outputs/model_size/runs/20261023-010557_indian_2x2_peak_llm_guided_mp_v3_s1",
+      "outputs/model_size/runs/20261023-013557_indian_2x2_peak_llm_guided_mp_v3_s2"
+     ],
+     "timestamps": [
+      "2026-10-23T00:35:05+05:30",
+      "2026-10-23T01:05:57+05:30",
+      "2026-10-23T01:35:57+05:30"
+     ],
+     "served_models": [
+      "llama3.2:3b"
+     ],
+     "att_s": [
+      209.58156995127248,
+      8.916578909811053
+     ],
+     "att_vs_mp": {
+      "mean": 0.8136554698843289,
+      "min": 0.7408433930207107,
+      "max": 0.8605910356332009,
+      "seeds_worse": 3
+     },
+     "queue_mean_per_intersection": [
+      46.85664351851852,
+      2.224020506474742
+     ],
+     "throughput": [
+      4462,
+      70.37755323965163
+     ],
+     "calls": 5393,
+     "failures": 0,
+     "failures_by_type": {},
+     "fallback_to_mp_rate": 0.0,
+     "retries": 0,
+     "calls_with_retries": 0,
+     "follows_pressure_rate": 0.020767661783793807,
+     "follows_pressure_per_seed": [
+      0.022838499184339316,
+      0.0184460592509782,
+      0.020963172804532578
+     ],
+     "mp_disagreement_rate": 0.987947339143334,
+     "wall_time_s_mean": 1862.4233333333334
+    },
+    "gemma4:e4b": {
+     "runs": [
+      "outputs/full/runs/20261015-153919_indian_2x2_peak_llm_guided_mp_v3_s0",
+      "outputs/full/runs/20261015-164041_indian_2x2_peak_llm_guided_mp_v3_s1",
+      "outputs/full/runs/20261015-174510_indian_2x2_peak_llm_guided_mp_v3_s2"
+     ],
+     "timestamps": [
+      "2026-10-15T15:39:19+05:30",
+      "2026-10-15T16:40:41+05:30",
+      "2026-10-15T17:45:10+05:30"
+     ],
+     "served_models": [
+      "gemma4:e4b"
+     ],
+     "att_s": [
+      113.74784387592968,
+      0.3187027927532108
+     ],
+     "att_vs_mp": {
+      "mean": -0.01544513012704593,
+      "min": -0.022491275971189002,
+      "max": -0.005310130950451479,
+      "seeds_worse": 0
+     },
+     "queue_mean_per_intersection": [
+      17.33261574074074,
+      0.43919324743276117
+     ],
+     "throughput": [
+      4577.333333333333,
+      76.55934517309649
+     ],
+     "calls": 2541,
+     "failures": 3,
+     "failures_by_type": {
+      "reason_too_long": 3
+     },
+     "fallback_to_mp_rate": 0.0011806375442739079,
+     "retries": null,
+     "calls_with_retries": null,
+     "follows_pressure_rate": 0.8002364066193853,
+     "follows_pressure_per_seed": [
+      0.8333333333333334,
+      0.767816091954023,
+      0.8014184397163121
+     ],
+     "mp_disagreement_rate": 0.20921985815602837,
+     "wall_time_s_mean": 3846.0466666666666
+    },
+    "llama3.1:8b": {
+     "runs": [
+      "outputs/model_size/runs/20261023-042300_indian_2x2_peak_llm_guided_mp_v3_s0",
+      "outputs/model_size/runs/20261023-050631_indian_2x2_peak_llm_guided_mp_v3_s1",
+      "outputs/model_size/runs/20261023-054920_indian_2x2_peak_llm_guided_mp_v3_s2"
+     ],
+     "timestamps": [
+      "2026-10-23T04:23:00+05:30",
+      "2026-10-23T05:06:31+05:30",
+      "2026-10-23T05:49:20+05:30"
+     ],
+     "served_models": [
+      "llama3.1:8b"
+     ],
+     "att_s": [
+      117.08893531153639,
+      2.5520454553455547
+     ],
+     "att_vs_mp": {
+      "mean": 0.013552608366619583,
+      "min": -0.014061896730405867,
+      "max": 0.042699571511038314,
+      "seeds_worse": 2
+     },
+     "queue_mean_per_intersection": [
+      18.338935185185186,
+      1.0968310579405869
+     ],
+     "throughput": [
+      4581.666666666667,
+      82.71839779234928
+     ],
+     "calls": 2207,
+     "failures": 0,
+     "failures_by_type": {},
+     "fallback_to_mp_rate": 0.0,
+     "retries": 0,
+     "calls_with_retries": 0,
+     "follows_pressure_rate": 0.6171273221567739,
+     "follows_pressure_per_seed": [
+      0.6226415094339622,
+      0.6243169398907104,
+      0.6043656207366985
+     ],
+     "mp_disagreement_rate": 0.4299954689623924,
+     "wall_time_s_mean": 2618.7566666666667
+    },
+    "nvidia/nemotron-3-ultra-550b-a55b": {
+     "runs": [
+      "outputs/model_size/runs/20261023-102333_indian_2x2_peak_llm_guided_mp_v3_s0",
+      "outputs/model_size/runs/20261023-122247_indian_2x2_peak_llm_guided_mp_v3_s1",
+      "outputs/model_size/runs/20261023-143629_indian_2x2_peak_llm_guided_mp_v3_s2"
+     ],
+     "timestamps": [
+      "2026-10-23T10:23:33+05:30",
+      "2026-10-23T12:22:47+05:30",
+      "2026-10-23T14:36:29+05:30"
+     ],
+     "served_models": [
+      "nvidia/nemotron-3-ultra-550b-a55b"
+     ],
+     "att_s": [
+      114.84204698327885,
+      3.6351469032709818
+     ],
+     "att_vs_mp": {
+      "mean": -0.005819350173477677,
+      "min": -0.030933074719610657,
+      "max": 0.039356155727420655,
+      "seeds_worse": 1
+     },
+     "queue_mean_per_intersection": [
+      17.60386574074074,
+      1.312398778675729
+     ],
+     "throughput": [
+      4582.666666666667,
+      77.93800955460264
+     ],
+     "calls": 2205,
+     "failures": 39,
+     "failures_by_type": {
+      "retries_exhausted": 37,
+      "timeout": 2
+     },
+     "fallback_to_mp_rate": 0.017687074829931974,
+     "retries": 2560,
+     "calls_with_retries": 1054,
+     "follows_pressure_rate": 0.9921514312096029,
+     "follows_pressure_per_seed": [
+      0.9917241379310345,
+      0.9930747922437673,
+      0.9916550764951322
+     ],
+     "mp_disagreement_rate": 0.024469067405355493,
+     "wall_time_s_mean": 8141.693333333333
+    }
+   }
+  },
+  "indian_2x2_peak_amb": {
+   "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "baselines": {
+    "maxpressure": {
+     "runs": [
+      "outputs/emergency/runs/20261015-075150_indian_2x2_peak_amb_maxpressure_s0",
+      "outputs/emergency/runs/20261015-075228_indian_2x2_peak_amb_maxpressure_s1",
+      "outputs/emergency/runs/20261015-075306_indian_2x2_peak_amb_maxpressure_s2",
+      "outputs/emergency/runs/20261015-075345_indian_2x2_peak_amb_maxpressure_s3",
+      "outputs/emergency/runs/20261015-075423_indian_2x2_peak_amb_maxpressure_s4"
+     ],
+     "att_s": [
+      115.71720356160684,
+      2.333964353635437
+     ],
+     "queue_mean_per_intersection": [
+      17.974583333333335,
+      0.8571799646525208
+     ],
+     "throughput": [
+      4604.6,
+      65.9416408652378
+     ],
+     "ambulances": {
+      "n": 29,
+      "finished": 29,
+      "travel_time_mean_s": 130.10344827586206,
+      "stopped_time_mean_s": 62.310344827586206,
+      "vs_maxpressure": {
+       "n_paired": 29,
+       "mean_diff_s": 0.0,
+       "faster": 0,
+       "slower": 0
+      },
+      "vs_preemption_mp": {
+       "n_paired": 29,
+       "mean_diff_s": 48.93103448275862,
+       "faster": 1,
+       "slower": 28
+      }
+     }
+    },
+    "preemption_mp": {
+     "runs": [
+      "outputs/emergency/runs/20261015-075225_indian_2x2_peak_amb_preemption_mp_s0",
+      "outputs/emergency/runs/20261015-075303_indian_2x2_peak_amb_preemption_mp_s1",
+      "outputs/emergency/runs/20261015-075341_indian_2x2_peak_amb_preemption_mp_s2",
+      "outputs/emergency/runs/20261015-075420_indian_2x2_peak_amb_preemption_mp_s3",
+      "outputs/emergency/runs/20261015-075458_indian_2x2_peak_amb_preemption_mp_s4"
+     ],
+     "att_s": [
+      116.02468982394986,
+      0.7127239781597973
+     ],
+     "queue_mean_per_intersection": [
+      18.076097222222224,
+      0.4130086574614595
+     ],
+     "throughput": [
+      4605.8,
+      61.116282609465046
+     ],
+     "ambulances": {
+      "n": 29,
+      "finished": 29,
+      "travel_time_mean_s": 81.17241379310344,
+      "stopped_time_mean_s": 14.137931034482758,
+      "vs_maxpressure": {
+       "n_paired": 29,
+       "mean_diff_s": -48.93103448275862,
+       "faster": 28,
+       "slower": 1
+      },
+      "vs_preemption_mp": {
+       "n_paired": 29,
+       "mean_diff_s": 0.0,
+       "faster": 0,
+       "slower": 0
+      }
+     }
+    }
+   },
+   "models": {
+    "qwen2.5:3b": {
+     "runs": [
+      "outputs/model_size/runs/20261022-211231_indian_2x2_peak_amb_llm_guided_mp_v3_s0",
+      "outputs/model_size/runs/20261022-215311_indian_2x2_peak_amb_llm_guided_mp_v3_s1",
+      "outputs/model_size/runs/20261022-223344_indian_2x2_peak_amb_llm_guided_mp_v3_s2",
+      "outputs/model_size/runs/20261022-231417_indian_2x2_peak_amb_llm_guided_mp_v3_s3",
+      "outputs/model_size/runs/20261022-235459_indian_2x2_peak_amb_llm_guided_mp_v3_s4"
+     ],
+     "timestamps": [
+      "2026-10-22T21:12:31+05:30",
+      "2026-10-22T21:53:11+05:30",
+      "2026-10-22T22:33:44+05:30",
+      "2026-10-22T23:14:17+05:30",
+      "2026-10-22T23:54:59+05:30"
+     ],
+     "served_models": [
+      "qwen2.5:3b"
+     ],
+     "att_s": [
+      183.54076704491612,
+      2.731376517773556
+     ],
+     "att_vs_mp": {
+      "mean": 0.5867739806880403,
+      "min": 0.5404178898654936,
+      "max": 0.6484563552144387,
+      "seeds_worse": 5
+     },
+     "queue_mean_per_intersection": [
+      40.089638888888885,
+      0.3252603694992979
+     ],
+     "throughput": [
+      4510.4,
+      64.33739192724555
+     ],
+     "calls": 10031,
+     "failures": 206,
+     "failures_by_type": {
+      "reason_too_long": 206
+     },
+     "fallback_to_mp_rate": 0.020536337354201975,
+     "retries": 0,
+     "calls_with_retries": 0,
+     "follows_pressure_rate": 0.10595419847328244,
+     "follows_pressure_per_seed": [
+      0.09793033821302373,
+      0.10918367346938776,
+      0.11746835443037974,
+      0.0937658388241257,
+      0.1115702479338843
+     ],
+     "mp_disagreement_rate": 0.8956743002544529,
+     "wall_time_s_mean": 2465.766,
+     "ambulances": {
+      "n": 29,
+      "finished": 29,
+      "travel_time_mean_s": 148.48275862068965,
+      "stopped_time_mean_s": 77.48275862068965,
+      "vs_maxpressure": {
+       "n_paired": 29,
+       "mean_diff_s": 18.379310344827587,
+       "faster": 11,
+       "slower": 18
+      },
+      "vs_preemption_mp": {
+       "n_paired": 29,
+       "mean_diff_s": 67.3103448275862,
+       "faster": 3,
+       "slower": 26
+      }
+     }
+    },
+    "llama3.2:3b": {
+     "runs": [
+      "outputs/model_size/runs/20261023-020528_indian_2x2_peak_amb_llm_guided_mp_v3_s0",
+      "outputs/model_size/runs/20261023-023239_indian_2x2_peak_amb_llm_guided_mp_v3_s1",
+      "outputs/model_size/runs/20261023-030035_indian_2x2_peak_amb_llm_guided_mp_v3_s2",
+      "outputs/model_size/runs/20261023-032836_indian_2x2_peak_amb_llm_guided_mp_v3_s3",
+      "outputs/model_size/runs/20261023-035554_indian_2x2_peak_amb_llm_guided_mp_v3_s4"
+     ],
+     "timestamps": [
+      "2026-10-23T02:05:28+05:30",
+      "2026-10-23T02:32:39+05:30",
+      "2026-10-23T03:00:35+05:30",
+      "2026-10-23T03:28:36+05:30",
+      "2026-10-23T03:55:54+05:30"
+     ],
+     "served_models": [
+      "llama3.2:3b"
+     ],
+     "att_s": [
+      197.78620537078413,
+      3.7784765493616512
+     ],
+     "att_vs_mp": {
+      "mean": 0.7098042970899959,
+      "min": 0.6506335390527463,
+      "max": 0.7620448464749188,
+      "seeds_worse": 5
+     },
+     "queue_mean_per_intersection": [
+      43.62523611111111,
+      1.3046016005395655
+     ],
+     "throughput": [
+      4464.2,
+      51.8140907475949
+     ],
+     "calls": 8013,
+     "failures": 0,
+     "failures_by_type": {},
+     "fallback_to_mp_rate": 0.0,
+     "retries": 0,
+     "calls_with_retries": 0,
+     "follows_pressure_rate": 0.03943591663546737,
+     "follows_pressure_per_seed": [
+      0.03508771929824561,
+      0.039579468150896725,
+      0.04054054054054054,
+      0.045084533500313086,
+      0.036825396825396824
+     ],
+     "mp_disagreement_rate": 0.9754149507051042,
+     "wall_time_s_mean": 1712.28,
+     "ambulances": {
+      "n": 29,
+      "finished": 29,
+      "travel_time_mean_s": 161.79310344827587,
+      "stopped_time_mean_s": 86.37931034482759,
+      "vs_maxpressure": {
+       "n_paired": 29,
+       "mean_diff_s": 31.689655172413794,
+       "faster": 13,
+       "slower": 16
+      },
+      "vs_preemption_mp": {
+       "n_paired": 29,
+       "mean_diff_s": 80.62068965517241,
+       "faster": 5,
+       "slower": 24
+      }
+     }
+    },
+    "gemma4:e4b": {
+     "runs": [
+      "outputs/emergency/runs/20261015-184814_indian_2x2_peak_amb_llm_guided_mp_v3_s0",
+      "outputs/emergency/runs/20261015-195338_indian_2x2_peak_amb_llm_guided_mp_v3_s1",
+      "outputs/emergency/runs/20261015-205904_indian_2x2_peak_amb_llm_guided_mp_v3_s2",
+      "outputs/emergency/runs/20261015-220312_indian_2x2_peak_amb_llm_guided_mp_v3_s3",
+      "outputs/emergency/runs/20261015-230802_indian_2x2_peak_amb_llm_guided_mp_v3_s4"
+     ],
+     "timestamps": [
+      "2026-10-15T18:48:14+05:30",
+      "2026-10-15T19:53:38+05:30",
+      "2026-10-15T20:59:04+05:30",
+      "2026-10-15T22:03:12+05:30",
+      "2026-10-15T23:08:02+05:30"
+     ],
+     "served_models": [
+      "gemma4:e4b"
+     ],
+     "att_s": [
+      112.85003756197801,
+      1.8942076881324617
+     ],
+     "att_vs_mp": {
+      "mean": -0.024384824967150515,
+      "min": -0.05293924931599029,
+      "max": 0.016169107616663365,
+      "seeds_worse": 1
+     },
+     "queue_mean_per_intersection": [
+      17.110527777777776,
+      0.2969340568290182
+     ],
+     "throughput": [
+      4610,
+      70.45211139490426
+     ],
+     "calls": 4146,
+     "failures": 2,
+     "failures_by_type": {
+      "reason_too_long": 2
+     },
+     "fallback_to_mp_rate": 0.000482392667631452,
+     "retries": null,
+     "calls_with_retries": null,
+     "follows_pressure_rate": 0.8052606177606177,
+     "follows_pressure_per_seed": [
+      0.8,
+      0.7925659472422062,
+      0.8118932038834952,
+      0.8028846153846154,
+      0.8191747572815534
+     ],
+     "mp_disagreement_rate": 0.20415057915057916,
+     "wall_time_s_mean": 3916.96,
+     "ambulances": {
+      "n": 29,
+      "finished": 29,
+      "travel_time_mean_s": 82.24137931034483,
+      "stopped_time_mean_s": 15.275862068965518,
+      "vs_maxpressure": {
+       "n_paired": 29,
+       "mean_diff_s": -47.86206896551724,
+       "faster": 27,
+       "slower": 2
+      },
+      "vs_preemption_mp": {
+       "n_paired": 29,
+       "mean_diff_s": 1.0689655172413792,
+       "faster": 16,
+       "slower": 12
+      }
+     }
+    },
+    "llama3.1:8b": {
+     "runs": [
+      "outputs/model_size/runs/20261023-063207_indian_2x2_peak_amb_llm_guided_mp_v3_s0",
+      "outputs/model_size/runs/20261023-071842_indian_2x2_peak_amb_llm_guided_mp_v3_s1",
+      "outputs/model_size/runs/20261023-080418_indian_2x2_peak_amb_llm_guided_mp_v3_s2",
+      "outputs/model_size/runs/20261023-085019_indian_2x2_peak_amb_llm_guided_mp_v3_s3",
+      "outputs/model_size/runs/20261023-093638_indian_2x2_peak_amb_llm_guided_mp_v3_s4"
+     ],
+     "timestamps": [
+      "2026-10-23T06:32:07+05:30",
+      "2026-10-23T07:18:42+05:30",
+      "2026-10-23T08:04:18+05:30",
+      "2026-10-23T08:50:19+05:30",
+      "2026-10-23T09:36:38+05:30"
+     ],
+     "served_models": [
+      "llama3.1:8b"
+     ],
+     "att_s": [
+      115.52518892669613,
+      1.7724935787233507
+     ],
+     "att_vs_mp": {
+      "mean": -0.0014998279790093237,
+      "min": -0.025635531313918374,
+      "max": 0.012104985777743592,
+      "seeds_worse": 3
+     },
+     "queue_mean_per_intersection": [
+      17.91726388888889,
+      0.5786770504047342
+     ],
+     "throughput": [
+      4601.6,
+      71.91175147359435
+     ],
+     "calls": 3619,
+     "failures": 2,
+     "failures_by_type": {
+      "reason_too_long": 2
+     },
+     "fallback_to_mp_rate": 0.0005526388505111909,
+     "retries": 0,
+     "calls_with_retries": 0,
+     "follows_pressure_rate": 0.709980646944982,
+     "follows_pressure_per_seed": [
+      0.719225449515906,
+      0.7198335644937587,
+      0.7164591977869986,
+      0.713103448275862,
+      0.6813793103448276
+     ],
+     "mp_disagreement_rate": 0.330384296378214,
+     "wall_time_s_mean": 2766.976,
+     "ambulances": {
+      "n": 29,
+      "finished": 29,
+      "travel_time_mean_s": 96.96551724137932,
+      "stopped_time_mean_s": 29.724137931034484,
+      "vs_maxpressure": {
+       "n_paired": 29,
+       "mean_diff_s": -33.13793103448276,
+       "faster": 23,
+       "slower": 6
+      },
+      "vs_preemption_mp": {
+       "n_paired": 29,
+       "mean_diff_s": 15.793103448275861,
+       "faster": 9,
+       "slower": 19
+      }
+     }
+    },
+    "nvidia/nemotron-3-ultra-550b-a55b": {
+     "finished_seeds": []
+    }
+   }
+  }
+ },
+ "hosted_runs": [
+  {
+   "run": "outputs/model_size/runs/20261022-123317_indian_2x2_peak_llm_guided_mp_v3_s0",
+   "timestamp": "2026-10-22T12:33:17+05:30",
+   "scenario": "indian_2x2_peak",
+   "seed": 0,
+   "steps": 600,
+   "calls": 128,
+   "calls_with_retries": 0,
+   "retries": 0,
+   "retries_by_reason": {},
+   "failures": 0,
+   "failures_by_type": {},
+   "fallback_to_mp_rate": 0.0,
+   "wall_time_s": 324.76,
+   "wall_s_per_sim_s": 0.5412666666666667,
+   "rate_limit_wait_s": 29.986921676999373,
+   "served_models": [
+    "nvidia/nemotron-3-ultra-550b-a55b"
+   ]
+  },
+  {
+   "run": "outputs/model_size/runs/20261023-102333_indian_2x2_peak_llm_guided_mp_v3_s0",
+   "timestamp": "2026-10-23T10:23:33+05:30",
+   "scenario": "indian_2x2_peak",
+   "seed": 0,
+   "steps": 3600,
+   "calls": 736,
+   "calls_with_retries": 286,
+   "retries": 718,
+   "retries_by_reason": {
+    "429": 714,
+    "503": 4
+   },
+   "failures": 11,
+   "failures_by_type": {
+    "retries_exhausted": 10,
+    "timeout": 1
+   },
+   "fallback_to_mp_rate": 0.014945652173913044,
+   "wall_time_s": 7285.3,
+   "wall_s_per_sim_s": 2.0236944444444447,
+   "rate_limit_wait_s": 4502.136056463016,
+   "served_models": [
+    "nvidia/nemotron-3-ultra-550b-a55b"
+   ]
+  },
+  {
+   "run": "outputs/model_size/runs/20261023-122247_indian_2x2_peak_llm_guided_mp_v3_s1",
+   "timestamp": "2026-10-23T12:22:47+05:30",
+   "scenario": "indian_2x2_peak",
+   "seed": 1,
+   "steps": 3600,
+   "calls": 734,
+   "calls_with_retries": 351,
+   "retries": 854,
+   "retries_by_reason": {
+    "429": 849,
+    "503": 5
+   },
+   "failures": 12,
+   "failures_by_type": {
+    "retries_exhausted": 11,
+    "timeout": 1
+   },
+   "fallback_to_mp_rate": 0.01634877384196185,
+   "wall_time_s": 8115.23,
+   "wall_s_per_sim_s": 2.2542305555555555,
+   "rate_limit_wait_s": 5163.039183160014,
+   "served_models": [
+    "nvidia/nemotron-3-ultra-550b-a55b"
+   ]
+  },
+  {
+   "run": "outputs/model_size/runs/20261023-143629_indian_2x2_peak_llm_guided_mp_v3_s2",
+   "timestamp": "2026-10-23T14:36:29+05:30",
+   "scenario": "indian_2x2_peak",
+   "seed": 2,
+   "steps": 3600,
+   "calls": 735,
+   "calls_with_retries": 417,
+   "retries": 988,
+   "retries_by_reason": {
+    "429": 985,
+    "503": 3
+   },
+   "failures": 16,
+   "failures_by_type": {
+    "retries_exhausted": 16
+   },
+   "fallback_to_mp_rate": 0.021768707482993196,
+   "wall_time_s": 9024.55,
+   "wall_s_per_sim_s": 2.506819444444444,
+   "rate_limit_wait_s": 5810.0,
+   "served_models": [
+    "nvidia/nemotron-3-ultra-550b-a55b"
+   ]
+  }
+ ]
 }

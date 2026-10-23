@@ -1,0 +1,20 @@
+{
+ "model_requested": "nvidia/nemotron-3-ultra-550b-a55b",
+ "listed": {
+  "name": "nvidia/nemotron-3-ultra-550b-a55b",
+  "digest": null,
+  "size_bytes": null,
+  "details": {
+   "owned_by": "nvidia",
+   "created": 735790403,
+   "listed_at_utc": "2026-10-23T04:53:32+00:00",
+   "hosted": true,
+   "local": false
+  }
+ },
+ "warmup_call_s": 0.7609692020050716,
+ "warmup_model_returned": "nvidia/nemotron-3-ultra-550b-a55b",
+ "run_finished_utc": "2026-10-23T06:52:43+00:00",
+ "privacy": "hosted: every prompt of this run was sent to https://integrate.api.nvidia.com/v1",
+ "local": false
+}

@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 354" width="900" height="354" role="img" aria-labelledby="t d">
+<title id="t">Control quality vs model size</title>
+<desc id="d">Exploratory. For each model, ordered by total parameters: ATT relative to MaxPressure, signal-relevant ambulance travel time, and the share of decisions that pick the highest-pressure phase. Dots are means over seeds, whiskers the range over seeds. The tables in docs/model_size.md hold the numbers.</desc>
+<style>
+  .bg { fill: #fcfcfb; } .t1 { fill: #0b0b0b; } .t2 { fill: #52514e; } .grid { stroke: #e4e3df; }
+  .axis { stroke: #8a8985; } .ref { stroke: #52514e; stroke-dasharray: 4 3; }
+  .s1 { fill: #2a78d6; stroke: #2a78d6; } .s2 { fill: #eb6834; stroke: #eb6834; }
+  .ring { stroke: #fcfcfb; stroke-width: 2; } .wh { stroke-width: 2; fill: none; }
+  text { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 12px; }
+  .title { font-size: 13px; font-weight: 600; } .small { font-size: 11px; }
+  @media (prefers-color-scheme: dark) {
+    .bg { fill: #1a1a19; } .t1 { fill: #f0efec; } .t2 { fill: #c3c2b7; } .grid { stroke: #34332f; }
+    .axis { stroke: #8a8985; } .ref { stroke: #c3c2b7; }
+    .s1 { fill: #3987e5; stroke: #3987e5; } .s2 { fill: #d95926; stroke: #d95926; } .ring { stroke: #1a1a19; }
+  }
+</style>
+<rect class="bg" width="900" height="354"/>
+<circle class="s1" cx="195" cy="20" r="5"/><text class="t1" x="205" y="24">Peak (3 seeds)</text>
+<circle class="s2" cx="365" cy="20" r="5"/><text class="t1" x="375" y="24">Emergency (5 seeds)</text>
+<line class="axis wh" x1="530" y1="20" x2="548" y2="20"/><text class="t2" x="554" y="24">range over seeds</text>
+<text class="t1" x="16" y="96.0">qwen2.5 3B</text><text class="t2 small" x="16" y="110.0">3.1 B</text>
+<text class="t1" x="16" y="136.0">llama3.2 3B</text><text class="t2 small" x="16" y="150.0">3.2 B</text>
+<text class="t1" x="16" y="176.0">gemma4 e4b</text><text class="t2 small" x="16" y="190.0">7.5 B</text>
+<text class="t1" x="16" y="216.0">llama3.1 8B</text><text class="t2 small" x="16" y="230.0">8.0 B</text>
+<text class="t1" x="16" y="256.0">Nemotron 3 Ultra</text><text class="t2 small" x="16" y="270.0">550 B, 55 B active</text>
+<text class="t1 title" x="190" y="56">ATT vs MaxPressure (%)</text>
+<line class="grid" x1="190.0" y1="70" x2="190.0" y2="278"/><text class="t2 small" x="190.0" y="294" text-anchor="middle">-25</text>
+<line class="grid" x1="232.0" y1="70" x2="232.0" y2="278"/><text class="t2 small" x="232.0" y="294" text-anchor="middle">0</text>
+<line class="grid" x1="274.0" y1="70" x2="274.0" y2="278"/><text class="t2 small" x="274.0" y="294" text-anchor="middle">25</text>
+<line class="grid" x1="316.0" y1="70" x2="316.0" y2="278"/><text class="t2 small" x="316.0" y="294" text-anchor="middle">50</text>
+<line class="grid" x1="358.0" y1="70" x2="358.0" y2="278"/><text class="t2 small" x="358.0" y="294" text-anchor="middle">75</text>
+<line class="grid" x1="400.0" y1="70" x2="400.0" y2="278"/><text class="t2 small" x="400.0" y="294" text-anchor="middle">100</text>
+<line class="ref" x1="232.0" y1="70" x2="232.0" y2="278"/><text class="t2 small" x="232.0" y="310" text-anchor="middle">MaxPressure</text>
+<line class="s1 wh" x1="311.9" y1="92.0" x2="321.9" y2="92.0"/>
+<circle class="s1 ring" cx="317.6" cy="92.0" r="5"/>
+<line class="s2 wh" x1="322.8" y1="104.0" x2="340.9" y2="104.0"/>
+<circle class="s2 ring" cx="330.6" cy="104.0" r="5"/>
+<line class="s1 wh" x1="356.5" y1="132.0" x2="376.6" y2="132.0"/>
+<circle class="s1 ring" cx="368.7" cy="132.0" r="5"/>
+<line class="s2 wh" x1="341.3" y1="144.0" x2="360.0" y2="144.0"/>
+<circle class="s2 ring" cx="351.2" cy="144.0" r="5"/>
+<line class="s1 wh" x1="228.2" y1="172.0" x2="231.1" y2="172.0"/>
+<circle class="s1 ring" cx="229.4" cy="172.0" r="5"/>
+<line class="s2 wh" x1="223.1" y1="184.0" x2="234.7" y2="184.0"/>
+<circle class="s2 ring" cx="227.9" cy="184.0" r="5"/>
+<line class="s1 wh" x1="229.6" y1="212.0" x2="239.2" y2="212.0"/>
+<circle class="s1 ring" cx="234.3" cy="212.0" r="5"/>
+<line class="s2 wh" x1="227.7" y1="224.0" x2="234.0" y2="224.0"/>
+<circle class="s2 ring" cx="231.7" cy="224.0" r="5"/>
+<line class="s1 wh" x1="226.8" y1="252.0" x2="238.6" y2="252.0"/>
+<circle class="s1 ring" cx="231.0" cy="252.0" r="5"/>
+<text class="t2 small" x="194" y="268.0">not finished</text>
+<text class="t1 title" x="426" y="56">Ambulance travel time (s)</text>
+<line class="grid" x1="426.0" y1="70" x2="426.0" y2="278"/><text class="t2 small" x="426.0" y="294" text-anchor="middle">0</text>
+<line class="grid" x1="478.5" y1="70" x2="478.5" y2="278"/><text class="t2 small" x="478.5" y="294" text-anchor="middle">50</text>
+<line class="grid" x1="531.0" y1="70" x2="531.0" y2="278"/><text class="t2 small" x="531.0" y="294" text-anchor="middle">100</text>
+<line class="grid" x1="583.5" y1="70" x2="583.5" y2="278"/><text class="t2 small" x="583.5" y="294" text-anchor="middle">150</text>
+<line class="grid" x1="636.0" y1="70" x2="636.0" y2="278"/><text class="t2 small" x="636.0" y="294" text-anchor="middle">200</text>
+<line class="ref" x1="562.6" y1="70" x2="562.6" y2="278"/><text class="t2 small" x="562.6" y="310" text-anchor="middle">MaxPressure</text>
+<line class="ref" x1="511.2" y1="70" x2="511.2" y2="278"/><text class="t2 small" x="511.2" y="323" text-anchor="middle">MP + preemption</text>
+<circle class="s2 ring" cx="581.9" cy="98.0" r="5"/>
+<circle class="s2 ring" cx="595.9" cy="138.0" r="5"/>
+<circle class="s2 ring" cx="512.4" cy="178.0" r="5"/>
+<circle class="s2 ring" cx="527.8" cy="218.0" r="5"/>
+<text class="t2 small" x="430" y="262.0">not finished</text>
+<text class="t1 title" x="662" y="56">Follows pressure (%)</text>
+<line class="grid" x1="662.0" y1="70" x2="662.0" y2="278"/><text class="t2 small" x="662.0" y="294" text-anchor="middle">0</text>
+<line class="grid" x1="714.5" y1="70" x2="714.5" y2="278"/><text class="t2 small" x="714.5" y="294" text-anchor="middle">25</text>
+<line class="grid" x1="767.0" y1="70" x2="767.0" y2="278"/><text class="t2 small" x="767.0" y="294" text-anchor="middle">50</text>
+<line class="grid" x1="819.5" y1="70" x2="819.5" y2="278"/><text class="t2 small" x="819.5" y="294" text-anchor="middle">75</text>
+<line class="grid" x1="872.0" y1="70" x2="872.0" y2="278"/><text class="t2 small" x="872.0" y="294" text-anchor="middle">100</text>
+<line class="s1 wh" x1="697.9" y1="92.0" x2="699.7" y2="92.0"/>
+<circle class="s1 ring" cx="698.5" cy="92.0" r="5"/>
+<line class="s2 wh" x1="681.7" y1="104.0" x2="686.7" y2="104.0"/>
+<circle class="s2 ring" cx="684.3" cy="104.0" r="5"/>
+<line class="s1 wh" x1="665.9" y1="132.0" x2="666.8" y2="132.0"/>
+<circle class="s1 ring" cx="666.4" cy="132.0" r="5"/>
+<line class="s2 wh" x1="669.4" y1="144.0" x2="671.5" y2="144.0"/>
+<circle class="s2 ring" cx="670.3" cy="144.0" r="5"/>
+<line class="s1 wh" x1="823.2" y1="172.0" x2="837.0" y2="172.0"/>
+<circle class="s1 ring" cx="830.0" cy="172.0" r="5"/>
+<line class="s2 wh" x1="828.4" y1="184.0" x2="834.0" y2="184.0"/>
+<circle class="s2 ring" cx="831.1" cy="184.0" r="5"/>
+<line class="s1 wh" x1="788.9" y1="212.0" x2="793.1" y2="212.0"/>
+<circle class="s1 ring" cx="791.6" cy="212.0" r="5"/>
+<line class="s2 wh" x1="805.1" y1="224.0" x2="813.2" y2="224.0"/>
+<circle class="s2 ring" cx="811.1" cy="224.0" r="5"/>
+<line class="s1 wh" x1="870.2" y1="252.0" x2="870.5" y2="252.0"/>
+<circle class="s1 ring" cx="870.4" cy="252.0" r="5"/>
+<text class="t2 small" x="666" y="268.0">not finished</text>
+<text class="t2 small" x="16" y="346">Exploratory, added after the main results. Models ordered by total parameters (not to scale). Generated by scripts/make_model_size.py.</text>
+</svg>

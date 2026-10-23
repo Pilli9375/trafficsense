@@ -1,0 +1,151 @@
+{
+  "provenance": {
+    "controller": "llm_guided_mp_v3",
+    "controller_params": {
+      "name": "llm_guided_mp_v3",
+      "mode": "cooperative",
+      "prompt": "guided_v3",
+      "decision_interval": 5,
+      "min_green": 15,
+      "phases": "all",
+      "client": {
+        "provider": "ollama",
+        "model": "qwen2.5:3b",
+        "host": "http://localhost:11434",
+        "endpoint": "/api/chat",
+        "timeout_s": 60.0,
+        "options": {
+          "temperature": 0.0,
+          "seed": 1,
+          "num_ctx": 2048,
+          "num_predict": 128
+        },
+        "keep_alive": "30m"
+      },
+      "max_consecutive_failures": 20,
+      "options": 2,
+      "tie_break": "keep_current",
+      "detection_range_m": 150.0,
+      "ranking": "maxpressure (phase_pressures over all green phases)"
+    },
+    "model": "qwen2.5:3b",
+    "provider": "ollama",
+    "llm": {
+      "calls": 1733,
+      "ok": 1627,
+      "failures": 106,
+      "failures_by_type": {
+        "reason_too_long": 106
+      },
+      "failure_rate": 0.061165608770917486,
+      "switches_requested": 380,
+      "latency_n": 1733,
+      "latency_mean_s": 1.1459465052066662,
+      "latency_p95_s": 1.323559958001715,
+      "latency_max_s": 1.5657466880002175,
+      "prompt_tokens_mean": 275.7663012117715,
+      "response_tokens_mean": 27.9399884593191,
+      "server_reported_models": [
+        "qwen2.5:3b"
+      ],
+      "calls_with_reasoning_output": 0,
+      "retries": 0,
+      "retries_by_reason": {},
+      "calls_with_retries": 0,
+      "wait_s_total": 0.0,
+      "call_wall_mean_s": 1.1459910202787102,
+      "call_wall_p95_s": 1.323599303800438,
+      "retry_note": "retries (HTTP 429/5xx, dropped connection) are not failures; a call fails only when it ends without a valid answer. call_wall = whole call incl. rate-limit waits, backoff and retried attempts",
+      "latency_note": "wall clock per call, over calls that returned a response (timeouts excluded, counted as failures)",
+      "mp_disagreements": 1335,
+      "mp_disagreement_rate": 0.8205285802089736,
+      "mp_disagreements_kept_current": 1286,
+      "mp_disagreements_chose_lower_ranked": 49,
+      "mp_fallbacks": 106,
+      "mp_disagreement_note": "over successful calls: the LLM's answer != MaxPressure's top choice",
+      "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+      "model_details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "qwen2",
+        "families": [
+          "qwen2"
+        ],
+        "parameter_size": "3.1B",
+        "quantization_level": "Q4_K_M",
+        "context_length": 32768,
+        "embedding_length": 2048,
+        "runner": "ggml"
+      },
+      "server_version": "0.40.3",
+      "decisions_log": "decisions.jsonl"
+    },
+    "controller_stats": null,
+    "seed": 1,
+    "scenario": "indian_2x2_peak",
+    "roadnet": "data/scenarios/indian_2x2/roadnet.json",
+    "flow": "data/scenarios/indian_2x2/flow_peak_s1.json",
+    "flow_sha256": "4c9ab1a13e847e991ab6495d815e16e1ebcf49d4cdf80d26212aeab5f04795c4",
+    "flow_per_seed": true,
+    "sim_steps": 3600,
+    "git_commit": "d33be98f0991202378b2f0160f8b4b1f3e92c72c",
+    "git_dirty": false,
+    "timestamp": "2026-10-22T20:07:25+05:30",
+    "wall_time_s": 1991.85,
+    "python": "3.10.12"
+  },
+  "signal": {
+    "min_green": 10,
+    "max_green": 60,
+    "transition_s": [
+      5
+    ],
+    "switches": 380,
+    "forced_switches": 0
+  },
+  "metrics": {
+    "att": 176.35279399499584,
+    "queue_mean_per_intersection": 37.55798611111111,
+    "queue_mean_total": 150.23194444444445,
+    "waiting_time_mean": 112.8256880733945,
+    "throughput": 4536,
+    "vehicles_entered": 4796,
+    "vehicles_running_at_end": 260,
+    "vehicles_waiting_to_enter_at_end": 0,
+    "steps": 3600
+  },
+  "per_intersection": {
+    "intersection_1_1": {
+      "queue_mean": 39.47638888888889,
+      "waiting_time_mean": 60.7069628363947,
+      "throughput": 2299,
+      "vehicles_seen": 2341
+    },
+    "intersection_2_1": {
+      "queue_mean": 35.87138888888889,
+      "waiting_time_mean": 55.87927304197317,
+      "throughput": 2239,
+      "vehicles_seen": 2311
+    },
+    "intersection_1_2": {
+      "queue_mean": 36.28666666666667,
+      "waiting_time_mean": 56.01715265866209,
+      "throughput": 2255,
+      "vehicles_seen": 2332
+    },
+    "intersection_2_2": {
+      "queue_mean": 38.5975,
+      "waiting_time_mean": 60.518728222996515,
+      "throughput": 2248,
+      "vehicles_seen": 2296
+    }
+  },
+  "emergency": null,
+  "metric_notes": {
+    "att": "engine.get_average_travel_time(): all generated vehicles from scheduled start, incl. those still running or still waiting to enter",
+    "queue_mean_per_intersection": "waiting vehicles (speed<0.1) on incoming lanes, mean over steps and intersections",
+    "queue_mean_total": "same, summed over intersections",
+    "waiting_time_mean": "seconds with speed<0.1 per vehicle, mean over vehicles that entered",
+    "throughput": "vehicles that finished their trip"
+  }
+}

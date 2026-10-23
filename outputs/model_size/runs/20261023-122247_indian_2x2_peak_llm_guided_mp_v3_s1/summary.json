@@ -1,0 +1,158 @@
+{
+  "provenance": {
+    "controller": "llm_guided_mp_v3",
+    "controller_params": {
+      "name": "llm_guided_mp_v3",
+      "mode": "cooperative",
+      "prompt": "guided_v3",
+      "decision_interval": 5,
+      "min_green": 15,
+      "phases": "all",
+      "client": {
+        "provider": "nvidia_nim",
+        "model": "nvidia/nemotron-3-ultra-550b-a55b",
+        "host": "https://integrate.api.nvidia.com/v1",
+        "endpoint": "/chat/completions",
+        "timeout_s": 60.0,
+        "options": {
+          "temperature": 0.0,
+          "seed": 1,
+          "max_tokens": 128,
+          "extra_body": {
+            "chat_template_kwargs": {
+              "enable_thinking": false
+            }
+          },
+          "structured_output": "json_schema",
+          "rate_limit_rpm": 30,
+          "max_retries": 5,
+          "backoff_s": 2.0,
+          "backoff_max_s": 60.0
+        },
+        "keep_alive": null
+      },
+      "max_consecutive_failures": 20,
+      "options": 2,
+      "tie_break": "keep_current",
+      "detection_range_m": 150.0,
+      "ranking": "maxpressure (phase_pressures over all green phases)"
+    },
+    "model": "nvidia/nemotron-3-ultra-550b-a55b",
+    "provider": "nvidia_nim",
+    "llm": {
+      "calls": 734,
+      "ok": 722,
+      "failures": 12,
+      "failures_by_type": {
+        "retries_exhausted": 11,
+        "timeout": 1
+      },
+      "failure_rate": 0.01634877384196185,
+      "switches_requested": 713,
+      "latency_n": 722,
+      "latency_mean_s": 2.9886083745224816,
+      "latency_p95_s": 10.779372138443415,
+      "latency_max_s": 34.42864638300671,
+      "prompt_tokens_mean": 278.6689750692521,
+      "response_tokens_mean": 23.371191135734072,
+      "server_reported_models": [
+        "nvidia/nemotron-3-ultra-550b-a55b"
+      ],
+      "calls_with_reasoning_output": 0,
+      "retries": 854,
+      "retries_by_reason": {
+        "429": 849,
+        "503": 5
+      },
+      "calls_with_retries": 351,
+      "wait_s_total": 5163.039183160014,
+      "call_wall_mean_s": 11.049257348814791,
+      "call_wall_p95_s": 63.104184280298796,
+      "retry_note": "retries (HTTP 429/5xx, dropped connection) are not failures; a call fails only when it ends without a valid answer. call_wall = whole call incl. rate-limit waits, backoff and retried attempts",
+      "latency_note": "wall clock per call, over calls that returned a response (timeouts excluded, counted as failures)",
+      "mp_disagreements": 17,
+      "mp_disagreement_rate": 0.023545706371191136,
+      "mp_disagreements_kept_current": 0,
+      "mp_disagreements_chose_lower_ranked": 17,
+      "mp_fallbacks": 12,
+      "mp_disagreement_note": "over successful calls: the LLM's answer != MaxPressure's top choice",
+      "model_digest": null,
+      "model_details": {
+        "owned_by": "nvidia",
+        "created": 735790403,
+        "listed_at_utc": "2026-10-23T06:52:48+00:00",
+        "hosted": true,
+        "local": false
+      },
+      "server_version": "https://integrate.api.nvidia.com/v1 (hosted, OpenAI-compatible; checked 2026-10-23)",
+      "decisions_log": "decisions.jsonl"
+    },
+    "controller_stats": null,
+    "seed": 1,
+    "scenario": "indian_2x2_peak",
+    "roadnet": "data/scenarios/indian_2x2/roadnet.json",
+    "flow": "data/scenarios/indian_2x2/flow_peak_s1.json",
+    "flow_sha256": "4c9ab1a13e847e991ab6495d815e16e1ebcf49d4cdf80d26212aeab5f04795c4",
+    "flow_per_seed": true,
+    "sim_steps": 3600,
+    "git_commit": "d33be98f0991202378b2f0160f8b4b1f3e92c72c",
+    "git_dirty": false,
+    "timestamp": "2026-10-23T12:22:47+05:30",
+    "wall_time_s": 8115.23,
+    "python": "3.10.12"
+  },
+  "signal": {
+    "min_green": 10,
+    "max_green": 60,
+    "transition_s": [
+      5
+    ],
+    "switches": 713,
+    "forced_switches": 0
+  },
+  "metrics": {
+    "att": 112.50854879065888,
+    "queue_mean_per_intersection": 17.030763888888888,
+    "queue_mean_total": 68.12305555555555,
+    "waiting_time_mean": 51.17723102585488,
+    "throughput": 4647,
+    "vehicles_entered": 4796,
+    "vehicles_running_at_end": 149,
+    "vehicles_waiting_to_enter_at_end": 0,
+    "steps": 3600
+  },
+  "per_intersection": {
+    "intersection_1_1": {
+      "queue_mean": 17.02027777777778,
+      "waiting_time_mean": 25.996181586762834,
+      "throughput": 2324,
+      "vehicles_seen": 2357
+    },
+    "intersection_2_1": {
+      "queue_mean": 16.37638888888889,
+      "waiting_time_mean": 25.291720291720292,
+      "throughput": 2313,
+      "vehicles_seen": 2331
+    },
+    "intersection_1_2": {
+      "queue_mean": 17.803055555555556,
+      "waiting_time_mean": 27.412745936698034,
+      "throughput": 2289,
+      "vehicles_seen": 2338
+    },
+    "intersection_2_2": {
+      "queue_mean": 16.923333333333332,
+      "waiting_time_mean": 26.21514629948365,
+      "throughput": 2287,
+      "vehicles_seen": 2324
+    }
+  },
+  "emergency": null,
+  "metric_notes": {
+    "att": "engine.get_average_travel_time(): all generated vehicles from scheduled start, incl. those still running or still waiting to enter",
+    "queue_mean_per_intersection": "waiting vehicles (speed<0.1) on incoming lanes, mean over steps and intersections",
+    "queue_mean_total": "same, summed over intersections",
+    "waiting_time_mean": "seconds with speed<0.1 per vehicle, mean over vehicles that entered",
+    "throughput": "vehicles that finished their trip"
+  }
+}
