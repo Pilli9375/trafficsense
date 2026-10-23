@@ -438,8 +438,8 @@
   },
   "provenance": {
     "script": "scripts/eval_detector.py --stage test",
-    "git_commit": "70a2df6eca14d52902712633f89a870522b92887",
-    "git_dirty": true,
-    "timestamp": "2026-10-23T19:31:21+00:00"
+    "git_commit": "fccb2744cce24c9d2e722eb55c370857d9aa11bd",
+    "git_dirty": false,
+    "timestamp": "2026-10-23T19:31:45+00:00"
   }
 }
