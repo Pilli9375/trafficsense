@@ -12,6 +12,9 @@ paths:
   idd_yolo: data/external/idd_yolo     # converted labels + data.yaml (gitignored, no image copies)
   idd_resized: data/external/idd_detection_640   # symlink to the resized copy on D (scripts/resize_idd.py)
   perception_outputs: outputs/perception
+  # Detector training runs, weights and logs: a gitignored symlink to D (C is nearly full).
+  # Create it once: ln -s /mnt/d/trafficsense/runs data/external/detector_runs
+  detector_runs: data/external/detector_runs
 
 scenarios:
   synthetic_4x4:
@@ -57,6 +60,18 @@ perception:
   resize:               # scripts/resize_idd.py; originals are never modified
     long_side: 640      # = imgsz, so Ultralytics does no further resize
     jpeg_quality: 95    # high, so re-encoding adds little loss on top of the dataset's own JPEG
+  train:                # scripts/train_detector.py; pre-registered in docs/perception.md section 6
+    model: yolov8n.pt   # COCO-pretrained; downloaded once into paths.detector_runs/pretrained
+    epochs: 50
+    patience: 10        # early stop on our val fitness
+    batch: 8
+    amp: false          # GTX 16-series: FP16 AMP gives NaN losses
+    workers: 8
+    cache: false        # RAM caching needs ~20 GB
+    seed: 0
+    deterministic: true
+    run_name: yolov8n_idd
+    probe_fraction: 0.10   # probe: random share of train images (seed), 1 epoch
 
 sim:
   steps: 3600          # default run length (CLAUDE.md)
