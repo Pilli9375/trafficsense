@@ -103,3 +103,16 @@ def test_train_monitor_stops_when_batch_is_halved(tmp_path, no_cuda):
     mon.on_train_batch_start(t)
     with pytest.raises(RuntimeError, match="Batch size changed"):
         mon.on_train_batch_end(t)
+
+
+def test_final_validation_is_not_logged_as_an_epoch(tmp_path, no_cuda):
+    import torch
+    mon = detector.TrainMonitor(tmp_path / "log.jsonl", batch=8)
+    t = _stub_trainer({"box_loss": torch.tensor(1.0)})
+    mon.on_train_epoch_start(t)
+    mon.on_train_batch_start(t)
+    mon.on_train_batch_end(t)
+    mon.on_train_epoch_end(t)
+    mon.on_fit_epoch_end(t)
+    mon.on_fit_epoch_end(t)   # Ultralytics' final validation of best.pt, no training epoch before it
+    assert [r["event"] for r in detector.read_log(tmp_path / "log.jsonl")] == ["epoch", "final_eval"]

@@ -12,7 +12,7 @@ the sorted list (all frontFar). The 50-epoch estimate it prints is an extrapolat
 
 --full starts the run, or resumes it from weights/last.pt if it was interrupted, or stops if
 it already finished. A summary with weight paths and sha256 goes to
-paths.perception_outputs/detector_train.json.
+paths.perception_outputs/detector_train.json (--summarize rewrites it from the run folder).
 """
 import argparse
 import json
@@ -46,10 +46,20 @@ def cache_path_for(first_image: str) -> Path:
     return Path(img2label_paths([first_image])[0]).parent.with_suffix(".cache")
 
 
-def epoch_records(log: Path) -> list[dict]:
-    """Per-epoch records; after a resume an epoch may be logged twice, the last one wins."""
+def epoch_records(log: Path, n_epochs: int | None = None) -> list[dict]:
+    """Per-epoch records; after a resume an epoch may be logged twice, the last one wins.
+
+    n_epochs (from Ultralytics' results.csv) drops later records: logs written before the
+    final_eval event existed recorded the final validation of best.pt as epoch n + 1.
+    """
     by_epoch = {r["epoch"]: r for r in detector.read_log(log) if r["event"] == "epoch"}
-    return [by_epoch[k] for k in sorted(by_epoch)]
+    return [by_epoch[k] for k in sorted(by_epoch) if n_epochs is None or k <= n_epochs]
+
+
+def results_csv_epochs(run_dir: Path) -> int:
+    """Training epochs Ultralytics completed: data rows of results.csv."""
+    lines = (run_dir / "results.csv").read_text().splitlines()
+    return len([x for x in lines[1:] if x.strip()])
 
 
 def probe(cfg: dict, args) -> None:
@@ -159,28 +169,42 @@ def full(cfg: dict) -> None:
     finally:
         gpu.stop()
 
+    (run_dir / detector.DONE_MARKER).write_text(json.dumps({"timestamp": now()}) + "\n")
+    summarize(cfg)
+
+
+def summarize(cfg: dict) -> None:
+    """Write detector_train.json from a finished run folder (also usable on its own: --summarize)."""
+    tcfg, pcfg = cfg["perception"]["train"], cfg["perception"]
+    runs = resolve_path(cfg, "detector_runs")
+    run_dir = runs / "detector" / tcfg["run_name"]
+    if detector.run_state(run_dir) != "finished":
+        raise RuntimeError(f"{run_dir} has not finished training")
+    weights = runs / "pretrained" / tcfg["model"]
     best, last = run_dir / "weights" / "best.pt", run_dir / "weights" / "last.pt"
-    recs = epoch_records(log)
+    n = results_csv_epochs(run_dir)
+    recs = epoch_records(run_dir / "train_log.jsonl", n)
+    if [r["epoch"] for r in recs] != list(range(1, n + 1)):
+        raise RuntimeError(f"train_log.jsonl epochs {[r['epoch'] for r in recs]} do not match results.csv ({n})")
     segments = [json.loads(x) for x in (run_dir / "segments.jsonl").read_text().splitlines()]
     best_rec = max(recs, key=lambda r: r["fitness"])
     summary = {
         "kind": "train", "run_dir": str(run_dir.resolve()),
         "settings": detector.train_overrides(tcfg, pcfg["imgsz"]), "model": tcfg["model"],
         "pretrained": {"path": str(weights.resolve()), "sha256": detector.sha256(weights)},
-        "epochs_run": len(recs), "best_epoch": best_rec["epoch"],
-        "stopped_early": len(recs) < int(tcfg["epochs"]),
+        "epochs_run": n, "best_epoch": best_rec["epoch"],
+        "stopped_early": n < int(tcfg["epochs"]),
         "best_val_metrics": best_rec["metrics"],
         "weights": {k: {"path": str(p.resolve()), "sha256": detector.sha256(p), "bytes": p.stat().st_size}
                     for k, p in (("best", best), ("last", last))},
         "train_hours": round(sum(r["train_s"] + r["val_and_save_s"] for r in recs) / 3600, 2),
         "epochs": recs, "segments": segments,
-        "provenance": {"script": "scripts/train_detector.py --full", "git_commit": segments[0]["git_commit"],
+        "provenance": {"script": "scripts/train_detector.py", "git_commit": segments[0]["git_commit"],
                        "git_dirty": segments[0]["git_dirty"], "timestamp": now()},
     }
-    (run_dir / detector.DONE_MARKER).write_text(json.dumps({"timestamp": now()}) + "\n")
     out = resolve_path(cfg, "perception_outputs") / "detector_train.json"
     out.write_text(json.dumps(summary, indent=2) + "\n")
-    print(f"done: {len(recs)} epochs, best epoch {best_rec['epoch']}; wrote {out}")
+    print(f"{n} epochs, best epoch {best_rec['epoch']}, {summary['train_hours']} h; wrote {out}")
 
 
 def main() -> None:
@@ -189,12 +213,18 @@ def main() -> None:
     mode = ap.add_mutually_exclusive_group(required=True)
     mode.add_argument("--probe", action="store_true")
     mode.add_argument("--full", action="store_true")
+    mode.add_argument("--summarize", action="store_true", help="rewrite detector_train.json from the finished run")
     ap.add_argument("--batch", type=int, help="probe only: override perception.train.batch")
     args = ap.parse_args()
     cfg = load_config(args.config)
     if args.full and args.batch:
         raise ValueError("--batch is for the probe; the full run uses perception.train.batch")
-    probe(cfg, args) if args.probe else full(cfg)
+    if args.probe:
+        probe(cfg, args)
+    elif args.full:
+        full(cfg)
+    else:
+        summarize(cfg)
 
 
 if __name__ == "__main__":

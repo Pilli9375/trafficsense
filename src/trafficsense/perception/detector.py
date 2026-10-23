@@ -130,6 +130,7 @@ class TrainMonitor:
         self.wait = self.gpu = 0.0
         self.ss_images = 0
         self.ss_wait = self.ss_gpu = 0.0
+        self.trained = False
 
     def on_train_batch_start(self, trainer) -> None:
         self.t_start = time.perf_counter()
@@ -163,10 +164,18 @@ class TrainMonitor:
     def on_train_epoch_end(self, trainer) -> None:
         import torch
         self.t_train_end = time.perf_counter()
+        self.trained = True
         self.peak_alloc = torch.cuda.max_memory_allocated() / 2**20
         self.peak_reserved = torch.cuda.max_memory_reserved() / 2**20
 
     def on_fit_epoch_end(self, trainer) -> None:
+        # After the last epoch Ultralytics validates best.pt and fires this callback again
+        # (with epoch + 1) without a training epoch before it: log that separately.
+        if not getattr(self, "trained", False):
+            self._write({"event": "final_eval", "model": "best.pt", "time": time.time(),
+                         "metrics": {k: float(v) for k, v in trainer.metrics.items()}})
+            return
+        self.trained = False
         t = time.perf_counter()
         train_s = self.t_train_end - self.t_epoch
         losses = {k: float(v) for k, v in trainer.tloss.items()}
