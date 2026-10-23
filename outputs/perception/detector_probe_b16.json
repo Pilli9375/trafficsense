@@ -1,0 +1,77 @@
+{
+  "kind": "probe",
+  "run_dir": "/mnt/d/trafficsense/runs/detector/probe_b16",
+  "settings": {
+    "imgsz": 640,
+    "epochs": 1,
+    "patience": 10,
+    "batch": 16,
+    "amp": false,
+    "workers": 8,
+    "cache": false,
+    "seed": 0,
+    "deterministic": true,
+    "close_mosaic": 0
+  },
+  "probe_images": 2838,
+  "train_images_full": 28384,
+  "pretrained": {
+    "path": "/mnt/d/trafficsense/runs/pretrained/yolov8n.pt",
+    "sha256": "f59b3d833e2ff32e194b5bb8e08d211dc7c5bdf144b90d2c8412c47ccfc83b36"
+  },
+  "epoch": {
+    "event": "epoch",
+    "epoch": 2,
+    "epochs": 1,
+    "batch": 16,
+    "train_images": 2838,
+    "batches": 178,
+    "train_s": 143.2,
+    "val_and_save_s": 112.0,
+    "img_per_s": 19.8,
+    "steady_img_per_s": 20.9,
+    "steady_gpu_img_per_s": 21.0,
+    "steady_data_wait_share": 0.001,
+    "peak_vram_allocated_mib": 3518,
+    "peak_vram_reserved_mib": 4928,
+    "train_losses": {
+      "box_loss": 1.705589771270752,
+      "cls_loss": 1.9879798889160156,
+      "dfl_loss": 1.3065730333328247
+    },
+    "losses_finite": true,
+    "nonfinite_batches": 0,
+    "metrics": {
+      "metrics/precision(B)": 0.6146660264488999,
+      "metrics/recall(B)": 0.3033602922729179,
+      "metrics/mAP50(B)": 0.3197275747337061,
+      "metrics/mAP50-95(B)": 0.19426610593418114
+    },
+    "fitness": 0.19419,
+    "time": 1792735038.2603054
+  },
+  "gpu_nvidia_smi": {
+    "samples": 68,
+    "util_mean_pct": 47.8,
+    "mem_used_max_mib": 3927.0
+  },
+  "estimate_note": "ESTIMATE: full epoch time extrapolated from the probe's rates; val time measured on the full val split (includes saving last.pt/best.pt)",
+  "estimate": {
+    "measured_steady_img_per_s": {
+      "train_epoch_min": 22.6,
+      "val_and_save_min": 1.9,
+      "50_epochs_h": 20.4
+    },
+    "measured_epoch_img_per_s": {
+      "train_epoch_min": 23.9,
+      "val_and_save_min": 1.9,
+      "50_epochs_h": 21.5
+    }
+  },
+  "provenance": {
+    "script": "scripts/train_detector.py --probe",
+    "git_commit": "d32f1e65bb2da130b6bde4b43b03af9f08aa3232",
+    "git_dirty": false,
+    "timestamp": "2026-10-23T05:57:21+00:00"
+  }
+}

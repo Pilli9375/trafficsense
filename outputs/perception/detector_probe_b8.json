@@ -1,0 +1,77 @@
+{
+  "kind": "probe",
+  "run_dir": "/mnt/d/trafficsense/runs/detector/probe_b8",
+  "settings": {
+    "imgsz": 640,
+    "epochs": 1,
+    "patience": 10,
+    "batch": 8,
+    "amp": false,
+    "workers": 8,
+    "cache": false,
+    "seed": 0,
+    "deterministic": true,
+    "close_mosaic": 0
+  },
+  "probe_images": 2838,
+  "train_images_full": 28384,
+  "pretrained": {
+    "path": "/mnt/d/trafficsense/runs/pretrained/yolov8n.pt",
+    "sha256": "f59b3d833e2ff32e194b5bb8e08d211dc7c5bdf144b90d2c8412c47ccfc83b36"
+  },
+  "epoch": {
+    "event": "epoch",
+    "epoch": 2,
+    "epochs": 1,
+    "batch": 8,
+    "train_images": 2838,
+    "batches": 355,
+    "train_s": 92.4,
+    "val_and_save_s": 87.4,
+    "img_per_s": 30.7,
+    "steady_img_per_s": 31.7,
+    "steady_gpu_img_per_s": 31.9,
+    "steady_data_wait_share": 0.005,
+    "peak_vram_allocated_mib": 1781,
+    "peak_vram_reserved_mib": 1972,
+    "train_losses": {
+      "box_loss": 1.7045317888259888,
+      "cls_loss": 1.9241999387741089,
+      "dfl_loss": 1.2976709604263306
+    },
+    "losses_finite": true,
+    "nonfinite_batches": 0,
+    "metrics": {
+      "metrics/precision(B)": 0.6106702181340965,
+      "metrics/recall(B)": 0.2997506861598104,
+      "metrics/mAP50(B)": 0.326543888642096,
+      "metrics/mAP50-95(B)": 0.19665072369100217
+    },
+    "fitness": 0.19665,
+    "time": 1792733695.5342665
+  },
+  "gpu_nvidia_smi": {
+    "samples": 45,
+    "util_mean_pct": 50.1,
+    "mem_used_max_mib": 2313.0
+  },
+  "estimate_note": "ESTIMATE: full epoch time extrapolated from the probe's rates; val time measured on the full val split (includes saving last.pt/best.pt)",
+  "estimate": {
+    "measured_steady_img_per_s": {
+      "train_epoch_min": 14.9,
+      "val_and_save_min": 1.5,
+      "50_epochs_h": 13.6
+    },
+    "measured_epoch_img_per_s": {
+      "train_epoch_min": 15.4,
+      "val_and_save_min": 1.5,
+      "50_epochs_h": 14.1
+    }
+  },
+  "provenance": {
+    "script": "scripts/train_detector.py --probe",
+    "git_commit": "d32f1e65bb2da130b6bde4b43b03af9f08aa3232",
+    "git_dirty": false,
+    "timestamp": "2026-10-23T05:34:58+00:00"
+  }
+}

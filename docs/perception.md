@@ -165,7 +165,7 @@ were another session's uncommitted LLM-client changes (`src/trafficsense/llm/`,
 conversion imports or reads. The conversion code is exactly as committed in `51a2b5e`, and a
 first run before that commit produced identical counts.
 
-## 6. Training plan (not run yet)
+## 6. Training plan
 
 | setting | value | why |
 |---|---|---|
@@ -314,11 +314,59 @@ during this step; other activity on the machine accounts for the ~1.4 GB not exp
 the venv. The WSL disk image (`ext4.vhdx`) is now 13.2 GB. It does not shrink by itself when
 files are deleted.
 
-### 6.5 Next: probe, then the full run (waiting for the GPU)
+### 6.5 Probe (2026-10-23)
 
-Probe: 1 epoch on `fraction=0.1` of train, `amp=False`, batch 8 (then 16 if memory allows),
-`workers=8`, Defender exclusion in place. It measures img/s, peak VRAM and whether the loss stays finite. Then the
-50-epoch run, with nothing else on the GPU (no Ollama).
+`python scripts/train_detector.py --probe [--batch 16]`: 1 epoch on a random 10% of our train
+split (2,838 images, `random.Random(0)`, list saved in the probe folder), then validation on
+our full val split. Ultralytics' own `fraction=0.1` was not used: it takes the first 10% of
+the sorted list, which is all `frontFar`. Mosaic was kept on (`close_mosaic=0`); with
+`epochs=1` the default would switch it off from the start, unlike the first 40 epochs of the
+real run. Per batch, the script times the wait for data and the GPU work separately
+(with `torch.cuda.synchronize`), and stops on any non-finite loss. It also stops if
+Ultralytics halves the batch after a CUDA out-of-memory error. Results:
+`outputs/perception/detector_probe_b8.json`, `detector_probe_b16.json` (commit `d32f1e6`,
+clean tree); run folders on D under `runs/detector/`.
+
+| | batch 8 | batch 16 |
+|---|---:|---:|
+| training speed, steady state (img/s) | **31.7** | 20.9 |
+| GPU work only (img/s) | 31.9 | 21.0 |
+| share of time waiting for data | 0.5% | 0.1% |
+| peak VRAM, PyTorch allocated / reserved (MiB) | 1,781 / 1,972 | 3,518 / **4,928** |
+| peak memory used, nvidia-smi (MiB) | 2,313 | 3,927 |
+| non-finite losses | 0 | 0 |
+| validation + checkpoint save (s) | 87 | 112 |
+
+What this shows:
+
+- **The GPU is now the limit, not the disk.** The loader kept up (0.5% waiting), and GPU
+  utilisation was 85-92% during training. FP32 yolov8n trains at **~32 img/s** on the GTX
+  1650, slower than the 45 img/s assumed in 6.3.1.
+- **AMP off is stable:** no NaN or Inf in any batch at either size.
+- **Batch 16 is rejected.** The rule, set before running it: use 16 only if it is at least
+  10% faster, keeps peak VRAM under ~3.6 GB and keeps the loss finite. It was 34% *slower*,
+  and PyTorch reserved 4.9 GB, more than the card has. On Windows the driver then spills
+  into shared system memory over PCIe, which is the likely cause of the slowdown. The full
+  run therefore keeps the pre-registered **batch 8**.
+- **The batch size does not change the optimisation much either way.** Ultralytics
+  accumulates gradients up to its nominal batch `nbs=64` (8 batches of 8, or 4 of 16) and
+  scales weight decay to match, so each optimiser step sees 64 images. With
+  `optimizer=auto` it picks the optimiser from the number of steps,
+  `ceil(28,384 / 64) × 50 = 22,200 > 10,000`, which gives MuSGD with lr 0.01 for both batch
+  sizes. (The 1-epoch probes have only 444 steps and so used AdamW; the optimiser step runs
+  once per 64 images, so this hardly affects the speed measured.)
+
+**Estimate for the full run** (extrapolated from the batch 8 probe, not measured): 28,384 /
+31.7 img/s = 14.9 min training + 1.5 min validation per epoch, **~13.6 h for 50 epochs**,
+less if early stopping (`patience=10`) ends it sooner.
+
+### 6.6 Full run
+
+`python scripts/train_detector.py --full`, detached, logging to
+`/mnt/d/trafficsense/runs/logs/full.log`. The run folder is
+`/mnt/d/trafficsense/runs/detector/yolov8n_idd/`. Running the same command again resumes
+from `weights/last.pt` after an interruption, or does nothing if the run has finished. Each
+start or resume is logged with its git commit in `segments.jsonl`.
 
 ## 7. Measuring the detector's errors for the camera-error experiment (proposal)
 
