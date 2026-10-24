@@ -14,6 +14,7 @@ movement), paired by (seed, vehicle) against the perfect run.
 import argparse
 import importlib.util
 import json
+import math
 import re
 import statistics
 import sys
@@ -125,6 +126,10 @@ def realised_vs_target(runs) -> dict:
     for key, e in out.items():
         e["realised"] = {c: e["detected"][c] / e["true"][c] for c in e["true"] if e["true"][c]}
         e["max_abs_diff"] = max(abs(e["realised"][c] - e["target"][c]) for c in e["realised"])
+        # Post-hoc (not pre-registered): the difference in binomial standard errors. Every vehicle
+        # observation is an independent Bernoulli(p_detect) draw, so realised - target ~ N(0, p(1-p)/n).
+        e["z"] = {c: (e["realised"][c] - e["target"][c]) / math.sqrt(e["target"][c] * (1 - e["target"][c]) / e["true"][c])
+                  for c in e["realised"] if 0 < e["target"][c] < 1}
     return out
 
 
@@ -153,7 +158,16 @@ def checks(runs) -> dict:
             if r["metrics"] != full[(sc, ctl, s)]:
                 mism.append([sc, ctl, s])
     rv = realised_vs_target(runs)
-    return {"uniform_p1_identical_to_perfect": same_p1, "webster_identical_across_levels": web_same,
+    worst = max(((k, c) for k, v in rv.items() for c in v["z"]),
+                key=lambda kc: abs(rv[kc[0]]["realised"][kc[1]] - rv[kc[0]]["target"][kc[1]]))
+    zs = [abs(z) for v in rv.values() for z in v["z"].values()]
+    return {"realised_largest_miss": {"level": worst[0], "class": worst[1], "n": rv[worst[0]]["true"][worst[1]],
+                                      "target": rv[worst[0]]["target"][worst[1]],
+                                      "realised": rv[worst[0]]["realised"][worst[1]],
+                                      "z": rv[worst[0]]["z"][worst[1]]},
+            "realised_max_abs_z": max(zs) if zs else None, "realised_n_z": len(zs),
+            "realised_n_abs_z_over_2": sum(z > 2 for z in zs),
+            "uniform_p1_identical_to_perfect": same_p1, "webster_identical_across_levels": web_same,
             "webster_max_snapshots": web_snaps, "perfect_vs_full_experiments": {"compared": compared, "mismatches": mism},
             "realised_detection_max_abs_diff": {k: round(v["max_abs_diff"], 4) for k, v in rv.items()},
             "realised_within_0_01": all(v["max_abs_diff"] <= 0.01 for v in rv.values())}
@@ -275,17 +289,23 @@ def tables(b: dict) -> dict[str, str]:
     ch = b["checks"]
     pf = ch["perfect_vs_full_experiments"]
     rv = b["realised"]
+    lm = ch["realised_largest_miss"]
     t["camera_checks"] = table(["check", "result"], [
         ["(a) MaxPressure at uniform p 1.00 identical to perfect (6 runs)", "yes" if ch["uniform_p1_identical_to_perfect"] else "**NO**"],
         ["(b) Webster identical at every level", ("yes" if ch["webster_identical_across_levels"] else "**NO**")
          + f"; at most {ch['webster_max_snapshots']} snapshots drawn"],
         ["(c) deterministic perfect runs reproduce the full experiments", f"{pf['compared'] - len(pf['mismatches'])} of "
          f"{pf['compared']} identical" + (f"; mismatches {pf['mismatches']}" if pf["mismatches"] else "")],
-        ["(d) realised detection rate within ±0.01 of target", ("yes" if ch["realised_within_0_01"] else "**NO**") + "; max |diff| "
+        ["(d) realised detection rate within ±0.01 of target", ("yes" if ch["realised_within_0_01"] else "**NO**") + "; largest abs. diff "
          + ", ".join(f"{k} {v:.4f}" for k, v in ch["realised_detection_max_abs_diff"].items())],
-    ]) + "\n\n" + table(["level", "class", "target p_detect", "realised", "vehicle observations"],
-                        [[k, c, f"{rv[k]['target'][c]:.3f}", f"{rv[k]['realised'][c]:.3f}", f"{rv[k]['true'][c]:,}"]
-                         for k in ["junction", "crowded"] for c in SIM_TO_DETECTOR.values()])
+        ["(d') post-hoc: (d) in binomial standard errors", f"largest miss {lm['level']} {lm['class']}: "
+         f"{lm['realised']:.4f} vs {lm['target']:.3f}, n {lm['n']:,}, {lm['z']:+.2f} SE; "
+         f"largest abs(z) over all {ch['realised_n_z']} level-class pairs {ch['realised_max_abs_z']:.2f}, "
+         f"{ch['realised_n_abs_z_over_2']} with abs(z) > 2"],
+    ]) + "\n\n" + table(["level", "class", "target p_detect", "realised", "vehicle observations", "diff in binomial SE"],
+                        [[k, c, f"{rv[k]['target'][c]:.3f}", f"{rv[k]['realised'][c]:.4f}", f"{rv[k]['true'][c]:,}",
+                          f"{rv[k]['z'][c]:+.2f}"]
+                         for k in [x for x in rv if x != "uniform_p1.00"] for c in SIM_TO_DETECTOR.values()])
     return t
 
 
@@ -334,9 +354,9 @@ def svg(b: dict) -> str:
            '<desc id="d">ATT change against perfect counts, paired by seed, in percent: mean over 3 seeds, whiskers '
            'the range over seeds. Left: MaxPressure against the detection probability of every vehicle (no false '
            'detections), off-peak solid and peak dashed; J and C mark the junction-camera and crowded/far levels at '
-           'their effective detection probability. Middle and right: each controller at the junction and crowded '
+           'their effective detection probability (dashed box: peak). Middle and right: each controller at the junction and crowded '
            'levels. The tables in docs/camera_error.md hold the numbers.</desc>',
-           STYLE.replace("</style>", "  .dash { stroke-dasharray: 6 4; }\n</style>"),
+           STYLE.replace("</style>", "  .dash { stroke-dasharray: 6 4; } rect.dash { stroke-dasharray: 3 2; }\n</style>"),
            f'<rect class="bg" width="{W}" height="{H}"/>']
 
     def rel(p):
@@ -379,7 +399,7 @@ def svg(b: dict) -> str:
             x, y = sx(pe), sy(r[0])
             out.append(f'<line class="t1 wh" stroke="currentColor" x1="{x:.1f}" y1="{sy(r[1]):.1f}" x2="{x:.1f}" '
                        f'y2="{sy(r[2]):.1f}" style="stroke:#8a8985"/>')
-            out.append(f'<rect class="bg" x="{x - 7:.1f}" y="{y - 8:.1f}" width="14" height="15" rx="2" '
+            out.append(f'<rect class="bg{dash}" x="{x - 7:.1f}" y="{y - 8:.1f}" width="14" height="15" rx="2" '
                        'style="stroke:#8a8985"/>')
             out.append(f'<text class="t1 small" x="{x:.1f}" y="{y + 4:.1f}" text-anchor="middle" font-weight="600">'
                        f'{lab}</text>')
@@ -389,7 +409,7 @@ def svg(b: dict) -> str:
                f'<line class="s1 ln dash" x1="{x0 + 90}" y1="{ly - 4}" x2="{x0 + 114}" y2="{ly - 4}"/>'
                f'<text class="t2 small" x="{x0 + 120}" y="{ly}">Peak</text>'
                f'<text class="t2 small" x="{x0}" y="{ly + 16}">J / C: junction / crowded level (with false '
-               'detections)</text>')
+               'detections; dashed box = peak)</text>')
 
     # Panels 2-3: controllers at the two noisy levels, per scenario
     ctls = [("maxpressure", "s1"), ("fixedtime_webster", "s2"), ("llm_guarded_mp", "s3")]

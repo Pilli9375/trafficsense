@@ -64,6 +64,7 @@ def test_report_tables_and_chart(mc, tmp_path, monkeypatch):
     ch = b["checks"]
     assert ch["uniform_p1_identical_to_perfect"] and ch["webster_identical_across_levels"]
     assert ch["webster_max_snapshots"] == 0 and ch["realised_within_0_01"]
+    assert ch["realised_max_abs_z"] == pytest.approx(0) and ch["realised_largest_miss"]["level"] != "uniform_p1.00"
     assert b["emergency"]["llm_guarded_mp"]["junction"]["ambulances_vs_perfect"]["mean_diff_s"] == pytest.approx(2.0)
     tabs = mc.tables(b)
     doc = "\n".join(f"<!-- BEGIN:{k} -->\nX\n<!-- END:{k} -->" for k in tabs)
