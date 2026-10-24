@@ -1,6 +1,7 @@
 """Prompt and response schema for LLM signal control (one call per intersection decision).
 
-observe() collects what the LLM is told, all measured from the simulator at decision time:
+observe() collects what the LLM is told, all measured from the simulator at decision time (lane
+counts through env.lane_view(): exact, or with camera errors in the camera-error experiment):
   * current green phase and seconds shown, min/max green, transition length;
   * for each candidate green phase, its movements, each with
       queue        stopped vehicles (speed < 0.1 m/s) on the movement's incoming lanes,
@@ -175,9 +176,8 @@ def observe(env: TrafficEnv, iid: str, allowed: list[int], mode: str, min_green:
     if mode not in MODES:
         raise ValueError(f"mode must be one of {MODES}, got {mode!r}")
     inter = env.intersection(iid)
-    waiting = env.eng.get_lane_waiting_vehicle_count()
-    count = env.eng.get_lane_vehicle_count()
-    lane_veh = env.eng.get_lane_vehicles()
+    view = env.lane_view()   # exact, or with camera errors (sim/observation.py)
+    waiting, count = view.waiting, view.count
     by_idx = {m.index: m for m in inter.movements}
 
     def mv(m) -> dict[str, Any]:
@@ -193,9 +193,8 @@ def observe(env: TrafficEnv, iid: str, allowed: list[int], mode: str, min_green:
                        "pressure": sum(m["queue"] - m["downstream"] for m in ms)})
     on_approach: dict[str, list[str]] = {}
     for m in inter.movements:
-        for l in m.in_lanes:
-            on_approach.setdefault(m.approach, []).extend(lane_veh[l])
-    types = {a: env.vehicle_types.count(v) for a, v in sorted(on_approach.items())}
+        on_approach.setdefault(m.approach, []).extend(m.in_lanes)
+    types = {a: view.type_counts(lanes, env.vehicle_types.names) for a, lanes in sorted(on_approach.items())}
 
     obs: dict[str, Any] = {
         "intersection": iid, "time": int(env.time), "current_phase": env.signals[iid].green_phase,

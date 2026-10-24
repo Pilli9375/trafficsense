@@ -16,6 +16,7 @@ from trafficsense.control import make_controller
 from trafficsense.control.base import Controller
 from trafficsense.sim.env import TrafficEnv
 from trafficsense.sim.metrics import MetricsTracker
+from trafficsense.sim.observation import observation_key
 
 
 def git_info() -> dict[str, Any]:
@@ -41,7 +42,9 @@ def run_experiment(cfg: dict[str, Any], scenario: str, controller: str,
     out_root = Path(out_root) if out_root is not None else resolve_path(cfg, "runs")
 
     started = datetime.now().astimezone()
-    out_dir = out_root / f"{started:%Y%m%d-%H%M%S}_{scenario}_{controller}_s{seed}"
+    obs_key = observation_key(cfg.get("observation"))
+    obs_tag = "" if obs_key == "perfect" else f"_{obs_key}"
+    out_dir = out_root / f"{started:%Y%m%d-%H%M%S}_{scenario}_{controller}{obs_tag}_s{seed}"
     if out_dir.exists():
         raise FileExistsError(f"Run folder already exists: {out_dir}")
     git = git_info()
@@ -94,6 +97,9 @@ def run_experiment(cfg: dict[str, Any], scenario: str, controller: str,
         "metrics": result["network"],
         "per_intersection": result["per_intersection"],
         "emergency": result.get("emergency"),   # scenarios with an emergency_vehicle_type
+        # What the controller observed: "perfect" (exact counts) or a camera-error level with its
+        # parameters, seed and realised detection rates (sim/observation.py).
+        "observation": env.observer.summary(),
         "metric_notes": {
             "att": "engine.get_average_travel_time(): all generated vehicles from scheduled start, incl. those still running or still waiting to enter",
             "queue_mean_per_intersection": "waiting vehicles (speed<0.1) on incoming lanes, mean over steps and intersections",
@@ -105,6 +111,7 @@ def run_experiment(cfg: dict[str, Any], scenario: str, controller: str,
 
     out_dir.mkdir(parents=True)
     ctl.write_artifacts(out_dir)
+    env.observer.write_artifacts(out_dir)
     with (out_dir / "metrics.csv").open("w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(metrics.rows[0]))
         w.writeheader()

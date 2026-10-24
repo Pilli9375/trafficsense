@@ -15,6 +15,7 @@ paths:
   # Detector training runs, weights and logs: a gitignored symlink to D (C is nearly full).
   # Create it once: ln -s /mnt/d/trafficsense/runs data/external/detector_runs
   detector_runs: data/external/detector_runs
+  camera_error_model: outputs/perception/error_model.json   # scripts/eval_detector.py; camera-error experiment
 
 scenarios:
   synthetic_4x4:

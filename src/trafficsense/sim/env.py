@@ -18,7 +18,8 @@ from typing import Any
 import cityflow
 import yaml
 
-from trafficsense.config import repo_root
+from trafficsense.config import repo_root, resolve_path
+from trafficsense.sim.observation import make_observer
 from trafficsense.sim.roadnet import Intersection, Roadnet, load_roadnet
 from trafficsense.sim.vehicles import VehicleTypes
 
@@ -111,6 +112,12 @@ class TrafficEnv:
             first = inter.green_phases[0].index
             self.eng.set_tl_phase(iid, first)
             self.signals[iid] = SignalState(green_phase=first)
+
+        # What controllers observe (sim/observation.py): exact by default; with camera errors
+        # for the camera-error experiment. Metrics always read the engine directly.
+        ocfg = cfg.get("observation")
+        em = resolve_path(cfg, "camera_error_model") if "camera_error_model" in cfg.get("paths", {}) else None
+        self.observer = make_observer(self, ocfg, em, self.seed)
 
     # ---- topology -------------------------------------------------------------------
     @property
@@ -209,11 +216,24 @@ class TrafficEnv:
                 raise KeyError(f"emergency_vehicle_type {self.emergency_type!r} is not a named vehicle type")
         return self._vehicle_types
 
+    @property
+    def emergency_types(self) -> list[str]:
+        """Names of the scenario's emergency vehicle types (never noised by the observer)."""
+        if self.vehicle_types_path is None:
+            return []
+        with self.vehicle_types_path.open(encoding="utf-8") as f:
+            return list(yaml.safe_load(f).get("emergency_vehicle_types", {}))
+
+    def lane_view(self):
+        """Lane counts as the controllers see them now (exact, or with camera errors)."""
+        return self.observer.view()
+
     def get_state(self, iid: str) -> dict[str, Any]:
-        """Per-movement counts for one intersection, computed only from its own lanes."""
+        """Per-movement counts for one intersection, computed only from its own lanes, as
+        observed (lane_view)."""
         inter = self.intersection(iid)
-        waiting = self.eng.get_lane_waiting_vehicle_count()
-        count = self.eng.get_lane_vehicle_count()
+        view = self.lane_view()
+        waiting, count = view.waiting, view.count
         movements = []
         for m in inter.movements:
             movements.append({
