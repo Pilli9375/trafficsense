@@ -41,7 +41,10 @@ def _require(section: dict[str, Any], key: str, where: str) -> Any:
 
 
 class TrafficEnv:
-    def __init__(self, cfg: dict[str, Any], scenario: str, seed: int | None = None):
+    def __init__(self, cfg: dict[str, Any], scenario: str, seed: int | None = None,
+                 replay_dir: Path | None = None):
+        """`replay_dir`: if given, CityFlow writes its replay log (vehicle positions per step) and
+        roadnet log there (used by sim/replay.py only; logging does not change the run)."""
         if scenario not in cfg.get("scenarios", {}):
             raise KeyError(f"Unknown scenario {scenario!r}; known: {list(cfg.get('scenarios', {}))}")
         sc = cfg["scenarios"][scenario]
@@ -96,9 +99,9 @@ class TrafficEnv:
             "flowFile": str(self.flow_path),
             "rlTrafficLight": True,
             "laneChange": bool(_require(sim, "lane_change", "sim")),
-            "saveReplay": False,
-            "roadnetLogFile": "",
-            "replayLogFile": "",
+            "saveReplay": replay_dir is not None,
+            "roadnetLogFile": str(Path(replay_dir).resolve() / "roadnet_log.json") if replay_dir else "",
+            "replayLogFile": str(Path(replay_dir).resolve() / "replay_log.txt") if replay_dir else "",
         }
         # CityFlow only reads its config at construction, so a temp file is enough.
         with tempfile.TemporaryDirectory() as tmp:
