@@ -334,3 +334,23 @@ def test_source_caption_names_file_and_commit():
     assert "not in git" in data.source("data/external/nothing_here.json")
     assert data.sources("outputs/full/results.json", "data/external/nothing_here.json")[1] == \
         ("data/external/nothing_here.json", "not in git")
+
+
+def check_source_chips(at: AppTest, page: str) -> None:
+    chips = source_chips(at)
+    assert chips, f"{page}: no source chips"
+    read = set(data.READ)
+    for files, panel in chips:
+        assert files, f"{page}: a source chip names no file"
+        assert set(files) <= read, f"{page}: chip names files the page did not read: {sorted(set(files) - read)}"
+        for f in files:
+            assert f in panel and re.search(re.escape(f) + r"\s+(commit [0-9a-f]{7}|not in git)", panel), \
+                f"{page}: chip panel lacks the git state of {f}"
+    cited = {f for files, _ in chips for f in files}
+    results = {r for r in read if r.startswith("outputs/")}
+    assert results <= cited, f"{page}: results files read but not named by any chip: {sorted(results - cited)}"
+
+
+@pytest.mark.parametrize("page", ["overview"])
+def test_source_chips(page):
+    check_source_chips(render(page), page)
