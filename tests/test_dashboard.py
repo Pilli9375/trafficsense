@@ -266,9 +266,59 @@ def test_every_number_traceable(page):
 def test_replay_numbers_traceable():
     _need("{replays}")
     at = render("network_replay")
+    assert [n for n, _ in components(at)] == ["trafficsense_network_replay"]
     bad, read = untraceable(at)
     assert any(r.endswith("replay.npz") for r in read) and any(r.endswith("summary.json") for r in read)
     assert not bad, f"network_replay: numbers not found in {sorted(read)}: {bad}"
+
+
+def _unb64(s: str, dtype: str) -> np.ndarray:
+    return np.frombuffer(base64.b64decode(s), dtype=np.dtype(dtype).newbyteorder("<"))
+
+
+def test_replay_payload_is_the_logged_replay():
+    """No invented frames: the canvas gets, for every second of the window, exactly the vehicles, positions
+    (to 1/20 m), headings, phases and queues logged in replay.npz, and the ambulance's times from summary.json."""
+    _need("{replays}")
+    at = render("network_replay")
+    (name, pay), = components(at)
+    t0, t1 = pay["t0"], pay["t1"]
+    assert 1 <= t0 < t1 and t1 - t0 <= 600
+    replays = [r for r in sorted(data.READ) if r.endswith("replay.npz")]
+    summaries = [r for r in sorted(data.READ) if r.endswith("/summary.json")]
+    assert len(pay["runs"]) == 2
+    for run in pay["runs"]:
+        rdir = next(r for r in replays if _matches(run, r))
+        assert run["amb"]["flow"] == int(pay["focus"].split("_")[1]) and run["amb"]["vehicle"] == pay["focus"]
+        with np.load(data.path(rdir)) as z:
+            k0, k1 = t0 - 1, t1
+            assert z["time"][k0:k1].tolist() == list(range(t0, t1 + 1))
+            assert run["phase"] == z["phase"][k0:k1].tolist()
+            assert run["queue"] == z["queue"][k0:k1].tolist()
+            a, b = int(z["veh_offsets"][k0]), int(z["veh_offsets"][k1])
+            v = run["veh"]
+            assert v["n"] == np.diff(z["veh_offsets"][k0:k1 + 1]).tolist()
+            idx = _unb64(v["idx"], "u2")
+            assert np.array_equal(np.array(v["flow"])[idx], z["veh_flow"][a:b])
+            assert np.array_equal(np.array(v["type"])[idx], z["veh_type"][a:b])
+            assert np.abs(_unb64(v["x"], "i2") / 20 - z["veh_x"][a:b]).max() <= 0.025 + 1e-4   # half a 1/20 m step, float32
+            assert np.abs(_unb64(v["y"], "i2") / 20 - z["veh_y"][a:b]).max() <= 0.025 + 1e-4
+            assert np.abs(_unb64(v["ang"], "i2") / 1000 - z["veh_angle"][a:b].astype(float)).max() <= 0.0006
+        summary = next(json.loads(data.path(s).read_text()) for s in summaries if _summary_of(run, s))
+        amb = {x["vehicle"]: x for x in summary["emergency"]["vehicles"]}[pay["focus"]]
+        assert (run["amb"]["start"], run["amb"]["finished"], run["amb"]["travel"]) == \
+            (amb["scheduled_start"], amb["finished"], amb["travel_time_s"])
+
+
+def _matches(run: dict, replay_rel: str) -> bool:
+    """The payload run is the replay whose controller and model carry this label."""
+    meta = json.loads(data.path(replay_rel.replace("replay.npz", "meta.json")).read_text())
+    return theme.entity(meta["controller"], meta["model"])[0] == run["label"]
+
+
+def _summary_of(run: dict, summary_rel: str) -> bool:
+    pv = json.loads(data.path(summary_rel).read_text())["provenance"]
+    return theme.entity(pv["controller"], pv["model"])[0] == run["label"]
 
 
 def test_detection_page_numbers_traceable_before_a_run():
@@ -356,9 +406,10 @@ def test_source_chips(page):
     check_source_chips(render(page), page)
 
 
-def test_detection_source_chips():
-    _need("{dashboard_media}", "{detector_runs}")
-    check_source_chips(render("live_detection"), "live_detection")
+def test_replay_and_detection_source_chips():
+    _need("{replays}", "{dashboard_media}", "{detector_runs}")
+    for page in ("network_replay", "live_detection"):
+        check_source_chips(render(page), page)
 
 
 def test_run_summaries_match_the_paired_block():

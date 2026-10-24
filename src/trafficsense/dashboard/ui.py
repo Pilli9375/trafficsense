@@ -104,7 +104,7 @@ def card_header(title: str, subtitle: str | None = None, sources: Sequence[str] 
             f'{tag_html}{chip}</div>')
 
 
-def chart(fig: go.Figure, *sources: str, key: str, title: str | None = None, subtitle: str | None = None,
+def chart(fig: go.Figure, *sources: str, key: str, title: str, subtitle: str | None = None,
           height: int | None = None, grow: str | None = None, tags: Iterable[str | tuple[str, str]] = ()) -> None:
     """A chart in a card: title, optional one-line subtitle, honesty badges and the source chip.
     grow='h' / 'v' animates bars growing from their baseline on load."""
@@ -115,10 +115,6 @@ def chart(fig: go.Figure, *sources: str, key: str, title: str | None = None, sub
                       font=dict(family=theme.FONT, color=theme.TEXT_2, size=12.5),
                       hoverlabel=dict(bgcolor=theme.SURFACE_2, bordercolor=theme.BORDER_2, align="left",
                                       font=dict(family=theme.FONT, color=theme.TEXT, size=12.5)))
-    if title is None:      # LEGACY call from a page not yet on the new kit
-        st.plotly_chart(fig, theme=None, width="stretch", config=PLOT_CONFIG, key=key)
-        caption_source(*sources)
-        return
     prefix = {"h": "card-h-", "v": "card-v-"}.get(grow or "", "card-")
     with st.container(key=f"{prefix}{key}"):
         html(card_header(title, subtitle, sources, tags))
@@ -201,74 +197,3 @@ COUNT_UP_JS = """<script>(() => {
     requestAnimationFrame(step);
   });
 })();</script>"""
-
-
-# ---- LEGACY: helpers of the old page design, kept until every page is on the kit above ----------------
-def header(eyebrow: str, title: str, lede: str | None = None) -> None:
-    st.markdown(f'<div class="ts-eyebrow">{esc(eyebrow)}</div>', unsafe_allow_html=True)
-    st.title(title, anchor=False)
-    if lede:
-        st.markdown(f'<p class="ts-lede">{lede}</p>', unsafe_allow_html=True)
-
-
-def caption_source(*rels: str) -> None:
-    st.caption(data.source(*rels))
-
-
-def note(body_html: str, tags: Iterable[tuple[str, str]] = ()) -> None:
-    tag_html = "".join(f'<span class="ts-tag {cls}">{esc(t)}</span>' for t, cls in tags)
-    st.markdown(f'<div class="ts-note">{tag_html}{body_html}</div>', unsafe_allow_html=True)
-
-
-def row(label: str, value: str, colour: str | None = None, delta: str | None = None) -> str:
-    dot = f'<span class="ts-dot" style="background:{colour}"></span>' if colour else ""
-    d = f'<span class="delta">{esc(delta)}</span>' if delta is not None else ""
-    return (f'<div class="ts-row">{dot}<span class="lab" title="{esc(label)}">{esc(label)}</span>'
-            f'<span class="val">{esc(value)}</span>{d}</div>')
-
-
-def bar_row(label: str, value: str, colour: str, frac: float) -> str:
-    frac = max(0.0, min(1.0, frac))
-    return (f'<div class="ts-brow"><span class="ts-dot" style="background:{colour}"></span>'
-            f'<span class="lab" title="{esc(label)}">{esc(label)}</span><span class="track">'
-            f'<span class="fill" style="width:{frac * 100:.1f}%;background:{colour}"></span></span>'
-            f'<span class="val">{esc(value)}</span></div>')
-
-
-def duo_card(title: str, unit: str, items: list[tuple[str, str, str]]) -> str:
-    """Two (or more) values side by side: items = (who, colour, value)."""
-    cols = "".join(f'<div><div class="who"><span class="ts-dot" style="background:{c}"></span> {esc(w)}</div>'
-                   f'<div class="ts-kpi">{esc(v)}<small>{esc(unit)}</small></div></div>' for w, c, v in items)
-    return f'<div class="ts-card"><h4>{esc(title)}</h4><div class="ts-duo">{cols}</div></div>'
-
-
-def kpi_card(title: str, value: str, unit: str, sub: str, rows_html: str = "") -> str:
-    rows = f'<div class="ts-rows">{rows_html}</div>' if rows_html else ""
-    return (f'<div class="ts-card"><h4>{esc(title)}</h4><div class="ts-kpi">{esc(value)}<small>{esc(unit)}</small></div>'
-            f'<div class="ts-sub">{sub}</div>{rows}</div>')
-
-
-def html_table(df, max_height: int | None = None, wide: str | None = None) -> None:
-    """A read-only table whose cells wrap (st.dataframe truncates long text). `wide` names the column
-    that takes the remaining width."""
-    head = "".join(f'<th class="{"wide" if c == wide else ""}">{esc(c)}</th>' for c in df.columns)
-    body = "".join("<tr>" + "".join(f'<td class="{"wide" if c == wide else ""}">{esc(v)}</td>'
-                                     for c, v in zip(df.columns, r)) + "</tr>" for r in df.itertuples(index=False))
-    style = f' style="max-height:{max_height}px"' if max_height else ""
-    st.markdown(f'<div class="ts-table"{style}><table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table></div>',
-                unsafe_allow_html=True)
-
-
-def html_block(s: str) -> None:
-    st.markdown(s, unsafe_allow_html=True)
-
-
-def legend_off(fig: go.Figure) -> go.Figure:
-    fig.update_layout(showlegend=False)
-    return fig
-
-
-def style_axes(fig: go.Figure, x_title: str = "", y_title: str = "") -> go.Figure:
-    fig.update_xaxes(title_text=x_title)
-    fig.update_yaxes(title_text=y_title)
-    return fig

@@ -84,7 +84,6 @@ CLASS_COLOURS = {"car": SERIES[0], "motorcycle": SERIES[1], "autorickshaw": SERI
 VEHICLE_COLOURS = {"motorcycle": "#a3afbd", "auto_rickshaw": "#d55181", "car": "#3987e5", "bus": "#9085e9",
                    "truck": "#199e70", "ambulance": "#ffffff"}
 ASPHALT = "#1b2129"
-VEHICLE = "#7c7c86"   # LEGACY: the old replay page
 SCENARIO_LABELS = {"indian_2x2_offpeak": "Indian 2x2 · off-peak", "indian_2x2_peak": "Indian 2x2 · peak",
                    "jinan_3x4": "Jinan 3x4 (real flow)", "indian_2x2_peak_amb": "Indian 2x2 · peak + ambulances"}
 LEVEL_LABELS = {"perfect": "Exact counts", "junction": "Junction camera", "crowded": "Crowded / far camera"}
