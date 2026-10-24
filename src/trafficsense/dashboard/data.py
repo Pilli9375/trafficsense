@@ -125,14 +125,30 @@ def _git_state(rel: str) -> str:
         return f"git unavailable ({type(e).__name__})"
 
 
+def sources(*rels: str) -> list[tuple[str, str]]:
+    """(file, git state) per file: 'commit abc1234', '... + uncommitted changes' or 'not in git'."""
+    # files outside git (symlinks to D) are resolved for the state check only
+    return [(_rel(rel), _git_state(_rel(rel))) for rel in rels]
+
+
 def source(*rels: str) -> str:
-    """Caption text: 'Source: <file> · commit abc1234; <file> · ...'."""
-    parts = []
-    for rel in rels:
-        rel = _rel(rel)
-        # files outside git (symlinks to D) are resolved for the state check only
-        parts.append(f"{rel} · {_git_state(rel)}")
-    return "Source: " + "; ".join(parts)
+    """One line of text: 'Source: <file> · commit abc1234; <file> · ...'."""
+    return "Source: " + "; ".join(f"{rel} · {state}" for rel, state in sources(*rels))
+
+
+def code_version() -> dict[str, str]:
+    """The dashboard's own code version and the date the result files last changed, both from git:
+    {'commit': short hash of HEAD (+ '-dirty' with uncommitted changes), 'data_date': YYYY-MM-DD of
+    the last commit that touched outputs/}. Values are 'unknown' without git."""
+    def git(*args: str) -> str:
+        return subprocess.run(["git", *args], cwd=GIT_ROOT, capture_output=True, text=True, check=True).stdout.strip()
+    try:
+        commit = git("rev-parse", "--short", "HEAD")
+        dirty = git("status", "--porcelain", "--untracked-files=no")
+        date = git("log", "-1", "--format=%cs", "--", "outputs")
+        return {"commit": commit + ("-dirty" if dirty else ""), "data_date": date or "unknown"}
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return {"commit": "unknown", "data_date": "unknown"}
 
 
 @functools.lru_cache(maxsize=32)

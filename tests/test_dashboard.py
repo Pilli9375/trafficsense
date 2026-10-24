@@ -7,6 +7,11 @@
 2. Perturbation: Overview and Results are rendered again from a copy of their data files in which
    every float is scaled by a factor (1.25-1.45) that depends on its position in the file. A decimal
    number shown unchanged at the same place on the page cannot come from the data (hardcoded).
+3. Sources: every "ⓘ source" chip names only files the page read, with their git state, and every
+   results file (outputs/...) the page read is named by some chip.
+
+HTML blocks (st.markdown / st.html) count as visible text without their CSS, scripts and source
+chips; the custom components' JSON payloads are checked field by field (see the replay tests).
 
 Pages that need the files kept on D (replays, sample clip, detector weights) are skipped with a
 reason when those are absent.
@@ -14,6 +19,7 @@ reason when those are absent.
 from __future__ import annotations
 
 import base64
+import html
 import json
 import re
 import shutil
@@ -27,16 +33,34 @@ pytest.importorskip("streamlit")
 from streamlit.testing.v1 import AppTest  # noqa: E402
 
 from trafficsense.config import load_config, repo_root  # noqa: E402
-from trafficsense.dashboard import data  # noqa: E402
+from trafficsense.dashboard import data, theme  # noqa: E402
 
-PAGES = Path("src/trafficsense/dashboard/pages")
+PAGES = Path("src/trafficsense/dashboard/screens")
 NUM = re.compile(r"(?<![\w.\-/:])[-+−]?\d[\d,]*(?:\.\d+)?(?![\w:/])")
 NPZ_TEXT_ARRAYS = ("time", "phase", "queue")   # integer arrays whose values are shown as text
 
 
 # ---- what the reader sees ---------------------------------------------------------------------
+SRC_CHIP = re.compile(r'<details class="ts-src[^"]*" data-ts-src="([^"]*)">(.*?)</details>', re.S)
+NON_TEXT = re.compile(r"<(style|script)\b[^>]*>.*?</\1>", re.S | re.I)
+
+
 def _strip_html(s: str) -> str:
-    return re.sub(r"<[^>]+>", " ", s)
+    """Visible text of an HTML block: without CSS, scripts and source chips (test_source_chips checks
+    those), then without the tags."""
+    s = SRC_CHIP.sub(" ", NON_TEXT.sub(" ", s))
+    return html.unescape(re.sub(r"<[^>]+>", " ", s))
+
+
+def html_blocks(at: AppTest) -> list[str]:
+    """Raw HTML of every st.markdown and st.html element."""
+    return [e.value for e in at.markdown] + [e.proto.body for e in at.get("html")]
+
+
+def source_chips(at: AppTest) -> list[tuple[list[str], str]]:
+    """(files, panel text) of every source chip on the page."""
+    return [([html.unescape(f) for f in m.group(1).split("|") if f], html.unescape(re.sub(r"<[^>]+>", " ", m.group(2))))
+            for b in html_blocks(at) for m in SRC_CHIP.finditer(b)]
 
 
 def _decode(v):
@@ -73,6 +97,11 @@ def visible_text(at: AppTest) -> list[str]:
     out = []
     for kind in ("title", "header", "subheader", "markdown", "text", "info", "warning", "error", "success"):
         out += [_strip_html(e.value) for e in getattr(at, kind)]
+    out += [_strip_html(e.proto.body) for e in at.get("html")]
+    for ex in at.expander:
+        out.append(ex.label)
+    for tab in at.tabs:
+        out.append(tab.label)
     out += [e.value for e in at.caption if not e.value.startswith("Source:")]
     for m in at.metric:
         out += [m.label, str(m.value), str(m.delta or "")]
@@ -83,6 +112,8 @@ def visible_text(at: AppTest) -> list[str]:
         out += [str(o) for o in sb.options]
     for sl in at.slider:
         out += [str(x) for x in np.atleast_1d(sl.value)]
+    for _, payload in components(at):
+        _payload_texts(payload, out)
     for pc in at.get("plotly_chart"):
         spec = json.loads(pc.proto.spec)
         traces = list(spec.get("data", []))
@@ -95,6 +126,32 @@ def visible_text(at: AppTest) -> list[str]:
         for s in lay.get("sliders", []):
             out += [str(st.get("label", "")) for st in s.get("steps", [])]
     return out
+
+
+# style values; the binary positions; flow indices, i.e. vehicle ids ("flow_4797_0") as numbers. The last two are
+# checked against replay.npz by test_replay_payload_is_the_logged_replay.
+PAYLOAD_SKIP = {"colour", "colours", "veh", "flow"}
+
+
+def _payload_texts(o, out: list) -> None:
+    if isinstance(o, dict):
+        for k, v in o.items():
+            if k not in PAYLOAD_SKIP:
+                _payload_texts(v, out)
+    elif isinstance(o, list):
+        for v in o:
+            _payload_texts(v, out)
+    elif isinstance(o, bool) or o is None:
+        return
+    elif isinstance(o, float):
+        out.append(repr(o))
+    else:
+        out.append(str(o))
+
+
+def components(at: AppTest) -> list[tuple[str, object]]:
+    """(name, payload) of every custom (v2) component on the page."""
+    return [(e.proto.component_name, json.loads(e.proto.json)) for e in at.get("bidi_component")]
 
 
 def numbers(texts: list[str]) -> list[str]:
@@ -275,3 +332,5 @@ def test_source_caption_names_file_and_commit():
     s = data.source("outputs/full/results.json")
     assert s.startswith("Source: outputs/full/results.json · commit ")
     assert "not in git" in data.source("data/external/nothing_here.json")
+    assert data.sources("outputs/full/results.json", "data/external/nothing_here.json")[1] == \
+        ("data/external/nothing_here.json", "not in git")

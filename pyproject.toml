@@ -24,6 +24,9 @@ screenshots = ["playwright>=1.40"]   # scripts/screenshot_dashboard.py; then: py
 where = ["src"]
 include = ["trafficsense*"]
 
+[tool.setuptools.package-data]
+"trafficsense.dashboard" = ["assets/*"]   # the dashboard's CSS theme and its canvas components (JS/CSS)
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]

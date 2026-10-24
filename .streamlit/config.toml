@@ -1,11 +1,40 @@
+# Dashboard theme (src/trafficsense/dashboard). Colours and sizes match the design tokens in
+# src/trafficsense/dashboard/theme.py and assets/theme.css; change them together.
+# Fonts come from Google Fonts; offline, the browser falls back to its system sans / mono.
 [theme]
 base = "dark"
-primaryColor = "#3987e5"
-backgroundColor = "#0f0f11"
-secondaryBackgroundColor = "#18181b"
-textColor = "#ededef"
-borderColor = "#27272a"
-font = "sans-serif"
+font = "Geist:https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap"
+headingFont = "Geist:https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap"
+codeFont = "'Geist Mono':https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400..600&display=swap"
+baseFontSize = 15
+headingFontSizes = ["2rem", "1.35rem", "1.1rem", "1rem", "0.9rem", "0.8rem"]
+headingFontWeights = [650, 600, 600, 600, 600, 600]
+primaryColor = "#19e6d2"
+backgroundColor = "#07090d"
+secondaryBackgroundColor = "#111620"
+textColor = "#e6edf3"
+borderColor = "#1d2532"
+showWidgetBorder = true
+showSidebarBorder = true
+baseRadius = "10px"
+buttonRadius = "10px"
+linkColor = "#5eead4"
+linkUnderline = false
+codeBackgroundColor = "#111620"
+codeTextColor = "#c9d4df"
+greenColor = "#22c55e"
+redColor = "#f43f5e"
+orangeColor = "#f5a524"
+yellowColor = "#f5a524"
+blueColor = "#19e6d2"
+grayColor = "#6b7785"
+dataframeHeaderBackgroundColor = "#0d1118"
+chartCategoricalColors = ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300", "#9085e9", "#e66767"]
+
+[theme.sidebar]
+backgroundColor = "#090c11"
+secondaryBackgroundColor = "#111620"
+borderColor = "#161d28"
 
 [browser]
 gatherUsageStats = false
