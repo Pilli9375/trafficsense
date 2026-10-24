@@ -351,6 +351,26 @@ def check_source_chips(at: AppTest, page: str) -> None:
     assert results <= cited, f"{page}: results files read but not named by any chip: {sorted(results - cited)}"
 
 
-@pytest.mark.parametrize("page", ["overview"])
+@pytest.mark.parametrize("page", ["overview", "results"])
 def test_source_chips(page):
     check_source_chips(render(page), page)
+
+
+def test_run_summaries_match_the_paired_block():
+    """The per-seed slope charts read the run summaries; results.json's paired differences come from them."""
+    full = json.loads((repo_root() / "outputs/full/results.json").read_text())
+    for sc, paired in full["paired"].items():
+        if sc not in full["scenarios"]:
+            continue
+        arms = full["scenarios"][sc]
+
+        def att(name):
+            out = {}
+            for r in arms[name]["runs"]:
+                s = json.loads((repo_root() / r / "summary.json").read_text())
+                out[s["provenance"]["seed"]] = s["metrics"]["att"]
+            return out
+        mp = att("MaxPressure")
+        for name, p in paired.items():
+            a = att(name)
+            assert [a[s] - mp[s] for s in p["seeds"]] == pytest.approx(p["att_minus_mp"], abs=1e-9), (sc, name)
