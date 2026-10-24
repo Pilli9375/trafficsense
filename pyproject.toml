@@ -18,7 +18,7 @@ dependencies = [
 dev = ["pytest>=8.0"]
 perception = ["ultralytics>=8.2", "opencv-python>=4.10"]
 dashboard = ["streamlit>=1.50", "plotly>=6.0"]
-screenshots = ["playwright>=1.40"]   # scripts/screenshot_dashboard.py; then: python -m playwright install chromium
+screenshots = ["playwright>=1.40", "pillow>=10"]   # scripts/screenshot_dashboard.py; then: python -m playwright install chromium
 
 [tool.setuptools.packages.find]
 where = ["src"]
