@@ -6,26 +6,26 @@ scripts/train_detector.py), checked against the sha256 of the weights that were 
 validation split (detector_val.json). Device: the GPU if CUDA is available and at least
 dashboard.detection.min_free_vram_mib MiB are free (the LLM and YOLO cannot share this GPU), else CPU.
 
-Everything shown after a run is measured now, on this machine; nothing is written to outputs/.
-Counts are detections per frame, not unique vehicles (no tracking).
+Before a run the page shows the clip itself (first frame and a filmstrip). Everything shown after a
+run is measured now, on this machine; nothing is written to outputs/. Counts are detections per
+frame, not unique vehicles (no tracking).
 """
 from __future__ import annotations
 
+import base64
 import hashlib
 import tempfile
 import time
 from pathlib import Path
 
 import numpy as np
-import pandas as pd
-import plotly.graph_objects as go
 import streamlit as st
-from plotly.subplots import make_subplots
 
 from trafficsense.dashboard import data, theme, ui
 
 DET_TEST = "outputs/perception/detector_test.json"
 DET_VAL = "outputs/perception/detector_val.json"
+FILMSTRIP = 8
 
 
 def weights_rel(cfg: dict) -> str:
@@ -41,18 +41,19 @@ def file_sha256(p: str, mtime: float) -> str:
     return h.hexdigest()
 
 
-def pick_device(min_free_mib: int, force_cpu: bool) -> tuple[str, str]:
+def pick_device(min_free_mib: int, force_cpu: bool) -> tuple[str, str, str]:
+    """(device, short label, explanation)."""
     if force_cpu:
-        return "cpu", "CPU (chosen)"
+        return "cpu", "CPU", "chosen on the page"
     import torch
     if not torch.cuda.is_available():
-        return "cpu", "CPU (no CUDA device)"
+        return "cpu", "CPU", "no CUDA device"
     free, total = torch.cuda.mem_get_info()
     free_mib, total_mib = free / 2**20, total / 2**20
     name = torch.cuda.get_device_name(0)
     if free_mib < min_free_mib:
-        return "cpu", f"CPU ({name} has only {free_mib:.0f} of {total_mib:.0f} MiB free; is an LLM loaded?)"
-    return "cuda:0", f"GPU: {name} ({free_mib:.0f} of {total_mib:.0f} MiB free)"
+        return "cpu", "CPU", f"{name} has only {free_mib:.0f} of {total_mib:.0f} MiB free; is an LLM loaded?"
+    return "cuda:0", "GPU", f"{name}, {free_mib:.0f} of {total_mib:.0f} MiB free"
 
 
 @st.cache_resource(show_spinner="Loading best.pt…")
@@ -63,109 +64,95 @@ def load_model(path: str, device: str):
     return m
 
 
-def annotate(frame: np.ndarray, boxes, names: dict) -> np.ndarray:
+def _jpeg(frame: np.ndarray, width: int, quality: int) -> tuple[str, float]:
+    """JPEG data URL of the frame resized to `width`, and the scale factor used."""
     import cv2
-    out = frame.copy()
-    for (x1, y1, x2, y2), c, conf in boxes:
-        name = names[c]
-        h = theme.CLASS_COLOURS[name].lstrip("#")
-        bgr = (int(h[4:6], 16), int(h[2:4], 16), int(h[0:2], 16))
-        p1, p2 = (int(x1), int(y1)), (int(x2), int(y2))
-        cv2.rectangle(out, p1, p2, bgr, max(2, out.shape[1] // 500), cv2.LINE_AA)
-        label = f"{name} {conf:.2f}"
-        fs = max(0.5, out.shape[1] / 1280 * 0.75)     # readable after the frame is shown at ~960 px
-        th_ = max(1, round(fs * 2))
-        (tw, th), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, fs, th_)
-        cv2.rectangle(out, (p1[0], p1[1] - th - 8), (p1[0] + tw + 8, p1[1]), bgr, -1)
-        cv2.putText(out, label, (p1[0] + 4, p1[1] - 5), cv2.FONT_HERSHEY_SIMPLEX, fs, (255, 255, 255), th_, cv2.LINE_AA)
-    return out
+    scale = width / frame.shape[1]
+    img = cv2.resize(frame, (width, int(round(frame.shape[0] * scale))), interpolation=cv2.INTER_AREA)
+    ok, buf = cv2.imencode(".jpg", img, [cv2.IMWRITE_JPEG_QUALITY, quality])
+    if not ok:
+        raise RuntimeError("OpenCV could not encode a frame as JPEG")
+    return "data:image/jpeg;base64," + base64.b64encode(buf.tobytes()).decode("ascii"), scale
 
 
-def run_detection(video: str, model, device: str, conf: float, iou: float, imgsz: int, max_frames: int) -> dict:
+@st.cache_data(show_spinner=False, max_entries=4)
+def clip_preview(path: str, mtime: float) -> tuple[str, list[str], int]:
+    """The clip's first frame (large) and FILMSTRIP evenly spaced thumbnails, read from the file."""
+    import cv2
+    cap = cv2.VideoCapture(path)
+    if not cap.isOpened():
+        raise RuntimeError(f"OpenCV cannot read the video {path}")
+    n = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    want = sorted({int(round(i * (n - 1) / (FILMSTRIP - 1))) for i in range(FILMSTRIP)}) if n > 1 else [0]
+    first, thumbs, i = None, [], 0
+    while True:
+        ok, frame = cap.read()
+        if not ok:
+            break
+        if i == 0:
+            first = _jpeg(frame, 1280, 84)[0]
+        if i in want:
+            thumbs.append(_jpeg(frame, 240, 72)[0])
+        i += 1
+    cap.release()
+    if first is None:
+        raise RuntimeError(f"No frame could be read from {path}")
+    return first, thumbs, i
+
+
+def run_detection(video: str, model, device: str, conf: float, iou: float, imgsz: int, max_frames: int,
+                  status) -> dict:
     import cv2
     cap = cv2.VideoCapture(video)
     if not cap.isOpened():
         raise RuntimeError(f"OpenCV cannot read the video {video}")
     src_fps = cap.get(cv2.CAP_PROP_FPS)
     n_total = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    names = model.names
-    frames, counts, infer_ms, wall_ms = [], [], [], []
-    prog = st.progress(0.0, text="Running the detector…")
-    live = st.empty()
-    t_start = time.perf_counter()
     n = min(max_frames, n_total) if n_total > 0 else max_frames
+    width = 960 if n <= 120 else 640         # keeps the page's payload small for long uploads
+    frames, boxes, infer_ms = [], [], []
+    prog = status.progress(0.0, text="Running the detector…")
+    t_start = time.perf_counter()
     for i in range(n):
         ok, frame = cap.read()
         if not ok:
             break
-        t0 = time.perf_counter()
         res = model.predict(frame, conf=conf, iou=iou, imgsz=imgsz, device=device, verbose=False)[0]
-        wall_ms.append(1000 * (time.perf_counter() - t0))
         infer_ms.append(res.speed["preprocess"] + res.speed["inference"] + res.speed["postprocess"])
+        url, sc = _jpeg(frame, width, 82)
         b = res.boxes
-        boxes = list(zip(b.xyxy.cpu().numpy().tolist(), b.cls.cpu().numpy().astype(int).tolist(),
-                         b.conf.cpu().numpy().tolist()))
-        c = {names[k]: 0 for k in names}
-        for _, k, _ in boxes:
-            c[names[k]] += 1
-        counts.append(c)
-        img = annotate(frame, boxes, names)
-        scale = 960 / img.shape[1]
-        img = cv2.resize(img, (960, int(img.shape[0] * scale)), interpolation=cv2.INTER_AREA)
-        ok, jpg = cv2.imencode(".jpg", img, [cv2.IMWRITE_JPEG_QUALITY, 85])
-        frames.append(jpg.tobytes())
+        xyxy = (b.xyxy.cpu().numpy() * sc).round(1).tolist()
+        frames.append(url)
+        boxes.append([[*xy, int(c), round(float(p), 3)] for xy, c, p in
+                      zip(xyxy, b.cls.cpu().numpy().astype(int).tolist(), b.conf.cpu().numpy().tolist())])
         if i % 5 == 0 or i == n - 1:
-            live.image(jpg.tobytes(), caption=f"frame {i + 1} of {n}", width="stretch")
             prog.progress((i + 1) / n, text=f"Frame {i + 1} of {n} on {device}")
     cap.release()
     total = time.perf_counter() - t_start
     prog.empty()
-    live.empty()
     if not frames:
         raise RuntimeError("No frame could be read from the video")
-    return {"frames": frames, "counts": counts, "infer_ms": infer_ms, "wall_ms": wall_ms, "total_s": total,
-            "src_fps": src_fps, "n_total": n_total, "device": device, "classes": [names[k] for k in names]}
+    h = int(round(width * frame.shape[0] / frame.shape[1]))
+    names = [model.names[k] for k in sorted(model.names)]
+    present = [c for c in names if any(names[bx[4]] == c for fb in boxes for bx in fb)]
+    return {"frames": frames, "boxes": boxes, "w": width, "h": h, "classes": names, "present": present,
+            "fps": src_fps if src_fps and src_fps > 0 else 4.0,
+            "stats": {"detector_fps": 1000 / float(np.mean(infer_ms)), "latency_ms_mean": float(np.mean(infer_ms)),
+                      "latency_ms_p95": float(np.percentile(infer_ms, 95)), "e2e_fps": len(frames) / total,
+                      "n_total": n_total}}
 
 
-def show_results(res: dict, source_label: str) -> None:
-    n = len(res["frames"])
-    model_fps = 1000 / np.mean(res["infer_ms"])
-    e2e_fps = n / res["total_s"]
-    kpis = [("Frames processed", f"{n}", "", f"of {res['n_total']} in the video" if res["n_total"] > 0 else ""),
-            ("Detector speed", f"{model_fps:.1f}", "FPS", "pre-process + inference + NMS, mean per frame"),
-            ("End to end", f"{e2e_fps:.1f}", "FPS", "incl. decoding, drawing and the page"),
-            ("Device", "GPU" if res["device"].startswith("cuda") else "CPU", "", source_label)]
-    for col, (t, v, u, s) in zip(st.columns(4, gap="small"), kpis):
-        col.markdown(ui.kpi_card(t, v, u, ui.esc(s)), unsafe_allow_html=True)
-    c1, c2 = st.columns([1.15, 1], gap="medium")
-    with c1:
-        k = st.slider("Frame", 1, n, 1, key="det_frame")
-        st.image(res["frames"][k - 1], width="stretch")
-    with c2:
-        st.markdown("##### Detections per frame, one panel per class")
-        df = pd.DataFrame(res["counts"])
-        present = [c for c in res["classes"] if df[c].sum() > 0]
-        fig = make_subplots(rows=len(present), cols=1, shared_xaxes=True, vertical_spacing=0.035)
-        for i, c in enumerate(present, start=1):
-            fig.add_trace(go.Scatter(x=np.arange(1, n + 1), y=df[c], mode="lines", name=c,
-                                     line=dict(color=theme.CLASS_COLOURS[c], width=2, shape="hv"),
-                                     hovertemplate="frame %{x}: %{y}<extra>" + c + "</extra>"), row=i, col=1)
-            fig.update_yaxes(title_text=c, title_font=dict(size=11), rangemode="tozero", nticks=3, tickformat="d", row=i, col=1)
-        fig.add_vline(x=k, line=dict(color=theme.TEXT_3, width=1, dash="dot"))
-        fig.update_xaxes(title_text="frame", row=len(present), col=1)
-        fig.update_layout(showlegend=False, height=70 + 72 * len(present), margin=dict(l=8, r=8, t=8, b=8))
-        st.plotly_chart(fig, width="stretch", config=ui.PLOT_CONFIG)
-        tot = df.sum().astype(int)
-        st.dataframe(pd.DataFrame({"class": tot.index, "boxes, all frames": tot.values,
-                                   "mean per frame": [f"{v:.2f}" for v in df.mean().values]}),
-                     hide_index=True, width="stretch")
-        st.caption("Measured now on this machine; not stored. Counts are boxes per frame, not unique vehicles.")
+def preview_html(first: str, thumbs: list[str], caption: str) -> str:
+    strip = "".join(f'<img src="{t}" alt="" loading="lazy">' for t in thumbs)
+    return (f'<div class="ts-prev"><div class="ts-prev-stage"><img src="{first}" alt="First frame of the sample clip">'
+            f'<div class="ts-prev-cap">{caption}</div><div class="ts-prev-play">Press <b>Run detector</b> to run '
+            f'YOLOv8n on this clip</div></div><div class="ts-strip">{strip}</div></div>')
 
 
 def render() -> None:
-    ui.header("Live Detection", "What the camera model sees",
-              "YOLOv8n trained on the India Driving Dataset, run frame by frame on a video. Upload your own "
-              "clip or use the bundled sample from our test split.")
+    ui.page_header("Perception", "Live Detection",
+                   "YOLOv8n trained on the India Driving Dataset, run frame by frame on a video, on this machine.",
+                   ["dashcam proxy", "no tracking", "measured now"])
     try:
         cfg = data.config()
         dcfg = cfg["dashboard"]["detection"]
@@ -178,8 +165,8 @@ def render() -> None:
                                          "data/external/detector_runs symlink (configs/default.yaml).")
         media = data.config_path("dashboard_media")
         clip_rel = f"{media}/{dcfg['sample_clip']['file']}"
-        clip_meta = data.read_json(f"{media}/{Path(dcfg['sample_clip']['file']).stem}.json",
-                                   "Make it with `python scripts/make_sample_clip.py`.")
+        meta_rel = f"{media}/{Path(dcfg['sample_clip']['file']).stem}.json"
+        clip_meta = data.read_json(meta_rel, "Make it with `python scripts/make_sample_clip.py`.")
     except data.MissingData as e:
         ui.missing(e)
         return
@@ -189,53 +176,80 @@ def render() -> None:
                  "Results shown elsewhere are for the evaluated weights.")
         return
 
-    ui.note("<p><b>Dashcam caveat.</b> IDD is filmed from a moving vehicle, not from a camera on a pole at a "
-            "junction; viewpoint, distance and occlusion differ. The sample clip is IDD's sampled frames played in "
-            f"order (every {clip_meta['frame_step_in_recording']}th recorded frame), so it is a time-lapse. "
-            "Counts are per frame; there is no tracking, so one vehicle is counted in every frame it appears in.</p>",
-            tags=[("dashcam proxy", "warn"), ("no tracking", "warn")])
-
-    left, right = st.columns([1, 2.2], gap="medium")
+    left, right = st.columns([1, 2.65], gap="medium")
     with left:
-        src = st.radio("Video", ["Sample clip (IDD test split)", "Upload a video"], key="det_src")
-        up = None
-        if src == "Upload a video":
-            up = st.file_uploader("Video file", type=["mp4", "avi", "mov", "mkv"], key="det_upload")
-        conf = st.slider("Confidence threshold", 0.05, 0.95, float(val["threshold"]["conf"]), 0.05,
-                         help="Default: the operating point chosen on our validation split.")
-        force_cpu = st.toggle("Force CPU", value=False)
-        max_frames = st.number_input("Max frames", 1, 10 * int(dcfg["max_frames"]), int(dcfg["max_frames"]))
-        go_btn = st.button("Run detector", type="primary", width="stretch",
-                           disabled=src == "Upload a video" and up is None)
-    with right:
-        st.markdown(f"**Model** `{wrel}`  \nsha256 matches the evaluated weights "
-                    f"(test mAP50 {test['ultralytics']['mAP50']:.3f}). Classes: {', '.join(test['classes'])}.")
-        if src.startswith("Sample"):
-            st.markdown(f"**Sample** `{clip_meta['sequence']}` · {len(clip_meta['frames'])} frames · "
-                        f"{clip_meta['fps']} fps · {clip_meta['dataset']}.")
-        ui.caption_source(DET_TEST, DET_VAL)
+        with st.container(key="panel-det"):
+            src = st.segmented_control("Video", ["Sample clip", "Upload"], default="Sample clip", key="det_src") or "Sample clip"
+            up = None
+            if src == "Upload":
+                up = st.file_uploader("Video file", type=["mp4", "avi", "mov", "mkv"], key="det_upload")
+            conf = st.slider("Confidence threshold", 0.05, 0.95, float(val["threshold"]["conf"]), 0.05,
+                             help="Default: the operating point chosen on our validation split.")
+            max_frames = st.number_input("Max frames", 1, 10 * int(dcfg["max_frames"]), int(dcfg["max_frames"]))
+            force_cpu = st.toggle("Force CPU", value=False)
+            go_btn = st.button("Run detector", type="primary", width="stretch", icon=":material/play_arrow:",
+                               disabled=src == "Upload" and up is None)
+        chips = "".join(f'<span class="ts-cls"><span class="ts-dot" style="background:{theme.CLASS_COLOURS[c]}"></span>'
+                        f'{ui.esc(c)}</span>' for c in test["classes"])
+        ui.html(ui.card(
+            ui.card_header("Model", None, [DET_TEST, DET_VAL])
+            + f'<div class="ts-kv"><span>Weights</span><code title="{ui.esc(wrel)}">best.pt</code></div>'
+            + f'<div class="ts-kv"><span>sha256</span><span class="ok">{ui.icon("check", 14)} matches the evaluated weights</span></div>'
+            + f'<div class="ts-kv"><span>Test mAP50</span><b>{test["ultralytics"]["mAP50"]:.3f}</b></div>'
+            + f'<div class="ts-kv"><span>Default threshold</span><b>{val["threshold"]["conf"]}</b></div>'
+            + f'<div class="ts-classes">{chips}</div>'))
 
-    if go_btn:
-        device, why = pick_device(int(dcfg["min_free_vram_mib"]), force_cpu)
-        st.info(f"Running on {why}.", icon=":material/memory:")
-        model = load_model(str(wpath), device)
-        if src.startswith("Sample"):
-            video, label = str(data.path(clip_rel)), "IDD test-split sample"
-            if not Path(video).is_file():
-                ui.missing(data.MissingData(clip_rel, "Make it with `python scripts/make_sample_clip.py`."))
-                return
+    with right:
+        status = st.empty()
+        if go_btn:
+            device, dev_short, why = pick_device(int(dcfg["min_free_vram_mib"]), force_cpu)
+            model = load_model(str(wpath), device)
+            if src == "Sample clip":
+                video, label = str(data.path(clip_rel)), "IDD test-split sample"
+                if not Path(video).is_file():
+                    ui.missing(data.MissingData(clip_rel, "Make it with `python scripts/make_sample_clip.py`."))
+                    return
+            else:
+                tmp = tempfile.NamedTemporaryFile(suffix=Path(up.name).suffix, delete=False)
+                tmp.write(up.getbuffer())
+                tmp.close()
+                video, label = tmp.name, up.name
+            try:
+                res = run_detection(video, model, device, conf, float(test["nms_iou"]), int(test["imgsz"]),
+                                    int(max_frames), status.container())
+            finally:
+                if up is not None:
+                    Path(video).unlink(missing_ok=True)
+            res["label"] = label
+            res["stats"].update(device_short=dev_short, device_detail=why)
+            res["colours"] = {c: theme.CLASS_COLOURS[c] for c in res["classes"] if c in theme.CLASS_COLOURS}
+            st.session_state["det_result"] = res
+        res = st.session_state.get("det_result")
+        if res:
+            player = ui.component("trafficsense_detection_player", "pl-host", "player.css", "player.js")
+            player(data=res, key="det_player", height="content")
         else:
-            tmp = tempfile.NamedTemporaryFile(suffix=Path(up.name).suffix, delete=False)
-            tmp.write(up.getbuffer())
-            tmp.close()
-            video, label = tmp.name, up.name
-        try:
-            res = run_detection(video, model, device, conf, float(test["nms_iou"]), int(test["imgsz"]), int(max_frames))
-        finally:
-            if up is not None:
-                Path(video).unlink(missing_ok=True)
-        res["label"] = label
-        st.session_state["det_result"] = res
-    res = st.session_state.get("det_result")
-    if res:
-        show_results(res, res["label"])
+            if src == "Sample clip":
+                p = data.path(clip_rel)
+                if not p.is_file():
+                    ui.missing(data.MissingData(clip_rel, "Make it with `python scripts/make_sample_clip.py`."))
+                    return
+                first, thumbs, n = clip_preview(str(p), p.stat().st_mtime)
+                cap = (f'<span class="ts-pill">Sample · IDD test split</span><span class="ts-pill">'
+                       f'{data.derived(len(clip_meta["frames"]))} frames · {clip_meta["fps"]} fps</span>')
+                ui.html(preview_html(first, thumbs, cap))
+                ui.html(f'<div class="ts-prev-src">{ui.source_chip(meta_rel, align="left")}</div>')
+            else:
+                ui.html('<div class="ts-prev ts-prev-empty"><div>Choose a video file on the left, then press '
+                        '<b>Run detector</b>.</div></div>')
+
+    ui.why(
+        "<p><b>Dashcam caveat.</b> IDD is filmed from a moving vehicle, not from a camera on a pole at a junction; "
+        "viewpoint, distance and occlusion differ. The sample clip is IDD's sampled frames played in order "
+        f"(every {clip_meta['frame_step_in_recording']}th recorded frame), so it is a time-lapse.</p>"
+        "<p><b>Counts.</b> Boxes per frame; there is no tracking, so one vehicle is counted in every frame it "
+        "appears in.</p>"
+        "<p><b>Speed.</b> Detector speed is pre-processing, inference and NMS per frame, as Ultralytics reports it; "
+        "end to end adds reading the video and encoding the frames for this page. Both are measured on this "
+        "machine when you press Run and are not stored. The GPU is used only if enough of its memory is free "
+        "(an LLM loaded by Ollama takes most of the 4 GB).</p>")

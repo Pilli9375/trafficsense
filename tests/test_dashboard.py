@@ -356,6 +356,11 @@ def test_source_chips(page):
     check_source_chips(render(page), page)
 
 
+def test_detection_source_chips():
+    _need("{dashboard_media}", "{detector_runs}")
+    check_source_chips(render("live_detection"), "live_detection")
+
+
 def test_run_summaries_match_the_paired_block():
     """The per-seed slope charts read the run summaries; results.json's paired differences come from them."""
     full = json.loads((repo_root() / "outputs/full/results.json").read_text())
