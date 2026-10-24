@@ -268,7 +268,8 @@ Peak:
   snapshot, against about 4.9 real queued vehicles off-peak and 17.8 at peak (7.2), which
   also fits off-peak being hit harder at the junction level. **The design does not isolate
   this** (there is no run with the junction detection rates and no false detections), so it
-  is an explanation consistent with the data, not a measured split.
+  is an explanation consistent with the data, not a measured split. *(The post-hoc
+  decomposition in 7.7 tests it: it holds off-peak, not at peak.)*
 
 <!-- BEGIN:camera_sweep -->
 | p_detect (all classes, no false detections) | Off-peak: MaxPressure ATT (s) | Peak: MaxPressure ATT (s) |
@@ -391,6 +392,42 @@ are within ±0.003.
 | uniform_p0.50 | truck | 0.500 | 0.5040 | 17,185 | +1.05 |
 <!-- END:camera_checks -->
 
+### 7.7 Decomposition of the junction-camera errors (added after the results)
+
+**Post-hoc, not pre-registered.** Added after 7.1–7.6 had been read, to test the explanation
+offered in 7.3 (false detections as the main cause). MaxPressure only, indian_2x2 off-peak
+and peak, seeds 0–2: the junction-camera level with **one error component switched on and the
+others exact** (`observation.only` in `sim/observation.py`; 18 runs,
+`scripts/run_camera_decomposition.py`, `outputs/camera_error/decomposition/`). Each run is
+paired by seed with the main batch's perfect run; (d) is the main batch's junction level,
+which the decomposition code reproduces exactly (re-run of peak seed 1: identical metrics
+and draws). Each component draws its own random stream, so the components need not add up
+to (d).
+
+<!-- BEGIN:camera_decomposition -->
+| junction-camera errors | p_detect; labels; false det. | Off-peak: ATT vs perfect, paired (s; range; %) | Peak: ATT vs perfect, paired (s; range; %) | realised detection rate | lost to non-vehicle label | phantoms per road and snapshot |
+|---|---:|---:|---:|---:|---:|---:|
+| (a) misses only | measured; exact; none | +0.7 (-0.6 to +1.7); +0.8% | +0.7 (+0.3 to +1.2); +0.6% | 0.920 | 0.00% | 0.000 |
+| (b) false detections only | 1; exact; measured | +3.4 (+2.8 to +3.7); +3.8% | -0.3 (-1.8 to +1.0); -0.3% | 1.000 | 0.00% | 0.688 |
+| (c) class confusion only | 1; measured; none | +0.1 (-1.1 to +1.0); +0.2% | +0.1 (-1.6 to +1.4); +0.1% | 1.000 | 0.34% | 0.000 |
+| (d) all (main batch junction level) | measured; measured; measured | +4.3 (+3.7 to +4.7); +4.8% | +2.7 (+1.2 to +4.3); +2.3% | 0.921 | 0.31% | 0.690 |
+| sum of (a) + (b) + (c) |  | +4.3; +4.8% | +0.4; +0.4% |  |  |  |
+<!-- END:camera_decomposition -->
+
+- **Off-peak, false detections are the main cause**, as 7.3 suggested: alone they cost +3.8%
+  of the +4.8%, every seed worse; misses alone cost +0.8%, confusion about 0, and the three
+  add up to the full effect.
+- **At peak, no single component explains the +2.3%.** Misses alone cost +0.6% (every seed
+  slightly worse); false detections alone −0.3% and confusion alone +0.1%, both with seed
+  ranges spanning zero. Together they add up to +0.4%,
+  while all three at once cost +1.2 to +4.3 s for every seed. Either the components interact
+  at peak (for example phantoms weighing more once real counts are thinned), or part of the
+  peak effect in (d) is chance; with 3 seeds this experiment cannot tell which. We do not
+  claim a cause for the peak effect.
+- **Class confusion alone does nothing measurable** (+0.2% / +0.1%, ranges spanning zero), as
+  expected from 2.3: these controllers read class-free counts, and only the 0.3% of vehicles
+  labelled `person` are lost.
+
 ## 8. Summary
 
 - Realistic detector errors make every count-based controller slower: with the junction
@@ -399,7 +436,9 @@ are within ±0.003.
   because it never counts.
 - Missing vehicles is not the main problem: MaxPressure loses only 2–3% with half the
   vehicles missed. The camera levels hurt more than their detection rates alone would
-  predict, most plausibly because of false detections, which this design does not isolate.
+  predict. A post-hoc decomposition (7.7) attributes most of the off-peak effect to false
+  detections; at peak no single component explains it (interaction or chance, not resolved
+  with 3 seeds). Class confusion alone has no measurable effect.
 - At peak, adaptive control's small advantage over Webster with exact counts is lost with
   camera errors; off-peak it shrinks but remains.
 - The emergency results rest on ambulance positions coming from GPS / V2X, not the camera.

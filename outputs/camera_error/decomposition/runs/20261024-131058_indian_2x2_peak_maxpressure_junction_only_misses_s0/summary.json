@@ -1,0 +1,173 @@
+{
+  "provenance": {
+    "controller": "maxpressure",
+    "controller_params": {
+      "name": "maxpressure",
+      "decision_interval": 5,
+      "min_green": 15,
+      "phases": "all",
+      "tie_break": "keep_current"
+    },
+    "model": null,
+    "provider": null,
+    "llm": null,
+    "controller_stats": null,
+    "seed": 0,
+    "scenario": "indian_2x2_peak",
+    "roadnet": "data/scenarios/indian_2x2/roadnet.json",
+    "flow": "data/scenarios/indian_2x2/flow_peak_s0.json",
+    "flow_sha256": "9a45e9fdad4c5991de887ec3df95bdea7a89587c47c5657b830e88c29c86f951",
+    "flow_per_seed": true,
+    "sim_steps": 3600,
+    "git_commit": "6970ded101a9597d2c069b5d66976a42912b1228",
+    "git_dirty": false,
+    "timestamp": "2026-10-24T13:10:58+05:30",
+    "wall_time_s": 3.34,
+    "python": "3.10.12"
+  },
+  "signal": {
+    "min_green": 10,
+    "max_green": 60,
+    "transition_s": [
+      5
+    ],
+    "switches": 714,
+    "forced_switches": 0
+  },
+  "metrics": {
+    "att": 117.17741589886437,
+    "queue_mean_per_intersection": 17.96027777777778,
+    "queue_mean_total": 71.8411111111111,
+    "waiting_time_mean": 55.4854264894985,
+    "throughput": 4493,
+    "vehicles_entered": 4666,
+    "vehicles_running_at_end": 173,
+    "vehicles_waiting_to_enter_at_end": 1,
+    "steps": 3600
+  },
+  "per_intersection": {
+    "intersection_1_1": {
+      "queue_mean": 19.1875,
+      "waiting_time_mean": 29.506621102093124,
+      "throughput": 2288,
+      "vehicles_seen": 2341
+    },
+    "intersection_2_1": {
+      "queue_mean": 17.794166666666666,
+      "waiting_time_mean": 28.5086782376502,
+      "throughput": 2213,
+      "vehicles_seen": 2247
+    },
+    "intersection_1_2": {
+      "queue_mean": 17.45,
+      "waiting_time_mean": 27.55263157894737,
+      "throughput": 2245,
+      "vehicles_seen": 2280
+    },
+    "intersection_2_2": {
+      "queue_mean": 17.409444444444443,
+      "waiting_time_mean": 27.380515508955877,
+      "throughput": 2256,
+      "vehicles_seen": 2289
+    }
+  },
+  "emergency": null,
+  "observation": {
+    "key": "junction_only_misses",
+    "noised": true,
+    "params": {
+      "key": "junction_only_misses",
+      "p_detect": {
+        "car": 0.9363,
+        "motorcycle": 0.9127,
+        "autorickshaw": 0.9442,
+        "bus": 0.9072,
+        "truck": 0.8318,
+        "bicycle": 0.6808,
+        "person": 0.8063
+      },
+      "p_label": {
+        "car": {
+          "car": 1.0
+        },
+        "motorcycle": {
+          "motorcycle": 1.0
+        },
+        "autorickshaw": {
+          "autorickshaw": 1.0
+        },
+        "bus": {
+          "bus": 1.0
+        },
+        "truck": {
+          "truck": 1.0
+        },
+        "bicycle": {
+          "bicycle": 1.0
+        },
+        "person": {
+          "person": 1.0
+        }
+      },
+      "false_det_per_road_snapshot": {
+        "car": 0.0,
+        "motorcycle": 0.0,
+        "autorickshaw": 0.0,
+        "bus": 0.0,
+        "truck": 0.0,
+        "bicycle": 0.0
+      },
+      "source": {
+        "kind": "error_model",
+        "file": "outputs/perception/error_model.json",
+        "sha256": "8f30435d5bc2d2a8e4bb6ca4f2eff4915c118c774f0618437a851bc23fd98a53",
+        "conf_threshold": 0.3,
+        "p_detect_from": "medium+large objects",
+        "only": "misses"
+      }
+    },
+    "seed_entropy": [
+      0,
+      3197496544
+    ],
+    "rng": "numpy default_rng(SeedSequence(seed_entropy))",
+    "emergency_types_not_noised": [
+      "ambulance"
+    ],
+    "snapshots": 526,
+    "roads": 24,
+    "realized": {
+      "true_vehicle_observations": {
+        "autorickshaw": 13614,
+        "motorcycle": 33771,
+        "car": 23551,
+        "truck": 4362,
+        "bus": 1252
+      },
+      "detection_rate": {
+        "autorickshaw": 0.9406,
+        "motorcycle": 0.915,
+        "car": 0.9375,
+        "truck": 0.8271,
+        "bus": 0.9169
+      },
+      "lost_to_non_vehicle_label": {},
+      "false_per_road_snapshot": {
+        "car": 0.0,
+        "motorcycle": 0.0,
+        "autorickshaw": 0.0,
+        "bus": 0.0,
+        "truck": 0.0,
+        "bicycle": 0.0
+      }
+    },
+    "log": "noise.jsonl"
+  },
+  "metric_notes": {
+    "att": "engine.get_average_travel_time(): all generated vehicles from scheduled start, incl. those still running or still waiting to enter",
+    "queue_mean_per_intersection": "waiting vehicles (speed<0.1) on incoming lanes, mean over steps and intersections",
+    "queue_mean_total": "same, summed over intersections",
+    "waiting_time_mean": "seconds with speed<0.1 per vehicle, mean over vehicles that entered",
+    "throughput": "vehicles that finished their trip"
+  }
+}

@@ -1783,6 +1783,194 @@
    }
   }
  },
+ "decomposition": {
+  "misses": {
+   "key": "junction_only_misses",
+   "runs": [
+    "outputs/camera_error/decomposition/runs/20261024-131031_indian_2x2_offpeak_maxpressure_junction_only_misses_s0",
+    "outputs/camera_error/decomposition/runs/20261024-131040_indian_2x2_offpeak_maxpressure_junction_only_misses_s1",
+    "outputs/camera_error/decomposition/runs/20261024-131049_indian_2x2_offpeak_maxpressure_junction_only_misses_s2",
+    "outputs/camera_error/decomposition/runs/20261024-131058_indian_2x2_peak_maxpressure_junction_only_misses_s0",
+    "outputs/camera_error/decomposition/runs/20261024-131110_indian_2x2_peak_maxpressure_junction_only_misses_s1",
+    "outputs/camera_error/decomposition/runs/20261024-131123_indian_2x2_peak_maxpressure_junction_only_misses_s2"
+   ],
+   "realised": {
+    "detection_rate": 0.9204205194039172,
+    "lost_to_non_vehicle_label": 0.0,
+    "phantoms_per_road_snapshot": 0.0
+   },
+   "att_vs_perfect": {
+    "indian_2x2_offpeak": {
+     "mean": 0.7235305701286924,
+     "min": -0.5740740740740762,
+     "max": 1.6738768718801964,
+     "per_seed": [
+      1.0707889125799568,
+      1.6738768718801964,
+      -0.5740740740740762
+     ],
+     "pct_mean": 0.827557631959487,
+     "pct_min": -0.6444638476570644,
+     "pct_max": 1.8985609813635254
+    },
+    "indian_2x2_peak": {
+     "mean": 0.6943692784626307,
+     "min": 0.2888425443170064,
+     "max": 1.1883436897364419,
+     "per_seed": [
+      1.1883436897364419,
+      0.605921601334444,
+      0.2888425443170064
+     ],
+     "pct_mean": 0.5995468669810764,
+     "pct_min": 0.25221300982083694,
+     "pct_max": 1.0245307313036025
+    }
+   }
+  },
+  "false": {
+   "key": "junction_only_false",
+   "runs": [
+    "outputs/camera_error/decomposition/runs/20261024-131034_indian_2x2_offpeak_maxpressure_junction_only_false_s0",
+    "outputs/camera_error/decomposition/runs/20261024-131042_indian_2x2_offpeak_maxpressure_junction_only_false_s1",
+    "outputs/camera_error/decomposition/runs/20261024-131051_indian_2x2_offpeak_maxpressure_junction_only_false_s2",
+    "outputs/camera_error/decomposition/runs/20261024-131101_indian_2x2_peak_maxpressure_junction_only_false_s0",
+    "outputs/camera_error/decomposition/runs/20261024-131114_indian_2x2_peak_maxpressure_junction_only_false_s1",
+    "outputs/camera_error/decomposition/runs/20261024-131126_indian_2x2_peak_maxpressure_junction_only_false_s2"
+   ],
+   "realised": {
+    "detection_rate": 1.0,
+    "lost_to_non_vehicle_label": 0.0,
+    "phantoms_per_road_snapshot": 0.6877116402116402
+   },
+   "att_vs_perfect": {
+    "indian_2x2_offpeak": {
+     "mean": 3.3842423211989208,
+     "min": 2.812793176972278,
+     "max": 3.7230452674897094,
+     "per_seed": [
+      2.812793176972278,
+      3.6168885191347755,
+      3.7230452674897094
+     ],
+     "pct_mean": 3.836400438522562,
+     "pct_min": 3.227274284064717,
+     "pct_max": 4.179544394088484
+    },
+    "indian_2x2_peak": {
+     "mean": -0.3384882015977979,
+     "min": -1.8187695516162563,
+     "max": 0.981787015213186,
+     "per_seed": [
+      0.981787015213186,
+      -0.17848206839032343,
+      -1.8187695516162563
+     ],
+     "pct_mean": -0.29846871055539914,
+     "pct_min": -1.5881224972183636,
+     "pct_max": 0.8464478562627238
+    }
+   }
+  },
+  "confusion": {
+   "key": "junction_only_confusion",
+   "runs": [
+    "outputs/camera_error/decomposition/runs/20261024-131036_indian_2x2_offpeak_maxpressure_junction_only_confusion_s0",
+    "outputs/camera_error/decomposition/runs/20261024-131045_indian_2x2_offpeak_maxpressure_junction_only_confusion_s1",
+    "outputs/camera_error/decomposition/runs/20261024-131054_indian_2x2_offpeak_maxpressure_junction_only_confusion_s2",
+    "outputs/camera_error/decomposition/runs/20261024-131105_indian_2x2_peak_maxpressure_junction_only_confusion_s0",
+    "outputs/camera_error/decomposition/runs/20261024-131118_indian_2x2_peak_maxpressure_junction_only_confusion_s1",
+    "outputs/camera_error/decomposition/runs/20261024-131130_indian_2x2_peak_maxpressure_junction_only_confusion_s2"
+   ],
+   "realised": {
+    "detection_rate": 1.0,
+    "lost_to_non_vehicle_label": 0.0034273493028919946,
+    "phantoms_per_road_snapshot": 0.0
+   },
+   "att_vs_perfect": {
+    "indian_2x2_offpeak": {
+     "mean": 0.1452528025731965,
+     "min": -1.0942386831275712,
+     "max": 0.9680170575692841,
+     "per_seed": [
+      0.9680170575692841,
+      0.5619800332778766,
+      -1.0942386831275712
+     ],
+     "pct_mean": 0.17322207396453385,
+     "pct_min": -1.2284081511972234,
+     "pct_max": 1.1106598885425751
+    },
+    "indian_2x2_peak": {
+     "mean": 0.06978809061688669,
+     "min": -1.556922435362793,
+     "max": 1.4167559460038461,
+     "per_seed": [
+      1.4167559460038461,
+      -1.556922435362793,
+      0.349530761209607
+     ],
+     "pct_mean": 0.06188051655979506,
+     "pct_min": -1.3410199078688534,
+     "pct_max": 1.2214564001765957
+    }
+   }
+  },
+  "all": {
+   "key": "junction",
+   "runs": [
+    "outputs/camera_error/runs/20261024-063136_indian_2x2_offpeak_maxpressure_junction_s0",
+    "outputs/camera_error/runs/20261024-063321_indian_2x2_offpeak_maxpressure_junction_s1",
+    "outputs/camera_error/runs/20261024-064225_indian_2x2_offpeak_maxpressure_junction_s2",
+    "outputs/camera_error/runs/20261024-064410_indian_2x2_peak_maxpressure_junction_s0",
+    "outputs/camera_error/runs/20261024-064601_indian_2x2_peak_maxpressure_junction_s1",
+    "outputs/camera_error/runs/20261024-064750_indian_2x2_peak_maxpressure_junction_s2"
+   ],
+   "realised": {
+    "detection_rate": 0.9213756727734422,
+    "lost_to_non_vehicle_label": 0.003068075370208988,
+    "phantoms_per_road_snapshot": 0.6895741712707183
+   },
+   "att_vs_perfect": {
+    "indian_2x2_offpeak": {
+     "mean": 4.267472943596299,
+     "min": 3.655144032921811,
+     "max": 4.729637526652439,
+     "per_seed": [
+      4.729637526652439,
+      4.417637271214645,
+      3.655144032921811
+     ],
+     "pct_mean": 4.846836591000542,
+     "pct_min": 4.103317487376362,
+     "pct_max": 5.426576574372609
+    },
+    "indian_2x2_peak": {
+     "mean": 2.6571089130199206,
+     "min": 1.1640950792326947,
+     "max": 4.333404756803077,
+     "per_seed": [
+      4.333404756803077,
+      1.1640950792326947,
+      2.4738269030239906
+     ],
+     "pct_mean": 2.299607163107394,
+     "pct_min": 1.0026669540152482,
+     "pct_max": 3.73604571040103
+    }
+   }
+  },
+  "sum_abc": {
+   "indian_2x2_offpeak": {
+    "mean": 4.25302569390081,
+    "pct_mean": 4.837180144446583
+   },
+   "indian_2x2_peak": {
+    "mean": 0.4256691674817195,
+    "pct_mean": 0.3629586729854723
+   }
+  }
+ },
  "checks": {
   "realised_largest_miss": {
    "level": "uniform_p0.60",
@@ -1817,6 +2005,6 @@
  "provenance": {
   "script": "scripts/make_camera_error.py",
   "runs": 130,
-  "git_commit_of_this_summary": "40550013c25ea8f73ab605874709dce1f7a4f79b"
+  "git_commit_of_this_summary": "7c682920ba4662894ea9bd5d85a44e52ab721537"
  }
 }
