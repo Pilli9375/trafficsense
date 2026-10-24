@@ -75,12 +75,14 @@ TrafficSense is a **multi-agent smart city traffic management system** designed 
 
 ## 📸 Screenshots
 
-| Live Monitor | Network Control | Analytics |
-|:------------:|:---------------:|:---------:|
-| *Video upload + YOLO detection* | *2×2 grid + LLM reasoning* | *FixedTime vs TrafficSense* |
-| ![Live](docs/screenshots/live_monitor.png) | ![Network](docs/screenshots/network_control.png) | ![Analytics](docs/screenshots/analytics.png) |
+Dashboard at 1366×768 (`python scripts/screenshot_dashboard.py`). Every number on these pages is read from
+`outputs/` at runtime; see [`docs/dashboard.md`](docs/dashboard.md).
 
-> 📷 Screenshots to be captured during final demo recording.
+| Overview | Live Detection |
+|:--------:|:--------------:|
+| ![Overview](docs/screenshots/overview.png) | ![Live Detection](docs/screenshots/live_detection.png) |
+| **Network Replay** | **Results** |
+| ![Network Replay](docs/screenshots/network_replay.png) | ![Results](docs/screenshots/results.png) |
 
 ---
 
@@ -131,9 +133,10 @@ ollama serve
 ```
 
 ### 5. Run Dashboard
-```powershell
-# In Windows PowerShell (venv activated)
-streamlit run src\dashboard\app.py
+```bash
+# In WSL, from the repo root (venv activated)
+pip install -e ".[dashboard]"
+streamlit run src/trafficsense/dashboard/app.py
 ```
 Open [http://localhost:8501](http://localhost:8501/) in your browser.
 

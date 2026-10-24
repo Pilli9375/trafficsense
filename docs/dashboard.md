@@ -54,3 +54,81 @@ page needs those, so a few runs are **replayed** with extra logging:
 * **Where.** `paths.replays` (a symlink to D; a few MB per run, not in git). Each replay has a
   `meta.json` with the source run, the sha256 of its `summary.json`, the commit the replay was
   made at, and the verification result.
+
+**As made:** `python scripts/make_replays.py` checked the rule from the flow files (ambulances per seed
+0–4: 3, 14, 6, 6, 8, so seed 1) and that the nine listed runs are exactly the eligible ones; all nine
+replays reproduced their runs' metrics and all 14 ambulances exactly (about 6 s and 1.5 MiB each).
+`--check` verifies that each replay still matches its source run (sha256 of `summary.json`).
+
+## Setup (once)
+
+The replays and the sample clip live on D (not in git), behind gitignored symlinks named in
+`configs/default.yaml`:
+
+```bash
+ln -s /mnt/d/trafficsense/replays data/external/replays
+ln -s /mnt/d/trafficsense/dashboard_media data/external/dashboard_media
+python scripts/make_replays.py        # ~1 min, no LLM needed
+python scripts/make_sample_clip.py    # needs the IDD symlink (paths.idd_root)
+```
+
+Without them the Overview and Results pages still work; the other two pages say which file is
+missing and which command makes it.
+
+## Pages in detail
+
+* **Overview.** Problem, approach and findings in plain words; the sentences with numbers are
+  filled from the result files. KPI cards: best baseline vs the LLM arms (average travel time,
+  peak and off-peak), ambulance travel time (MaxPressure, preemption, the LLM arms incl. the
+  exploratory gemma4 and Nemotron hybrids), detector mAP50 on the IDD test split, and the
+  camera-error impact. "Best baseline" is picked from the data (lowest mean ATT per scenario).
+* **Live Detection.** `best.pt` is found from `paths.detector_runs` and `perception.train.run_name`
+  and refused unless its sha256 matches the evaluated weights in `detector_test.json`. Default
+  confidence: the operating point frozen on validation (`detector_val.json`). Device: the GPU if
+  CUDA is available and at least `dashboard.detection.min_free_vram_mib` are free (the LLM and YOLO
+  cannot share the GTX 1650), else the CPU; the page says which and why. Shown: annotated frames
+  with a scrubber, boxes per frame per class (small multiples), detector FPS and end-to-end FPS,
+  all measured on the spot and not stored. Caveats on the page: IDD is dashcam footage; counts
+  are per frame (no tracking); the sample clip is IDD's sampled frames, so it is a time-lapse.
+  The sample clip uses the longest evenly spaced frame run of our test split (rule checked by
+  the script), first 60 frames at 4 fps.
+* **Network Replay.** Two of the nine replays side by side, one synchronized animation (play,
+  pause, time slider) over a window that defaults to the selected ambulance's trip: vehicles,
+  ambulances, signal state and queue per approach, green phase per intersection. Ambulances
+  are listed by start time (signal-relevant only); the default is the first one, not a chosen
+  example. An inspector shows, for one second, the phase and queue per approach of each
+  intersection and the last 30 s of decisions, with each LLM's reason text (or MaxPressure's
+  pressures). The inspected second defaults to the first decision whose prompt lists the
+  selected ambulance. Below: network queue over the hour for both runs.
+* **Results.** Five tabs, each from a results file: signal control (ATT per controller,
+  per-seed paired differences, other metrics, LLM decision statistics), ambulances, model size
+  (labelled exploratory), camera errors (paired change per level, the detection-rate sweep, the
+  post-hoc decomposition) and the detector (mAP50 per class, miss rate by object size). Each tab
+  carries its honesty notes: pre-registration, seeds, exploratory labels, caveats.
+
+## Tests
+
+`tests/test_dashboard.py`:
+
+* **Every number traceable.** Each page is rendered with Streamlit's AppTest. Every number a
+  reader can see (text, KPI cards, tables, widget options, chart labels and hover values) must
+  equal, at its shown precision, a value in one of the files that page read (the data layer
+  records them), or a value the page computed from them through `data.derived()` (e.g. a %
+  difference of two means). No allowlist.
+* **No hardcoded decimals.** Overview and Results are rendered again from a copy of their data
+  in which every float is changed (a factor and offset that depend on its position in the file).
+  A decimal number shown unchanged at the same place would not come from the data.
+* Planting a made-up number in a page ("latency 87.3 ms") makes both tests fail (checked once by
+  hand when the tests were written).
+
+`tests/test_replay.py` checks the replay recorder on short runs made in a temp folder
+(MaxPressure re-run, and an injected fake LLM replayed from its decision log), and that a changed
+metric or a tampered decision log makes it fail.
+
+## Screenshots
+
+`python scripts/screenshot_dashboard.py` starts the app on a free port and saves every page to
+`docs/screenshots/` with Playwright at 1366×768. Chromium needs `libnspr4`, `libnss3` and `libasound2`;
+without root they can be unpacked from the Ubuntu packages into a user folder
+(`apt-get download libnspr4 libnss3 libasound2`, `dpkg -x <deb> ~/.cache/pw-libs/root`) and passed
+with `LD_LIBRARY_PATH=~/.cache/pw-libs/root/usr/lib/x86_64-linux-gnu`.
