@@ -1,7 +1,7 @@
 {
  "provenance": {
   "script": "scripts/make_model_size.py",
-  "git_commit_of_this_summary": "f336509cab9b7511bb5e05c520bcab4394623b72",
+  "git_commit_of_this_summary": "0363c00e905d2f5b8b148b324ccecdea4a2c5745",
   "label": "exploratory, added after the main results"
  },
  "sizes": {
@@ -627,6 +627,14 @@
        "faster": 3,
        "slower": 26
       }
+     },
+     "ambulance_decisions": {
+      "calls": 421,
+      "serving_nearest": 145,
+      "failures": 4,
+      "differs_with_ambulance": 0.8609112709832134,
+      "differs_without_ambulance": 0.8972151360544217,
+      "note": "calls whose prompt shows an approaching ambulance; serving = the applied phase serves the nearest one; differs = over successful calls"
      }
     },
     "llama3.2:3b": {
@@ -698,6 +706,14 @@
        "faster": 5,
        "slower": 24
       }
+     },
+     "ambulance_decisions": {
+      "calls": 358,
+      "serving_nearest": 169,
+      "failures": 0,
+      "differs_with_ambulance": 0.9553072625698324,
+      "differs_without_ambulance": 0.9763553233180927,
+      "note": "calls whose prompt shows an approaching ambulance; serving = the applied phase serves the nearest one; differs = over successful calls"
      }
     },
     "gemma4:e4b": {
@@ -771,6 +787,14 @@
        "faster": 16,
        "slower": 12
       }
+     },
+     "ambulance_decisions": {
+      "calls": 74,
+      "serving_nearest": 69,
+      "failures": 0,
+      "differs_with_ambulance": 0.6756756756756757,
+      "differs_without_ambulance": 0.1955773955773956,
+      "note": "calls whose prompt shows an approaching ambulance; serving = the applied phase serves the nearest one; differs = over successful calls"
      }
     },
     "llama3.1:8b": {
@@ -844,10 +868,97 @@
        "faster": 9,
        "slower": 19
       }
+     },
+     "ambulance_decisions": {
+      "calls": 79,
+      "serving_nearest": 56,
+      "failures": 0,
+      "differs_with_ambulance": 0.3670886075949367,
+      "differs_without_ambulance": 0.3295647258338044,
+      "note": "calls whose prompt shows an approaching ambulance; serving = the applied phase serves the nearest one; differs = over successful calls"
      }
     },
     "nvidia/nemotron-3-ultra-550b-a55b": {
-     "finished_seeds": []
+     "runs": [
+      "outputs/model_size/runs/20261023-170726_indian_2x2_peak_amb_llm_guided_mp_v3_s0",
+      "outputs/model_size/runs/20261023-194651_indian_2x2_peak_amb_llm_guided_mp_v3_s1",
+      "outputs/model_size/runs/20261023-223417_indian_2x2_peak_amb_llm_guided_mp_v3_s2",
+      "outputs/model_size/runs/20261024-011335_indian_2x2_peak_amb_llm_guided_mp_v3_s3",
+      "outputs/model_size/runs/20261024-034327_indian_2x2_peak_amb_llm_guided_mp_v3_s4"
+     ],
+     "timestamps": [
+      "2026-10-23T17:07:26+05:30",
+      "2026-10-23T19:46:51+05:30",
+      "2026-10-23T22:34:17+05:30",
+      "2026-10-24T01:13:35+05:30",
+      "2026-10-24T03:43:27+05:30"
+     ],
+     "served_models": [
+      "nvidia/nemotron-3-ultra-550b-a55b"
+     ],
+     "att_s": [
+      115.24999239930979,
+      0.7151971295694436
+     ],
+     "att_vs_mp": {
+      "mean": -0.003685008233337369,
+      "min": -0.029645238627109133,
+      "max": 0.025107929390031473,
+      "seeds_worse": 2
+     },
+     "queue_mean_per_intersection": [
+      17.815236111111112,
+      0.28969340184367237
+     ],
+     "throughput": [
+      4609.4,
+      69.24088387650752
+     ],
+     "calls": 3691,
+     "failures": 93,
+     "failures_by_type": {
+      "retries_exhausted": 84,
+      "timeout": 9
+     },
+     "fallback_to_mp_rate": 0.025196423733405582,
+     "retries": 5013,
+     "calls_with_retries": 2050,
+     "follows_pressure_rate": 0.9785992217898832,
+     "follows_pressure_per_seed": [
+      0.9860724233983287,
+      0.9547325102880658,
+      0.9739368998628258,
+      0.9872701555869873,
+      0.9916083916083916
+     ],
+     "mp_disagreement_rate": 0.039744302390216785,
+     "wall_time_s_mean": 9462.496,
+     "ambulances": {
+      "n": 29,
+      "finished": 29,
+      "travel_time_mean_s": 83.44827586206897,
+      "stopped_time_mean_s": 16.482758620689655,
+      "vs_maxpressure": {
+       "n_paired": 29,
+       "mean_diff_s": -46.6551724137931,
+       "faster": 28,
+       "slower": 1
+      },
+      "vs_preemption_mp": {
+       "n_paired": 29,
+       "mean_diff_s": 2.2758620689655173,
+       "faster": 14,
+       "slower": 14
+      }
+     },
+     "ambulance_decisions": {
+      "calls": 76,
+      "serving_nearest": 69,
+      "failures": 3,
+      "differs_with_ambulance": 0.7534246575342466,
+      "differs_without_ambulance": 0.0249645390070922,
+      "note": "calls whose prompt shows an approaching ambulance; serving = the applied phase serves the nearest one; differs = over successful calls"
+     }
     }
    }
   }
@@ -946,6 +1057,136 @@
    "wall_time_s": 9024.55,
    "wall_s_per_sim_s": 2.506819444444444,
    "rate_limit_wait_s": 5810.0,
+   "served_models": [
+    "nvidia/nemotron-3-ultra-550b-a55b"
+   ]
+  },
+  {
+   "run": "outputs/model_size/runs/20261023-170726_indian_2x2_peak_amb_llm_guided_mp_v3_s0",
+   "timestamp": "2026-10-23T17:07:26+05:30",
+   "scenario": "indian_2x2_peak_amb",
+   "seed": 0,
+   "steps": 3600,
+   "calls": 733,
+   "calls_with_retries": 415,
+   "retries": 1008,
+   "retries_by_reason": {
+    "429": 990,
+    "500": 1,
+    "502": 1,
+    "503": 16
+   },
+   "failures": 15,
+   "failures_by_type": {
+    "retries_exhausted": 15
+   },
+   "fallback_to_mp_rate": 0.020463847203274217,
+   "wall_time_s": 9600.0,
+   "wall_s_per_sim_s": 2.6666666666666665,
+   "rate_limit_wait_s": 6004.0,
+   "served_models": [
+    "nvidia/nemotron-3-ultra-550b-a55b"
+   ]
+  },
+  {
+   "run": "outputs/model_size/runs/20261023-194651_indian_2x2_peak_amb_llm_guided_mp_v3_s1",
+   "timestamp": "2026-10-23T19:46:51+05:30",
+   "scenario": "indian_2x2_peak_amb",
+   "seed": 1,
+   "steps": 3600,
+   "calls": 749,
+   "calls_with_retries": 425,
+   "retries": 1035,
+   "retries_by_reason": {
+    "429": 1014,
+    "502": 2,
+    "503": 19
+   },
+   "failures": 20,
+   "failures_by_type": {
+    "retries_exhausted": 17,
+    "timeout": 3
+   },
+   "fallback_to_mp_rate": 0.0267022696929239,
+   "wall_time_s": 10187.13,
+   "wall_s_per_sim_s": 2.829758333333333,
+   "rate_limit_wait_s": 6096.0,
+   "served_models": [
+    "nvidia/nemotron-3-ultra-550b-a55b"
+   ]
+  },
+  {
+   "run": "outputs/model_size/runs/20261023-223417_indian_2x2_peak_amb_llm_guided_mp_v3_s2",
+   "timestamp": "2026-10-23T22:34:17+05:30",
+   "scenario": "indian_2x2_peak_amb",
+   "seed": 2,
+   "steps": 3600,
+   "calls": 746,
+   "calls_with_retries": 413,
+   "retries": 987,
+   "retries_by_reason": {
+    "429": 978,
+    "503": 9
+   },
+   "failures": 17,
+   "failures_by_type": {
+    "retries_exhausted": 15,
+    "timeout": 2
+   },
+   "fallback_to_mp_rate": 0.022788203753351208,
+   "wall_time_s": 9536.58,
+   "wall_s_per_sim_s": 2.64905,
+   "rate_limit_wait_s": 5934.0,
+   "served_models": [
+    "nvidia/nemotron-3-ultra-550b-a55b"
+   ]
+  },
+  {
+   "run": "outputs/model_size/runs/20261024-011335_indian_2x2_peak_amb_llm_guided_mp_v3_s3",
+   "timestamp": "2026-10-24T01:13:35+05:30",
+   "scenario": "indian_2x2_peak_amb",
+   "seed": 3,
+   "steps": 3600,
+   "calls": 731,
+   "calls_with_retries": 405,
+   "retries": 994,
+   "retries_by_reason": {
+    "429": 994
+   },
+   "failures": 24,
+   "failures_by_type": {
+    "retries_exhausted": 21,
+    "timeout": 3
+   },
+   "fallback_to_mp_rate": 0.03283173734610123,
+   "wall_time_s": 8983.82,
+   "wall_s_per_sim_s": 2.4955055555555554,
+   "rate_limit_wait_s": 5678.0,
+   "served_models": [
+    "nvidia/nemotron-3-ultra-550b-a55b"
+   ]
+  },
+  {
+   "run": "outputs/model_size/runs/20261024-034327_indian_2x2_peak_amb_llm_guided_mp_v3_s4",
+   "timestamp": "2026-10-24T03:43:27+05:30",
+   "scenario": "indian_2x2_peak_amb",
+   "seed": 4,
+   "steps": 3600,
+   "calls": 732,
+   "calls_with_retries": 392,
+   "retries": 989,
+   "retries_by_reason": {
+    "429": 989
+   },
+   "failures": 17,
+   "failures_by_type": {
+    "retries_exhausted": 16,
+    "timeout": 1
+   },
+   "fallback_to_mp_rate": 0.023224043715846996,
+   "wall_time_s": 9004.95,
+   "wall_s_per_sim_s": 2.5013750000000003,
+   "rate_limit_wait_s": 6444.0,
    "served_models": [
     "nvidia/nemotron-3-ultra-550b-a55b"
    ]

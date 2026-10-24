@@ -166,7 +166,7 @@ listed without numbers.
 | `llama3.2:3b` | 3.2 | 197.8 ± 3.8 | +71.0% (+65.1 to +76.2) | 5 of 5 | 43.63 ± 1.30 | 4% | 98% | 0 of 8013 (0.0%) | 0 | 29 | `llama3.2:3b` |
 | `gemma4:e4b` | 7.5 | 112.9 ± 1.9 | -2.4% (-5.3 to +1.6) | 1 of 5 | 17.11 ± 0.30 | 81% | 20% | 2 of 4146 (0.0%): reason_too_long 2 | – | 65 | `gemma4:e4b` |
 | `llama3.1:8b` | 8 | 115.5 ± 1.8 | -0.1% (-2.6 to +1.2) | 3 of 5 | 17.92 ± 0.58 | 71% | 33% | 2 of 3619 (0.1%): reason_too_long 2 | 0 | 46 | `llama3.1:8b` |
-| `nvidia/nemotron-3-ultra-550b-a55b` | 550 | not finished (0 of 5 seeds) |  |  |  |  |  |  |  |  |  |
+| `nvidia/nemotron-3-ultra-550b-a55b` | 550 | 115.2 ± 0.7 | -0.4% (-3.0 to +2.5) | 2 of 5 | 17.82 ± 0.29 | 98% | 4% | 93 of 3691 (2.5%): retries_exhausted 84, timeout 9 | 5013 | 158 | `nvidia/nemotron-3-ultra-550b-a55b` |
 | MaxPressure (baseline) | – | 115.7 ± 2.3 | +0.0% | – | 17.97 ± 0.86 | – | – | – | – | – | – |
 | MaxPressure + preemption (baseline) | – | 116.0 ± 0.7 | – | – | 18.08 ± 0.41 | – | – | – | – | – | – |
 <!-- END:model_size_full_amb -->
@@ -184,10 +184,26 @@ picks among MaxPressure's top two phases or keeping the current one.
 | `llama3.2:3b` | 29 of 29 | 161.8 | 86.4 | +31.7 s (13 faster, 16 slower, of 29) | +80.6 s (5 faster, 24 slower, of 29) |
 | `gemma4:e4b` | 29 of 29 | 82.2 | 15.3 | -47.9 s (27 faster, 2 slower, of 29) | +1.1 s (16 faster, 12 slower, of 29) |
 | `llama3.1:8b` | 29 of 29 | 97.0 | 29.7 | -33.1 s (23 faster, 6 slower, of 29) | +15.8 s (9 faster, 19 slower, of 29) |
-| `nvidia/nemotron-3-ultra-550b-a55b` | not finished (0 of 5 seeds) |  |  |  |  |
+| `nvidia/nemotron-3-ultra-550b-a55b` | 29 of 29 | 83.4 | 16.5 | -46.7 s (28 faster, 1 slower, of 29) | +2.3 s (14 faster, 14 slower, of 29) |
 | MaxPressure (baseline) | 29 of 29 | 130.1 | 62.3 | +0.0 s (0 faster, 0 slower, of 29) | +48.9 s (1 faster, 28 slower, of 29) |
 | MaxPressure + preemption (baseline) | 29 of 29 | 81.2 | 14.1 | -48.9 s (28 faster, 1 slower, of 29) | +0.0 s (0 faster, 0 slower, of 29) |
 <!-- END:model_size_ambulances -->
+
+**Decisions with an ambulance in view** (emergency scenario, all 5 seeds). These are the calls
+whose prompt shows an approaching ambulance. "Serves the nearest ambulance" means the applied
+phase gives it green; this is a description of the decisions, not a simulator metric. It is
+counted over all such calls, including failed ones, where MaxPressure's choice is applied, as
+in the run summaries.
+
+<!-- BEGIN:model_size_amb_decisions -->
+| Model | Calls with an ambulance in view | Applied phase serves the nearest ambulance | Of these, failed → MaxPressure's choice | Answer differs from MaxPressure: with / without an ambulance in view |
+|---|---|---|---|---|
+| `qwen2.5:3b` | 421 | 145 (34%) | 4 | 86% / 90% |
+| `llama3.2:3b` | 358 | 169 (47%) | 0 | 96% / 98% |
+| `gemma4:e4b` | 74 | 69 (93%) | 0 | 68% / 20% |
+| `llama3.1:8b` | 79 | 56 (71%) | 0 | 37% / 33% |
+| `nvidia/nemotron-3-ultra-550b-a55b` | 76 | 69 (91%) | 3 | 75% / 2% |
+<!-- END:model_size_amb_decisions -->
 
 ## Chart
 
@@ -199,11 +215,42 @@ mixture-of-experts, with 55 B parameters active per token, and the local models 
 quantized. "Size" therefore mixes several things (see the sizes table above). The tables above
 hold the numbers.
 
+## What it shows
+
+Exploratory: one controller setup, 3 seeds (peak) and 5 seeds (emergency, 29 relevant
+ambulances), five models, and no significance test. The numbers are reported as measured.
+
+1. **Below some size, the LLM makes the hybrid controller worse.** With both 3B models, the
+   hybrid is far worse than MaxPressure on every seed of both scenarios. Their answers rarely
+   pick the higher-pressure phase, and the ambulances are slower than under plain
+   MaxPressure. The benchmark showed the same; the full runs make it larger and consistent
+   across seeds.
+2. **From gemma4 e4b upwards, ATT is MaxPressure's, within seed-to-seed noise.** gemma4,
+   llama3.1 8B and Nemotron 3 Ultra are all within a few percent of MaxPressure. The ranges
+   over seeds cross zero, except gemma4 on peak (all 3 seeds slightly better). With 3–5 seeds
+   that is no evidence of a real ATT gain over MaxPressure for any model.
+3. **Pressure-following rises with size, but not strictly by parameter count.** gemma4 e4b
+   (7.5 B total, effectively 4 B) follows pressure more often than llama3.1 8B, and the
+   550 B Nemotron almost always does. Away from ambulances, Nemotron's answers are close to a
+   copy of MaxPressure's. Model family and training matter at least as much as size here.
+4. **The ambulance result is where model size shows most clearly.** gemma4 e4b and Nemotron get
+   the signal-relevant ambulances through about as fast as MaxPressure + preemption (paired
+   differences of 1–2 s, split almost evenly faster/slower). They do it without preempting:
+   when an ambulance is in view they leave MaxPressure's choice and give it green. llama3.1 8B
+   does this less often and ends between MaxPressure and preemption. The 3B models serve the
+   nearest ambulance in under half of such decisions.
+5. **On ATT and ambulance travel time, no larger model beats gemma4 e4b.** Both local options
+   run on this laptop's 4 GB GTX 1650. gemma4 takes about 4.5 s per call; its GPU/CPU split is
+   unknown (step 1). llama3.1 8B runs 55% on the CPU and takes about 3.7 s per call. Nemotron
+   is not local: its prompts leave the machine, and its runs depended on an API that throttled
+   them heavily (next section). The main results in `docs/results.md` are unchanged; this study
+   only adds context.
+
 ## Hosted API reliability (arm B)
 
 The benchmark run (2026-10-22) needed no retries. During the full runs (from 2026-10-23) NVIDIA's
 endpoint throttled the key far below what the probes measured the day before. Many calls got
-HTTP 429 (sometimes 503) several times before being answered, and the server answered only a
+HTTP 429 (a few 500, 502 or 503) several times before being answered, and the server answered only a
 few calls per minute, well below the client's own 30/min limit. Three things follow:
 
 * **Waiting does not change the traffic.** The simulator stands still while a call is in
@@ -222,6 +269,11 @@ few calls per minute, well below the client's own 30/min limit. Three things fol
 | 2026-10-23 10:23 | indian_2x2_peak s0 | 3600 | 736 | 286 (39%) | 718 (429: 714, 503: 4) | 11 (1.5%): retries_exhausted 10, timeout 1 | 121 | 2.02 | 75 | `nvidia/nemotron-3-ultra-550b-a55b` |
 | 2026-10-23 12:22 | indian_2x2_peak s1 | 3600 | 734 | 351 (48%) | 854 (429: 849, 503: 5) | 12 (1.6%): retries_exhausted 11, timeout 1 | 135 | 2.25 | 86 | `nvidia/nemotron-3-ultra-550b-a55b` |
 | 2026-10-23 14:36 | indian_2x2_peak s2 | 3600 | 735 | 417 (57%) | 988 (429: 985, 503: 3) | 16 (2.2%): retries_exhausted 16 | 150 | 2.51 | 97 | `nvidia/nemotron-3-ultra-550b-a55b` |
+| 2026-10-23 17:07 | indian_2x2_peak_amb s0 | 3600 | 733 | 415 (57%) | 1008 (429: 990, 500: 1, 502: 1, 503: 16) | 15 (2.0%): retries_exhausted 15 | 160 | 2.67 | 100 | `nvidia/nemotron-3-ultra-550b-a55b` |
+| 2026-10-23 19:46 | indian_2x2_peak_amb s1 | 3600 | 749 | 425 (57%) | 1035 (429: 1014, 502: 2, 503: 19) | 20 (2.7%): retries_exhausted 17, timeout 3 | 170 | 2.83 | 102 | `nvidia/nemotron-3-ultra-550b-a55b` |
+| 2026-10-23 22:34 | indian_2x2_peak_amb s2 | 3600 | 746 | 413 (55%) | 987 (429: 978, 503: 9) | 17 (2.3%): retries_exhausted 15, timeout 2 | 159 | 2.65 | 99 | `nvidia/nemotron-3-ultra-550b-a55b` |
+| 2026-10-24 01:13 | indian_2x2_peak_amb s3 | 3600 | 731 | 405 (55%) | 994 (429: 994) | 24 (3.3%): retries_exhausted 21, timeout 3 | 150 | 2.50 | 95 | `nvidia/nemotron-3-ultra-550b-a55b` |
+| 2026-10-24 03:43 | indian_2x2_peak_amb s4 | 3600 | 732 | 392 (54%) | 989 (429: 989) | 17 (2.3%): retries_exhausted 16, timeout 1 | 150 | 2.50 | 107 | `nvidia/nemotron-3-ultra-550b-a55b` |
 
-4 of 9 arm B runs finished.
+9 of 9 arm B runs finished.
 <!-- END:model_size_hosted -->

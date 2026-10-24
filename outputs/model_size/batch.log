@@ -6,3 +6,719 @@
 2026-10-22 19:09:20 [1/1] start bench llama3.1:8b indian_2x2_peak seed 0
 2026-10-22 19:17:04 [1/1] done in 484 s: outputs/model_size/runs/20261022-190933_indian_2x2_peak_llm_guided_mp_v3_s0 (127 calls, 0 failures, 0 retries, p95 4.48 s, served ['llama3.1:8b'])
 2026-10-22 19:17:04 All 1 selected runs are complete
+2026-10-22 19:34:42 24 runs selected, 0 done, 24 to do; estimated 14.5 h left
+2026-10-22 19:34:46 [1/24] start full qwen2.5:3b indian_2x2_peak seed 0
+2026-10-22 19:35:08 LLM failure #1 (reason_too_long) at t=45 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 19:35:27 LLM failure #2 (reason_too_long) at t=75 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 19:35:36 LLM failure #3 (reason_too_long) at t=95 intersection_1_2: reason has 19 words (max 15)
+2026-10-22 19:35:43 LLM failure #4 (reason_too_long) at t=115 intersection_1_1: reason has 17 words (max 15)
+2026-10-22 19:35:45 LLM failure #5 (reason_too_long) at t=120 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 19:35:46 LLM failure #6 (reason_too_long) at t=125 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 19:36:20 LLM failure #7 (reason_too_long) at t=185 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 19:36:34 LLM failure #8 (reason_too_long) at t=215 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 19:36:40 LLM failure #9 (reason_too_long) at t=220 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 19:36:46 LLM failure #10 (reason_too_long) at t=235 intersection_2_1: reason has 22 words (max 15)
+2026-10-22 19:36:48 LLM failure #11 (reason_too_long) at t=240 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 19:36:49 LLM failure #12 (reason_too_long) at t=245 intersection_1_1: reason has 17 words (max 15)
+2026-10-22 19:37:02 LLM failure #13 (reason_too_long) at t=275 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 19:37:08 LLM failure #14 (reason_too_long) at t=280 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 19:37:19 LLM failure #15 (reason_too_long) at t=300 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 19:37:39 LLM failure #16 (reason_too_long) at t=335 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 19:37:51 LLM failure #17 (reason_too_long) at t=360 intersection_1_2: reason has 19 words (max 15)
+2026-10-22 19:38:06 LLM failure #18 (reason_too_long) at t=390 intersection_1_1: reason has 17 words (max 15)
+2026-10-22 19:39:03 LLM failure #19 (reason_too_long) at t=495 intersection_1_1: reason has 17 words (max 15)
+2026-10-22 19:39:07 LLM failure #20 (reason_too_long) at t=500 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 19:39:16 LLM failure #21 (reason_too_long) at t=515 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 19:41:03 LLM failure #22 (reason_too_long) at t=700 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 19:41:09 LLM failure #23 (reason_too_long) at t=720 intersection_2_2: reason has 19 words (max 15)
+2026-10-22 19:41:52 LLM failure #24 (reason_too_long) at t=805 intersection_2_1: reason has 19 words (max 15)
+2026-10-22 19:41:53 LLM failure #25 (reason_too_long) at t=805 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 19:42:22 LLM failure #26 (reason_too_long) at t=855 intersection_1_2: reason has 18 words (max 15)
+2026-10-22 19:42:25 LLM failure #27 (reason_too_long) at t=860 intersection_2_2: reason has 20 words (max 15)
+2026-10-22 19:42:31 LLM failure #28 (reason_too_long) at t=880 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 19:42:32 LLM failure #29 (reason_too_long) at t=880 intersection_2_2: reason has 18 words (max 15)
+2026-10-22 19:42:37 LLM failure #30 (reason_too_long) at t=895 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 19:43:08 LLM failure #31 (reason_too_long) at t=945 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 19:43:22 LLM failure #32 (reason_too_long) at t=980 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 19:43:35 LLM failure #33 (reason_too_long) at t=1000 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 19:44:23 LLM failure #34 (reason_too_long) at t=1085 intersection_2_2: reason has 17 words (max 15)
+2026-10-22 19:44:29 LLM failure #35 (reason_too_long) at t=1100 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 19:44:51 LLM failure #36 (reason_too_long) at t=1145 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 19:45:09 LLM failure #37 (reason_too_long) at t=1170 intersection_2_2: reason has 17 words (max 15)
+2026-10-22 19:45:15 LLM failure #38 (reason_too_long) at t=1185 intersection_1_1: reason has 20 words (max 15)
+2026-10-22 19:45:35 LLM failure #39 (reason_too_long) at t=1220 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 19:45:44 LLM failure #40 (reason_too_long) at t=1235 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 19:45:49 LLM failure #41 (reason_too_long) at t=1245 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 19:46:11 LLM failure #42 (reason_too_long) at t=1280 intersection_1_2: reason has 18 words (max 15)
+2026-10-22 19:46:24 LLM failure #43 (reason_too_long) at t=1310 intersection_1_2: reason has 18 words (max 15)
+2026-10-22 19:46:26 LLM failure #44 (reason_too_long) at t=1325 intersection_2_2: reason has 18 words (max 15)
+2026-10-22 19:47:08 LLM failure #45 (reason_too_long) at t=1390 intersection_1_1: reason has 18 words (max 15)
+2026-10-22 19:47:12 LLM failure #46 (reason_too_long) at t=1405 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 19:47:15 LLM failure #47 (reason_too_long) at t=1410 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 19:47:37 LLM failure #48 (reason_too_long) at t=1450 intersection_1_1: reason has 18 words (max 15)
+2026-10-22 19:47:42 LLM failure #49 (reason_too_long) at t=1455 intersection_1_2: reason has 18 words (max 15)
+2026-10-22 19:48:21 LLM failure #50 (reason_too_long) at t=1515 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 19:48:29 LLM failure #51 (reason_too_long) at t=1540 intersection_2_1: reason has 18 words (max 15)
+2026-10-22 19:48:35 LLM failure #52 (reason_too_long) at t=1550 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 19:48:52 LLM failure #53 (reason_too_long) at t=1580 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 19:49:18 LLM failure #54 (reason_too_long) at t=1630 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 19:49:23 LLM failure #55 (reason_too_long) at t=1640 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 19:50:12 LLM failure #56 (reason_too_long) at t=1725 intersection_1_1: reason has 18 words (max 15)
+2026-10-22 19:50:14 LLM failure #57 (reason_too_long) at t=1730 intersection_1_2: reason has 18 words (max 15)
+2026-10-22 19:50:28 LLM failure #58 (reason_too_long) at t=1760 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 19:50:30 LLM failure #59 (reason_too_long) at t=1765 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 19:50:38 LLM failure #60 (reason_too_long) at t=1785 intersection_1_1: reason has 18 words (max 15)
+2026-10-22 19:50:46 LLM failure #61 (reason_too_long) at t=1795 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 19:50:52 LLM failure #62 (reason_too_long) at t=1810 intersection_1_1: reason has 17 words (max 15)
+2026-10-22 19:51:00 LLM failure #63 (reason_too_long) at t=1825 intersection_1_2: reason has 18 words (max 15)
+2026-10-22 19:51:18 LLM failure #64 (reason_too_long) at t=1855 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 19:51:22 LLM failure #65 (reason_too_long) at t=1860 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 19:52:15 LLM failure #66 (reason_too_long) at t=1940 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 19:52:26 LLM failure #67 (reason_too_long) at t=1965 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 19:52:54 LLM failure #68 (reason_too_long) at t=2020 intersection_1_1: reason has 17 words (max 15)
+2026-10-22 19:53:51 LLM failure #69 (reason_too_long) at t=2115 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 19:53:54 LLM failure #70 (reason_too_long) at t=2125 intersection_1_1: reason has 19 words (max 15)
+2026-10-22 19:54:04 LLM failure #71 (reason_too_long) at t=2145 intersection_1_1: reason has 18 words (max 15)
+2026-10-22 19:54:44 LLM failure #72 (reason_too_long) at t=2210 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 19:55:00 LLM failure #73 (reason_too_long) at t=2235 intersection_2_2: reason has 20 words (max 15)
+2026-10-22 19:55:03 LLM failure #74 (reason_too_long) at t=2240 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 19:55:10 LLM failure #75 (reason_too_long) at t=2255 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 19:55:47 LLM failure #76 (reason_too_long) at t=2325 intersection_2_1: reason has 18 words (max 15)
+2026-10-22 19:55:52 LLM failure #77 (reason_too_long) at t=2345 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 19:56:01 LLM failure #78 (reason_too_long) at t=2370 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 19:56:22 LLM failure #79 (reason_too_long) at t=2395 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 19:56:29 LLM failure #80 (reason_too_long) at t=2415 intersection_1_1: reason has 18 words (max 15)
+2026-10-22 19:56:46 LLM failure #81 (reason_too_long) at t=2450 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 19:57:10 LLM failure #82 (reason_too_long) at t=2500 intersection_2_1: reason has 18 words (max 15)
+2026-10-22 19:58:14 LLM failure #83 (reason_too_long) at t=2615 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 19:58:19 LLM failure #84 (reason_too_long) at t=2620 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 19:58:28 LLM failure #85 (reason_too_long) at t=2645 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 19:58:57 LLM failure #86 (reason_too_long) at t=2680 intersection_2_2: reason has 19 words (max 15)
+2026-10-22 19:59:09 LLM failure #87 (reason_too_long) at t=2705 intersection_1_1: reason has 18 words (max 15)
+2026-10-22 19:59:30 LLM failure #88 (reason_too_long) at t=2735 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 19:59:55 LLM failure #89 (reason_too_long) at t=2790 intersection_1_1: reason has 18 words (max 15)
+2026-10-22 20:00:48 LLM failure #90 (reason_too_long) at t=2875 intersection_1_2: reason has 18 words (max 15)
+2026-10-22 20:00:51 LLM failure #91 (reason_too_long) at t=2880 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 20:00:58 LLM failure #92 (reason_too_long) at t=2900 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 20:01:21 LLM failure #93 (reason_too_long) at t=2940 intersection_1_1: reason has 17 words (max 15)
+2026-10-22 20:01:27 LLM failure #94 (reason_too_long) at t=2955 intersection_2_1: reason has 19 words (max 15)
+2026-10-22 20:02:11 LLM failure #95 (reason_too_long) at t=3035 intersection_2_1: reason has 18 words (max 15)
+2026-10-22 20:02:37 LLM failure #96 (reason_too_long) at t=3085 intersection_1_1: reason has 17 words (max 15)
+2026-10-22 20:03:28 LLM failure #97 (reason_too_long) at t=3170 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 20:03:36 LLM failure #98 (reason_too_long) at t=3190 intersection_1_1: reason has 17 words (max 15)
+2026-10-22 20:03:52 LLM failure #99 (reason_too_long) at t=3220 intersection_1_2: reason has 21 words (max 15)
+2026-10-22 20:03:56 LLM failure #100 (reason_too_long) at t=3230 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 20:04:11 LLM failure #101 (reason_too_long) at t=3255 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 20:04:48 LLM failure #102 (reason_too_long) at t=3320 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 20:05:36 LLM failure #103 (reason_too_long) at t=3400 intersection_1_2: reason has 19 words (max 15)
+2026-10-22 20:06:02 LLM failure #104 (reason_too_long) at t=3460 intersection_1_2: reason has 19 words (max 15)
+2026-10-22 20:06:39 LLM failure #105 (reason_too_long) at t=3515 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 20:07:08 LLM failure #106 (reason_too_long) at t=3560 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 20:07:13 LLM failure #107 (reason_too_long) at t=3565 intersection_2_2: reason has 17 words (max 15)
+2026-10-22 20:07:18 LLM failure #108 (reason_too_long) at t=3580 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 20:07:24 LLM failure #109 (reason_too_long) at t=3595 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 20:07:25 [1/24] done in 2033 s: outputs/model_size/runs/20261022-193451_indian_2x2_peak_llm_guided_mp_v3_s0 (1728 calls, 109 failures, 0 retries, p95 1.34 s, served ['qwen2.5:3b'])
+2026-10-22 20:07:25 [2/24] start full qwen2.5:3b indian_2x2_peak seed 1
+2026-10-22 20:08:08 LLM failure #1 (reason_too_long) at t=85 intersection_2_1: reason has 18 words (max 15)
+2026-10-22 20:08:19 LLM failure #2 (reason_too_long) at t=105 intersection_1_2: reason has 19 words (max 15)
+2026-10-22 20:08:42 LLM failure #3 (reason_too_long) at t=145 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 20:08:45 LLM failure #4 (reason_too_long) at t=150 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 20:08:53 LLM failure #5 (reason_too_long) at t=170 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 20:09:16 LLM failure #6 (reason_too_long) at t=220 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 20:09:33 LLM failure #7 (reason_too_long) at t=260 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 20:09:39 LLM failure #8 (reason_too_long) at t=275 intersection_2_2: reason has 21 words (max 15)
+2026-10-22 20:09:54 LLM failure #9 (reason_too_long) at t=300 intersection_1_2: reason has 18 words (max 15)
+2026-10-22 20:10:08 LLM failure #10 (reason_too_long) at t=325 intersection_2_2: reason has 19 words (max 15)
+2026-10-22 20:10:09 LLM failure #11 (reason_too_long) at t=330 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 20:10:32 LLM failure #12 (reason_too_long) at t=365 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 20:10:44 LLM failure #13 (reason_too_long) at t=390 intersection_1_1: reason has 20 words (max 15)
+2026-10-22 20:10:53 LLM failure #14 (reason_too_long) at t=410 intersection_1_2: reason has 19 words (max 15)
+2026-10-22 20:11:53 LLM failure #15 (reason_too_long) at t=510 intersection_1_2: reason has 18 words (max 15)
+2026-10-22 20:12:59 LLM failure #16 (reason_too_long) at t=640 intersection_2_1: reason has 18 words (max 15)
+2026-10-22 20:13:17 LLM failure #17 (reason_too_long) at t=670 intersection_1_1: reason has 18 words (max 15)
+2026-10-22 20:13:56 LLM failure #18 (reason_too_long) at t=740 intersection_1_1: reason has 18 words (max 15)
+2026-10-22 20:14:30 LLM failure #19 (reason_too_long) at t=810 intersection_1_1: reason has 18 words (max 15)
+2026-10-22 20:14:41 LLM failure #20 (reason_too_long) at t=830 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 20:14:56 LLM failure #21 (reason_too_long) at t=850 intersection_2_1: reason has 19 words (max 15)
+2026-10-22 20:15:12 LLM failure #22 (reason_too_long) at t=885 intersection_2_1: reason has 19 words (max 15)
+2026-10-22 20:15:37 LLM failure #23 (reason_too_long) at t=930 intersection_1_2: reason has 19 words (max 15)
+2026-10-22 20:16:15 LLM failure #24 (reason_too_long) at t=1000 intersection_2_2: reason has 17 words (max 15)
+2026-10-22 20:16:17 LLM failure #25 (reason_too_long) at t=1005 intersection_1_1: reason has 18 words (max 15)
+2026-10-22 20:17:05 LLM failure #26 (reason_too_long) at t=1095 intersection_2_2: reason has 19 words (max 15)
+2026-10-22 20:17:09 LLM failure #27 (reason_too_long) at t=1100 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 20:17:15 LLM failure #28 (reason_too_long) at t=1120 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 20:17:46 LLM failure #29 (reason_too_long) at t=1170 intersection_1_2: reason has 20 words (max 15)
+2026-10-22 20:17:47 LLM failure #30 (reason_too_long) at t=1175 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 20:18:18 LLM failure #31 (reason_too_long) at t=1235 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 20:18:21 LLM failure #32 (reason_too_long) at t=1240 intersection_1_1: reason has 17 words (max 15)
+2026-10-22 20:18:26 LLM failure #33 (reason_too_long) at t=1250 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 20:18:44 LLM failure #34 (reason_too_long) at t=1280 intersection_2_2: reason has 21 words (max 15)
+2026-10-22 20:18:55 LLM failure #35 (reason_too_long) at t=1300 intersection_2_2: reason has 17 words (max 15)
+2026-10-22 20:19:04 LLM failure #36 (reason_too_long) at t=1320 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 20:20:04 LLM failure #37 (reason_too_long) at t=1430 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 20:20:33 LLM failure #38 (reason_too_long) at t=1485 intersection_2_2: reason has 18 words (max 15)
+2026-10-22 20:21:02 LLM failure #39 (reason_too_long) at t=1530 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 20:21:09 LLM failure #40 (reason_too_long) at t=1540 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 20:21:14 LLM failure #41 (reason_too_long) at t=1560 intersection_1_2: reason has 20 words (max 15)
+2026-10-22 20:21:36 LLM failure #42 (reason_too_long) at t=1595 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 20:22:29 LLM failure #43 (reason_too_long) at t=1685 intersection_1_2: reason has 21 words (max 15)
+2026-10-22 20:22:46 LLM failure #44 (reason_too_long) at t=1720 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 20:23:29 LLM failure #45 (reason_too_long) at t=1785 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 20:24:09 LLM failure #46 (reason_too_long) at t=1860 intersection_1_2: reason has 23 words (max 15)
+2026-10-22 20:25:00 LLM failure #47 (reason_too_long) at t=1965 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 20:25:56 LLM failure #48 (reason_too_long) at t=2065 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 20:26:04 LLM failure #49 (reason_too_long) at t=2085 intersection_1_1: reason has 19 words (max 15)
+2026-10-22 20:26:09 LLM failure #50 (reason_too_long) at t=2095 intersection_2_1: reason has 18 words (max 15)
+2026-10-22 20:26:25 LLM failure #51 (reason_too_long) at t=2130 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 20:26:43 LLM failure #52 (reason_too_long) at t=2155 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 20:26:51 LLM failure #53 (reason_too_long) at t=2165 intersection_2_2: reason has 23 words (max 15)
+2026-10-22 20:27:21 LLM failure #54 (reason_too_long) at t=2225 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 20:27:23 LLM failure #55 (reason_too_long) at t=2230 intersection_1_1: reason has 17 words (max 15)
+2026-10-22 20:27:39 LLM failure #56 (reason_too_long) at t=2270 intersection_1_1: reason has 18 words (max 15)
+2026-10-22 20:27:45 LLM failure #57 (reason_too_long) at t=2285 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 20:27:48 LLM failure #58 (reason_too_long) at t=2290 intersection_1_2: reason has 19 words (max 15)
+2026-10-22 20:28:06 LLM failure #59 (reason_too_long) at t=2330 intersection_2_1: reason has 18 words (max 15)
+2026-10-22 20:28:26 LLM failure #60 (reason_too_long) at t=2360 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 20:28:35 LLM failure #61 (reason_too_long) at t=2380 intersection_2_2: reason has 17 words (max 15)
+2026-10-22 20:28:44 LLM failure #62 (reason_too_long) at t=2400 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 20:29:21 LLM failure #63 (reason_too_long) at t=2455 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 20:29:39 LLM failure #64 (reason_too_long) at t=2500 intersection_1_1: reason has 19 words (max 15)
+2026-10-22 20:29:48 LLM failure #65 (reason_too_long) at t=2520 intersection_1_1: reason has 17 words (max 15)
+2026-10-22 20:30:00 LLM failure #66 (reason_too_long) at t=2535 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 20:30:15 LLM failure #67 (reason_too_long) at t=2575 intersection_1_2: reason has 18 words (max 15)
+2026-10-22 20:30:20 LLM failure #68 (reason_too_long) at t=2585 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 20:30:34 LLM failure #69 (reason_too_long) at t=2615 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 20:30:41 LLM failure #70 (reason_too_long) at t=2630 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 20:31:06 LLM failure #71 (reason_too_long) at t=2670 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 20:31:16 LLM failure #72 (reason_too_long) at t=2695 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 20:31:27 LLM failure #73 (reason_too_long) at t=2725 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 20:31:32 LLM failure #74 (reason_too_long) at t=2735 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 20:31:41 LLM failure #75 (reason_too_long) at t=2755 intersection_1_2: reason has 18 words (max 15)
+2026-10-22 20:32:01 LLM failure #76 (reason_too_long) at t=2790 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 20:32:19 LLM failure #77 (reason_too_long) at t=2820 intersection_1_1: reason has 21 words (max 15)
+2026-10-22 20:32:26 LLM failure #78 (reason_too_long) at t=2835 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 20:32:28 LLM failure #79 (reason_too_long) at t=2840 intersection_1_1: reason has 17 words (max 15)
+2026-10-22 20:32:32 LLM failure #80 (reason_too_long) at t=2850 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 20:33:06 LLM failure #81 (reason_too_long) at t=2900 intersection_1_1: reason has 18 words (max 15)
+2026-10-22 20:33:11 LLM failure #82 (reason_too_long) at t=2910 intersection_1_2: reason has 18 words (max 15)
+2026-10-22 20:33:35 LLM failure #83 (reason_too_long) at t=2945 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 20:33:42 LLM failure #84 (reason_too_long) at t=2960 intersection_1_1: reason has 18 words (max 15)
+2026-10-22 20:34:01 LLM failure #85 (reason_too_long) at t=2990 intersection_2_2: reason has 18 words (max 15)
+2026-10-22 20:34:06 LLM failure #86 (reason_too_long) at t=3005 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 20:34:49 LLM failure #87 (reason_too_long) at t=3075 intersection_1_2: reason has 18 words (max 15)
+2026-10-22 20:35:00 LLM failure #88 (reason_too_long) at t=3100 intersection_1_1: reason has 18 words (max 15)
+2026-10-22 20:35:20 LLM failure #89 (reason_too_long) at t=3125 intersection_2_1: reason has 19 words (max 15)
+2026-10-22 20:36:00 LLM failure #90 (reason_too_long) at t=3190 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 20:36:11 LLM failure #91 (reason_too_long) at t=3220 intersection_1_1: reason has 18 words (max 15)
+2026-10-22 20:36:28 LLM failure #92 (reason_too_long) at t=3245 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 20:36:54 LLM failure #93 (reason_too_long) at t=3290 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 20:37:04 LLM failure #94 (reason_too_long) at t=3310 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 20:37:25 LLM failure #95 (reason_too_long) at t=3345 intersection_2_1: reason has 18 words (max 15)
+2026-10-22 20:37:40 LLM failure #96 (reason_too_long) at t=3370 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 20:37:52 LLM failure #97 (reason_too_long) at t=3395 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 20:37:56 LLM failure #98 (reason_too_long) at t=3405 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 20:38:10 LLM failure #99 (reason_too_long) at t=3425 intersection_2_2: reason has 17 words (max 15)
+2026-10-22 20:38:16 LLM failure #100 (reason_too_long) at t=3435 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 20:38:49 LLM failure #101 (reason_too_long) at t=3490 intersection_1_2: reason has 18 words (max 15)
+2026-10-22 20:38:57 LLM failure #102 (reason_too_long) at t=3505 intersection_2_2: reason has 19 words (max 15)
+2026-10-22 20:39:02 LLM failure #103 (reason_too_long) at t=3520 intersection_1_1: reason has 17 words (max 15)
+2026-10-22 20:39:05 LLM failure #104 (reason_too_long) at t=3530 intersection_2_1: reason has 19 words (max 15)
+2026-10-22 20:39:14 LLM failure #105 (reason_too_long) at t=3550 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 20:39:40 LLM failure #106 (reason_too_long) at t=3590 intersection_2_1: reason has 18 words (max 15)
+2026-10-22 20:39:43 [2/24] done in 1993 s: outputs/model_size/runs/20261022-200725_indian_2x2_peak_llm_guided_mp_v3_s1 (1733 calls, 106 failures, 0 retries, p95 1.32 s, served ['qwen2.5:3b'])
+2026-10-22 20:39:43 [3/24] start full qwen2.5:3b indian_2x2_peak seed 2
+2026-10-22 20:40:13 LLM failure #1 (reason_too_long) at t=65 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 20:40:39 LLM failure #2 (reason_too_long) at t=105 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 20:40:40 LLM failure #3 (reason_too_long) at t=110 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 20:40:56 LLM failure #4 (reason_too_long) at t=145 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 20:41:10 LLM failure #5 (reason_too_long) at t=165 intersection_1_2: reason has 18 words (max 15)
+2026-10-22 20:42:10 LLM failure #6 (reason_too_long) at t=280 intersection_2_1: reason has 18 words (max 15)
+2026-10-22 20:42:39 LLM failure #7 (reason_too_long) at t=340 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 20:42:42 LLM failure #8 (reason_too_long) at t=345 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 20:42:47 LLM failure #9 (reason_too_long) at t=365 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 20:43:04 LLM failure #10 (reason_too_long) at t=395 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 20:43:16 LLM failure #11 (reason_too_long) at t=415 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 20:43:29 LLM failure #12 (reason_too_long) at t=445 intersection_1_1: reason has 18 words (max 15)
+2026-10-22 20:44:15 LLM failure #13 (reason_too_long) at t=525 intersection_1_1: reason has 17 words (max 15)
+2026-10-22 20:44:39 LLM failure #14 (reason_too_long) at t=560 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 20:44:43 LLM failure #15 (reason_too_long) at t=570 intersection_1_1: reason has 17 words (max 15)
+2026-10-22 20:44:48 LLM failure #16 (reason_too_long) at t=580 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 20:45:01 LLM failure #17 (reason_too_long) at t=615 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 20:45:33 LLM failure #18 (reason_too_long) at t=665 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 20:45:44 LLM failure #19 (reason_too_long) at t=685 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 20:45:50 LLM failure #20 (reason_too_long) at t=690 intersection_2_2: reason has 17 words (max 15)
+2026-10-22 20:46:21 LLM failure #21 (reason_too_long) at t=750 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 20:46:42 LLM failure #22 (reason_too_long) at t=795 intersection_1_1: reason has 19 words (max 15)
+2026-10-22 20:47:18 LLM failure #23 (reason_too_long) at t=855 intersection_1_1: reason has 18 words (max 15)
+2026-10-22 20:47:27 LLM failure #24 (reason_too_long) at t=870 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 20:47:40 LLM failure #25 (reason_too_long) at t=910 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 20:47:44 LLM failure #26 (reason_too_long) at t=925 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 20:48:58 LLM failure #27 (reason_too_long) at t=1050 intersection_2_1: reason has 20 words (max 15)
+2026-10-22 20:49:00 LLM failure #28 (reason_too_long) at t=1050 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 20:49:22 LLM failure #29 (reason_too_long) at t=1105 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 20:49:33 LLM failure #30 (reason_too_long) at t=1125 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 20:49:39 LLM failure #31 (reason_too_long) at t=1135 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 20:49:54 LLM failure #32 (reason_too_long) at t=1160 intersection_1_2: reason has 18 words (max 15)
+2026-10-22 20:50:32 LLM failure #33 (reason_too_long) at t=1225 intersection_2_2: reason has 19 words (max 15)
+2026-10-22 20:50:56 LLM failure #34 (reason_too_long) at t=1270 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 20:50:58 LLM failure #35 (reason_too_long) at t=1275 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 20:50:59 LLM failure #36 (reason_too_long) at t=1280 intersection_2_2: reason has 17 words (max 15)
+2026-10-22 20:51:25 LLM failure #37 (reason_too_long) at t=1325 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 20:51:34 LLM failure #38 (reason_too_long) at t=1345 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 20:51:45 LLM failure #39 (reason_too_long) at t=1370 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 20:51:46 LLM failure #40 (reason_too_long) at t=1370 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 20:51:53 LLM failure #41 (reason_too_long) at t=1390 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 20:52:09 LLM failure #42 (reason_too_long) at t=1415 intersection_1_2: reason has 19 words (max 15)
+2026-10-22 20:52:17 LLM failure #43 (reason_too_long) at t=1435 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 20:52:25 LLM failure #44 (reason_too_long) at t=1450 intersection_1_1: reason has 18 words (max 15)
+2026-10-22 20:53:29 LLM failure #45 (reason_too_long) at t=1575 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 20:53:51 LLM failure #46 (reason_too_long) at t=1615 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 20:54:07 LLM failure #47 (reason_too_long) at t=1655 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 20:54:09 LLM failure #48 (reason_too_long) at t=1655 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 20:54:46 LLM failure #49 (reason_too_long) at t=1710 intersection_2_2: reason has 17 words (max 15)
+2026-10-22 20:55:17 LLM failure #50 (reason_too_long) at t=1780 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 20:55:36 LLM failure #51 (reason_too_long) at t=1805 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 20:55:38 LLM failure #52 (reason_too_long) at t=1805 intersection_2_2: reason has 17 words (max 15)
+2026-10-22 20:56:33 LLM failure #53 (reason_too_long) at t=1905 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 20:56:38 LLM failure #54 (reason_too_long) at t=1920 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 20:56:59 LLM failure #55 (reason_too_long) at t=1960 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 20:57:08 LLM failure #56 (reason_too_long) at t=1970 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 20:57:27 LLM failure #57 (reason_too_long) at t=2010 intersection_1_1: reason has 17 words (max 15)
+2026-10-22 20:57:33 LLM failure #58 (reason_too_long) at t=2020 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 20:57:56 LLM failure #59 (reason_too_long) at t=2060 intersection_1_1: reason has 20 words (max 15)
+2026-10-22 20:58:06 LLM failure #60 (reason_too_long) at t=2080 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 20:58:08 LLM failure #61 (reason_too_long) at t=2080 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 20:58:41 LLM failure #62 (reason_too_long) at t=2140 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 20:58:52 LLM failure #63 (reason_too_long) at t=2165 intersection_2_1: reason has 20 words (max 15)
+2026-10-22 20:59:33 LLM failure #64 (reason_too_long) at t=2230 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 21:00:07 LLM failure #65 (reason_too_long) at t=2290 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 21:00:42 LLM failure #66 (reason_too_long) at t=2350 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 21:01:05 LLM failure #67 (reason_too_long) at t=2385 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 21:01:18 LLM failure #68 (reason_too_long) at t=2405 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 21:01:59 LLM failure #69 (reason_too_long) at t=2480 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 21:02:07 LLM failure #70 (reason_too_long) at t=2500 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 21:02:08 LLM failure #71 (reason_too_long) at t=2500 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 21:02:31 LLM failure #72 (reason_too_long) at t=2535 intersection_2_2: reason has 17 words (max 15)
+2026-10-22 21:02:35 LLM failure #73 (reason_too_long) at t=2545 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 21:03:20 LLM failure #74 (reason_too_long) at t=2620 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 21:03:46 LLM failure #75 (reason_too_long) at t=2670 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 21:03:47 LLM failure #76 (reason_too_long) at t=2670 intersection_1_2: reason has 18 words (max 15)
+2026-10-22 21:05:01 LLM failure #77 (reason_too_long) at t=2805 intersection_1_1: reason has 23 words (max 15)
+2026-10-22 21:05:23 LLM failure #78 (reason_too_long) at t=2840 intersection_2_2: reason has 18 words (max 15)
+2026-10-22 21:06:06 LLM failure #79 (reason_too_long) at t=2920 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 21:06:37 LLM failure #80 (reason_too_long) at t=2975 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 21:07:02 LLM failure #81 (reason_too_long) at t=3015 intersection_2_2: reason has 19 words (max 15)
+2026-10-22 21:07:06 LLM failure #82 (reason_too_long) at t=3025 intersection_1_1: reason has 17 words (max 15)
+2026-10-22 21:07:27 LLM failure #83 (reason_too_long) at t=3065 intersection_2_2: reason has 18 words (max 15)
+2026-10-22 21:08:16 LLM failure #84 (reason_too_long) at t=3150 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 21:08:42 LLM failure #85 (reason_too_long) at t=3190 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 21:09:04 LLM failure #86 (reason_too_long) at t=3225 intersection_1_2: reason has 18 words (max 15)
+2026-10-22 21:10:09 LLM failure #87 (reason_too_long) at t=3355 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 21:10:36 LLM failure #88 (reason_too_long) at t=3390 intersection_2_2: reason has 19 words (max 15)
+2026-10-22 21:10:53 LLM failure #89 (reason_too_long) at t=3425 intersection_1_2: reason has 18 words (max 15)
+2026-10-22 21:11:16 LLM failure #90 (reason_too_long) at t=3465 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 21:11:52 LLM failure #91 (reason_too_long) at t=3525 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 21:12:02 LLM failure #92 (reason_too_long) at t=3545 intersection_2_1: reason has 21 words (max 15)
+2026-10-22 21:12:30 LLM failure #93 (reason_too_long) at t=3595 intersection_1_2: reason has 21 words (max 15)
+2026-10-22 21:12:30 [3/24] done in 1981 s: outputs/model_size/runs/20261022-203944_indian_2x2_peak_llm_guided_mp_v3_s2 (1768 calls, 93 failures, 0 retries, p95 1.27 s, served ['qwen2.5:3b'])
+2026-10-22 21:12:30 [4/24] start full qwen2.5:3b indian_2x2_peak_amb seed 0
+2026-10-22 21:12:44 LLM failure #1 (reason_too_long) at t=30 intersection_2_2: reason has 19 words (max 15)
+2026-10-22 21:13:47 LLM failure #2 (reason_too_long) at t=130 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 21:14:07 LLM failure #3 (reason_too_long) at t=155 intersection_1_2: reason has 19 words (max 15)
+2026-10-22 21:16:27 LLM failure #4 (reason_too_long) at t=370 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 21:16:39 LLM failure #5 (reason_too_long) at t=385 intersection_2_2: reason has 17 words (max 15)
+2026-10-22 21:17:52 LLM failure #6 (reason_too_long) at t=495 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 21:18:10 LLM failure #7 (reason_too_long) at t=525 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 21:18:38 LLM failure #8 (reason_too_long) at t=560 intersection_2_2: reason has 17 words (max 15)
+2026-10-22 21:19:23 LLM failure #9 (reason_too_long) at t=625 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 21:19:26 LLM failure #10 (reason_too_long) at t=635 intersection_1_2: reason has 20 words (max 15)
+2026-10-22 21:20:18 LLM failure #11 (reason_too_long) at t=715 intersection_1_1: reason has 18 words (max 15)
+2026-10-22 21:21:34 LLM failure #12 (reason_too_long) at t=820 intersection_1_1: reason has 18 words (max 15)
+2026-10-22 21:21:42 LLM failure #13 (reason_too_long) at t=835 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 21:22:06 LLM failure #14 (reason_too_long) at t=870 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 21:23:23 LLM failure #15 (reason_too_long) at t=980 intersection_1_2: reason has 21 words (max 15)
+2026-10-22 21:24:12 LLM failure #16 (reason_too_long) at t=1060 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 21:25:16 LLM failure #17 (reason_too_long) at t=1155 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 21:25:31 LLM failure #18 (reason_too_long) at t=1180 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 21:25:38 LLM failure #19 (reason_too_long) at t=1190 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 21:27:16 LLM failure #20 (reason_too_long) at t=1325 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 21:27:50 LLM failure #21 (reason_too_long) at t=1380 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 21:27:52 LLM failure #22 (reason_too_long) at t=1380 intersection_1_2: reason has 18 words (max 15)
+2026-10-22 21:27:57 LLM failure #23 (reason_too_long) at t=1400 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 21:29:20 LLM failure #24 (reason_too_long) at t=1520 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 21:29:23 LLM failure #25 (reason_too_long) at t=1520 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 21:30:10 LLM failure #26 (reason_too_long) at t=1595 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 21:30:20 LLM failure #27 (reason_too_long) at t=1615 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 21:30:35 LLM failure #28 (reason_too_long) at t=1640 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 21:32:28 LLM failure #29 (reason_too_long) at t=1800 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 21:33:06 LLM failure #30 (reason_too_long) at t=1850 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 21:33:24 LLM failure #31 (reason_too_long) at t=1880 intersection_2_2: reason has 19 words (max 15)
+2026-10-22 21:34:03 LLM failure #32 (reason_too_long) at t=1940 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 21:35:51 LLM failure #33 (reason_too_long) at t=2095 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 21:36:29 LLM failure #34 (reason_too_long) at t=2150 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 21:38:02 LLM failure #35 (reason_too_long) at t=2290 intersection_1_1: reason has 17 words (max 15)
+2026-10-22 21:40:36 LLM failure #36 (reason_too_long) at t=2500 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 21:41:06 LLM failure #37 (reason_too_long) at t=2545 intersection_1_2: reason has 22 words (max 15)
+2026-10-22 21:42:49 LLM failure #38 (reason_too_long) at t=2700 intersection_1_2: reason has 19 words (max 15)
+2026-10-22 21:45:48 LLM failure #39 (reason_too_long) at t=2975 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 21:47:52 LLM failure #40 (reason_too_long) at t=3150 intersection_2_1: reason has 18 words (max 15)
+2026-10-22 21:51:09 LLM failure #41 (reason_too_long) at t=3430 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 21:53:10 [4/24] done in 2442 s: outputs/model_size/runs/20261022-211231_indian_2x2_peak_amb_llm_guided_mp_v3_s0 (2022 calls, 41 failures, 0 retries, p95 1.38 s, served ['qwen2.5:3b'])
+2026-10-22 21:53:10 [5/24] start full qwen2.5:3b indian_2x2_peak_amb seed 1
+2026-10-22 21:53:28 LLM failure #1 (reason_too_long) at t=35 intersection_1_2: reason has 18 words (max 15)
+2026-10-22 21:57:24 LLM failure #2 (reason_too_long) at t=380 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 21:57:25 LLM failure #3 (reason_too_long) at t=385 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 21:57:45 LLM failure #4 (reason_too_long) at t=415 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 21:57:57 LLM failure #5 (reason_too_long) at t=435 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 21:57:58 LLM failure #6 (reason_too_long) at t=435 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 21:58:47 LLM failure #7 (reason_too_long) at t=505 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 22:00:19 LLM failure #8 (reason_too_long) at t=635 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 22:01:39 LLM failure #9 (reason_too_long) at t=750 intersection_1_2: reason has 19 words (max 15)
+2026-10-22 22:02:15 LLM failure #10 (reason_too_long) at t=810 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 22:05:22 LLM failure #11 (reason_too_long) at t=1085 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 22:07:20 LLM failure #12 (reason_too_long) at t=1255 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 22:07:39 LLM failure #13 (reason_too_long) at t=1290 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 22:07:55 LLM failure #14 (reason_too_long) at t=1310 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 22:08:05 LLM failure #15 (reason_too_long) at t=1325 intersection_2_2: reason has 17 words (max 15)
+2026-10-22 22:09:01 LLM failure #16 (reason_too_long) at t=1415 intersection_1_2: reason has 21 words (max 15)
+2026-10-22 22:10:08 LLM failure #17 (reason_too_long) at t=1515 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 22:11:14 LLM failure #18 (reason_too_long) at t=1605 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 22:12:24 LLM failure #19 (reason_too_long) at t=1705 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 22:12:33 LLM failure #20 (reason_too_long) at t=1725 intersection_1_1: reason has 18 words (max 15)
+2026-10-22 22:12:56 LLM failure #21 (reason_too_long) at t=1755 intersection_2_2: reason has 17 words (max 15)
+2026-10-22 22:13:49 LLM failure #22 (reason_too_long) at t=1835 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 22:14:48 LLM failure #23 (reason_too_long) at t=1920 intersection_1_1: reason has 18 words (max 15)
+2026-10-22 22:16:35 LLM failure #24 (reason_too_long) at t=2080 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 22:17:27 LLM failure #25 (reason_too_long) at t=2160 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 22:19:45 LLM failure #26 (reason_too_long) at t=2370 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 22:21:48 LLM failure #27 (reason_too_long) at t=2540 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 22:22:17 LLM failure #28 (reason_too_long) at t=2580 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 22:23:45 LLM failure #29 (reason_too_long) at t=2710 intersection_1_2: reason has 19 words (max 15)
+2026-10-22 22:24:25 LLM failure #30 (reason_too_long) at t=2765 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 22:25:26 LLM failure #31 (reason_too_long) at t=2870 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 22:27:53 LLM failure #32 (reason_too_long) at t=3085 intersection_2_2: reason has 17 words (max 15)
+2026-10-22 22:28:37 LLM failure #33 (reason_too_long) at t=3145 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 22:29:36 LLM failure #34 (reason_too_long) at t=3240 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 22:29:47 LLM failure #35 (reason_too_long) at t=3255 intersection_1_1: reason has 20 words (max 15)
+2026-10-22 22:32:54 LLM failure #36 (reason_too_long) at t=3520 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 22:33:22 LLM failure #37 (reason_too_long) at t=3565 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 22:33:42 LLM failure #38 (reason_too_long) at t=3595 intersection_1_2: reason has 18 words (max 15)
+2026-10-22 22:33:44 [5/24] done in 2453 s: outputs/model_size/runs/20261022-215311_indian_2x2_peak_amb_llm_guided_mp_v3_s1 (1998 calls, 38 failures, 0 retries, p95 1.45 s, served ['qwen2.5:3b'])
+2026-10-22 22:33:44 [6/24] start full qwen2.5:3b indian_2x2_peak_amb seed 2
+2026-10-22 22:35:08 LLM failure #1 (reason_too_long) at t=135 intersection_1_2: reason has 19 words (max 15)
+2026-10-22 22:35:53 LLM failure #2 (reason_too_long) at t=195 intersection_2_2: reason has 17 words (max 15)
+2026-10-22 22:37:15 LLM failure #3 (reason_too_long) at t=315 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 22:37:37 LLM failure #4 (reason_too_long) at t=355 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 22:39:50 LLM failure #5 (reason_too_long) at t=565 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 22:40:22 LLM failure #6 (reason_too_long) at t=615 intersection_1_2: reason has 18 words (max 15)
+2026-10-22 22:40:40 LLM failure #7 (reason_too_long) at t=645 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 22:41:36 LLM failure #8 (reason_too_long) at t=725 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 22:42:52 LLM failure #9 (reason_too_long) at t=830 intersection_1_2: reason has 18 words (max 15)
+2026-10-22 22:43:05 LLM failure #10 (reason_too_long) at t=855 intersection_2_1: reason has 19 words (max 15)
+2026-10-22 22:43:30 LLM failure #11 (reason_too_long) at t=885 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 22:46:51 LLM failure #12 (reason_too_long) at t=1185 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 22:47:08 LLM failure #13 (reason_too_long) at t=1215 intersection_1_2: reason has 18 words (max 15)
+2026-10-22 22:47:56 LLM failure #14 (reason_too_long) at t=1285 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 22:49:12 LLM failure #15 (reason_too_long) at t=1405 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 22:51:33 LLM failure #16 (reason_too_long) at t=1620 intersection_1_1: reason has 17 words (max 15)
+2026-10-22 22:51:34 LLM failure #17 (reason_too_long) at t=1620 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 22:52:06 LLM failure #18 (reason_too_long) at t=1670 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 22:52:26 LLM failure #19 (reason_too_long) at t=1705 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 22:52:26 LLM failure #20 (reason_too_long) at t=1705 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 22:52:59 LLM failure #21 (reason_too_long) at t=1755 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 22:55:15 LLM failure #22 (reason_too_long) at t=1950 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 22:55:40 LLM failure #23 (reason_too_long) at t=1985 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 22:57:24 LLM failure #24 (reason_too_long) at t=2140 intersection_1_1: reason has 17 words (max 15)
+2026-10-22 22:58:44 LLM failure #25 (reason_too_long) at t=2255 intersection_2_1: reason has 18 words (max 15)
+2026-10-22 23:00:47 LLM failure #26 (reason_too_long) at t=2430 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 23:01:03 LLM failure #27 (reason_too_long) at t=2455 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 23:01:05 LLM failure #28 (reason_too_long) at t=2455 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 23:02:49 LLM failure #29 (reason_too_long) at t=2605 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 23:04:14 LLM failure #30 (reason_too_long) at t=2730 intersection_2_1: reason has 18 words (max 15)
+2026-10-22 23:04:58 LLM failure #31 (reason_too_long) at t=2795 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 23:06:01 LLM failure #32 (reason_too_long) at t=2890 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 23:10:31 LLM failure #33 (reason_too_long) at t=3270 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 23:11:12 LLM failure #34 (reason_too_long) at t=3325 intersection_2_1: reason has 18 words (max 15)
+2026-10-22 23:12:14 LLM failure #35 (reason_too_long) at t=3420 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 23:13:08 LLM failure #36 (reason_too_long) at t=3490 intersection_2_2: reason has 17 words (max 15)
+2026-10-22 23:14:17 [6/24] done in 2476 s: outputs/model_size/runs/20261022-223344_indian_2x2_peak_amb_llm_guided_mp_v3_s2 (2011 calls, 36 failures, 0 retries, p95 1.41 s, served ['qwen2.5:3b'])
+2026-10-22 23:14:17 [7/24] start full qwen2.5:3b indian_2x2_peak_amb seed 3
+2026-10-22 23:15:43 LLM failure #1 (reason_too_long) at t=140 intersection_1_1: reason has 18 words (max 15)
+2026-10-22 23:17:23 LLM failure #2 (reason_too_long) at t=280 intersection_2_2: reason has 19 words (max 15)
+2026-10-22 23:17:35 LLM failure #3 (reason_too_long) at t=310 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 23:18:46 LLM failure #4 (reason_too_long) at t=420 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 23:22:02 LLM failure #5 (reason_too_long) at t=705 intersection_1_1: reason has 19 words (max 15)
+2026-10-22 23:22:18 LLM failure #6 (reason_too_long) at t=725 intersection_1_1: reason has 20 words (max 15)
+2026-10-22 23:23:36 LLM failure #7 (reason_too_long) at t=845 intersection_1_1: reason has 17 words (max 15)
+2026-10-22 23:26:31 LLM failure #8 (reason_too_long) at t=1105 intersection_2_1: reason has 21 words (max 15)
+2026-10-22 23:26:56 LLM failure #9 (reason_too_long) at t=1140 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 23:27:05 LLM failure #10 (reason_too_long) at t=1150 intersection_2_2: reason has 18 words (max 15)
+2026-10-22 23:27:28 LLM failure #11 (reason_too_long) at t=1190 intersection_2_1: reason has 19 words (max 15)
+2026-10-22 23:28:15 LLM failure #12 (reason_too_long) at t=1265 intersection_1_1: reason has 17 words (max 15)
+2026-10-22 23:28:33 LLM failure #13 (reason_too_long) at t=1290 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 23:29:02 LLM failure #14 (reason_too_long) at t=1335 intersection_2_1: reason has 20 words (max 15)
+2026-10-22 23:30:31 LLM failure #15 (reason_too_long) at t=1465 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 23:31:06 LLM failure #16 (reason_too_long) at t=1515 intersection_1_1: reason has 18 words (max 15)
+2026-10-22 23:31:31 LLM failure #17 (reason_too_long) at t=1550 intersection_2_2: reason has 18 words (max 15)
+2026-10-22 23:31:50 LLM failure #18 (reason_too_long) at t=1575 intersection_2_2: reason has 17 words (max 15)
+2026-10-22 23:33:03 LLM failure #19 (reason_too_long) at t=1690 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 23:33:18 LLM failure #20 (reason_too_long) at t=1705 intersection_2_2: reason has 17 words (max 15)
+2026-10-22 23:33:47 LLM failure #21 (reason_too_long) at t=1750 intersection_1_1: reason has 17 words (max 15)
+2026-10-22 23:35:07 LLM failure #22 (reason_too_long) at t=1860 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 23:35:09 LLM failure #23 (reason_too_long) at t=1860 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 23:35:35 LLM failure #24 (reason_too_long) at t=1905 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 23:35:41 LLM failure #25 (reason_too_long) at t=1915 intersection_2_1: reason has 17 words (max 15)
+2026-10-22 23:35:59 LLM failure #26 (reason_too_long) at t=1940 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 23:37:06 LLM failure #27 (reason_too_long) at t=2030 intersection_1_1: reason has 18 words (max 15)
+2026-10-22 23:38:58 LLM failure #28 (reason_too_long) at t=2185 intersection_2_2: reason has 19 words (max 15)
+2026-10-22 23:39:59 LLM failure #29 (reason_too_long) at t=2270 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 23:40:51 LLM failure #30 (reason_too_long) at t=2350 intersection_1_1: reason has 18 words (max 15)
+2026-10-22 23:41:33 LLM failure #31 (reason_too_long) at t=2415 intersection_2_1: reason has 16 words (max 15)
+2026-10-22 23:42:14 LLM failure #32 (reason_too_long) at t=2480 intersection_1_1: reason has 17 words (max 15)
+2026-10-22 23:43:02 LLM failure #33 (reason_too_long) at t=2545 intersection_2_2: reason has 18 words (max 15)
+2026-10-22 23:43:49 LLM failure #34 (reason_too_long) at t=2620 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 23:45:46 LLM failure #35 (reason_too_long) at t=2780 intersection_1_2: reason has 17 words (max 15)
+2026-10-22 23:47:15 LLM failure #36 (reason_too_long) at t=2910 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 23:48:56 LLM failure #37 (reason_too_long) at t=3060 intersection_2_2: reason has 17 words (max 15)
+2026-10-22 23:49:29 LLM failure #38 (reason_too_long) at t=3110 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 23:52:36 LLM failure #39 (reason_too_long) at t=3380 intersection_1_2: reason has 16 words (max 15)
+2026-10-22 23:53:19 LLM failure #40 (reason_too_long) at t=3445 intersection_2_2: reason has 18 words (max 15)
+2026-10-22 23:54:14 LLM failure #41 (reason_too_long) at t=3525 intersection_2_2: reason has 20 words (max 15)
+2026-10-22 23:54:29 LLM failure #42 (reason_too_long) at t=3545 intersection_1_2: reason has 19 words (max 15)
+2026-10-22 23:54:59 [7/24] done in 2499 s: outputs/model_size/runs/20261022-231417_indian_2x2_peak_amb_llm_guided_mp_v3_s3 (2015 calls, 42 failures, 0 retries, p95 1.42 s, served ['qwen2.5:3b'])
+2026-10-22 23:54:59 [8/24] start full qwen2.5:3b indian_2x2_peak_amb seed 4
+2026-10-22 23:56:13 LLM failure #1 (reason_too_long) at t=135 intersection_1_1: reason has 16 words (max 15)
+2026-10-22 23:57:02 LLM failure #2 (reason_too_long) at t=200 intersection_2_2: reason has 18 words (max 15)
+2026-10-22 23:57:17 LLM failure #3 (reason_too_long) at t=230 intersection_1_2: reason has 18 words (max 15)
+2026-10-22 23:57:36 LLM failure #4 (reason_too_long) at t=255 intersection_1_1: reason has 17 words (max 15)
+2026-10-22 23:58:10 LLM failure #5 (reason_too_long) at t=300 intersection_2_2: reason has 16 words (max 15)
+2026-10-22 23:59:01 LLM failure #6 (reason_too_long) at t=385 intersection_1_1: reason has 17 words (max 15)
+2026-10-22 23:59:05 LLM failure #7 (reason_too_long) at t=385 intersection_2_2: reason has 16 words (max 15)
+2026-10-23 00:00:04 LLM failure #8 (reason_too_long) at t=480 intersection_2_1: reason has 16 words (max 15)
+2026-10-23 00:01:07 LLM failure #9 (reason_too_long) at t=570 intersection_2_2: reason has 18 words (max 15)
+2026-10-23 00:02:08 LLM failure #10 (reason_too_long) at t=660 intersection_1_2: reason has 16 words (max 15)
+2026-10-23 00:02:11 LLM failure #11 (reason_too_long) at t=665 intersection_1_1: reason has 18 words (max 15)
+2026-10-23 00:03:08 LLM failure #12 (reason_too_long) at t=755 intersection_1_2: reason has 17 words (max 15)
+2026-10-23 00:03:40 LLM failure #13 (reason_too_long) at t=795 intersection_1_2: reason has 17 words (max 15)
+2026-10-23 00:05:41 LLM failure #14 (reason_too_long) at t=990 intersection_1_2: reason has 17 words (max 15)
+2026-10-23 00:06:27 LLM failure #15 (reason_too_long) at t=1055 intersection_2_2: reason has 17 words (max 15)
+2026-10-23 00:07:43 LLM failure #16 (reason_too_long) at t=1170 intersection_1_1: reason has 17 words (max 15)
+2026-10-23 00:08:22 LLM failure #17 (reason_too_long) at t=1225 intersection_1_1: reason has 18 words (max 15)
+2026-10-23 00:08:37 LLM failure #18 (reason_too_long) at t=1250 intersection_1_2: reason has 17 words (max 15)
+2026-10-23 00:09:15 LLM failure #19 (reason_too_long) at t=1310 intersection_2_1: reason has 16 words (max 15)
+2026-10-23 00:09:35 LLM failure #20 (reason_too_long) at t=1335 intersection_1_2: reason has 16 words (max 15)
+2026-10-23 00:10:13 LLM failure #21 (reason_too_long) at t=1390 intersection_1_2: reason has 16 words (max 15)
+2026-10-23 00:10:21 LLM failure #22 (reason_too_long) at t=1400 intersection_2_1: reason has 16 words (max 15)
+2026-10-23 00:13:48 LLM failure #23 (reason_too_long) at t=1720 intersection_1_2: reason has 17 words (max 15)
+2026-10-23 00:14:52 LLM failure #24 (reason_too_long) at t=1805 intersection_2_2: reason has 17 words (max 15)
+2026-10-23 00:16:08 LLM failure #25 (reason_too_long) at t=1920 intersection_2_2: reason has 16 words (max 15)
+2026-10-23 00:16:16 LLM failure #26 (reason_too_long) at t=1935 intersection_1_1: reason has 16 words (max 15)
+2026-10-23 00:17:24 LLM failure #27 (reason_too_long) at t=2035 intersection_1_2: reason has 17 words (max 15)
+2026-10-23 00:18:14 LLM failure #28 (reason_too_long) at t=2100 intersection_2_2: reason has 20 words (max 15)
+2026-10-23 00:18:37 LLM failure #29 (reason_too_long) at t=2140 intersection_2_1: reason has 16 words (max 15)
+2026-10-23 00:20:43 LLM failure #30 (reason_too_long) at t=2325 intersection_1_2: reason has 16 words (max 15)
+2026-10-23 00:20:45 LLM failure #31 (reason_too_long) at t=2325 intersection_2_2: reason has 16 words (max 15)
+2026-10-23 00:20:52 LLM failure #32 (reason_too_long) at t=2345 intersection_2_2: reason has 16 words (max 15)
+2026-10-23 00:21:35 LLM failure #33 (reason_too_long) at t=2405 intersection_2_2: reason has 16 words (max 15)
+2026-10-23 00:22:03 LLM failure #34 (reason_too_long) at t=2450 intersection_2_1: reason has 17 words (max 15)
+2026-10-23 00:22:53 LLM failure #35 (reason_too_long) at t=2530 intersection_1_2: reason has 16 words (max 15)
+2026-10-23 00:23:17 LLM failure #36 (reason_too_long) at t=2575 intersection_1_1: reason has 16 words (max 15)
+2026-10-23 00:24:26 LLM failure #37 (reason_too_long) at t=2675 intersection_1_2: reason has 17 words (max 15)
+2026-10-23 00:25:06 LLM failure #38 (reason_too_long) at t=2740 intersection_1_1: reason has 18 words (max 15)
+2026-10-23 00:25:25 LLM failure #39 (reason_too_long) at t=2760 intersection_1_2: reason has 18 words (max 15)
+2026-10-23 00:26:08 LLM failure #40 (reason_too_long) at t=2820 intersection_2_1: reason has 16 words (max 15)
+2026-10-23 00:29:09 LLM failure #41 (reason_too_long) at t=3085 intersection_2_1: reason has 16 words (max 15)
+2026-10-23 00:29:17 LLM failure #42 (reason_too_long) at t=3100 intersection_2_2: reason has 18 words (max 15)
+2026-10-23 00:31:25 LLM failure #43 (reason_too_long) at t=3275 intersection_2_2: reason has 19 words (max 15)
+2026-10-23 00:32:42 LLM failure #44 (reason_too_long) at t=3385 intersection_2_1: reason has 18 words (max 15)
+2026-10-23 00:32:47 LLM failure #45 (reason_too_long) at t=3395 intersection_2_2: reason has 18 words (max 15)
+2026-10-23 00:32:59 LLM failure #46 (reason_too_long) at t=3415 intersection_2_2: reason has 17 words (max 15)
+2026-10-23 00:33:04 LLM failure #47 (reason_too_long) at t=3425 intersection_1_1: reason has 17 words (max 15)
+2026-10-23 00:33:25 LLM failure #48 (reason_too_long) at t=3455 intersection_1_1: reason has 17 words (max 15)
+2026-10-23 00:33:34 LLM failure #49 (reason_too_long) at t=3475 intersection_1_1: reason has 16 words (max 15)
+2026-10-23 00:34:57 [8/24] done in 2463 s: outputs/model_size/runs/20261022-235459_indian_2x2_peak_amb_llm_guided_mp_v3_s4 (1985 calls, 49 failures, 0 retries, p95 1.44 s, served ['qwen2.5:3b'])
+2026-10-23 00:35:00 [9/24] start full llama3.2:3b indian_2x2_peak seed 0
+2026-10-23 01:05:57 [9/24] done in 1913 s: outputs/model_size/runs/20261023-003505_indian_2x2_peak_llm_guided_mp_v3_s0 (1839 calls, 0 failures, 0 retries, p95 1.19 s, served ['llama3.2:3b'])
+2026-10-23 01:05:57 [10/24] start full llama3.2:3b indian_2x2_peak seed 1
+2026-10-23 01:35:57 [10/24] done in 1851 s: outputs/model_size/runs/20261023-010557_indian_2x2_peak_llm_guided_mp_v3_s1 (1789 calls, 0 failures, 0 retries, p95 1.20 s, served ['llama3.2:3b'])
+2026-10-23 01:35:57 [11/24] start full llama3.2:3b indian_2x2_peak seed 2
+2026-10-23 02:05:28 [11/24] done in 1830 s: outputs/model_size/runs/20261023-013557_indian_2x2_peak_llm_guided_mp_v3_s2 (1765 calls, 0 failures, 0 retries, p95 1.16 s, served ['llama3.2:3b'])
+2026-10-23 02:05:28 [12/24] start full llama3.2:3b indian_2x2_peak_amb seed 0
+2026-10-23 02:32:39 [12/24] done in 1692 s: outputs/model_size/runs/20261023-020528_indian_2x2_peak_amb_llm_guided_mp_v3_s0 (1596 calls, 0 failures, 0 retries, p95 1.20 s, served ['llama3.2:3b'])
+2026-10-23 02:32:39 [13/24] start full llama3.2:3b indian_2x2_peak_amb seed 1
+2026-10-23 03:00:34 [13/24] done in 1734 s: outputs/model_size/runs/20261023-023239_indian_2x2_peak_amb_llm_guided_mp_v3_s1 (1617 calls, 0 failures, 0 retries, p95 1.28 s, served ['llama3.2:3b'])
+2026-10-23 03:00:34 [14/24] start full llama3.2:3b indian_2x2_peak_amb seed 2
+2026-10-23 03:28:36 [14/24] done in 1745 s: outputs/model_size/runs/20261023-030035_indian_2x2_peak_amb_llm_guided_mp_v3_s2 (1628 calls, 0 failures, 0 retries, p95 1.25 s, served ['llama3.2:3b'])
+2026-10-23 03:28:36 [15/24] start full llama3.2:3b indian_2x2_peak_amb seed 3
+2026-10-23 03:55:54 [15/24] done in 1708 s: outputs/model_size/runs/20261023-032836_indian_2x2_peak_amb_llm_guided_mp_v3_s3 (1597 calls, 0 failures, 0 retries, p95 1.22 s, served ['llama3.2:3b'])
+2026-10-23 03:55:54 [16/24] start full llama3.2:3b indian_2x2_peak_amb seed 4
+2026-10-23 04:22:47 [16/24] done in 1685 s: outputs/model_size/runs/20261023-035554_indian_2x2_peak_amb_llm_guided_mp_v3_s4 (1575 calls, 0 failures, 0 retries, p95 1.23 s, served ['llama3.2:3b'])
+2026-10-23 04:22:50 [17/24] start full llama3.1:8b indian_2x2_peak seed 0
+2026-10-23 05:06:30 [17/24] done in 2701 s: outputs/model_size/runs/20261023-042300_indian_2x2_peak_llm_guided_mp_v3_s0 (742 calls, 0 failures, 0 retries, p95 4.15 s, served ['llama3.1:8b'])
+2026-10-23 05:06:30 [18/24] start full llama3.1:8b indian_2x2_peak seed 1
+2026-10-23 05:49:20 [18/24] done in 2601 s: outputs/model_size/runs/20261023-050631_indian_2x2_peak_llm_guided_mp_v3_s1 (732 calls, 0 failures, 0 retries, p95 4.00 s, served ['llama3.1:8b'])
+2026-10-23 05:49:20 [19/24] start full llama3.1:8b indian_2x2_peak seed 2
+2026-10-23 06:32:07 [19/24] done in 2567 s: outputs/model_size/runs/20261023-054920_indian_2x2_peak_llm_guided_mp_v3_s2 (733 calls, 0 failures, 0 retries, p95 3.98 s, served ['llama3.1:8b'])
+2026-10-23 06:32:07 [20/24] start full llama3.1:8b indian_2x2_peak_amb seed 0
+2026-10-23 07:02:47 LLM failure #1 (reason_too_long) at t=2375 intersection_1_1: reason has 16 words (max 15)
+2026-10-23 07:15:05 LLM failure #2 (reason_too_long) at t=3325 intersection_2_2: reason has 17 words (max 15)
+2026-10-23 07:18:42 [20/24] done in 2796 s: outputs/model_size/runs/20261023-063207_indian_2x2_peak_amb_llm_guided_mp_v3_s0 (725 calls, 2 failures, 0 retries, p95 4.42 s, served ['llama3.1:8b'])
+2026-10-23 07:18:42 [21/24] start full llama3.1:8b indian_2x2_peak_amb seed 1
+2026-10-23 08:04:17 [21/24] done in 2735 s: outputs/model_size/runs/20261023-071842_indian_2x2_peak_amb_llm_guided_mp_v3_s1 (721 calls, 0 failures, 0 retries, p95 4.30 s, served ['llama3.1:8b'])
+2026-10-23 08:04:17 [22/24] start full llama3.1:8b indian_2x2_peak_amb seed 2
+2026-10-23 08:50:19 [22/24] done in 2762 s: outputs/model_size/runs/20261023-080418_indian_2x2_peak_amb_llm_guided_mp_v3_s2 (723 calls, 0 failures, 0 retries, p95 4.37 s, served ['llama3.1:8b'])
+2026-10-23 08:50:19 [23/24] start full llama3.1:8b indian_2x2_peak_amb seed 3
+2026-10-23 09:36:38 [23/24] done in 2779 s: outputs/model_size/runs/20261023-085019_indian_2x2_peak_amb_llm_guided_mp_v3_s3 (725 calls, 0 failures, 0 retries, p95 4.40 s, served ['llama3.1:8b'])
+2026-10-23 09:36:38 [24/24] start full llama3.1:8b indian_2x2_peak_amb seed 4
+2026-10-23 10:22:40 [24/24] done in 2766 s: outputs/model_size/runs/20261023-093638_indian_2x2_peak_amb_llm_guided_mp_v3_s4 (725 calls, 0 failures, 0 retries, p95 4.33 s, served ['llama3.1:8b'])
+2026-10-23 10:22:40 All 24 selected runs are complete
+2026-10-23 10:23:32 8 runs selected, 0 done, 8 to do; estimated 4.3 h left
+2026-10-23 10:23:32 [1/8] start full nvidia/nemotron-3-ultra-550b-a55b indian_2x2_peak seed 0
+2026-10-23 10:30:39 LLM failure #1 (retries_exhausted) at t=390 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 10:40:27 LLM failure #2 (timeout) at t=640 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: no answer within 60 s
+2026-10-23 10:51:41 LLM failure #3 (retries_exhausted) at t=910 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 10:56:52 LLM failure #4 (retries_exhausted) at t=1020 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 10:59:58 LLM failure #5 (retries_exhausted) at t=1100 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 11:07:05 LLM failure #6 (retries_exhausted) at t=1275 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 11:23:24 LLM failure #7 (retries_exhausted) at t=1655 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 11:47:09 LLM failure #8 (retries_exhausted) at t=2195 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 11:48:30 LLM failure #9 (retries_exhausted) at t=2235 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 12:12:22 LLM failure #10 (retries_exhausted) at t=2765 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 12:13:39 LLM failure #11 (retries_exhausted) at t=2785 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 12:22:43 [1/8] done in 7287 s: outputs/model_size/runs/20261023-102333_indian_2x2_peak_llm_guided_mp_v3_s0 (736 calls, 11 failures, 718 retries, p95 11.60 s, served ['nvidia/nemotron-3-ultra-550b-a55b'])
+2026-10-23 12:22:43 [2/8] start full nvidia/nemotron-3-ultra-550b-a55b indian_2x2_peak seed 1
+2026-10-23 12:32:59 LLM failure #1 (retries_exhausted) at t=770 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 12:41:13 LLM failure #2 (retries_exhausted) at t=970 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 12:42:53 LLM failure #3 (retries_exhausted) at t=1010 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 13:02:37 LLM failure #4 (retries_exhausted) at t=1450 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 13:07:40 LLM failure #5 (retries_exhausted) at t=1565 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 13:10:47 LLM failure #6 (retries_exhausted) at t=1630 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 13:17:34 LLM failure #7 (retries_exhausted) at t=1785 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 13:26:31 LLM failure #8 (retries_exhausted) at t=1975 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 13:36:58 LLM failure #9 (timeout) at t=2190 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: no answer within 60 s
+2026-10-23 13:45:29 LLM failure #10 (retries_exhausted) at t=2425 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 14:29:08 LLM failure #11 (retries_exhausted) at t=3415 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 14:31:29 LLM failure #12 (retries_exhausted) at t=3475 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 14:36:28 [2/8] done in 8120 s: outputs/model_size/runs/20261023-122247_indian_2x2_peak_llm_guided_mp_v3_s1 (734 calls, 12 failures, 854 retries, p95 10.78 s, served ['nvidia/nemotron-3-ultra-550b-a55b'])
+2026-10-23 14:36:28 [3/8] start full nvidia/nemotron-3-ultra-550b-a55b indian_2x2_peak seed 2
+2026-10-23 14:46:46 LLM failure #1 (retries_exhausted) at t=210 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 14:55:04 LLM failure #2 (retries_exhausted) at t=400 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 14:57:11 LLM failure #3 (retries_exhausted) at t=445 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 15:08:48 LLM failure #4 (retries_exhausted) at t=725 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 15:10:23 LLM failure #5 (retries_exhausted) at t=760 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 15:27:24 LLM failure #6 (retries_exhausted) at t=1145 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 15:29:16 LLM failure #7 (retries_exhausted) at t=1195 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 15:33:11 LLM failure #8 (retries_exhausted) at t=1280 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 15:52:48 LLM failure #9 (retries_exhausted) at t=1760 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 16:00:51 LLM failure #10 (retries_exhausted) at t=1980 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 16:05:38 LLM failure #11 (retries_exhausted) at t=2095 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 16:18:01 LLM failure #12 (retries_exhausted) at t=2380 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 16:19:44 LLM failure #13 (retries_exhausted) at t=2435 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 16:24:51 LLM failure #14 (retries_exhausted) at t=2560 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 16:45:44 LLM failure #15 (retries_exhausted) at t=3090 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 17:05:32 LLM failure #16 (retries_exhausted) at t=3545 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 17:06:54 [3/8] done in 9026 s: outputs/model_size/runs/20261023-143629_indian_2x2_peak_llm_guided_mp_v3_s2 (735 calls, 16 failures, 988 retries, p95 11.26 s, served ['nvidia/nemotron-3-ultra-550b-a55b'])
+2026-10-23 17:06:54 [4/8] start full nvidia/nemotron-3-ultra-550b-a55b indian_2x2_peak_amb seed 0
+2026-10-23 17:13:34 LLM failure #1 (retries_exhausted) at t=100 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 17:44:39 LLM failure #2 (retries_exhausted) at t=805 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 17:48:04 LLM failure #3 (retries_exhausted) at t=880 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 17:53:23 LLM failure #4 (retries_exhausted) at t=1000 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 18:02:06 LLM failure #5 (retries_exhausted) at t=1210 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 18:09:31 LLM failure #6 (retries_exhausted) at t=1395 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 18:13:44 LLM failure #7 (retries_exhausted) at t=1485 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 18:19:11 LLM failure #8 (retries_exhausted) at t=1625 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 19:09:23 LLM failure #9 (retries_exhausted) at t=2825 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 19:21:54 LLM failure #10 (retries_exhausted) at t=3095 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 19:24:45 LLM failure #11 (retries_exhausted) at t=3140 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 19:27:26 LLM failure #12 (retries_exhausted) at t=3205 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 19:29:54 LLM failure #13 (retries_exhausted) at t=3240 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 19:43:37 LLM failure #14 (retries_exhausted) at t=3500 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 19:46:23 LLM failure #15 (retries_exhausted) at t=3565 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 19:46:50 [4/8] done in 9632 s: outputs/model_size/runs/20261023-170726_indian_2x2_peak_amb_llm_guided_mp_v3_s0 (733 calls, 15 failures, 1008 retries, p95 13.16 s, served ['nvidia/nemotron-3-ultra-550b-a55b'])
+2026-10-23 19:46:50 [5/8] start full nvidia/nemotron-3-ultra-550b-a55b indian_2x2_peak_amb seed 1
+2026-10-23 20:11:21 LLM failure #1 (retries_exhausted) at t=525 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 20:22:43 LLM failure #2 (retries_exhausted) at t=785 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 20:49:37 LLM failure #3 (retries_exhausted) at t=1375 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 20:53:28 LLM failure #4 (retries_exhausted) at t=1475 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 20:56:51 LLM failure #5 (retries_exhausted) at t=1535 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 21:12:26 LLM failure #6 (timeout) at t=1855 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: no answer within 60 s
+2026-10-23 21:14:20 LLM failure #7 (retries_exhausted) at t=1895 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 21:24:19 LLM failure #8 (retries_exhausted) at t=2065 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 503 after 5 retries: {"error":{"message":"Service temporarily overloaded","type":"Service Unavailable","code":503}}
+2026-10-23 21:26:06 LLM failure #9 (retries_exhausted) at t=2100 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 21:27:33 LLM failure #10 (retries_exhausted) at t=2130 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 21:28:37 LLM failure #11 (retries_exhausted) at t=2145 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 21:30:28 LLM failure #12 (retries_exhausted) at t=2180 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 21:35:03 LLM failure #13 (retries_exhausted) at t=2260 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 21:48:38 LLM failure #14 (retries_exhausted) at t=2570 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 22:07:32 LLM failure #15 (timeout) at t=2970 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: no answer within 60 s
+2026-10-23 22:10:52 LLM failure #16 (retries_exhausted) at t=3055 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 22:13:49 LLM failure #17 (timeout) at t=3115 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: no answer within 60 s
+2026-10-23 22:26:42 LLM failure #18 (retries_exhausted) at t=3430 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 22:30:04 LLM failure #19 (retries_exhausted) at t=3500 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 22:32:06 LLM failure #20 (retries_exhausted) at t=3540 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 22:34:08 [5/8] done in 10189 s: outputs/model_size/runs/20261023-194651_indian_2x2_peak_amb_llm_guided_mp_v3_s1 (749 calls, 20 failures, 1035 retries, p95 13.82 s, served ['nvidia/nemotron-3-ultra-550b-a55b'])
+2026-10-23 22:34:08 [6/8] start full nvidia/nemotron-3-ultra-550b-a55b indian_2x2_peak_amb seed 2
+2026-10-23 22:37:51 LLM failure #1 (retries_exhausted) at t=35 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 22:43:56 LLM failure #2 (retries_exhausted) at t=145 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 22:51:07 LLM failure #3 (retries_exhausted) at t=320 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 22:52:59 LLM failure #4 (retries_exhausted) at t=380 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 22:57:38 LLM failure #5 (retries_exhausted) at t=480 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 23:05:40 LLM failure #6 (timeout) at t=625 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: no answer within 60 s
+2026-10-23 23:09:30 LLM failure #7 (retries_exhausted) at t=740 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 23:23:54 LLM failure #8 (timeout) at t=1080 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: no answer within 60 s
+2026-10-23 23:35:54 LLM failure #9 (retries_exhausted) at t=1400 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-23 23:56:35 LLM failure #10 (retries_exhausted) at t=1840 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 00:05:23 LLM failure #11 (retries_exhausted) at t=2040 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 00:13:09 LLM failure #12 (retries_exhausted) at t=2220 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 00:29:02 LLM failure #13 (retries_exhausted) at t=2600 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 00:32:25 LLM failure #14 (retries_exhausted) at t=2660 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 00:39:07 LLM failure #15 (retries_exhausted) at t=2820 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 00:49:03 LLM failure #16 (retries_exhausted) at t=3055 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 00:54:18 LLM failure #17 (retries_exhausted) at t=3150 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 01:13:15 [6/8] done in 9547 s: outputs/model_size/runs/20261023-223417_indian_2x2_peak_amb_llm_guided_mp_v3_s2 (746 calls, 17 failures, 987 retries, p95 12.24 s, served ['nvidia/nemotron-3-ultra-550b-a55b'])
+2026-10-24 01:13:15 [7/8] start full nvidia/nemotron-3-ultra-550b-a55b indian_2x2_peak_amb seed 3
+2026-10-24 01:15:24 LLM failure #1 (retries_exhausted) at t=20 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 01:20:29 LLM failure #2 (retries_exhausted) at t=110 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 01:23:27 LLM failure #3 (retries_exhausted) at t=190 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 01:31:28 LLM failure #4 (retries_exhausted) at t=350 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 01:53:08 LLM failure #5 (retries_exhausted) at t=880 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 02:05:50 LLM failure #6 (retries_exhausted) at t=1190 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 02:07:12 LLM failure #7 (retries_exhausted) at t=1240 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 02:09:39 LLM failure #8 (retries_exhausted) at t=1290 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 02:13:29 LLM failure #9 (retries_exhausted) at t=1360 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 02:23:22 LLM failure #10 (retries_exhausted) at t=1595 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 02:45:16 LLM failure #11 (timeout) at t=2110 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: no answer within 60 s
+2026-10-24 02:48:23 LLM failure #12 (retries_exhausted) at t=2195 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 02:50:17 LLM failure #13 (retries_exhausted) at t=2245 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 02:51:51 LLM failure #14 (retries_exhausted) at t=2290 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 02:53:29 LLM failure #15 (retries_exhausted) at t=2340 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 02:57:00 LLM failure #16 (retries_exhausted) at t=2440 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 03:02:14 LLM failure #17 (timeout) at t=2575 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: no answer within 60 s
+2026-10-24 03:03:30 LLM failure #18 (retries_exhausted) at t=2610 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 03:05:09 LLM failure #19 (timeout) at t=2645 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: no answer within 60 s
+2026-10-24 03:13:22 LLM failure #20 (retries_exhausted) at t=2850 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 03:21:22 LLM failure #21 (retries_exhausted) at t=3060 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 03:25:58 LLM failure #22 (retries_exhausted) at t=3165 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 03:29:02 LLM failure #23 (retries_exhausted) at t=3240 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 03:40:52 LLM failure #24 (retries_exhausted) at t=3520 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 03:43:20 [7/8] done in 9005 s: outputs/model_size/runs/20261024-011335_indian_2x2_peak_amb_llm_guided_mp_v3_s3 (731 calls, 24 failures, 994 retries, p95 9.17 s, served ['nvidia/nemotron-3-ultra-550b-a55b'])
+2026-10-24 03:43:20 [8/8] start full nvidia/nemotron-3-ultra-550b-a55b indian_2x2_peak_amb seed 4
+2026-10-24 03:54:40 LLM failure #1 (retries_exhausted) at t=235 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 03:55:40 LLM failure #2 (timeout) at t=245 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: no answer within 60 s
+2026-10-24 04:12:58 LLM failure #3 (retries_exhausted) at t=645 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 04:22:48 LLM failure #4 (retries_exhausted) at t=885 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 04:24:15 LLM failure #5 (retries_exhausted) at t=910 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 04:27:13 LLM failure #6 (retries_exhausted) at t=975 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 04:31:48 LLM failure #7 (retries_exhausted) at t=1075 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 05:03:34 LLM failure #8 (retries_exhausted) at t=1875 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 05:12:16 LLM failure #9 (retries_exhausted) at t=2085 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 05:13:45 LLM failure #10 (retries_exhausted) at t=2145 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 05:17:18 LLM failure #11 (retries_exhausted) at t=2230 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 05:31:21 LLM failure #12 (retries_exhausted) at t=2590 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 05:46:31 LLM failure #13 (retries_exhausted) at t=2950 intersection_2_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 05:55:01 LLM failure #14 (retries_exhausted) at t=3130 intersection_2_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 05:59:20 LLM failure #15 (retries_exhausted) at t=3265 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 06:00:23 LLM failure #16 (retries_exhausted) at t=3275 intersection_1_1: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 06:02:03 LLM failure #17 (retries_exhausted) at t=3305 intersection_1_2: POST https://integrate.api.nvidia.com/v1/chat/completions: HTTP 429 after 5 retries: {"status":429,"title":"Too Many Requests"}
+2026-10-24 06:13:32 [8/8] done in 9012 s: outputs/model_size/runs/20261024-034327_indian_2x2_peak_amb_llm_guided_mp_v3_s4 (732 calls, 17 failures, 989 retries, p95 6.91 s, served ['nvidia/nemotron-3-ultra-550b-a55b'])
+2026-10-24 06:13:32 All 8 selected runs are complete

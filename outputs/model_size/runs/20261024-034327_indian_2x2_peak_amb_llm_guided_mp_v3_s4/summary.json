@@ -1,0 +1,286 @@
+{
+  "provenance": {
+    "controller": "llm_guided_mp_v3",
+    "controller_params": {
+      "name": "llm_guided_mp_v3",
+      "mode": "cooperative",
+      "prompt": "guided_v3",
+      "decision_interval": 5,
+      "min_green": 15,
+      "phases": "all",
+      "client": {
+        "provider": "nvidia_nim",
+        "model": "nvidia/nemotron-3-ultra-550b-a55b",
+        "host": "https://integrate.api.nvidia.com/v1",
+        "endpoint": "/chat/completions",
+        "timeout_s": 60.0,
+        "options": {
+          "temperature": 0.0,
+          "seed": 4,
+          "max_tokens": 128,
+          "extra_body": {
+            "chat_template_kwargs": {
+              "enable_thinking": false
+            }
+          },
+          "structured_output": "json_schema",
+          "rate_limit_rpm": 30,
+          "max_retries": 5,
+          "backoff_s": 2.0,
+          "backoff_max_s": 60.0
+        },
+        "keep_alive": null
+      },
+      "max_consecutive_failures": 20,
+      "options": 2,
+      "tie_break": "keep_current",
+      "detection_range_m": 150.0,
+      "ranking": "maxpressure (phase_pressures over all green phases)"
+    },
+    "model": "nvidia/nemotron-3-ultra-550b-a55b",
+    "provider": "nvidia_nim",
+    "llm": {
+      "calls": 732,
+      "ok": 715,
+      "failures": 17,
+      "failures_by_type": {
+        "retries_exhausted": 16,
+        "timeout": 1
+      },
+      "failure_rate": 0.023224043715846996,
+      "switches_requested": 714,
+      "latency_n": 715,
+      "latency_mean_s": 1.9705045331609385,
+      "latency_p95_s": 6.909228218303178,
+      "latency_max_s": 45.548900622990914,
+      "prompt_tokens_mean": 300.65314685314684,
+      "response_tokens_mean": 23.664335664335663,
+      "server_reported_models": [
+        "nvidia/nemotron-3-ultra-550b-a55b"
+      ],
+      "calls_with_reasoning_output": 0,
+      "retries": 989,
+      "retries_by_reason": {
+        "429": 989
+      },
+      "calls_with_retries": 392,
+      "wait_s_total": 6444.0,
+      "call_wall_mean_s": 12.295845310984127,
+      "call_wall_p95_s": 63.179021477949576,
+      "retry_note": "retries (HTTP 429/5xx, dropped connection) are not failures; a call fails only when it ends without a valid answer. call_wall = whole call incl. rate-limit waits, backoff and retried attempts",
+      "latency_note": "wall clock per call, over calls that returned a response (timeouts excluded, counted as failures)",
+      "mp_disagreements": 19,
+      "mp_disagreement_rate": 0.026573426573426574,
+      "mp_disagreements_kept_current": 0,
+      "mp_disagreements_chose_lower_ranked": 19,
+      "mp_fallbacks": 17,
+      "mp_disagreement_note": "over successful calls: the LLM's answer != MaxPressure's top choice",
+      "ambulance_decisions": 6,
+      "ambulance_decisions_serving_nearest": 5,
+      "model_digest": null,
+      "model_details": {
+        "owned_by": "nvidia",
+        "created": 735790403,
+        "listed_at_utc": "2026-10-23T22:13:27+00:00",
+        "hosted": true,
+        "local": false
+      },
+      "server_version": "https://integrate.api.nvidia.com/v1 (hosted, OpenAI-compatible; checked 2026-10-23)",
+      "decisions_log": "decisions.jsonl"
+    },
+    "controller_stats": null,
+    "seed": 4,
+    "scenario": "indian_2x2_peak_amb",
+    "roadnet": "data/scenarios/indian_2x2/roadnet.json",
+    "flow": "data/scenarios/indian_2x2/flow_peak_amb_s4.json",
+    "flow_sha256": "7c765acfea40d488e6f53794f40d1055f545412d47a57e782ac45aff357586df",
+    "flow_per_seed": true,
+    "sim_steps": 3600,
+    "git_commit": "d33be98f0991202378b2f0160f8b4b1f3e92c72c",
+    "git_dirty": false,
+    "timestamp": "2026-10-24T03:43:27+05:30",
+    "wall_time_s": 9004.95,
+    "python": "3.10.12"
+  },
+  "signal": {
+    "min_green": 10,
+    "max_green": 60,
+    "transition_s": [
+      5
+    ],
+    "switches": 714,
+    "forced_switches": 0
+  },
+  "metrics": {
+    "att": 114.97894956231764,
+    "queue_mean_per_intersection": 17.720000000000002,
+    "queue_mean_total": 70.88,
+    "waiting_time_mean": 53.26209341117598,
+    "throughput": 4619,
+    "vehicles_entered": 4796,
+    "vehicles_running_at_end": 177,
+    "vehicles_waiting_to_enter_at_end": 2,
+    "steps": 3600
+  },
+  "per_intersection": {
+    "intersection_1_1": {
+      "queue_mean": 18.269166666666667,
+      "waiting_time_mean": 27.774070945945947,
+      "throughput": 2326,
+      "vehicles_seen": 2368
+    },
+    "intersection_2_1": {
+      "queue_mean": 16.240833333333335,
+      "waiting_time_mean": 25.387320885801127,
+      "throughput": 2267,
+      "vehicles_seen": 2303
+    },
+    "intersection_1_2": {
+      "queue_mean": 16.999166666666667,
+      "waiting_time_mean": 26.152564102564103,
+      "throughput": 2302,
+      "vehicles_seen": 2340
+    },
+    "intersection_2_2": {
+      "queue_mean": 19.370833333333334,
+      "waiting_time_mean": 29.66184602296895,
+      "throughput": 2310,
+      "vehicles_seen": 2351
+    }
+  },
+  "emergency": {
+    "vehicle_type": "ambulance",
+    "scheduled_in_run": 8,
+    "entered": 8,
+    "finished": 8,
+    "travel_time_mean_s": 53.375,
+    "stopped_time_mean_s": 6.125,
+    "entry_wait_mean_s": 1.125,
+    "vehicles": [
+      {
+        "vehicle": "flow_4790_0",
+        "scheduled_start": 11,
+        "entered": 12.0,
+        "finished": 46.0,
+        "travel_time_s": 35.0,
+        "time_so_far_s": null,
+        "stopped_s": 0.0,
+        "entry_wait_s": 1.0,
+        "route": [
+          "road_0_1_0",
+          "road_1_1_3"
+        ]
+      },
+      {
+        "vehicle": "flow_4791_0",
+        "scheduled_start": 247,
+        "entered": 248.0,
+        "finished": 282.0,
+        "travel_time_s": 35.0,
+        "time_so_far_s": null,
+        "stopped_s": 0.0,
+        "entry_wait_s": 1.0,
+        "route": [
+          "road_1_3_3",
+          "road_1_2_2"
+        ]
+      },
+      {
+        "vehicle": "flow_4792_0",
+        "scheduled_start": 292,
+        "entered": 293.0,
+        "finished": 357.0,
+        "travel_time_s": 65.0,
+        "time_so_far_s": null,
+        "stopped_s": 26.0,
+        "entry_wait_s": 1.0,
+        "route": [
+          "road_3_1_2",
+          "road_2_1_3"
+        ]
+      },
+      {
+        "vehicle": "flow_4793_0",
+        "scheduled_start": 393,
+        "entered": 394.0,
+        "finished": 428.0,
+        "travel_time_s": 35.0,
+        "time_so_far_s": null,
+        "stopped_s": 0.0,
+        "entry_wait_s": 1.0,
+        "route": [
+          "road_0_1_0",
+          "road_1_1_3"
+        ]
+      },
+      {
+        "vehicle": "flow_4794_0",
+        "scheduled_start": 1985,
+        "entered": 1986.0,
+        "finished": 2043.0,
+        "travel_time_s": 58.0,
+        "time_so_far_s": null,
+        "stopped_s": 0.0,
+        "entry_wait_s": 1.0,
+        "route": [
+          "road_2_3_3",
+          "road_2_2_2",
+          "road_1_2_2"
+        ]
+      },
+      {
+        "vehicle": "flow_4795_0",
+        "scheduled_start": 2177,
+        "entered": 2179.0,
+        "finished": 2250.0,
+        "travel_time_s": 73.0,
+        "time_so_far_s": null,
+        "stopped_s": 7.0,
+        "entry_wait_s": 2.0,
+        "route": [
+          "road_2_0_1",
+          "road_2_1_1",
+          "road_2_2_1"
+        ]
+      },
+      {
+        "vehicle": "flow_4796_0",
+        "scheduled_start": 2212,
+        "entered": 2213.0,
+        "finished": 2279.0,
+        "travel_time_s": 67.0,
+        "time_so_far_s": null,
+        "stopped_s": 12.0,
+        "entry_wait_s": 1.0,
+        "route": [
+          "road_0_1_0",
+          "road_1_1_0",
+          "road_2_1_3"
+        ]
+      },
+      {
+        "vehicle": "flow_4797_0",
+        "scheduled_start": 2737,
+        "entered": 2738.0,
+        "finished": 2796.0,
+        "travel_time_s": 59.0,
+        "time_so_far_s": null,
+        "stopped_s": 4.0,
+        "entry_wait_s": 1.0,
+        "route": [
+          "road_3_1_2",
+          "road_2_1_1",
+          "road_2_2_1"
+        ]
+      }
+    ],
+    "notes": "means over ambulances that finished in the run; travel time from scheduled start (incl. entry wait); stopped = speed < 0.1 m/s while in the network"
+  },
+  "metric_notes": {
+    "att": "engine.get_average_travel_time(): all generated vehicles from scheduled start, incl. those still running or still waiting to enter",
+    "queue_mean_per_intersection": "waiting vehicles (speed<0.1) on incoming lanes, mean over steps and intersections",
+    "queue_mean_total": "same, summed over intersections",
+    "waiting_time_mean": "seconds with speed<0.1 per vehicle, mean over vehicles that entered",
+    "throughput": "vehicles that finished their trip"
+  }
+}

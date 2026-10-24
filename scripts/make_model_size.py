@@ -87,11 +87,17 @@ def decision_counts(run: Path, l: dict) -> dict:
         highest += pr[d["llm_phase"]] == max(pr.values())
     differs = sum(d["llm_phase"] != d["mp_choice"] for d in ok)
     retries = [r for d in ds for r in d.get("retries") or []]
+    amb = [d for d in ds if "ambulances" in d]                    # an ambulance approaching in the prompt
     n = {"calls": len(ds), "ok": len(ok), "failures": len(failed), "highest": highest, "differs": differs,
-         "retries": len(retries), "calls_with_retries": sum(bool(d.get("retries")) for d in ds)}
+         "retries": len(retries), "calls_with_retries": sum(bool(d.get("retries")) for d in ds),
+         "amb_calls": len(amb), "amb_serving_nearest": sum(d["serves_nearest_ambulance"] for d in amb),
+         "amb_failures": sum(not d["ok"] for d in amb),
+         "amb_ok": sum(d["ok"] for d in amb), "amb_differs": sum(d["ok"] and d["llm_phase"] != d["mp_choice"] for d in amb)}
     if (n["calls"], n["failures"]) != (l["calls"], l["failures"]) or \
             abs(differs / len(ok) - l["mp_disagreement_rate"]) > 1e-12 or \
-            ("retries" in l and n["retries"] != l["retries"]):
+            ("retries" in l and n["retries"] != l["retries"]) or \
+            (n["amb_calls"], n["amb_serving_nearest"]) != (l.get("ambulance_decisions", 0),
+                                                           l.get("ambulance_decisions_serving_nearest", 0)):
         raise SystemExit(f"{run}: decisions.jsonl disagrees with summary.json")
     return n
 
@@ -251,6 +257,13 @@ def full_report(cfg: dict) -> dict:
                  "wall_time_s_mean": statistics.mean(s["provenance"]["wall_time_s"] for s in ss)}
             if sc == EMERGENCY:
                 e["ambulances"] = amb_stats({seed: ambulances(s, net) for s, seed in zip(ss, seeds)}, ref)
+                e["ambulance_decisions"] = {
+                    "calls": tot["amb_calls"], "serving_nearest": tot["amb_serving_nearest"],
+                    "failures": tot["amb_failures"],
+                    "differs_with_ambulance": tot["amb_differs"] / tot["amb_ok"] if tot["amb_ok"] else None,
+                    "differs_without_ambulance": (tot["differs"] - tot["amb_differs"]) / (tot["ok"] - tot["amb_ok"]),
+                    "note": "calls whose prompt shows an approaching ambulance; serving = the applied phase "
+                            "serves the nearest one; differs = over successful calls"}
             models[m] = e
         out[sc] = {"seeds": seeds, "baselines": bl, "models": models}
     cross_check(out)
@@ -402,6 +415,21 @@ def amb_table(f: dict) -> str:
                   "Stopped time, mean (s)", "vs MaxPressure, paired", "vs MaxPressure + preemption, paired"], rows)
 
 
+def amb_decision_table(f: dict) -> str:
+    rows = []
+    for m, e in f["models"].items():
+        a = e.get("ambulance_decisions")
+        if a is None:
+            rows.append([f"`{m}`", f"not finished ({len(e['finished_seeds'])} of {len(f['seeds'])} seeds)", "", "", ""])
+            continue
+        rows.append([f"`{m}`", a["calls"], f"{a['serving_nearest']} ({fmt(a['serving_nearest'] / a['calls'], 0, True)})",
+                     a["failures"], f"{fmt(a['differs_with_ambulance'], 0, True)} / "
+                                    f"{fmt(a['differs_without_ambulance'], 0, True)}"])
+    return table(["Model", "Calls with an ambulance in view", "Applied phase serves the nearest ambulance",
+                  "Of these, failed → MaxPressure's choice", "Answer differs from MaxPressure: with / without "
+                  "an ambulance in view"], rows)
+
+
 def hosted_table(runs: list[dict]) -> str:
     rows = []
     for r in runs:
@@ -426,6 +454,7 @@ def tables(b: dict) -> dict[str, str]:
         out |= {"model_size_full": full_table(full["indian_2x2_peak"], b["sizes"]),
                 "model_size_full_amb": full_table(full[EMERGENCY], b["sizes"]),
                 "model_size_ambulances": amb_table(full[EMERGENCY]),
+                "model_size_amb_decisions": amb_decision_table(full[EMERGENCY]),
                 "model_size_hosted": hosted_table(b["hosted_runs"])}
     return out
 

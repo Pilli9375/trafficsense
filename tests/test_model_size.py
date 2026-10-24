@@ -139,7 +139,9 @@ def fake_full(mk, ms):
             "queue_mean_per_intersection": [17.0, 0.5], "calls": 100, "failures": 1, "failures_by_type": {"timeout": 1},
             "fallback_to_mp_rate": 0.01, "retries": None, "follows_pressure_rate": 0.8,
             "follows_pressure_per_seed": [0.7, 0.9], "mp_disagreement_rate": 0.2, "wall_time_s_mean": 600.0,
-            "served_models": ["gemma4:e4b"], "ambulances": amb}
+            "served_models": ["gemma4:e4b"], "ambulances": amb,
+            "ambulance_decisions": {"calls": 10, "serving_nearest": 9, "failures": 0, "differs_with_ambulance": 0.7,
+                                    "differs_without_ambulance": 0.2}}
     base = {"att_s": [111.0, 1.0], "queue_mean_per_intersection": [17.5, 0.3], "ambulances": amb}
     out = {}
     for sc in mk.SCENARIOS:
@@ -154,12 +156,13 @@ def test_full_tables_and_chart_with_unfinished_models(mk, ms):
     b = {"sizes": mk.SIZES, "full": full, "hosted_runs": [],
          "bench": {"models": {}, "not_run": list(ms.MODELS), "maxpressure": {"att_s": 1, "queue_mean_per_intersection": 1}}}
     tabs = mk.tables(b)
-    for name in ("model_size_full", "model_size_full_amb", "model_size_ambulances"):
+    for name in ("model_size_full", "model_size_full_amb", "model_size_ambulances", "model_size_amb_decisions"):
         rows = tabs[name].splitlines()
         assert len({r.count("|") for r in rows}) == 1, name
         assert "`llama3.1:8b` | 8 | not finished (1 of" in tabs[name] or "`llama3.1:8b` | not finished (1 of" in tabs[name]
     assert "-1.0% (-2.0 to +0.0)" in tabs["model_size_full"] and "1 of 100 (1.0%): timeout 1" in tabs["model_size_full"]
     assert "MaxPressure + preemption (baseline)" in tabs["model_size_ambulances"]
+    assert "| `gemma4:e4b` | 10 | 9 (90%) | 0 | 70% / 20% |" in tabs["model_size_amb_decisions"]
     assert tabs["model_size_hosted"].endswith(f"0 of {1 + len(ms.FULL)} arm B runs finished.")
     chart = mk.svg(b)
     assert chart == mk.svg(b)                                                  # deterministic
