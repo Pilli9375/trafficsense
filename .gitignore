@@ -61,3 +61,4 @@ outputs/perception/*.jpg
 
 # Per-step metrics of the camera-error runs (large; summary.json, decisions.jsonl, noise.jsonl are tracked)
 outputs/camera_error/runs/*/metrics.csv
+outputs/camera_error/decomposition/runs/*/metrics.csv
