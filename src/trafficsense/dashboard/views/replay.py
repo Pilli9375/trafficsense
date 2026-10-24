@@ -246,16 +246,34 @@ def render() -> None:
     t0, t1 = st.slider("Window (s)", 1, steps, (lo_def, hi_def), key=f"win_{amb_id}")
     focus = int(amb_id.split("_")[1])
 
-    # headline comparison for this pair
+    # headline comparison for this pair: the selected ambulance next to the means over the whole seed
+    ea, eb = A.summary["emergency"], B.summary["emergency"]
+    if (ea["finished"], ea["scheduled_in_run"]) == (eb["finished"], eb["scheduled_in_run"]):
+        all_title = f"All {ea['scheduled_in_run']} ambulances · mean travel"
+        if ea["finished"] != ea["scheduled_in_run"]:
+            all_title = f"{ea['finished']} of {ea['scheduled_in_run']} ambulances finished · mean travel"
+    else:
+        all_title = "All ambulances (finished only) · mean travel"
+
+    def rel_mean(amb: dict) -> float:
+        done = [amb[v["vehicle"]]["travel_time_s"] for v in relevant if amb[v["vehicle"]]["travel_time_s"] is not None]
+        return data.derived(sum(done) / len(done))
+    n_rel = data.derived(len(relevant))
     for col, (title, fa, fb, unit, d) in zip(st.columns(4, gap="small"), (
             ("This ambulance · travel time", va["travel_time_s"], vb["travel_time_s"], "s", 0),
-            ("This ambulance · stopped", va["stopped_s"], vb["stopped_s"], "s", 0),
-            ("Run ATT · all vehicles", A.summary["metrics"]["att"], B.summary["metrics"]["att"], "s", 1),
-            ("Queue per intersection", A.summary["metrics"]["queue_mean_per_intersection"],
-             B.summary["metrics"]["queue_mean_per_intersection"], "veh", 2))):
+            (all_title, ea["travel_time_mean_s"], eb["travel_time_mean_s"], "s", 1),
+            (f"{n_rel} signal-relevant · mean travel", rel_mean(amb_a), rel_mean(amb_b), "s", 1),
+            ("Run ATT · all vehicles", A.summary["metrics"]["att"], B.summary["metrics"]["att"], "s", 1))):
         col.markdown(ui.duo_card(title, unit, [(theme.short(A.meta["controller"], A.meta["model"]), A.colour, f"{fa:.{d}f}"),
                                                (theme.short(B.meta["controller"], B.meta["model"]), B.colour, f"{fb:.{d}f}")]),
                      unsafe_allow_html=True)
+    ui.note(
+        "<p><b>How the shown ambulance is picked.</b> By default, the first ambulance of the seed (by scheduled start) "
+        "whose route crosses a signal: a fixed rule written into the page before it was first rendered, not a choice "
+        "by result. Any other can be picked from the list. One ambulance can differ a lot by chance; the means over "
+        "all ambulances of this seed (from each run's summary) and over the signal-relevant ones put it in context. "
+        "The seed itself is the emergency seed with the most ambulances (pre-registered, docs/dashboard.md).</p>",
+        tags=[("selection rule", "")])
 
     fig = network_figure([A, B], raw, net, t0, t1, focus)
     st.plotly_chart(fig, width="stretch", config={**ui.PLOT_CONFIG, "scrollZoom": False}, key="replay_map")

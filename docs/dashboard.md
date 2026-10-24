@@ -95,8 +95,11 @@ missing and which command makes it.
 * **Network Replay.** Two of the nine replays side by side, one synchronized animation (play,
   pause, time slider) over a window that defaults to the selected ambulance's trip: vehicles,
   ambulances, signal state and queue per approach, green phase per intersection. Ambulances
-  are listed by start time (signal-relevant only); the default is the first one, not a chosen
-  example. An inspector shows, for one second, the phase and queue per approach of each
+  are listed by start time (signal-relevant only); the default is the first one, a rule fixed
+  before the page was first rendered, not a choice by result (stated on the page). Next to the
+  selected ambulance the page shows the mean travel time over all ambulances of the seed (from
+  each run's summary) and over its signal-relevant ones, so one ambulance is seen in context.
+  An inspector shows, for one second, the phase and queue per approach of each
   intersection and the last 30 s of decisions, with each LLM's reason text (or MaxPressure's
   pressures). The inspected second defaults to the first decision whose prompt lists the
   selected ambulance. Below: network queue over the hour for both runs.
