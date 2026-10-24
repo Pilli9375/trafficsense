@@ -1,0 +1,342 @@
+{
+  "provenance": {
+    "controller": "llm_guarded_mp",
+    "controller_params": {
+      "name": "llm_guarded_mp",
+      "mode": "cooperative",
+      "prompt": "guided_v3",
+      "decision_interval": 5,
+      "min_green": 15,
+      "phases": "all",
+      "client": {
+        "provider": "ollama",
+        "model": "llama3.2:3b",
+        "host": "http://localhost:11434",
+        "endpoint": "/api/chat",
+        "timeout_s": 60.0,
+        "options": {
+          "temperature": 0.0,
+          "seed": 0,
+          "num_ctx": 2048,
+          "num_predict": 128
+        },
+        "keep_alive": "30m"
+      },
+      "max_consecutive_failures": 20,
+      "options": 2,
+      "tie_break": "keep_current",
+      "detection_range_m": 150.0,
+      "ranking": "maxpressure (phase_pressures over all green phases)",
+      "guard_ratio": 0.8
+    },
+    "model": "llama3.2:3b",
+    "provider": "ollama",
+    "llm": {
+      "calls": 727,
+      "ok": 727,
+      "failures": 0,
+      "failures_by_type": {},
+      "failure_rate": 0.0,
+      "switches_requested": 716,
+      "latency_n": 727,
+      "latency_mean_s": 1.029738656119229,
+      "latency_p95_s": 1.2026683780219174,
+      "latency_max_s": 1.3427073530037887,
+      "prompt_tokens_mean": 299.6038514442916,
+      "response_tokens_mean": 20.460797799174692,
+      "server_reported_models": [
+        "llama3.2:3b"
+      ],
+      "calls_with_reasoning_output": 0,
+      "retries": 0,
+      "retries_by_reason": {},
+      "calls_with_retries": 0,
+      "wait_s_total": 0.0,
+      "call_wall_mean_s": 1.029785147880587,
+      "call_wall_p95_s": 1.2027151882910403,
+      "retry_note": "retries (HTTP 429/5xx, dropped connection) are not failures; a call fails only when it ends without a valid answer. call_wall = whole call incl. rate-limit waits, backoff and retried attempts",
+      "latency_note": "wall clock per call, over calls that returned a response (timeouts excluded, counted as failures)",
+      "mp_disagreements": 637,
+      "mp_disagreement_rate": 0.8762035763411279,
+      "mp_disagreements_kept_current": 417,
+      "mp_disagreements_chose_lower_ranked": 220,
+      "mp_fallbacks": 0,
+      "mp_disagreement_note": "over successful calls: the LLM's answer != MaxPressure's top choice",
+      "ambulance_decisions": 5,
+      "ambulance_decisions_serving_nearest": 4,
+      "guard_overrides": 564,
+      "guard_override_rate": 0.7757909215955984,
+      "guard_ambulance_exemptions": 3,
+      "applied_differs_from_mp": 73,
+      "guard_note": "guard_override_rate over successful calls: the LLM's answer was replaced by MaxPressure's top choice",
+      "model_digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+      "model_details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "llama",
+        "families": [
+          "llama"
+        ],
+        "parameter_size": "3.2B",
+        "quantization_level": "Q4_K_M",
+        "context_length": 131072,
+        "embedding_length": 3072,
+        "runner": "ggml"
+      },
+      "server_version": "0.40.3",
+      "decisions_log": "decisions.jsonl"
+    },
+    "controller_stats": null,
+    "seed": 0,
+    "scenario": "indian_2x2_peak_amb",
+    "roadnet": "data/scenarios/indian_2x2/roadnet.json",
+    "flow": "data/scenarios/indian_2x2/flow_peak_amb_s0.json",
+    "flow_sha256": "eb195af3657a7cd58a8b27b0a2c73cf4b5babb7f139e070691a7b95643556da9",
+    "flow_per_seed": true,
+    "sim_steps": 3600,
+    "git_commit": "d7c35803a9591b7127c1a9a6d4bc07338dd06b3c",
+    "git_dirty": false,
+    "timestamp": "2026-10-24T10:49:39+05:30",
+    "wall_time_s": 754.72,
+    "python": "3.10.12"
+  },
+  "signal": {
+    "min_green": 10,
+    "max_green": 60,
+    "transition_s": [
+      5
+    ],
+    "switches": 716,
+    "forced_switches": 0
+  },
+  "metrics": {
+    "att": 120.69935760171306,
+    "queue_mean_per_intersection": 18.990972222222222,
+    "queue_mean_total": 75.96388888888889,
+    "waiting_time_mean": 58.62475904904691,
+    "throughput": 4490,
+    "vehicles_entered": 4669,
+    "vehicles_running_at_end": 179,
+    "vehicles_waiting_to_enter_at_end": 1,
+    "steps": 3600
+  },
+  "per_intersection": {
+    "intersection_1_1": {
+      "queue_mean": 19.909444444444443,
+      "waiting_time_mean": 30.643009833262077,
+      "throughput": 2298,
+      "vehicles_seen": 2339
+    },
+    "intersection_2_1": {
+      "queue_mean": 17.94361111111111,
+      "waiting_time_mean": 28.69702354509107,
+      "throughput": 2216,
+      "vehicles_seen": 2251
+    },
+    "intersection_1_2": {
+      "queue_mean": 19.241666666666667,
+      "waiting_time_mean": 30.315098468271334,
+      "throughput": 2250,
+      "vehicles_seen": 2285
+    },
+    "intersection_2_2": {
+      "queue_mean": 18.86916666666667,
+      "waiting_time_mean": 29.637434554973822,
+      "throughput": 2248,
+      "vehicles_seen": 2292
+    }
+  },
+  "emergency": {
+    "vehicle_type": "ambulance",
+    "scheduled_in_run": 3,
+    "entered": 3,
+    "finished": 3,
+    "travel_time_mean_s": 92.0,
+    "stopped_time_mean_s": 15.333333333333334,
+    "entry_wait_mean_s": 1.6666666666666667,
+    "vehicles": [
+      {
+        "vehicle": "flow_4667_0",
+        "scheduled_start": 1670,
+        "entered": 1671.0,
+        "finished": 1722.0,
+        "travel_time_s": 52.0,
+        "time_so_far_s": null,
+        "stopped_s": 0.0,
+        "entry_wait_s": 1.0,
+        "route": [
+          "road_1_0_1",
+          "road_1_1_1",
+          "road_1_2_1"
+        ]
+      },
+      {
+        "vehicle": "flow_4668_0",
+        "scheduled_start": 1966,
+        "entered": 1967.0,
+        "finished": 2065.0,
+        "travel_time_s": 99.0,
+        "time_so_far_s": null,
+        "stopped_s": 18.0,
+        "entry_wait_s": 1.0,
+        "route": [
+          "road_1_3_3",
+          "road_1_2_0",
+          "road_2_2_3",
+          "road_2_1_3"
+        ]
+      },
+      {
+        "vehicle": "flow_4669_0",
+        "scheduled_start": 3029,
+        "entered": 3032.0,
+        "finished": 3154.0,
+        "travel_time_s": 125.0,
+        "time_so_far_s": null,
+        "stopped_s": 28.0,
+        "entry_wait_s": 3.0,
+        "route": [
+          "road_0_2_0",
+          "road_1_2_0",
+          "road_2_2_3",
+          "road_2_1_2",
+          "road_1_1_3"
+        ]
+      }
+    ],
+    "notes": "means over ambulances that finished in the run; travel time from scheduled start (incl. entry wait); stopped = speed < 0.1 m/s while in the network"
+  },
+  "observation": {
+    "key": "junction",
+    "noised": true,
+    "params": {
+      "key": "junction",
+      "p_detect": {
+        "car": 0.9363,
+        "motorcycle": 0.9127,
+        "autorickshaw": 0.9442,
+        "bus": 0.9072,
+        "truck": 0.8318,
+        "bicycle": 0.6808,
+        "person": 0.8063
+      },
+      "p_label": {
+        "car": {
+          "car": 0.9658,
+          "motorcycle": 0.0106,
+          "autorickshaw": 0.0059,
+          "bus": 0.0052,
+          "truck": 0.0061,
+          "person": 0.0063
+        },
+        "motorcycle": {
+          "car": 0.0022,
+          "motorcycle": 0.9926,
+          "autorickshaw": 0.0003,
+          "truck": 0.0003,
+          "bicycle": 0.0014,
+          "person": 0.0032
+        },
+        "autorickshaw": {
+          "car": 0.0196,
+          "motorcycle": 0.003,
+          "autorickshaw": 0.9376,
+          "bus": 0.0019,
+          "truck": 0.0376,
+          "person": 0.0002
+        },
+        "bus": {
+          "car": 0.027,
+          "motorcycle": 0.0006,
+          "autorickshaw": 0.0042,
+          "bus": 0.9005,
+          "truck": 0.0657,
+          "bicycle": 0.0019
+        },
+        "truck": {
+          "car": 0.0324,
+          "motorcycle": 0.0011,
+          "autorickshaw": 0.036,
+          "bus": 0.0305,
+          "truck": 0.8998,
+          "person": 0.0003
+        },
+        "bicycle": {
+          "motorcycle": 0.2953,
+          "bicycle": 0.5551,
+          "person": 0.1496
+        },
+        "person": {
+          "car": 0.0009,
+          "motorcycle": 0.0235,
+          "autorickshaw": 0.0009,
+          "bicycle": 0.0003,
+          "person": 0.9743
+        }
+      },
+      "false_det_per_road_snapshot": {
+        "car": 0.2223,
+        "motorcycle": 0.2707,
+        "autorickshaw": 0.0697,
+        "bus": 0.0394,
+        "truck": 0.0788,
+        "bicycle": 0.0061
+      },
+      "source": {
+        "kind": "error_model",
+        "file": "/home/pilli/trafficsense/outputs/perception/error_model.json",
+        "sha256": "8f30435d5bc2d2a8e4bb6ca4f2eff4915c118c774f0618437a851bc23fd98a53",
+        "conf_threshold": 0.3,
+        "p_detect_from": "medium+large objects"
+      }
+    },
+    "seed_entropy": [
+      0,
+      2634089330
+    ],
+    "rng": "numpy default_rng(SeedSequence(seed_entropy))",
+    "emergency_types_not_noised": [
+      "ambulance"
+    ],
+    "snapshots": 545,
+    "roads": 24,
+    "realized": {
+      "true_vehicle_observations": {
+        "autorickshaw": 15563,
+        "motorcycle": 36697,
+        "car": 25607,
+        "truck": 4610,
+        "bus": 1473
+      },
+      "detection_rate": {
+        "autorickshaw": 0.9438,
+        "motorcycle": 0.9117,
+        "car": 0.9369,
+        "truck": 0.8347,
+        "bus": 0.9022
+      },
+      "lost_to_non_vehicle_label": {
+        "car": 159,
+        "motorcycle": 87,
+        "autorickshaw": 4,
+        "truck": 1
+      },
+      "false_per_road_snapshot": {
+        "car": 0.2161,
+        "motorcycle": 0.2774,
+        "autorickshaw": 0.0688,
+        "bus": 0.0398,
+        "truck": 0.0758,
+        "bicycle": 0.0068
+      }
+    },
+    "log": "noise.jsonl"
+  },
+  "metric_notes": {
+    "att": "engine.get_average_travel_time(): all generated vehicles from scheduled start, incl. those still running or still waiting to enter",
+    "queue_mean_per_intersection": "waiting vehicles (speed<0.1) on incoming lanes, mean over steps and intersections",
+    "queue_mean_total": "same, summed over intersections",
+    "waiting_time_mean": "seconds with speed<0.1 per vehicle, mean over vehicles that entered",
+    "throughput": "vehicles that finished their trip"
+  }
+}

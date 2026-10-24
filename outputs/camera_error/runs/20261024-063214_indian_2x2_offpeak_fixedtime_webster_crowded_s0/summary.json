@@ -1,0 +1,809 @@
+{
+  "provenance": {
+    "controller": "fixedtime_webster",
+    "controller_params": {
+      "name": "fixedtime_webster",
+      "phases": "paired",
+      "cycle_min": 60.0,
+      "cycle_max": 180.0,
+      "demand_window_s": 3600,
+      "measurement_reps": 30,
+      "measurement_seed": 0,
+      "inputs": {
+        "vehicle_types": {
+          "type_0": 1067,
+          "type_1": 742,
+          "type_2": 392,
+          "type_3": 111,
+          "type_4": 33
+        },
+        "discharge": {
+          "go_straight": {
+            "route": [
+              "road_0_1_0",
+              "road_1_1_0",
+              "road_2_1_0"
+            ],
+            "turn": "go_straight",
+            "reps": 30,
+            "seed": 0,
+            "per_rep": [
+              {
+                "queue_at_green": 38,
+                "left_in_window": 33,
+                "saturation_flow_veh_per_hour": 1980.0,
+                "fit_saturation_flow_veh_per_hour": 1986.1517088080025,
+                "startup_lost_time_s": 0.3218002954606476
+              },
+              {
+                "queue_at_green": 42,
+                "left_in_window": 38,
+                "saturation_flow_veh_per_hour": 2280.0,
+                "fit_saturation_flow_veh_per_hour": 2287.6354542928593,
+                "startup_lost_time_s": 2.312097361900605
+              },
+              {
+                "queue_at_green": 40,
+                "left_in_window": 35,
+                "saturation_flow_veh_per_hour": 2100.0,
+                "fit_saturation_flow_veh_per_hour": 2087.979994442901,
+                "startup_lost_time_s": 2.223771198620298
+              },
+              {
+                "queue_at_green": 41,
+                "left_in_window": 35,
+                "saturation_flow_veh_per_hour": 2100.0,
+                "fit_saturation_flow_veh_per_hour": 2043.5676576826893,
+                "startup_lost_time_s": 0.3349486049926469
+              },
+              {
+                "queue_at_green": 37,
+                "left_in_window": 33,
+                "saturation_flow_veh_per_hour": 1980.0,
+                "fit_saturation_flow_veh_per_hour": 2023.8621839399834,
+                "startup_lost_time_s": 3.4124944397766015
+              },
+              {
+                "queue_at_green": 45,
+                "left_in_window": 36,
+                "saturation_flow_veh_per_hour": 2160.0,
+                "fit_saturation_flow_veh_per_hour": 2132.492358988608,
+                "startup_lost_time_s": 0.2372531544631542
+              },
+              {
+                "queue_at_green": 39,
+                "left_in_window": 34,
+                "saturation_flow_veh_per_hour": 2040.0,
+                "fit_saturation_flow_veh_per_hour": 2075.1764378994158,
+                "startup_lost_time_s": 1.6984800282785244
+              },
+              {
+                "queue_at_green": 43,
+                "left_in_window": 36,
+                "saturation_flow_veh_per_hour": 2160.0,
+                "fit_saturation_flow_veh_per_hour": 2200.5112531258683,
+                "startup_lost_time_s": 1.1545979362698304
+              },
+              {
+                "queue_at_green": 46,
+                "left_in_window": 38,
+                "saturation_flow_veh_per_hour": 2280.0,
+                "fit_saturation_flow_veh_per_hour": 2314.242845234787,
+                "startup_lost_time_s": 2.8030054172429644
+              },
+              {
+                "queue_at_green": 39,
+                "left_in_window": 34,
+                "saturation_flow_veh_per_hour": 2040.0,
+                "fit_saturation_flow_veh_per_hour": 2045.7682689636008,
+                "startup_lost_time_s": 3.4283525653562776
+              },
+              {
+                "queue_at_green": 41,
+                "left_in_window": 36,
+                "saturation_flow_veh_per_hour": 2160.0,
+                "fit_saturation_flow_veh_per_hour": 2174.9041400388996,
+                "startup_lost_time_s": 2.2914194606693385
+              },
+              {
+                "queue_at_green": 40,
+                "left_in_window": 34,
+                "saturation_flow_veh_per_hour": 2040.0,
+                "fit_saturation_flow_veh_per_hour": 2036.5657126979718,
+                "startup_lost_time_s": 2.7894564505566493
+              },
+              {
+                "queue_at_green": 40,
+                "left_in_window": 35,
+                "saturation_flow_veh_per_hour": 2100.0,
+                "fit_saturation_flow_veh_per_hour": 2147.7966101694915,
+                "startup_lost_time_s": 4.127840909090914
+              },
+              {
+                "queue_at_green": 42,
+                "left_in_window": 35,
+                "saturation_flow_veh_per_hour": 2100.0,
+                "fit_saturation_flow_veh_per_hour": 2141.494859683245,
+                "startup_lost_time_s": 3.040185591729326
+              },
+              {
+                "queue_at_green": 49,
+                "left_in_window": 41,
+                "saturation_flow_veh_per_hour": 2460.0,
+                "fit_saturation_flow_veh_per_hour": 2362.756321200334,
+                "startup_lost_time_s": 1.3677377474845898
+              },
+              {
+                "queue_at_green": 41,
+                "left_in_window": 35,
+                "saturation_flow_veh_per_hour": 2100.0,
+                "fit_saturation_flow_veh_per_hour": 2125.890525145873,
+                "startup_lost_time_s": 3.8941639611662495
+              },
+              {
+                "queue_at_green": 38,
+                "left_in_window": 34,
+                "saturation_flow_veh_per_hour": 2040.0,
+                "fit_saturation_flow_veh_per_hour": 2044.06779661017,
+                "startup_lost_time_s": 2.3114427860696622
+              },
+              {
+                "queue_at_green": 37,
+                "left_in_window": 34,
+                "saturation_flow_veh_per_hour": 2040.0,
+                "fit_saturation_flow_veh_per_hour": 1955.1430953042513,
+                "startup_lost_time_s": 0.7279750332548858
+              },
+              {
+                "queue_at_green": 37,
+                "left_in_window": 32,
+                "saturation_flow_veh_per_hour": 1920.0,
+                "fit_saturation_flow_veh_per_hour": 2011.0586273964993,
+                "startup_lost_time_s": 3.4747243637569483
+              },
+              {
+                "queue_at_green": 42,
+                "left_in_window": 36,
+                "saturation_flow_veh_per_hour": 2160.0,
+                "fit_saturation_flow_veh_per_hour": 2187.507641011392,
+                "startup_lost_time_s": 4.760696267166622
+              },
+              {
+                "queue_at_green": 46,
+                "left_in_window": 38,
+                "saturation_flow_veh_per_hour": 2280.0,
+                "fit_saturation_flow_veh_per_hour": 2227.918866351764,
+                "startup_lost_time_s": 2.0156542300842517
+              },
+              {
+                "queue_at_green": 39,
+                "left_in_window": 33,
+                "saturation_flow_veh_per_hour": 1980.0,
+                "fit_saturation_flow_veh_per_hour": 1952.9424840233394,
+                "startup_lost_time_s": 1.2976166086184477
+              },
+              {
+                "queue_at_green": 39,
+                "left_in_window": 36,
+                "saturation_flow_veh_per_hour": 2160.0,
+                "fit_saturation_flow_veh_per_hour": 2261.4281744929144,
+                "startup_lost_time_s": 6.273841118188251
+              },
+              {
+                "queue_at_green": 42,
+                "left_in_window": 35,
+                "saturation_flow_veh_per_hour": 2100.0,
+                "fit_saturation_flow_veh_per_hour": 2126.2906362878575,
+                "startup_lost_time_s": 2.320835489485816
+              },
+              {
+                "queue_at_green": 37,
+                "left_in_window": 32,
+                "saturation_flow_veh_per_hour": 1920.0,
+                "fit_saturation_flow_veh_per_hour": 1893.4259516532372,
+                "startup_lost_time_s": 0.28717840350785195
+              },
+              {
+                "queue_at_green": 39,
+                "left_in_window": 35,
+                "saturation_flow_veh_per_hour": 2100.0,
+                "fit_saturation_flow_veh_per_hour": 2102.6840789108082,
+                "startup_lost_time_s": 2.5770420056134355
+              },
+              {
+                "queue_at_green": 39,
+                "left_in_window": 33,
+                "saturation_flow_veh_per_hour": 1980.0,
+                "fit_saturation_flow_veh_per_hour": 1969.046957488191,
+                "startup_lost_time_s": 1.1002286004572
+              },
+              {
+                "queue_at_green": 37,
+                "left_in_window": 34,
+                "saturation_flow_veh_per_hour": 2040.0,
+                "fit_saturation_flow_veh_per_hour": 1914.631842178383,
+                "startup_lost_time_s": -1.5237448409174021
+              },
+              {
+                "queue_at_green": 42,
+                "left_in_window": 34,
+                "saturation_flow_veh_per_hour": 2040.0,
+                "fit_saturation_flow_veh_per_hour": 1977.049180327869,
+                "startup_lost_time_s": -2.13930348258706
+              },
+              {
+                "queue_at_green": 43,
+                "left_in_window": 36,
+                "saturation_flow_veh_per_hour": 2160.0,
+                "fit_saturation_flow_veh_per_hour": 2136.2934148374557,
+                "startup_lost_time_s": 1.937881412807684
+              }
+            ],
+            "saturation_flow_veh_per_hour": 2100.0,
+            "fit_saturation_flow_veh_per_hour": 2098.2095026396223,
+            "startup_lost_time_s": 2.0286557706188404
+          },
+          "turn_left": {
+            "route": [
+              "road_0_1_0",
+              "road_1_1_1",
+              "road_1_2_1"
+            ],
+            "turn": "turn_left",
+            "reps": 30,
+            "seed": 0,
+            "per_rep": [
+              {
+                "queue_at_green": 38,
+                "left_in_window": 32,
+                "saturation_flow_veh_per_hour": 1920.0,
+                "fit_saturation_flow_veh_per_hour": 1939.9388719088633,
+                "startup_lost_time_s": 0.47812038087380415
+              },
+              {
+                "queue_at_green": 42,
+                "left_in_window": 36,
+                "saturation_flow_veh_per_hour": 2160.0,
+                "fit_saturation_flow_veh_per_hour": 2203.111975548764,
+                "startup_lost_time_s": 2.61722285281877
+              },
+              {
+                "queue_at_green": 40,
+                "left_in_window": 33,
+                "saturation_flow_veh_per_hour": 1980.0,
+                "fit_saturation_flow_veh_per_hour": 2014.2595165323692,
+                "startup_lost_time_s": 1.8654549668106597
+              },
+              {
+                "queue_at_green": 41,
+                "left_in_window": 34,
+                "saturation_flow_veh_per_hour": 2040.0,
+                "fit_saturation_flow_veh_per_hour": 1990.252848013337,
+                "startup_lost_time_s": 0.5553265986497138
+              },
+              {
+                "queue_at_green": 37,
+                "left_in_window": 32,
+                "saturation_flow_veh_per_hour": 1920.0,
+                "fit_saturation_flow_veh_per_hour": 1907.9299805501523,
+                "startup_lost_time_s": 2.6369752892244165
+              },
+              {
+                "queue_at_green": 45,
+                "left_in_window": 35,
+                "saturation_flow_veh_per_hour": 2100.0,
+                "fit_saturation_flow_veh_per_hour": 2090.98082800778,
+                "startup_lost_time_s": 0.4996332440362323
+              },
+              {
+                "queue_at_green": 39,
+                "left_in_window": 32,
+                "saturation_flow_veh_per_hour": 1920.0,
+                "fit_saturation_flow_veh_per_hour": 1988.352320088913,
+                "startup_lost_time_s": 1.0904852936244325
+              },
+              {
+                "queue_at_green": 43,
+                "left_in_window": 35,
+                "saturation_flow_veh_per_hour": 2100.0,
+                "fit_saturation_flow_veh_per_hour": 2159.0997499305363,
+                "startup_lost_time_s": 1.6226855069106634
+              },
+              {
+                "queue_at_green": 46,
+                "left_in_window": 37,
+                "saturation_flow_veh_per_hour": 2220.0,
+                "fit_saturation_flow_veh_per_hour": 2246.7240900250067,
+                "startup_lost_time_s": 2.818470534110979
+              },
+              {
+                "queue_at_green": 39,
+                "left_in_window": 33,
+                "saturation_flow_veh_per_hour": 1980.0,
+                "fit_saturation_flow_veh_per_hour": 1924.0344540150036,
+                "startup_lost_time_s": 2.486127718568568
+              },
+              {
+                "queue_at_green": 41,
+                "left_in_window": 35,
+                "saturation_flow_veh_per_hour": 2100.0,
+                "fit_saturation_flow_veh_per_hour": 2106.7852181161434,
+                "startup_lost_time_s": 2.2236729655303407
+              },
+              {
+                "queue_at_green": 40,
+                "left_in_window": 34,
+                "saturation_flow_veh_per_hour": 2040.0,
+                "fit_saturation_flow_veh_per_hour": 1980.650180605724,
+                "startup_lost_time_s": 2.8456980287190916
+              },
+              {
+                "queue_at_green": 40,
+                "left_in_window": 35,
+                "saturation_flow_veh_per_hour": 2100.0,
+                "fit_saturation_flow_veh_per_hour": 2090.8808002222836,
+                "startup_lost_time_s": 4.314293004193971
+              },
+              {
+                "queue_at_green": 42,
+                "left_in_window": 34,
+                "saturation_flow_veh_per_hour": 2040.0,
+                "fit_saturation_flow_veh_per_hour": 2059.1719922200614,
+                "startup_lost_time_s": 2.5041452119563488
+              },
+              {
+                "queue_at_green": 49,
+                "left_in_window": 39,
+                "saturation_flow_veh_per_hour": 2340.0,
+                "fit_saturation_flow_veh_per_hour": 2267.229786051681,
+                "startup_lost_time_s": 1.28033177446396
+              },
+              {
+                "queue_at_green": 41,
+                "left_in_window": 34,
+                "saturation_flow_veh_per_hour": 2040.0,
+                "fit_saturation_flow_veh_per_hour": 2047.9688802445123,
+                "startup_lost_time_s": 3.409592654097878
+              },
+              {
+                "queue_at_green": 38,
+                "left_in_window": 32,
+                "saturation_flow_veh_per_hour": 1920.0,
+                "fit_saturation_flow_veh_per_hour": 1990.4529035843289,
+                "startup_lost_time_s": 2.4282627267701855
+              },
+              {
+                "queue_at_green": 37,
+                "left_in_window": 33,
+                "saturation_flow_veh_per_hour": 1980.0,
+                "fit_saturation_flow_veh_per_hour": 1886.023895526535,
+                "startup_lost_time_s": 0.3838592769380327
+              },
+              {
+                "queue_at_green": 37,
+                "left_in_window": 31,
+                "saturation_flow_veh_per_hour": 1860.0,
+                "fit_saturation_flow_veh_per_hour": 1968.4467907752153,
+                "startup_lost_time_s": 3.6486101936074036
+              },
+              {
+                "queue_at_green": 42,
+                "left_in_window": 35,
+                "saturation_flow_veh_per_hour": 2100.0,
+                "fit_saturation_flow_veh_per_hour": 2091.4809669352594,
+                "startup_lost_time_s": 4.668930444625111
+              },
+              {
+                "queue_at_green": 46,
+                "left_in_window": 36,
+                "saturation_flow_veh_per_hour": 2160.0,
+                "fit_saturation_flow_veh_per_hour": 2103.3842734092805,
+                "startup_lost_time_s": 1.306020544036528
+              },
+              {
+                "queue_at_green": 39,
+                "left_in_window": 32,
+                "saturation_flow_veh_per_hour": 1920.0,
+                "fit_saturation_flow_veh_per_hour": 1871.919977771604,
+                "startup_lost_time_s": 0.8188165722632093
+              },
+              {
+                "queue_at_green": 39,
+                "left_in_window": 35,
+                "saturation_flow_veh_per_hour": 2100.0,
+                "fit_saturation_flow_veh_per_hour": 2171.703250903028,
+                "startup_lost_time_s": 5.992522991417552
+              },
+              {
+                "queue_at_green": 42,
+                "left_in_window": 34,
+                "saturation_flow_veh_per_hour": 2040.0,
+                "fit_saturation_flow_veh_per_hour": 2017.9605445957209,
+                "startup_lost_time_s": 1.668715508410159
+              },
+              {
+                "queue_at_green": 37,
+                "left_in_window": 31,
+                "saturation_flow_veh_per_hour": 1860.0,
+                "fit_saturation_flow_veh_per_hour": 1850.6140594609617,
+                "startup_lost_time_s": 0.329549754067358
+              },
+              {
+                "queue_at_green": 39,
+                "left_in_window": 33,
+                "saturation_flow_veh_per_hour": 1980.0,
+                "fit_saturation_flow_veh_per_hour": 2028.963601000278,
+                "startup_lost_time_s": 2.5298757641490894
+              },
+              {
+                "queue_at_green": 39,
+                "left_in_window": 32,
+                "saturation_flow_veh_per_hour": 1920.0,
+                "fit_saturation_flow_veh_per_hour": 1902.6285079188658,
+                "startup_lost_time_s": 1.0493139161978746
+              },
+              {
+                "queue_at_green": 37,
+                "left_in_window": 32,
+                "saturation_flow_veh_per_hour": 1920.0,
+                "fit_saturation_flow_veh_per_hour": 1826.9074742984158,
+                "startup_lost_time_s": -2.260786246167335
+              },
+              {
+                "queue_at_green": 42,
+                "left_in_window": 33,
+                "saturation_flow_veh_per_hour": 1980.0,
+                "fit_saturation_flow_veh_per_hour": 1947.3409280355656,
+                "startup_lost_time_s": -1.6497842613519609
+              },
+              {
+                "queue_at_green": 43,
+                "left_in_window": 33,
+                "saturation_flow_veh_per_hour": 1980.0,
+                "fit_saturation_flow_veh_per_hour": 2018.160600166713,
+                "startup_lost_time_s": 1.3158042558815808
+              }
+            ],
+            "saturation_flow_veh_per_hour": 2024.0,
+            "fit_saturation_flow_veh_per_hour": 2023.1119755487634,
+            "startup_lost_time_s": 1.8492649155144874
+          }
+        },
+        "saturation_flow_veh_per_hour": {
+          "go_straight": 2098.2095026396223,
+          "turn_left": 2023.1119755487634
+        },
+        "startup_lost_time_s": 1.9389603430666638,
+        "demand_window_s": 3600,
+        "vehicles_in_window": 2345
+      },
+      "plans": {
+        "intersection_1_1": {
+          "phases": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "y": {
+            "1": 0.09627255988778852,
+            "2": 0.07720868664268188,
+            "3": 0.02570297671531263,
+            "4": 0.019771520550240482
+          },
+          "Y": 0.2189557437960235,
+          "lost_time_L_s": 27.755841372266655,
+          "C0_s": 59.70693938016896,
+          "cycle_webster_s": 60.0,
+          "oversaturated": false,
+          "cycle_clipped": true,
+          "greens_unrounded_s": {
+            "3": 10,
+            "4": 10,
+            "2": 10,
+            "1": 10.0
+          },
+          "greens_s": {
+            "1": 10,
+            "2": 10,
+            "3": 10,
+            "4": 10
+          },
+          "greens_clipped": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "cycle_run_s": 60
+        },
+        "intersection_2_1": {
+          "phases": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "y": {
+            "1": 0.10866407749710784,
+            "2": 0.07196612150027755,
+            "3": 0.031634432880384776,
+            "4": 0.020265808563996495
+          },
+          "Y": 0.23253044044176666,
+          "lost_time_L_s": 27.755841372266655,
+          "C0_s": 60.76301200173079,
+          "cycle_webster_s": 60.76301200173079,
+          "oversaturated": false,
+          "cycle_clipped": false,
+          "greens_unrounded_s": {
+            "3": 10,
+            "4": 10,
+            "2": 10,
+            "1": 10.763012001730793
+          },
+          "greens_s": {
+            "1": 11,
+            "2": 10,
+            "3": 10,
+            "4": 10
+          },
+          "greens_clipped": [
+            2,
+            3,
+            4
+          ],
+          "cycle_run_s": 61
+        },
+        "intersection_1_2": {
+          "phases": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "y": {
+            "1": 0.11104706165274617,
+            "2": 0.07339591199366055,
+            "3": 0.03064585685287275,
+            "4": 0.012851488357656315
+          },
+          "Y": 0.22794031885693578,
+          "lost_time_L_s": 27.755841372266655,
+          "C0_s": 60.40175804719772,
+          "cycle_webster_s": 60.40175804719772,
+          "oversaturated": false,
+          "cycle_clipped": false,
+          "greens_unrounded_s": {
+            "3": 10,
+            "4": 10,
+            "2": 10,
+            "1": 10.401758047197717
+          },
+          "greens_s": {
+            "1": 10,
+            "2": 10,
+            "3": 10,
+            "4": 10
+          },
+          "greens_clipped": [
+            2,
+            3,
+            4
+          ],
+          "cycle_run_s": 60
+        },
+        "intersection_2_2": {
+          "phases": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "y": {
+            "1": 0.10056193136793751,
+            "2": 0.07720868664268188,
+            "3": 0.029162992811604713,
+            "4": 0.022242960619020546
+          },
+          "Y": 0.22917657144124465,
+          "lost_time_L_s": 27.755841372266655,
+          "C0_s": 60.49863085453086,
+          "cycle_webster_s": 60.49863085453086,
+          "oversaturated": false,
+          "cycle_clipped": false,
+          "greens_unrounded_s": {
+            "3": 10,
+            "4": 10,
+            "2": 10,
+            "1": 10.498630854530859
+          },
+          "greens_s": {
+            "1": 10,
+            "2": 10,
+            "3": 10,
+            "4": 10
+          },
+          "greens_clipped": [
+            2,
+            3,
+            4
+          ],
+          "cycle_run_s": 60
+        }
+      }
+    },
+    "model": null,
+    "provider": null,
+    "llm": null,
+    "controller_stats": null,
+    "seed": 0,
+    "scenario": "indian_2x2_offpeak",
+    "roadnet": "data/scenarios/indian_2x2/roadnet.json",
+    "flow": "data/scenarios/indian_2x2/flow_offpeak_s0.json",
+    "flow_sha256": "ee84bb0a490bb55dc6a3b4beffff130dfca5e4bca7c0be722f41dcd1d4e2297d",
+    "flow_per_seed": true,
+    "sim_steps": 3600,
+    "git_commit": "91aa214902133f6be09aa3f8e140c3fe24e5f275",
+    "git_dirty": false,
+    "timestamp": "2026-10-24T06:32:14+05:30",
+    "wall_time_s": 31.98,
+    "python": "3.10.12"
+  },
+  "signal": {
+    "min_green": 10,
+    "max_green": 60,
+    "transition_s": [
+      5
+    ],
+    "switches": 956,
+    "forced_switches": 0
+  },
+  "metrics": {
+    "att": 104.4051172707889,
+    "queue_mean_per_intersection": 7.328749999999999,
+    "queue_mean_total": 29.315,
+    "waiting_time_mean": 45.01705756929638,
+    "throughput": 2280,
+    "vehicles_entered": 2345,
+    "vehicles_running_at_end": 65,
+    "vehicles_waiting_to_enter_at_end": 0,
+    "steps": 3600
+  },
+  "per_intersection": {
+    "intersection_1_1": {
+      "queue_mean": 6.791111111111111,
+      "waiting_time_mean": 21.654561558901683,
+      "throughput": 1114,
+      "vehicles_seen": 1129
+    },
+    "intersection_2_1": {
+      "queue_mean": 8.433055555555555,
+      "waiting_time_mean": 26.937888198757765,
+      "throughput": 1118,
+      "vehicles_seen": 1127
+    },
+    "intersection_1_2": {
+      "queue_mean": 6.976944444444444,
+      "waiting_time_mean": 21.840869565217393,
+      "throughput": 1132,
+      "vehicles_seen": 1150
+    },
+    "intersection_2_2": {
+      "queue_mean": 7.113888888888889,
+      "waiting_time_mean": 21.795744680851065,
+      "throughput": 1159,
+      "vehicles_seen": 1175
+    }
+  },
+  "emergency": null,
+  "observation": {
+    "key": "crowded",
+    "noised": true,
+    "params": {
+      "key": "crowded",
+      "p_detect": {
+        "car": 0.568,
+        "motorcycle": 0.5665,
+        "autorickshaw": 0.5977,
+        "bus": 0.6321,
+        "truck": 0.5372,
+        "bicycle": 0.4464,
+        "person": 0.3641
+      },
+      "p_label": {
+        "car": {
+          "car": 0.9658,
+          "motorcycle": 0.0106,
+          "autorickshaw": 0.0059,
+          "bus": 0.0052,
+          "truck": 0.0061,
+          "person": 0.0063
+        },
+        "motorcycle": {
+          "car": 0.0022,
+          "motorcycle": 0.9926,
+          "autorickshaw": 0.0003,
+          "truck": 0.0003,
+          "bicycle": 0.0014,
+          "person": 0.0032
+        },
+        "autorickshaw": {
+          "car": 0.0196,
+          "motorcycle": 0.003,
+          "autorickshaw": 0.9376,
+          "bus": 0.0019,
+          "truck": 0.0376,
+          "person": 0.0002
+        },
+        "bus": {
+          "car": 0.027,
+          "motorcycle": 0.0006,
+          "autorickshaw": 0.0042,
+          "bus": 0.9005,
+          "truck": 0.0657,
+          "bicycle": 0.0019
+        },
+        "truck": {
+          "car": 0.0324,
+          "motorcycle": 0.0011,
+          "autorickshaw": 0.036,
+          "bus": 0.0305,
+          "truck": 0.8998,
+          "person": 0.0003
+        },
+        "bicycle": {
+          "motorcycle": 0.2953,
+          "bicycle": 0.5551,
+          "person": 0.1496
+        },
+        "person": {
+          "car": 0.0009,
+          "motorcycle": 0.0235,
+          "autorickshaw": 0.0009,
+          "bicycle": 0.0003,
+          "person": 0.9743
+        }
+      },
+      "false_det_per_road_snapshot": {
+        "car": 0.2223,
+        "motorcycle": 0.2707,
+        "autorickshaw": 0.0697,
+        "bus": 0.0394,
+        "truck": 0.0788,
+        "bicycle": 0.0061
+      },
+      "source": {
+        "kind": "error_model",
+        "file": "/home/pilli/trafficsense/outputs/perception/error_model.json",
+        "sha256": "8f30435d5bc2d2a8e4bb6ca4f2eff4915c118c774f0618437a851bc23fd98a53",
+        "conf_threshold": 0.3,
+        "p_detect_from": "all objects"
+      }
+    },
+    "seed_entropy": [
+      0,
+      2446918698
+    ],
+    "rng": "numpy default_rng(SeedSequence(seed_entropy))",
+    "emergency_types_not_noised": [
+      "ambulance"
+    ],
+    "snapshots": 0,
+    "roads": 24,
+    "realized": {
+      "true_vehicle_observations": {},
+      "detection_rate": {},
+      "lost_to_non_vehicle_label": {},
+      "false_per_road_snapshot": {}
+    },
+    "log": "noise.jsonl"
+  },
+  "metric_notes": {
+    "att": "engine.get_average_travel_time(): all generated vehicles from scheduled start, incl. those still running or still waiting to enter",
+    "queue_mean_per_intersection": "waiting vehicles (speed<0.1) on incoming lanes, mean over steps and intersections",
+    "queue_mean_total": "same, summed over intersections",
+    "waiting_time_mean": "seconds with speed<0.1 per vehicle, mean over vehicles that entered",
+    "throughput": "vehicles that finished their trip"
+  }
+}

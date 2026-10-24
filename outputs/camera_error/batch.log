@@ -1,0 +1,266 @@
+2026-10-24 06:31:02 130 runs in the plan, 0 done, 130 to do; estimated 6.4 h left
+2026-10-24 06:31:02 [1/130] start indian_2x2_offpeak seed 0 perfect maxpressure
+2026-10-24 06:31:04 [1/130] done in 2 s: outputs/camera_error/runs/20261024-063102_indian_2x2_offpeak_maxpressure_s0
+2026-10-24 06:31:04 [2/130] start indian_2x2_offpeak seed 0 perfect fixedtime_webster
+2026-10-24 06:31:36 [2/130] done in 32 s: outputs/camera_error/runs/20261024-063104_indian_2x2_offpeak_fixedtime_webster_s0
+2026-10-24 06:31:36 [3/130] start indian_2x2_offpeak seed 0 junction maxpressure
+2026-10-24 06:31:39 [3/130] done in 3 s: outputs/camera_error/runs/20261024-063136_indian_2x2_offpeak_maxpressure_junction_s0
+2026-10-24 06:31:39 [4/130] start indian_2x2_offpeak seed 0 junction fixedtime_webster
+2026-10-24 06:32:11 [4/130] done in 32 s: outputs/camera_error/runs/20261024-063139_indian_2x2_offpeak_fixedtime_webster_junction_s0
+2026-10-24 06:32:11 [5/130] start indian_2x2_offpeak seed 0 crowded maxpressure
+2026-10-24 06:32:14 [5/130] done in 3 s: outputs/camera_error/runs/20261024-063211_indian_2x2_offpeak_maxpressure_crowded_s0
+2026-10-24 06:32:14 [6/130] start indian_2x2_offpeak seed 0 crowded fixedtime_webster
+2026-10-24 06:32:46 [6/130] done in 32 s: outputs/camera_error/runs/20261024-063214_indian_2x2_offpeak_fixedtime_webster_crowded_s0
+2026-10-24 06:32:46 [7/130] start indian_2x2_offpeak seed 1 perfect maxpressure
+2026-10-24 06:32:49 [7/130] done in 2 s: outputs/camera_error/runs/20261024-063246_indian_2x2_offpeak_maxpressure_s1
+2026-10-24 06:32:49 [8/130] start indian_2x2_offpeak seed 1 perfect fixedtime_webster
+2026-10-24 06:33:21 [8/130] done in 32 s: outputs/camera_error/runs/20261024-063249_indian_2x2_offpeak_fixedtime_webster_s1
+2026-10-24 06:33:21 [9/130] start indian_2x2_offpeak seed 1 junction maxpressure
+2026-10-24 06:33:24 [9/130] done in 3 s: outputs/camera_error/runs/20261024-063321_indian_2x2_offpeak_maxpressure_junction_s1
+2026-10-24 06:33:24 [10/130] start indian_2x2_offpeak seed 1 junction fixedtime_webster
+2026-10-24 06:33:56 [10/130] done in 32 s: outputs/camera_error/runs/20261024-063324_indian_2x2_offpeak_fixedtime_webster_junction_s1
+2026-10-24 06:33:56 [11/130] start indian_2x2_offpeak seed 1 crowded maxpressure
+2026-10-24 06:33:59 [11/130] done in 3 s: outputs/camera_error/runs/20261024-063356_indian_2x2_offpeak_maxpressure_crowded_s1
+2026-10-24 06:33:59 [12/130] start indian_2x2_offpeak seed 1 crowded fixedtime_webster
+2026-10-24 06:41:15 130 runs in the plan, 10 done, 120 to do; estimated 6.3 h left
+2026-10-24 06:41:15 [1/120] start indian_2x2_offpeak seed 1 crowded maxpressure
+2026-10-24 06:41:19 [1/120] done in 3 s: outputs/camera_error/runs/20261024-064115_indian_2x2_offpeak_maxpressure_crowded_s1
+2026-10-24 06:41:19 [2/120] start indian_2x2_offpeak seed 1 crowded fixedtime_webster
+2026-10-24 06:41:51 [2/120] done in 32 s: outputs/camera_error/runs/20261024-064119_indian_2x2_offpeak_fixedtime_webster_crowded_s1
+2026-10-24 06:41:51 [3/120] start indian_2x2_offpeak seed 2 perfect maxpressure
+2026-10-24 06:41:53 [3/120] done in 3 s: outputs/camera_error/runs/20261024-064151_indian_2x2_offpeak_maxpressure_s2
+2026-10-24 06:41:53 [4/120] start indian_2x2_offpeak seed 2 perfect fixedtime_webster
+2026-10-24 06:42:25 [4/120] done in 32 s: outputs/camera_error/runs/20261024-064153_indian_2x2_offpeak_fixedtime_webster_s2
+2026-10-24 06:42:25 [5/120] start indian_2x2_offpeak seed 2 junction maxpressure
+2026-10-24 06:42:28 [5/120] done in 3 s: outputs/camera_error/runs/20261024-064225_indian_2x2_offpeak_maxpressure_junction_s2
+2026-10-24 06:42:28 [6/120] start indian_2x2_offpeak seed 2 junction fixedtime_webster
+2026-10-24 06:43:00 [6/120] done in 31 s: outputs/camera_error/runs/20261024-064228_indian_2x2_offpeak_fixedtime_webster_junction_s2
+2026-10-24 06:43:00 [7/120] start indian_2x2_offpeak seed 2 crowded maxpressure
+2026-10-24 06:43:03 [7/120] done in 3 s: outputs/camera_error/runs/20261024-064300_indian_2x2_offpeak_maxpressure_crowded_s2
+2026-10-24 06:43:03 [8/120] start indian_2x2_offpeak seed 2 crowded fixedtime_webster
+2026-10-24 06:43:35 [8/120] done in 32 s: outputs/camera_error/runs/20261024-064303_indian_2x2_offpeak_fixedtime_webster_crowded_s2
+2026-10-24 06:43:35 [9/120] start indian_2x2_peak seed 0 perfect maxpressure
+2026-10-24 06:43:38 [9/120] done in 3 s: outputs/camera_error/runs/20261024-064335_indian_2x2_peak_maxpressure_s0
+2026-10-24 06:43:38 [10/120] start indian_2x2_peak seed 0 perfect fixedtime_webster
+2026-10-24 06:44:10 [10/120] done in 32 s: outputs/camera_error/runs/20261024-064338_indian_2x2_peak_fixedtime_webster_s0
+2026-10-24 06:44:10 [11/120] start indian_2x2_peak seed 0 junction maxpressure
+2026-10-24 06:44:15 [11/120] done in 5 s: outputs/camera_error/runs/20261024-064410_indian_2x2_peak_maxpressure_junction_s0
+2026-10-24 06:44:15 [12/120] start indian_2x2_peak seed 0 junction fixedtime_webster
+2026-10-24 06:44:48 [12/120] done in 32 s: outputs/camera_error/runs/20261024-064416_indian_2x2_peak_fixedtime_webster_junction_s0
+2026-10-24 06:44:48 [13/120] start indian_2x2_peak seed 0 crowded maxpressure
+2026-10-24 06:44:52 [13/120] done in 5 s: outputs/camera_error/runs/20261024-064448_indian_2x2_peak_maxpressure_crowded_s0
+2026-10-24 06:44:52 [14/120] start indian_2x2_peak seed 0 crowded fixedtime_webster
+2026-10-24 06:45:25 [14/120] done in 32 s: outputs/camera_error/runs/20261024-064453_indian_2x2_peak_fixedtime_webster_crowded_s0
+2026-10-24 06:45:25 [15/120] start indian_2x2_peak seed 1 perfect maxpressure
+2026-10-24 06:45:28 [15/120] done in 3 s: outputs/camera_error/runs/20261024-064525_indian_2x2_peak_maxpressure_s1
+2026-10-24 06:45:28 [16/120] start indian_2x2_peak seed 1 perfect fixedtime_webster
+2026-10-24 06:46:01 [16/120] done in 32 s: outputs/camera_error/runs/20261024-064528_indian_2x2_peak_fixedtime_webster_s1
+2026-10-24 06:46:01 [17/120] start indian_2x2_peak seed 1 junction maxpressure
+2026-10-24 06:46:06 [17/120] done in 5 s: outputs/camera_error/runs/20261024-064601_indian_2x2_peak_maxpressure_junction_s1
+2026-10-24 06:46:06 [18/120] start indian_2x2_peak seed 1 junction fixedtime_webster
+2026-10-24 06:46:38 [18/120] done in 32 s: outputs/camera_error/runs/20261024-064606_indian_2x2_peak_fixedtime_webster_junction_s1
+2026-10-24 06:46:38 [19/120] start indian_2x2_peak seed 1 crowded maxpressure
+2026-10-24 06:46:43 [19/120] done in 5 s: outputs/camera_error/runs/20261024-064638_indian_2x2_peak_maxpressure_crowded_s1
+2026-10-24 06:46:43 [20/120] start indian_2x2_peak seed 1 crowded fixedtime_webster
+2026-10-24 06:47:15 [20/120] done in 32 s: outputs/camera_error/runs/20261024-064643_indian_2x2_peak_fixedtime_webster_crowded_s1
+2026-10-24 06:47:15 [21/120] start indian_2x2_peak seed 2 perfect maxpressure
+2026-10-24 06:47:18 [21/120] done in 3 s: outputs/camera_error/runs/20261024-064715_indian_2x2_peak_maxpressure_s2
+2026-10-24 06:47:18 [22/120] start indian_2x2_peak seed 2 perfect fixedtime_webster
+2026-10-24 06:47:50 [22/120] done in 32 s: outputs/camera_error/runs/20261024-064718_indian_2x2_peak_fixedtime_webster_s2
+2026-10-24 06:47:50 [23/120] start indian_2x2_peak seed 2 junction maxpressure
+2026-10-24 06:47:55 [23/120] done in 5 s: outputs/camera_error/runs/20261024-064750_indian_2x2_peak_maxpressure_junction_s2
+2026-10-24 06:47:55 [24/120] start indian_2x2_peak seed 2 junction fixedtime_webster
+2026-10-24 06:48:28 [24/120] done in 33 s: outputs/camera_error/runs/20261024-064755_indian_2x2_peak_fixedtime_webster_junction_s2
+2026-10-24 06:48:28 [25/120] start indian_2x2_peak seed 2 crowded maxpressure
+2026-10-24 06:48:33 [25/120] done in 5 s: outputs/camera_error/runs/20261024-064828_indian_2x2_peak_maxpressure_crowded_s2
+2026-10-24 06:48:33 [26/120] start indian_2x2_peak seed 2 crowded fixedtime_webster
+2026-10-24 06:49:05 [26/120] done in 32 s: outputs/camera_error/runs/20261024-064833_indian_2x2_peak_fixedtime_webster_crowded_s2
+2026-10-24 06:49:05 [27/120] start indian_2x2_offpeak seed 0 uniform_p1.00 maxpressure
+2026-10-24 06:49:07 [27/120] done in 3 s: outputs/camera_error/runs/20261024-064905_indian_2x2_offpeak_maxpressure_uniform_p1.00_s0
+2026-10-24 06:49:07 [28/120] start indian_2x2_offpeak seed 0 uniform_p0.90 maxpressure
+2026-10-24 06:49:10 [28/120] done in 3 s: outputs/camera_error/runs/20261024-064908_indian_2x2_offpeak_maxpressure_uniform_p0.90_s0
+2026-10-24 06:49:10 [29/120] start indian_2x2_offpeak seed 0 uniform_p0.80 maxpressure
+2026-10-24 06:49:13 [29/120] done in 3 s: outputs/camera_error/runs/20261024-064910_indian_2x2_offpeak_maxpressure_uniform_p0.80_s0
+2026-10-24 06:49:13 [30/120] start indian_2x2_offpeak seed 0 uniform_p0.70 maxpressure
+2026-10-24 06:49:16 [30/120] done in 3 s: outputs/camera_error/runs/20261024-064913_indian_2x2_offpeak_maxpressure_uniform_p0.70_s0
+2026-10-24 06:49:16 [31/120] start indian_2x2_offpeak seed 0 uniform_p0.60 maxpressure
+2026-10-24 06:49:19 [31/120] done in 3 s: outputs/camera_error/runs/20261024-064916_indian_2x2_offpeak_maxpressure_uniform_p0.60_s0
+2026-10-24 06:49:19 [32/120] start indian_2x2_offpeak seed 0 uniform_p0.50 maxpressure
+2026-10-24 06:49:21 [32/120] done in 3 s: outputs/camera_error/runs/20261024-064919_indian_2x2_offpeak_maxpressure_uniform_p0.50_s0
+2026-10-24 06:49:21 [33/120] start indian_2x2_offpeak seed 1 uniform_p1.00 maxpressure
+2026-10-24 06:49:24 [33/120] done in 3 s: outputs/camera_error/runs/20261024-064922_indian_2x2_offpeak_maxpressure_uniform_p1.00_s1
+2026-10-24 06:49:24 [34/120] start indian_2x2_offpeak seed 1 uniform_p0.90 maxpressure
+2026-10-24 06:49:27 [34/120] done in 3 s: outputs/camera_error/runs/20261024-064924_indian_2x2_offpeak_maxpressure_uniform_p0.90_s1
+2026-10-24 06:49:27 [35/120] start indian_2x2_offpeak seed 1 uniform_p0.80 maxpressure
+2026-10-24 06:49:30 [35/120] done in 3 s: outputs/camera_error/runs/20261024-064927_indian_2x2_offpeak_maxpressure_uniform_p0.80_s1
+2026-10-24 06:49:30 [36/120] start indian_2x2_offpeak seed 1 uniform_p0.70 maxpressure
+2026-10-24 06:49:32 [36/120] done in 3 s: outputs/camera_error/runs/20261024-064930_indian_2x2_offpeak_maxpressure_uniform_p0.70_s1
+2026-10-24 06:49:32 [37/120] start indian_2x2_offpeak seed 1 uniform_p0.60 maxpressure
+2026-10-24 06:49:35 [37/120] done in 3 s: outputs/camera_error/runs/20261024-064933_indian_2x2_offpeak_maxpressure_uniform_p0.60_s1
+2026-10-24 06:49:35 [38/120] start indian_2x2_offpeak seed 1 uniform_p0.50 maxpressure
+2026-10-24 06:49:38 [38/120] done in 3 s: outputs/camera_error/runs/20261024-064935_indian_2x2_offpeak_maxpressure_uniform_p0.50_s1
+2026-10-24 06:49:38 [39/120] start indian_2x2_offpeak seed 2 uniform_p1.00 maxpressure
+2026-10-24 06:49:41 [39/120] done in 3 s: outputs/camera_error/runs/20261024-064938_indian_2x2_offpeak_maxpressure_uniform_p1.00_s2
+2026-10-24 06:49:41 [40/120] start indian_2x2_offpeak seed 2 uniform_p0.90 maxpressure
+2026-10-24 06:49:44 [40/120] done in 3 s: outputs/camera_error/runs/20261024-064941_indian_2x2_offpeak_maxpressure_uniform_p0.90_s2
+2026-10-24 06:49:44 [41/120] start indian_2x2_offpeak seed 2 uniform_p0.80 maxpressure
+2026-10-24 06:49:46 [41/120] done in 3 s: outputs/camera_error/runs/20261024-064944_indian_2x2_offpeak_maxpressure_uniform_p0.80_s2
+2026-10-24 06:49:46 [42/120] start indian_2x2_offpeak seed 2 uniform_p0.70 maxpressure
+2026-10-24 06:49:49 [42/120] done in 3 s: outputs/camera_error/runs/20261024-064947_indian_2x2_offpeak_maxpressure_uniform_p0.70_s2
+2026-10-24 06:49:49 [43/120] start indian_2x2_offpeak seed 2 uniform_p0.60 maxpressure
+2026-10-24 06:49:52 [43/120] done in 3 s: outputs/camera_error/runs/20261024-064949_indian_2x2_offpeak_maxpressure_uniform_p0.60_s2
+2026-10-24 06:49:52 [44/120] start indian_2x2_offpeak seed 2 uniform_p0.50 maxpressure
+2026-10-24 06:49:55 [44/120] done in 3 s: outputs/camera_error/runs/20261024-064952_indian_2x2_offpeak_maxpressure_uniform_p0.50_s2
+2026-10-24 06:49:55 [45/120] start indian_2x2_peak seed 0 uniform_p1.00 maxpressure
+2026-10-24 06:49:58 [45/120] done in 4 s: outputs/camera_error/runs/20261024-064955_indian_2x2_peak_maxpressure_uniform_p1.00_s0
+2026-10-24 06:49:58 [46/120] start indian_2x2_peak seed 0 uniform_p0.90 maxpressure
+2026-10-24 06:50:02 [46/120] done in 4 s: outputs/camera_error/runs/20261024-064959_indian_2x2_peak_maxpressure_uniform_p0.90_s0
+2026-10-24 06:50:02 [47/120] start indian_2x2_peak seed 0 uniform_p0.80 maxpressure
+2026-10-24 06:50:06 [47/120] done in 4 s: outputs/camera_error/runs/20261024-065002_indian_2x2_peak_maxpressure_uniform_p0.80_s0
+2026-10-24 06:50:06 [48/120] start indian_2x2_peak seed 0 uniform_p0.70 maxpressure
+2026-10-24 06:50:09 [48/120] done in 4 s: outputs/camera_error/runs/20261024-065006_indian_2x2_peak_maxpressure_uniform_p0.70_s0
+2026-10-24 06:50:09 [49/120] start indian_2x2_peak seed 0 uniform_p0.60 maxpressure
+2026-10-24 06:50:13 [49/120] done in 4 s: outputs/camera_error/runs/20261024-065010_indian_2x2_peak_maxpressure_uniform_p0.60_s0
+2026-10-24 06:50:13 [50/120] start indian_2x2_peak seed 0 uniform_p0.50 maxpressure
+2026-10-24 06:50:17 [50/120] done in 4 s: outputs/camera_error/runs/20261024-065013_indian_2x2_peak_maxpressure_uniform_p0.50_s0
+2026-10-24 06:50:17 [51/120] start indian_2x2_peak seed 1 uniform_p1.00 maxpressure
+2026-10-24 06:50:20 [51/120] done in 4 s: outputs/camera_error/runs/20261024-065017_indian_2x2_peak_maxpressure_uniform_p1.00_s1
+2026-10-24 06:50:20 [52/120] start indian_2x2_peak seed 1 uniform_p0.90 maxpressure
+2026-10-24 06:50:24 [52/120] done in 4 s: outputs/camera_error/runs/20261024-065020_indian_2x2_peak_maxpressure_uniform_p0.90_s1
+2026-10-24 06:50:24 [53/120] start indian_2x2_peak seed 1 uniform_p0.80 maxpressure
+2026-10-24 06:50:28 [53/120] done in 4 s: outputs/camera_error/runs/20261024-065024_indian_2x2_peak_maxpressure_uniform_p0.80_s1
+2026-10-24 06:50:28 [54/120] start indian_2x2_peak seed 1 uniform_p0.70 maxpressure
+2026-10-24 06:50:31 [54/120] done in 4 s: outputs/camera_error/runs/20261024-065028_indian_2x2_peak_maxpressure_uniform_p0.70_s1
+2026-10-24 06:50:31 [55/120] start indian_2x2_peak seed 1 uniform_p0.60 maxpressure
+2026-10-24 06:50:35 [55/120] done in 4 s: outputs/camera_error/runs/20261024-065032_indian_2x2_peak_maxpressure_uniform_p0.60_s1
+2026-10-24 06:50:35 [56/120] start indian_2x2_peak seed 1 uniform_p0.50 maxpressure
+2026-10-24 06:50:39 [56/120] done in 4 s: outputs/camera_error/runs/20261024-065035_indian_2x2_peak_maxpressure_uniform_p0.50_s1
+2026-10-24 06:50:39 [57/120] start indian_2x2_peak seed 2 uniform_p1.00 maxpressure
+2026-10-24 06:50:42 [57/120] done in 4 s: outputs/camera_error/runs/20261024-065039_indian_2x2_peak_maxpressure_uniform_p1.00_s2
+2026-10-24 06:50:42 [58/120] start indian_2x2_peak seed 2 uniform_p0.90 maxpressure
+2026-10-24 06:50:46 [58/120] done in 4 s: outputs/camera_error/runs/20261024-065043_indian_2x2_peak_maxpressure_uniform_p0.90_s2
+2026-10-24 06:50:46 [59/120] start indian_2x2_peak seed 2 uniform_p0.80 maxpressure
+2026-10-24 06:50:50 [59/120] done in 4 s: outputs/camera_error/runs/20261024-065046_indian_2x2_peak_maxpressure_uniform_p0.80_s2
+2026-10-24 06:50:50 [60/120] start indian_2x2_peak seed 2 uniform_p0.70 maxpressure
+2026-10-24 06:50:53 [60/120] done in 4 s: outputs/camera_error/runs/20261024-065050_indian_2x2_peak_maxpressure_uniform_p0.70_s2
+2026-10-24 06:50:53 [61/120] start indian_2x2_peak seed 2 uniform_p0.60 maxpressure
+2026-10-24 06:50:57 [61/120] done in 4 s: outputs/camera_error/runs/20261024-065053_indian_2x2_peak_maxpressure_uniform_p0.60_s2
+2026-10-24 06:50:57 [62/120] start indian_2x2_peak seed 2 uniform_p0.50 maxpressure
+2026-10-24 06:51:00 [62/120] done in 4 s: outputs/camera_error/runs/20261024-065057_indian_2x2_peak_maxpressure_uniform_p0.50_s2
+2026-10-24 06:51:00 [63/120] start indian_2x2_peak_amb seed 0 perfect maxpressure
+2026-10-24 06:51:04 [63/120] done in 3 s: outputs/camera_error/runs/20261024-065101_indian_2x2_peak_amb_maxpressure_s0
+2026-10-24 06:51:04 [64/120] start indian_2x2_peak_amb seed 0 perfect fixedtime_webster
+2026-10-24 06:51:36 [64/120] done in 32 s: outputs/camera_error/runs/20261024-065104_indian_2x2_peak_amb_fixedtime_webster_s0
+2026-10-24 06:51:36 [65/120] start indian_2x2_peak_amb seed 0 perfect preemption_mp
+2026-10-24 06:51:39 [65/120] done in 3 s: outputs/camera_error/runs/20261024-065136_indian_2x2_peak_amb_preemption_mp_s0
+2026-10-24 06:51:39 [66/120] start indian_2x2_peak_amb seed 0 junction maxpressure
+2026-10-24 06:51:44 [66/120] done in 5 s: outputs/camera_error/runs/20261024-065139_indian_2x2_peak_amb_maxpressure_junction_s0
+2026-10-24 06:51:44 [67/120] start indian_2x2_peak_amb seed 0 junction fixedtime_webster
+2026-10-24 06:52:16 [67/120] done in 32 s: outputs/camera_error/runs/20261024-065144_indian_2x2_peak_amb_fixedtime_webster_junction_s0
+2026-10-24 06:52:16 [68/120] start indian_2x2_peak_amb seed 0 junction preemption_mp
+2026-10-24 06:52:22 [68/120] done in 6 s: outputs/camera_error/runs/20261024-065216_indian_2x2_peak_amb_preemption_mp_junction_s0
+2026-10-24 06:52:22 [69/120] start indian_2x2_peak_amb seed 1 perfect maxpressure
+2026-10-24 06:52:25 [69/120] done in 4 s: outputs/camera_error/runs/20261024-065222_indian_2x2_peak_amb_maxpressure_s1
+2026-10-24 06:52:25 [70/120] start indian_2x2_peak_amb seed 1 perfect fixedtime_webster
+2026-10-24 06:52:58 [70/120] done in 33 s: outputs/camera_error/runs/20261024-065225_indian_2x2_peak_amb_fixedtime_webster_s1
+2026-10-24 06:52:58 [71/120] start indian_2x2_peak_amb seed 1 perfect preemption_mp
+2026-10-24 06:53:01 [71/120] done in 4 s: outputs/camera_error/runs/20261024-065258_indian_2x2_peak_amb_preemption_mp_s1
+2026-10-24 06:53:01 [72/120] start indian_2x2_peak_amb seed 1 junction maxpressure
+2026-10-24 06:53:06 [72/120] done in 5 s: outputs/camera_error/runs/20261024-065301_indian_2x2_peak_amb_maxpressure_junction_s1
+2026-10-24 06:53:06 [73/120] start indian_2x2_peak_amb seed 1 junction fixedtime_webster
+2026-10-24 06:53:39 [73/120] done in 33 s: outputs/camera_error/runs/20261024-065307_indian_2x2_peak_amb_fixedtime_webster_junction_s1
+2026-10-24 06:53:39 [74/120] start indian_2x2_peak_amb seed 1 junction preemption_mp
+2026-10-24 06:53:44 [74/120] done in 5 s: outputs/camera_error/runs/20261024-065339_indian_2x2_peak_amb_preemption_mp_junction_s1
+2026-10-24 06:53:44 [75/120] start indian_2x2_peak_amb seed 2 perfect maxpressure
+2026-10-24 06:53:48 [75/120] done in 4 s: outputs/camera_error/runs/20261024-065344_indian_2x2_peak_amb_maxpressure_s2
+2026-10-24 06:53:48 [76/120] start indian_2x2_peak_amb seed 2 perfect fixedtime_webster
+2026-10-24 06:54:20 [76/120] done in 32 s: outputs/camera_error/runs/20261024-065348_indian_2x2_peak_amb_fixedtime_webster_s2
+2026-10-24 06:54:20 [77/120] start indian_2x2_peak_amb seed 2 perfect preemption_mp
+2026-10-24 06:54:23 [77/120] done in 4 s: outputs/camera_error/runs/20261024-065420_indian_2x2_peak_amb_preemption_mp_s2
+2026-10-24 06:54:23 [78/120] start indian_2x2_peak_amb seed 2 junction maxpressure
+2026-10-24 06:54:28 [78/120] done in 5 s: outputs/camera_error/runs/20261024-065423_indian_2x2_peak_amb_maxpressure_junction_s2
+2026-10-24 06:54:28 [79/120] start indian_2x2_peak_amb seed 2 junction fixedtime_webster
+2026-10-24 06:55:00 [79/120] done in 32 s: outputs/camera_error/runs/20261024-065429_indian_2x2_peak_amb_fixedtime_webster_junction_s2
+2026-10-24 06:55:00 [80/120] start indian_2x2_peak_amb seed 2 junction preemption_mp
+2026-10-24 06:55:06 [80/120] done in 6 s: outputs/camera_error/runs/20261024-065500_indian_2x2_peak_amb_preemption_mp_junction_s2
+2026-10-24 06:55:06 [81/120] start indian_2x2_peak_amb seed 3 perfect maxpressure
+2026-10-24 06:55:09 [81/120] done in 3 s: outputs/camera_error/runs/20261024-065506_indian_2x2_peak_amb_maxpressure_s3
+2026-10-24 06:55:09 [82/120] start indian_2x2_peak_amb seed 3 perfect fixedtime_webster
+2026-10-24 06:55:42 [82/120] done in 32 s: outputs/camera_error/runs/20261024-065509_indian_2x2_peak_amb_fixedtime_webster_s3
+2026-10-24 06:55:42 [83/120] start indian_2x2_peak_amb seed 3 perfect preemption_mp
+2026-10-24 06:55:45 [83/120] done in 3 s: outputs/camera_error/runs/20261024-065542_indian_2x2_peak_amb_preemption_mp_s3
+2026-10-24 06:55:45 [84/120] start indian_2x2_peak_amb seed 3 junction maxpressure
+2026-10-24 06:55:50 [84/120] done in 5 s: outputs/camera_error/runs/20261024-065545_indian_2x2_peak_amb_maxpressure_junction_s3
+2026-10-24 06:55:50 [85/120] start indian_2x2_peak_amb seed 3 junction fixedtime_webster
+2026-10-24 06:56:22 [85/120] done in 32 s: outputs/camera_error/runs/20261024-065550_indian_2x2_peak_amb_fixedtime_webster_junction_s3
+2026-10-24 06:56:22 [86/120] start indian_2x2_peak_amb seed 3 junction preemption_mp
+2026-10-24 06:56:28 [86/120] done in 5 s: outputs/camera_error/runs/20261024-065623_indian_2x2_peak_amb_preemption_mp_junction_s3
+2026-10-24 06:56:28 [87/120] start indian_2x2_peak_amb seed 4 perfect maxpressure
+2026-10-24 06:56:31 [87/120] done in 3 s: outputs/camera_error/runs/20261024-065628_indian_2x2_peak_amb_maxpressure_s4
+2026-10-24 06:56:31 [88/120] start indian_2x2_peak_amb seed 4 perfect fixedtime_webster
+2026-10-24 06:57:04 [88/120] done in 32 s: outputs/camera_error/runs/20261024-065632_indian_2x2_peak_amb_fixedtime_webster_s4
+2026-10-24 06:57:04 [89/120] start indian_2x2_peak_amb seed 4 perfect preemption_mp
+2026-10-24 06:57:07 [89/120] done in 4 s: outputs/camera_error/runs/20261024-065704_indian_2x2_peak_amb_preemption_mp_s4
+2026-10-24 06:57:07 [90/120] start indian_2x2_peak_amb seed 4 junction maxpressure
+2026-10-24 06:57:12 [90/120] done in 5 s: outputs/camera_error/runs/20261024-065707_indian_2x2_peak_amb_maxpressure_junction_s4
+2026-10-24 06:57:12 [91/120] start indian_2x2_peak_amb seed 4 junction fixedtime_webster
+2026-10-24 06:57:45 [91/120] done in 33 s: outputs/camera_error/runs/20261024-065712_indian_2x2_peak_amb_fixedtime_webster_junction_s4
+2026-10-24 06:57:45 [92/120] start indian_2x2_peak_amb seed 4 junction preemption_mp
+2026-10-24 06:57:50 [92/120] done in 5 s: outputs/camera_error/runs/20261024-065745_indian_2x2_peak_amb_preemption_mp_junction_s4
+2026-10-24 06:57:53 [93/120] start indian_2x2_offpeak seed 0 perfect llm_guarded_mp
+2026-10-24 07:10:32 [93/120] done in 759 s: outputs/camera_error/runs/20261024-065753_indian_2x2_offpeak_llm_guarded_mp_s0
+2026-10-24 07:10:32 [94/120] start indian_2x2_offpeak seed 0 junction llm_guarded_mp
+2026-10-24 07:22:45 [94/120] done in 733 s: outputs/camera_error/runs/20261024-071033_indian_2x2_offpeak_llm_guarded_mp_junction_s0
+2026-10-24 07:22:45 [95/120] start indian_2x2_offpeak seed 0 crowded llm_guarded_mp
+2026-10-24 07:34:57 [95/120] done in 732 s: outputs/camera_error/runs/20261024-072245_indian_2x2_offpeak_llm_guarded_mp_crowded_s0
+2026-10-24 07:34:57 [96/120] start indian_2x2_offpeak seed 1 perfect llm_guarded_mp
+2026-10-24 07:47:07 [96/120] done in 730 s: outputs/camera_error/runs/20261024-073457_indian_2x2_offpeak_llm_guarded_mp_s1
+2026-10-24 07:47:07 [97/120] start indian_2x2_offpeak seed 1 junction llm_guarded_mp
+2026-10-24 07:59:31 [97/120] done in 744 s: outputs/camera_error/runs/20261024-074707_indian_2x2_offpeak_llm_guarded_mp_junction_s1
+2026-10-24 07:59:31 [98/120] start indian_2x2_offpeak seed 1 crowded llm_guarded_mp
+2026-10-24 08:11:51 [98/120] done in 741 s: outputs/camera_error/runs/20261024-075931_indian_2x2_offpeak_llm_guarded_mp_crowded_s1
+2026-10-24 08:11:51 [99/120] start indian_2x2_offpeak seed 2 perfect llm_guarded_mp
+2026-10-24 08:24:16 [99/120] done in 744 s: outputs/camera_error/runs/20261024-081152_indian_2x2_offpeak_llm_guarded_mp_s2
+2026-10-24 08:24:16 [100/120] start indian_2x2_offpeak seed 2 junction llm_guarded_mp
+2026-10-24 08:36:26 [100/120] done in 730 s: outputs/camera_error/runs/20261024-082416_indian_2x2_offpeak_llm_guarded_mp_junction_s2
+2026-10-24 08:36:26 [101/120] start indian_2x2_offpeak seed 2 crowded llm_guarded_mp
+2026-10-24 08:48:44 [101/120] done in 737 s: outputs/camera_error/runs/20261024-083626_indian_2x2_offpeak_llm_guarded_mp_crowded_s2
+2026-10-24 08:48:44 [102/120] start indian_2x2_peak seed 0 perfect llm_guarded_mp
+2026-10-24 09:00:41 [102/120] done in 718 s: outputs/camera_error/runs/20261024-084844_indian_2x2_peak_llm_guarded_mp_s0
+2026-10-24 09:00:41 [103/120] start indian_2x2_peak seed 0 junction llm_guarded_mp
+2026-10-24 09:12:43 [103/120] done in 721 s: outputs/camera_error/runs/20261024-090042_indian_2x2_peak_llm_guarded_mp_junction_s0
+2026-10-24 09:12:43 [104/120] start indian_2x2_peak seed 0 crowded llm_guarded_mp
+2026-10-24 09:24:50 [104/120] done in 727 s: outputs/camera_error/runs/20261024-091243_indian_2x2_peak_llm_guarded_mp_crowded_s0
+2026-10-24 09:24:50 [105/120] start indian_2x2_peak seed 1 perfect llm_guarded_mp
+2026-10-24 09:36:49 [105/120] done in 719 s: outputs/camera_error/runs/20261024-092450_indian_2x2_peak_llm_guarded_mp_s1
+2026-10-24 09:36:49 [106/120] start indian_2x2_peak seed 1 junction llm_guarded_mp
+2026-10-24 09:48:58 [106/120] done in 729 s: outputs/camera_error/runs/20261024-093649_indian_2x2_peak_llm_guarded_mp_junction_s1
+2026-10-24 09:48:58 [107/120] start indian_2x2_peak seed 1 crowded llm_guarded_mp
+2026-10-24 10:01:02 [107/120] done in 724 s: outputs/camera_error/runs/20261024-094859_indian_2x2_peak_llm_guarded_mp_crowded_s1
+2026-10-24 10:01:02 [108/120] start indian_2x2_peak seed 2 perfect llm_guarded_mp
+2026-10-24 10:12:57 [108/120] done in 715 s: outputs/camera_error/runs/20261024-100102_indian_2x2_peak_llm_guarded_mp_s2
+2026-10-24 10:12:57 [109/120] start indian_2x2_peak seed 2 junction llm_guarded_mp
+2026-10-24 10:25:03 [109/120] done in 727 s: outputs/camera_error/runs/20261024-101257_indian_2x2_peak_llm_guarded_mp_junction_s2
+2026-10-24 10:25:03 [110/120] start indian_2x2_peak seed 2 crowded llm_guarded_mp
+2026-10-24 10:37:09 [110/120] done in 725 s: outputs/camera_error/runs/20261024-102504_indian_2x2_peak_llm_guarded_mp_crowded_s2
+2026-10-24 10:37:09 [111/120] start indian_2x2_peak_amb seed 0 perfect llm_guarded_mp
+2026-10-24 10:49:39 [111/120] done in 750 s: outputs/camera_error/runs/20261024-103709_indian_2x2_peak_amb_llm_guarded_mp_s0
+2026-10-24 10:49:39 [112/120] start indian_2x2_peak_amb seed 0 junction llm_guarded_mp
+2026-10-24 11:02:14 [112/120] done in 755 s: outputs/camera_error/runs/20261024-104939_indian_2x2_peak_amb_llm_guarded_mp_junction_s0
+2026-10-24 11:02:14 [113/120] start indian_2x2_peak_amb seed 1 perfect llm_guarded_mp
+2026-10-24 11:14:52 [113/120] done in 758 s: outputs/camera_error/runs/20261024-110214_indian_2x2_peak_amb_llm_guarded_mp_s1
+2026-10-24 11:14:52 [114/120] start indian_2x2_peak_amb seed 1 junction llm_guarded_mp
+2026-10-24 11:27:41 [114/120] done in 769 s: outputs/camera_error/runs/20261024-111452_indian_2x2_peak_amb_llm_guarded_mp_junction_s1
+2026-10-24 11:27:41 [115/120] start indian_2x2_peak_amb seed 2 perfect llm_guarded_mp
+2026-10-24 11:40:11 [115/120] done in 750 s: outputs/camera_error/runs/20261024-112741_indian_2x2_peak_amb_llm_guarded_mp_s2
+2026-10-24 11:40:11 [116/120] start indian_2x2_peak_amb seed 2 junction llm_guarded_mp
+2026-10-24 11:52:43 [116/120] done in 752 s: outputs/camera_error/runs/20261024-114011_indian_2x2_peak_amb_llm_guarded_mp_junction_s2
+2026-10-24 11:52:43 [117/120] start indian_2x2_peak_amb seed 3 perfect llm_guarded_mp
+2026-10-24 12:05:08 [117/120] done in 745 s: outputs/camera_error/runs/20261024-115243_indian_2x2_peak_amb_llm_guarded_mp_s3
+2026-10-24 12:05:08 [118/120] start indian_2x2_peak_amb seed 3 junction llm_guarded_mp
+2026-10-24 12:17:43 [118/120] done in 755 s: outputs/camera_error/runs/20261024-120508_indian_2x2_peak_amb_llm_guarded_mp_junction_s3
+2026-10-24 12:17:43 [119/120] start indian_2x2_peak_amb seed 4 perfect llm_guarded_mp
+2026-10-24 12:30:12 [119/120] done in 750 s: outputs/camera_error/runs/20261024-121743_indian_2x2_peak_amb_llm_guarded_mp_s4
+2026-10-24 12:30:12 [120/120] start indian_2x2_peak_amb seed 4 junction llm_guarded_mp
+2026-10-24 12:42:51 [120/120] done in 759 s: outputs/camera_error/runs/20261024-123012_indian_2x2_peak_amb_llm_guarded_mp_junction_s4
+2026-10-24 12:42:51 All 130 runs of the plan are complete

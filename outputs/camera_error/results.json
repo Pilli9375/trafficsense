@@ -1,0 +1,1822 @@
+{
+ "main": {
+  "indian_2x2_offpeak": {
+   "maxpressure": {
+    "perfect": {
+     "runs": [
+      "outputs/camera_error/runs/20261024-063102_indian_2x2_offpeak_maxpressure_s0",
+      "outputs/camera_error/runs/20261024-063246_indian_2x2_offpeak_maxpressure_s1",
+      "outputs/camera_error/runs/20261024-064151_indian_2x2_offpeak_maxpressure_s2"
+     ],
+     "att": [
+      88.13342160654352,
+      0.9608272095444079
+     ],
+     "queue_mean_per_intersection": [
+      4.9437037037037035,
+      0.2282294845000635
+     ],
+     "waiting_time_mean": [
+      29.75112285984878,
+      0.8517047227133328
+     ],
+     "throughput": [
+      2332,
+      35.93048844644336
+     ]
+    },
+    "junction": {
+     "runs": [
+      "outputs/camera_error/runs/20261024-063136_indian_2x2_offpeak_maxpressure_junction_s0",
+      "outputs/camera_error/runs/20261024-063321_indian_2x2_offpeak_maxpressure_junction_s1",
+      "outputs/camera_error/runs/20261024-064225_indian_2x2_offpeak_maxpressure_junction_s2"
+     ],
+     "att": [
+      92.40089455013982,
+      0.45166807360340305
+     ],
+     "queue_mean_per_intersection": [
+      5.639074074074075,
+      0.16174310808139947
+     ],
+     "waiting_time_mean": [
+      33.94508461428548,
+      0.36971892793401806
+     ],
+     "throughput": [
+      2322.6666666666665,
+      35.27510926040249
+     ],
+     "att_vs_perfect": {
+      "mean": 4.267472943596299,
+      "min": 3.655144032921811,
+      "max": 4.729637526652439,
+      "per_seed": [
+       4.729637526652439,
+       4.417637271214645,
+       3.655144032921811
+      ],
+      "pct_mean": 4.846836591000542,
+      "pct_min": 4.103317487376362,
+      "pct_max": 5.426576574372609
+     }
+    },
+    "crowded": {
+     "runs": [
+      "outputs/camera_error/runs/20261024-063211_indian_2x2_offpeak_maxpressure_crowded_s0",
+      "outputs/camera_error/runs/20261024-064115_indian_2x2_offpeak_maxpressure_crowded_s1",
+      "outputs/camera_error/runs/20261024-064300_indian_2x2_offpeak_maxpressure_crowded_s2"
+     ],
+     "att": [
+      95.39769004709554,
+      1.7127426108783166
+     ],
+     "queue_mean_per_intersection": [
+      6.151666666666667,
+      0.34497007804354657
+     ],
+     "waiting_time_mean": [
+      37.021384589824514,
+      1.5056823750322232
+     ],
+     "throughput": [
+      2320.3333333333335,
+      38.17503547258775
+     ],
+     "att_vs_perfect": {
+      "mean": 7.26426844055202,
+      "min": 6.386780383795298,
+      "max": 8.755407653910154,
+      "per_seed": [
+       6.386780383795298,
+       8.755407653910154,
+       6.650617283950609
+      ],
+      "pct_mean": 8.241543974430158,
+      "pct_min": 7.327908876961377,
+      "pct_max": 9.930644019815999
+     }
+    }
+   },
+   "fixedtime_webster": {
+    "perfect": {
+     "runs": [
+      "outputs/camera_error/runs/20261024-063104_indian_2x2_offpeak_fixedtime_webster_s0",
+      "outputs/camera_error/runs/20261024-063249_indian_2x2_offpeak_fixedtime_webster_s1",
+      "outputs/camera_error/runs/20261024-064153_indian_2x2_offpeak_fixedtime_webster_s2"
+     ],
+     "att": [
+      100.39992123684537,
+      4.137813895970666
+     ],
+     "queue_mean_per_intersection": [
+      6.821296296296296,
+      0.5235265981997796
+     ],
+     "waiting_time_mean": [
+      41.10687454743409,
+      3.8889524619937887
+     ],
+     "throughput": [
+      2319.6666666666665,
+      35.92121007612819
+     ]
+    },
+    "junction": {
+     "runs": [
+      "outputs/camera_error/runs/20261024-063139_indian_2x2_offpeak_fixedtime_webster_junction_s0",
+      "outputs/camera_error/runs/20261024-063324_indian_2x2_offpeak_fixedtime_webster_junction_s1",
+      "outputs/camera_error/runs/20261024-064228_indian_2x2_offpeak_fixedtime_webster_junction_s2"
+     ],
+     "att": [
+      100.39992123684537,
+      4.137813895970666
+     ],
+     "queue_mean_per_intersection": [
+      6.821296296296296,
+      0.5235265981997796
+     ],
+     "waiting_time_mean": [
+      41.10687454743409,
+      3.8889524619937887
+     ],
+     "throughput": [
+      2319.6666666666665,
+      35.92121007612819
+     ],
+     "att_vs_perfect": {
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "per_seed": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "pct_mean": 0.0,
+      "pct_min": 0.0,
+      "pct_max": 0.0
+     }
+    },
+    "crowded": {
+     "runs": [
+      "outputs/camera_error/runs/20261024-063214_indian_2x2_offpeak_fixedtime_webster_crowded_s0",
+      "outputs/camera_error/runs/20261024-064119_indian_2x2_offpeak_fixedtime_webster_crowded_s1",
+      "outputs/camera_error/runs/20261024-064303_indian_2x2_offpeak_fixedtime_webster_crowded_s2"
+     ],
+     "att": [
+      100.39992123684537,
+      4.137813895970666
+     ],
+     "queue_mean_per_intersection": [
+      6.821296296296296,
+      0.5235265981997796
+     ],
+     "waiting_time_mean": [
+      41.10687454743409,
+      3.8889524619937887
+     ],
+     "throughput": [
+      2319.6666666666665,
+      35.92121007612819
+     ],
+     "att_vs_perfect": {
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "per_seed": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "pct_mean": 0.0,
+      "pct_min": 0.0,
+      "pct_max": 0.0
+     }
+    }
+   },
+   "llm_guarded_mp": {
+    "perfect": {
+     "runs": [
+      "outputs/camera_error/runs/20261024-065753_indian_2x2_offpeak_llm_guarded_mp_s0",
+      "outputs/camera_error/runs/20261024-073457_indian_2x2_offpeak_llm_guarded_mp_s1",
+      "outputs/camera_error/runs/20261024-081152_indian_2x2_offpeak_llm_guarded_mp_s2"
+     ],
+     "att": [
+      88.95162274791467,
+      0.766806526627488
+     ],
+     "queue_mean_per_intersection": [
+      5.082268518518518,
+      0.1809168438407218
+     ],
+     "waiting_time_mean": [
+      30.592932085978454,
+      0.572936309496262
+     ],
+     "throughput": [
+      2326.6666666666665,
+      41.18656738954259
+     ],
+     "llm": {
+      "calls": 2177,
+      "failures": 0,
+      "guard_overrides": 1767,
+      "guard_override_rate": 0.8116674322462104,
+      "mp_disagreement_rate": 0.915480018373909,
+      "latency_mean_s": 1.020558001940905
+     }
+    },
+    "junction": {
+     "runs": [
+      "outputs/camera_error/runs/20261024-071033_indian_2x2_offpeak_llm_guarded_mp_junction_s0",
+      "outputs/camera_error/runs/20261024-074707_indian_2x2_offpeak_llm_guarded_mp_junction_s1",
+      "outputs/camera_error/runs/20261024-082416_indian_2x2_offpeak_llm_guarded_mp_junction_s2"
+     ],
+     "att": [
+      93.46414777285585,
+      0.6039298211108223
+     ],
+     "queue_mean_per_intersection": [
+      5.820555555555555,
+      0.2058893217450626
+     ],
+     "waiting_time_mean": [
+      35.03760643856481,
+      0.657164880622635
+     ],
+     "throughput": [
+      2321.3333333333335,
+      35.21836642056717
+     ],
+     "att_vs_perfect": {
+      "mean": 4.512525024941179,
+      "min": 3.7999168053244574,
+      "max": 4.872839506172852,
+      "per_seed": [
+       4.864818763326227,
+       3.7999168053244574,
+       4.872839506172852
+      ],
+      "pct_mean": 5.075811357126443,
+      "pct_min": 4.244710955396845,
+      "pct_max": 5.523198109873299
+     },
+     "llm": {
+      "calls": 2195,
+      "failures": 0,
+      "guard_overrides": 1870,
+      "guard_override_rate": 0.8519362186788155,
+      "mp_disagreement_rate": 0.9307517084282461,
+      "latency_mean_s": 0.9992652879849024
+     }
+    },
+    "crowded": {
+     "runs": [
+      "outputs/camera_error/runs/20261024-072245_indian_2x2_offpeak_llm_guarded_mp_crowded_s0",
+      "outputs/camera_error/runs/20261024-075931_indian_2x2_offpeak_llm_guarded_mp_crowded_s1",
+      "outputs/camera_error/runs/20261024-083626_indian_2x2_offpeak_llm_guarded_mp_crowded_s2"
+     ],
+     "att": [
+      95.33338865483246,
+      0.2900301745253731
+     ],
+     "queue_mean_per_intersection": [
+      6.130902777777778,
+      0.0935087172852528
+     ],
+     "waiting_time_mean": [
+      36.90933312223993,
+      0.4253302657169087
+     ],
+     "throughput": [
+      2318,
+      35.08560958569767
+     ],
+     "att_vs_perfect": {
+      "mean": 6.381765906917792,
+      "min": 5.479617304492521,
+      "max": 7.454157782515992,
+      "per_seed": [
+       7.454157782515992,
+       5.479617304492521,
+       6.211522633744863
+      ],
+      "pct_mean": 7.1811252542174495,
+      "pct_min": 6.121026536994282,
+      "pct_max": 8.462964845773604
+     },
+     "llm": {
+      "calls": 2189,
+      "failures": 0,
+      "guard_overrides": 1807,
+      "guard_override_rate": 0.8254910918227502,
+      "mp_disagreement_rate": 0.9291914116034719,
+      "latency_mean_s": 1.0039942334890832
+     }
+    }
+   }
+  },
+  "indian_2x2_peak": {
+   "maxpressure": {
+    "perfect": {
+     "runs": [
+      "outputs/camera_error/runs/20261024-064335_indian_2x2_peak_maxpressure_s0",
+      "outputs/camera_error/runs/20261024-064525_indian_2x2_peak_maxpressure_s1",
+      "outputs/camera_error/runs/20261024-064715_indian_2x2_peak_maxpressure_s2"
+     ],
+     "att": [
+      115.53740016460706,
+      0.8800224831088314
+     ],
+     "queue_mean_per_intersection": [
+      17.829467592592593,
+      0.3196951788728579
+     ],
+     "waiting_time_mean": [
+      54.078250652364524,
+      0.539616464967039
+     ],
+     "throughput": [
+      4576.333333333333,
+      68.23733093647006
+     ]
+    },
+    "junction": {
+     "runs": [
+      "outputs/camera_error/runs/20261024-064410_indian_2x2_peak_maxpressure_junction_s0",
+      "outputs/camera_error/runs/20261024-064601_indian_2x2_peak_maxpressure_junction_s1",
+      "outputs/camera_error/runs/20261024-064750_indian_2x2_peak_maxpressure_junction_s2"
+     ],
+     "att": [
+      118.19450907762699,
+      1.8476993873365521
+     ],
+     "queue_mean_per_intersection": [
+      18.6225,
+      0.214226251348837
+     ],
+     "waiting_time_mean": [
+      56.49147882736536,
+      1.552086845306564
+     ],
+     "throughput": [
+      4584,
+      79.77468270071653
+     ],
+     "att_vs_perfect": {
+      "mean": 2.6571089130199206,
+      "min": 1.1640950792326947,
+      "max": 4.333404756803077,
+      "per_seed": [
+       4.333404756803077,
+       1.1640950792326947,
+       2.4738269030239906
+      ],
+      "pct_mean": 2.299607163107394,
+      "pct_min": 1.0026669540152482,
+      "pct_max": 3.73604571040103
+     }
+    },
+    "crowded": {
+     "runs": [
+      "outputs/camera_error/runs/20261024-064448_indian_2x2_peak_maxpressure_crowded_s0",
+      "outputs/camera_error/runs/20261024-064638_indian_2x2_peak_maxpressure_crowded_s1",
+      "outputs/camera_error/runs/20261024-064828_indian_2x2_peak_maxpressure_crowded_s2"
+     ],
+     "att": [
+      120.58946968276113,
+      1.4280477328973542
+     ],
+     "queue_mean_per_intersection": [
+      19.374282407407406,
+      0.6721376364846092
+     ],
+     "waiting_time_mean": [
+      58.750381895493014,
+      1.4030472954107287
+     ],
+     "throughput": [
+      4581.666666666667,
+      83.66799467737549
+     ],
+     "att_vs_perfect": {
+      "mean": 5.052069518154075,
+      "min": 3.5304420350291963,
+      "max": 7.707403545359753,
+      "per_seed": [
+       3.9183629740732755,
+       3.5304420350291963,
+       7.707403545359753
+      ],
+      "pct_mean": 4.38302458526214,
+      "pct_min": 3.0408663559710183,
+      "pct_max": 6.72999003895189
+     }
+    }
+   },
+   "fixedtime_webster": {
+    "perfect": {
+     "runs": [
+      "outputs/camera_error/runs/20261024-064338_indian_2x2_peak_fixedtime_webster_s0",
+      "outputs/camera_error/runs/20261024-064528_indian_2x2_peak_fixedtime_webster_s1",
+      "outputs/camera_error/runs/20261024-064718_indian_2x2_peak_fixedtime_webster_s2"
+     ],
+     "att": [
+      116.29385705408158,
+      4.5729525157747
+     ],
+     "queue_mean_per_intersection": [
+      18.269791666666666,
+      1.278187036286138
+     ],
+     "waiting_time_mean": [
+      55.42192575026542,
+      4.041064778860686
+     ],
+     "throughput": [
+      4577,
+      87.17797887081348
+     ]
+    },
+    "junction": {
+     "runs": [
+      "outputs/camera_error/runs/20261024-064416_indian_2x2_peak_fixedtime_webster_junction_s0",
+      "outputs/camera_error/runs/20261024-064606_indian_2x2_peak_fixedtime_webster_junction_s1",
+      "outputs/camera_error/runs/20261024-064755_indian_2x2_peak_fixedtime_webster_junction_s2"
+     ],
+     "att": [
+      116.29385705408158,
+      4.5729525157747
+     ],
+     "queue_mean_per_intersection": [
+      18.269791666666666,
+      1.278187036286138
+     ],
+     "waiting_time_mean": [
+      55.42192575026542,
+      4.041064778860686
+     ],
+     "throughput": [
+      4577,
+      87.17797887081348
+     ],
+     "att_vs_perfect": {
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "per_seed": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "pct_mean": 0.0,
+      "pct_min": 0.0,
+      "pct_max": 0.0
+     }
+    },
+    "crowded": {
+     "runs": [
+      "outputs/camera_error/runs/20261024-064453_indian_2x2_peak_fixedtime_webster_crowded_s0",
+      "outputs/camera_error/runs/20261024-064643_indian_2x2_peak_fixedtime_webster_crowded_s1",
+      "outputs/camera_error/runs/20261024-064833_indian_2x2_peak_fixedtime_webster_crowded_s2"
+     ],
+     "att": [
+      116.29385705408158,
+      4.5729525157747
+     ],
+     "queue_mean_per_intersection": [
+      18.269791666666666,
+      1.278187036286138
+     ],
+     "waiting_time_mean": [
+      55.42192575026542,
+      4.041064778860686
+     ],
+     "throughput": [
+      4577,
+      87.17797887081348
+     ],
+     "att_vs_perfect": {
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "per_seed": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "pct_mean": 0.0,
+      "pct_min": 0.0,
+      "pct_max": 0.0
+     }
+    }
+   },
+   "llm_guarded_mp": {
+    "perfect": {
+     "runs": [
+      "outputs/camera_error/runs/20261024-084844_indian_2x2_peak_llm_guarded_mp_s0",
+      "outputs/camera_error/runs/20261024-092450_indian_2x2_peak_llm_guarded_mp_s1",
+      "outputs/camera_error/runs/20261024-100102_indian_2x2_peak_llm_guarded_mp_s2"
+     ],
+     "att": [
+      116.06986655409136,
+      2.8839004387459095
+     ],
+     "queue_mean_per_intersection": [
+      17.965324074074076,
+      0.8466486000201939
+     ],
+     "waiting_time_mean": [
+      54.49231009142355,
+      2.500248880591738
+     ],
+     "throughput": [
+      4582.333333333333,
+      77.10598766200543
+     ],
+     "llm": {
+      "calls": 2167,
+      "failures": 0,
+      "guard_overrides": 1795,
+      "guard_override_rate": 0.8283341024457775,
+      "mp_disagreement_rate": 0.9284725426857406,
+      "latency_mean_s": 0.9865338029216215
+     }
+    },
+    "junction": {
+     "runs": [
+      "outputs/camera_error/runs/20261024-090042_indian_2x2_peak_llm_guarded_mp_junction_s0",
+      "outputs/camera_error/runs/20261024-093649_indian_2x2_peak_llm_guarded_mp_junction_s1",
+      "outputs/camera_error/runs/20261024-101257_indian_2x2_peak_llm_guarded_mp_junction_s2"
+     ],
+     "att": [
+      117.86410560639287,
+      1.736851074043662
+     ],
+     "queue_mean_per_intersection": [
+      18.51956018518518,
+      0.2784395704511204
+     ],
+     "waiting_time_mean": [
+      56.18360718512626,
+      1.399403165448972
+     ],
+     "throughput": [
+      4571.333333333333,
+      76.74199198179139
+     ],
+     "att_vs_perfect": {
+      "mean": 1.7942390523015064,
+      "min": -0.4964553794829101,
+      "max": 3.1632950990615285,
+      "per_seed": [
+       2.7158774373259007,
+       -0.4964553794829101,
+       3.1632950990615285
+      ],
+      "pct_mean": 1.5694711688422238,
+      "pct_min": -0.4188870377244699,
+      "pct_max": 2.802086046653408
+     },
+     "llm": {
+      "calls": 2174,
+      "failures": 0,
+      "guard_overrides": 1871,
+      "guard_override_rate": 0.8606255749770009,
+      "mp_disagreement_rate": 0.9236430542778289,
+      "latency_mean_s": 0.9934666252732455
+     }
+    },
+    "crowded": {
+     "runs": [
+      "outputs/camera_error/runs/20261024-091243_indian_2x2_peak_llm_guarded_mp_crowded_s0",
+      "outputs/camera_error/runs/20261024-094859_indian_2x2_peak_llm_guarded_mp_crowded_s1",
+      "outputs/camera_error/runs/20261024-102504_indian_2x2_peak_llm_guarded_mp_crowded_s2"
+     ],
+     "att": [
+      121.68112686418354,
+      1.16062364151638
+     ],
+     "queue_mean_per_intersection": [
+      19.685810185185186,
+      0.7427932439818232
+     ],
+     "waiting_time_mean": [
+      59.68756211103539,
+      1.3300752181333024
+     ],
+     "throughput": [
+      4577,
+      80.72174428244226
+     ],
+     "att_vs_perfect": {
+      "mean": 5.611260310092173,
+      "min": 3.5519605742446885,
+      "max": 9.6104275286757,
+      "per_seed": [
+       3.5519605742446885,
+       3.6713928273561294,
+       9.6104275286757
+      ],
+      "pct_mean": 4.88394214744914,
+      "pct_min": 3.0410320099942876,
+      "pct_max": 8.513035944216908
+     },
+     "llm": {
+      "calls": 2175,
+      "failures": 0,
+      "guard_overrides": 1851,
+      "guard_override_rate": 0.8510344827586207,
+      "mp_disagreement_rate": 0.9259770114942528,
+      "latency_mean_s": 0.9927604499908469
+     }
+    }
+   }
+  }
+ },
+ "sweep": {
+  "indian_2x2_offpeak": {
+   "uniform_p1.00": {
+    "runs": [
+     "outputs/camera_error/runs/20261024-064905_indian_2x2_offpeak_maxpressure_uniform_p1.00_s0",
+     "outputs/camera_error/runs/20261024-064922_indian_2x2_offpeak_maxpressure_uniform_p1.00_s1",
+     "outputs/camera_error/runs/20261024-064938_indian_2x2_offpeak_maxpressure_uniform_p1.00_s2"
+    ],
+    "att": [
+     88.13342160654352,
+     0.9608272095444079
+    ],
+    "queue_mean_per_intersection": [
+     4.9437037037037035,
+     0.2282294845000635
+    ],
+    "waiting_time_mean": [
+     29.75112285984878,
+     0.8517047227133328
+    ],
+    "throughput": [
+     2332,
+     35.93048844644336
+    ],
+    "att_vs_perfect": {
+     "mean": 0.0,
+     "min": 0.0,
+     "max": 0.0,
+     "per_seed": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "pct_mean": 0.0,
+     "pct_min": 0.0,
+     "pct_max": 0.0
+    }
+   },
+   "uniform_p0.90": {
+    "runs": [
+     "outputs/camera_error/runs/20261024-064908_indian_2x2_offpeak_maxpressure_uniform_p0.90_s0",
+     "outputs/camera_error/runs/20261024-064924_indian_2x2_offpeak_maxpressure_uniform_p0.90_s1",
+     "outputs/camera_error/runs/20261024-064941_indian_2x2_offpeak_maxpressure_uniform_p0.90_s2"
+    ],
+    "att": [
+     88.12100774702952,
+     0.7774820435063861
+    ],
+    "queue_mean_per_intersection": [
+     4.955208333333333,
+     0.21238917771073454
+    ],
+    "waiting_time_mean": [
+     29.81997955850265,
+     0.7787653654963478
+    ],
+    "throughput": [
+     2327,
+     34.39476704383968
+    ],
+    "att_vs_perfect": {
+     "mean": -0.012413859514002942,
+     "min": -0.17304492512478475,
+     "max": 0.25884861407249105,
+     "per_seed": [
+      0.25884861407249105,
+      -0.17304492512478475,
+      -0.12304526748971512
+     ],
+     "pct_mean": -0.012471222554338959,
+     "pct_min": -0.19627270582683773,
+     "pct_max": 0.29699143275125206
+    }
+   },
+   "uniform_p0.80": {
+    "runs": [
+     "outputs/camera_error/runs/20261024-064910_indian_2x2_offpeak_maxpressure_uniform_p0.80_s0",
+     "outputs/camera_error/runs/20261024-064927_indian_2x2_offpeak_maxpressure_uniform_p0.80_s1",
+     "outputs/camera_error/runs/20261024-064944_indian_2x2_offpeak_maxpressure_uniform_p0.80_s2"
+    ],
+    "att": [
+     89.69397406911064,
+     0.33155674953940856
+    ],
+    "queue_mean_per_intersection": [
+     5.1989120370370365,
+     0.10873173567123005
+    ],
+    "waiting_time_mean": [
+     31.298886778928196,
+     0.3355330635167219
+    ],
+    "throughput": [
+     2328.3333333333335,
+     35.23256069793016
+    ],
+    "att_vs_perfect": {
+     "mean": 1.5605524625671119,
+     "min": 0.9967078189300338,
+     "max": 2.383368869936021,
+     "per_seed": [
+      2.383368869936021,
+      1.3015806988352807,
+      0.9967078189300338
+     ],
+     "pct_mean": 1.7765940100745041,
+     "pct_min": 1.1189185942834357,
+     "pct_max": 2.7345718577376634
+    }
+   },
+   "uniform_p0.70": {
+    "runs": [
+     "outputs/camera_error/runs/20261024-064913_indian_2x2_offpeak_maxpressure_uniform_p0.70_s0",
+     "outputs/camera_error/runs/20261024-064930_indian_2x2_offpeak_maxpressure_uniform_p0.70_s1",
+     "outputs/camera_error/runs/20261024-064947_indian_2x2_offpeak_maxpressure_uniform_p0.70_s2"
+    ],
+    "att": [
+     89.57462356368731,
+     0.6625513553069966
+    ],
+    "queue_mean_per_intersection": [
+     5.200462962962963,
+     0.16994172722059853
+    ],
+    "waiting_time_mean": [
+     31.304587111045528,
+     0.48391833716068783
+    ],
+    "throughput": [
+     2324,
+     37.0
+    ],
+    "att_vs_perfect": {
+     "mean": 1.4412019571437849,
+     "min": 1.1942386831275655,
+     "max": 1.7965884861407204,
+     "per_seed": [
+      1.7965884861407204,
+      1.3327787021630684,
+      1.1942386831275655
+     ],
+     "pct_mean": 1.637890972614232,
+     "pct_min": 1.340669595627802,
+     "pct_max": 2.0613260398369673
+    }
+   },
+   "uniform_p0.60": {
+    "runs": [
+     "outputs/camera_error/runs/20261024-064916_indian_2x2_offpeak_maxpressure_uniform_p0.60_s0",
+     "outputs/camera_error/runs/20261024-064933_indian_2x2_offpeak_maxpressure_uniform_p0.60_s1",
+     "outputs/camera_error/runs/20261024-064949_indian_2x2_offpeak_maxpressure_uniform_p0.60_s2"
+    ],
+    "att": [
+     90.21589353173192,
+     1.467725803930837
+    ],
+    "queue_mean_per_intersection": [
+     5.311967592592593,
+     0.2923355618070038
+    ],
+    "waiting_time_mean": [
+     31.970305792851917,
+     1.2100946470915594
+    ],
+    "throughput": [
+     2327.6666666666665,
+     35.388321990924254
+    ],
+    "att_vs_perfect": {
+     "mean": 2.0824719251884054,
+     "min": 1.3744136460554301,
+     "max": 3.0536605657237885,
+     "per_seed": [
+      1.3744136460554301,
+      3.0536605657237885,
+      1.819341563785997
+     ],
+     "pct_mean": 2.360971058022754,
+     "pct_min": 1.5769413307368927,
+     "pct_max": 3.4635527246992157
+    }
+   },
+   "uniform_p0.50": {
+    "runs": [
+     "outputs/camera_error/runs/20261024-064919_indian_2x2_offpeak_maxpressure_uniform_p0.50_s0",
+     "outputs/camera_error/runs/20261024-064935_indian_2x2_offpeak_maxpressure_uniform_p0.50_s1",
+     "outputs/camera_error/runs/20261024-064952_indian_2x2_offpeak_maxpressure_uniform_p0.50_s2"
+    ],
+    "att": [
+     90.75907119701643,
+     0.7623166907025201
+    ],
+    "queue_mean_per_intersection": [
+     5.3998842592592595,
+     0.17279666369926444
+    ],
+    "waiting_time_mean": [
+     32.50960306493447,
+     0.545438889102937
+    ],
+    "throughput": [
+     2326.3333333333335,
+     36.90979996333404
+    ],
+    "att_vs_perfect": {
+     "mean": 2.6256495904729085,
+     "min": 1.711522633744849,
+     "max": 3.3402662229617306,
+     "per_seed": [
+      2.8251599147121453,
+      3.3402662229617306,
+      1.711522633744849
+     ],
+     "pct_mean": 2.9838242517407503,
+     "pct_min": 1.9213800303983586,
+     "pct_max": 3.788629393724935
+    }
+   }
+  },
+  "indian_2x2_peak": {
+   "uniform_p1.00": {
+    "runs": [
+     "outputs/camera_error/runs/20261024-064955_indian_2x2_peak_maxpressure_uniform_p1.00_s0",
+     "outputs/camera_error/runs/20261024-065017_indian_2x2_peak_maxpressure_uniform_p1.00_s1",
+     "outputs/camera_error/runs/20261024-065039_indian_2x2_peak_maxpressure_uniform_p1.00_s2"
+    ],
+    "att": [
+     115.53740016460706,
+     0.8800224831088314
+    ],
+    "queue_mean_per_intersection": [
+     17.829467592592593,
+     0.3196951788728579
+    ],
+    "waiting_time_mean": [
+     54.078250652364524,
+     0.539616464967039
+    ],
+    "throughput": [
+     4576.333333333333,
+     68.23733093647006
+    ],
+    "att_vs_perfect": {
+     "mean": 0.0,
+     "min": 0.0,
+     "max": 0.0,
+     "per_seed": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "pct_mean": 0.0,
+     "pct_min": 0.0,
+     "pct_max": 0.0
+    }
+   },
+   "uniform_p0.90": {
+    "runs": [
+     "outputs/camera_error/runs/20261024-064959_indian_2x2_peak_maxpressure_uniform_p0.90_s0",
+     "outputs/camera_error/runs/20261024-065020_indian_2x2_peak_maxpressure_uniform_p0.90_s1",
+     "outputs/camera_error/runs/20261024-065043_indian_2x2_peak_maxpressure_uniform_p0.90_s2"
+    ],
+    "att": [
+     117.66065311019506,
+     1.4981991405204103
+    ],
+    "queue_mean_per_intersection": [
+     18.468587962962964,
+     0.43214906914805923
+    ],
+    "waiting_time_mean": [
+     56.020822379762066,
+     1.4053966905678636
+    ],
+    "throughput": [
+     4583.666666666667,
+     78.79932317814242
+    ],
+    "att_vs_perfect": {
+     "mean": 2.1232529455879976,
+     "min": -0.16096747289407176,
+     "max": 3.8523461939520445,
+     "per_seed": [
+      2.6783801157060196,
+      -0.16096747289407176,
+      3.8523461939520445
+     ],
+     "pct_mean": 1.8447771896300516,
+     "pct_min": -0.13864569022026493,
+     "pct_max": 3.3638113483107293
+    }
+   },
+   "uniform_p0.80": {
+    "runs": [
+     "outputs/camera_error/runs/20261024-065002_indian_2x2_peak_maxpressure_uniform_p0.80_s0",
+     "outputs/camera_error/runs/20261024-065024_indian_2x2_peak_maxpressure_uniform_p0.80_s1",
+     "outputs/camera_error/runs/20261024-065046_indian_2x2_peak_maxpressure_uniform_p0.80_s2"
+    ],
+    "att": [
+     116.62652556196412,
+     1.3276430714659964
+    ],
+    "queue_mean_per_intersection": [
+     18.13398148148148,
+     0.12624515509385223
+    ],
+    "waiting_time_mean": [
+     55.00468735942846,
+     0.9634420008731741
+    ],
+    "throughput": [
+     4580.666666666667,
+     71.17818017716759
+    ],
+    "att_vs_perfect": {
+     "mean": 1.0891253973570467,
+     "min": 0.37427022518765796,
+     "max": 2.0347118062995406,
+     "per_seed": [
+      2.0347118062995406,
+      0.37427022518765796,
+      0.8583941605839414
+     ],
+     "pct_mean": 0.942044450211957,
+     "pct_min": 0.3223691890484286,
+     "pct_max": 1.7542271591163017
+    }
+   },
+   "uniform_p0.70": {
+    "runs": [
+     "outputs/camera_error/runs/20261024-065006_indian_2x2_peak_maxpressure_uniform_p0.70_s0",
+     "outputs/camera_error/runs/20261024-065028_indian_2x2_peak_maxpressure_uniform_p0.70_s1",
+     "outputs/camera_error/runs/20261024-065050_indian_2x2_peak_maxpressure_uniform_p0.70_s2"
+    ],
+    "att": [
+     117.53164229092461,
+     1.1697972859208663
+    ],
+    "queue_mean_per_intersection": [
+     18.408819444444443,
+     0.1240249198687788
+    ],
+    "waiting_time_mean": [
+     55.84056660509034,
+     0.884397449321835
+    ],
+    "throughput": [
+     4578.333333333333,
+     78.05340052382941
+    ],
+    "att_vs_perfect": {
+     "mean": 1.99424212631754,
+     "min": 1.2506255212677218,
+     "max": 2.7923719734304626,
+     "per_seed": [
+      2.7923719734304626,
+      1.2506255212677218,
+      1.9397288842544356
+     ],
+     "pct_mean": 1.7261281299742386,
+     "pct_min": 1.0771979921517907,
+     "pct_max": 2.407444011963321
+    }
+   },
+   "uniform_p0.60": {
+    "runs": [
+     "outputs/camera_error/runs/20261024-065010_indian_2x2_peak_maxpressure_uniform_p0.60_s0",
+     "outputs/camera_error/runs/20261024-065032_indian_2x2_peak_maxpressure_uniform_p0.60_s1",
+     "outputs/camera_error/runs/20261024-065053_indian_2x2_peak_maxpressure_uniform_p0.60_s2"
+    ],
+    "att": [
+     118.46272362134718,
+     1.4199755232203652
+    ],
+    "queue_mean_per_intersection": [
+     18.74791666666667,
+     0.1365697347082145
+    ],
+    "waiting_time_mean": [
+     56.86590162951668,
+     1.245625366149412
+    ],
+    "throughput": [
+     4576.666666666667,
+     89.72364979944436
+    ],
+    "att_vs_perfect": {
+     "mean": 2.9253234567401116,
+     "min": 1.593619683069221,
+     "max": 4.112277694450384,
+     "per_seed": [
+      4.112277694450384,
+      1.593619683069221,
+      3.07007299270073
+     ],
+     "pct_mean": 2.5329237529689976,
+     "pct_min": 1.3726282517532726,
+     "pct_max": 3.545400972805404
+    }
+   },
+   "uniform_p0.50": {
+    "runs": [
+     "outputs/camera_error/runs/20261024-065013_indian_2x2_peak_maxpressure_uniform_p0.50_s0",
+     "outputs/camera_error/runs/20261024-065035_indian_2x2_peak_maxpressure_uniform_p0.50_s1",
+     "outputs/camera_error/runs/20261024-065057_indian_2x2_peak_maxpressure_uniform_p0.50_s2"
+    ],
+    "att": [
+     118.3230558768689,
+     0.650011617449863
+    ],
+    "queue_mean_per_intersection": [
+     18.671550925925924,
+     0.16888940762743093
+    ],
+    "waiting_time_mean": [
+     56.62507164956603,
+     0.45827034196337224
+    ],
+    "throughput": [
+     4573.333333333333,
+     79.56339191696979
+    ],
+    "att_vs_perfect": {
+     "mean": 2.7856557122618426,
+     "min": 1.7921184320266974,
+     "max": 3.48321167883212,
+     "per_seed": [
+      3.0816370259267103,
+      1.7921184320266974,
+      3.48321167883212
+     ],
+     "pct_mean": 2.41397439083232,
+     "pct_min": 1.543600657309886,
+     "pct_max": 3.041488584857389
+    }
+   }
+  }
+ },
+ "emergency": {
+  "maxpressure": {
+   "perfect": {
+    "runs": [
+     "outputs/camera_error/runs/20261024-065101_indian_2x2_peak_amb_maxpressure_s0",
+     "outputs/camera_error/runs/20261024-065222_indian_2x2_peak_amb_maxpressure_s1",
+     "outputs/camera_error/runs/20261024-065344_indian_2x2_peak_amb_maxpressure_s2",
+     "outputs/camera_error/runs/20261024-065506_indian_2x2_peak_amb_maxpressure_s3",
+     "outputs/camera_error/runs/20261024-065628_indian_2x2_peak_amb_maxpressure_s4"
+    ],
+    "att": [
+     115.71720356160684,
+     2.333964353635437
+    ],
+    "queue_mean_per_intersection": [
+     17.974583333333335,
+     0.8571799646525208
+    ],
+    "waiting_time_mean": [
+     54.191131687936064,
+     2.3216907461464875
+    ],
+    "throughput": [
+     4604.6,
+     65.9416408652378
+    ],
+    "ambulances_relevant": {
+     "n": 29,
+     "finished": 29,
+     "travel_time_mean_s": 130.10344827586206
+    }
+   },
+   "junction": {
+    "runs": [
+     "outputs/camera_error/runs/20261024-065139_indian_2x2_peak_amb_maxpressure_junction_s0",
+     "outputs/camera_error/runs/20261024-065301_indian_2x2_peak_amb_maxpressure_junction_s1",
+     "outputs/camera_error/runs/20261024-065423_indian_2x2_peak_amb_maxpressure_junction_s2",
+     "outputs/camera_error/runs/20261024-065545_indian_2x2_peak_amb_maxpressure_junction_s3",
+     "outputs/camera_error/runs/20261024-065707_indian_2x2_peak_amb_maxpressure_junction_s4"
+    ],
+    "att": [
+     117.5507694904112,
+     2.4193434827066
+    ],
+    "queue_mean_per_intersection": [
+     18.53377777777778,
+     0.49757094333727886
+    ],
+    "waiting_time_mean": [
+     55.90270501853007,
+     2.166372900341963
+    ],
+    "throughput": [
+     4601.2,
+     71.98402600577437
+    ],
+    "att_vs_perfect": {
+     "mean": 1.8335659288043615,
+     "min": -1.8895373072113415,
+     "max": 7.05374732334046,
+     "per_seed": [
+      7.05374732334046,
+      2.4484407484407598,
+      -0.3082691106019553,
+      1.863447990053885,
+      -1.8895373072113415
+     ],
+     "pct_mean": 1.6179240771091414,
+     "pct_min": -1.5946584395002519,
+     "pct_max": 6.1725179511010415
+    },
+    "ambulances_relevant": {
+     "n": 29,
+     "finished": 29,
+     "travel_time_mean_s": 135.86206896551724
+    },
+    "ambulances_vs_perfect": {
+     "n_paired": 29,
+     "mean_diff_s": 5.758620689655173,
+     "slower": 14,
+     "faster": 13
+    }
+   }
+  },
+  "fixedtime_webster": {
+   "perfect": {
+    "runs": [
+     "outputs/camera_error/runs/20261024-065104_indian_2x2_peak_amb_fixedtime_webster_s0",
+     "outputs/camera_error/runs/20261024-065225_indian_2x2_peak_amb_fixedtime_webster_s1",
+     "outputs/camera_error/runs/20261024-065348_indian_2x2_peak_amb_fixedtime_webster_s2",
+     "outputs/camera_error/runs/20261024-065509_indian_2x2_peak_amb_fixedtime_webster_s3",
+     "outputs/camera_error/runs/20261024-065632_indian_2x2_peak_amb_fixedtime_webster_s4"
+    ],
+    "att": [
+     115.1957751723181,
+     2.661919687691698
+    ],
+    "queue_mean_per_intersection": [
+     18.00761111111111,
+     0.6380952944077958
+    ],
+    "waiting_time_mean": [
+     54.31585756162351,
+     2.302779038277823
+    ],
+    "throughput": [
+     4605.8,
+     73.37370101064822
+    ],
+    "ambulances_relevant": {
+     "n": 29,
+     "finished": 29,
+     "travel_time_mean_s": 123.51724137931035
+    }
+   },
+   "junction": {
+    "runs": [
+     "outputs/camera_error/runs/20261024-065144_indian_2x2_peak_amb_fixedtime_webster_junction_s0",
+     "outputs/camera_error/runs/20261024-065307_indian_2x2_peak_amb_fixedtime_webster_junction_s1",
+     "outputs/camera_error/runs/20261024-065429_indian_2x2_peak_amb_fixedtime_webster_junction_s2",
+     "outputs/camera_error/runs/20261024-065550_indian_2x2_peak_amb_fixedtime_webster_junction_s3",
+     "outputs/camera_error/runs/20261024-065712_indian_2x2_peak_amb_fixedtime_webster_junction_s4"
+    ],
+    "att": [
+     115.1957751723181,
+     2.661919687691698
+    ],
+    "queue_mean_per_intersection": [
+     18.00761111111111,
+     0.6380952944077958
+    ],
+    "waiting_time_mean": [
+     54.31585756162351,
+     2.302779038277823
+    ],
+    "throughput": [
+     4605.8,
+     73.37370101064822
+    ],
+    "att_vs_perfect": {
+     "mean": 0.0,
+     "min": 0.0,
+     "max": 0.0,
+     "per_seed": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     "pct_mean": 0.0,
+     "pct_min": 0.0,
+     "pct_max": 0.0
+    },
+    "ambulances_relevant": {
+     "n": 29,
+     "finished": 29,
+     "travel_time_mean_s": 123.51724137931035
+    },
+    "ambulances_vs_perfect": {
+     "n_paired": 29,
+     "mean_diff_s": 0.0,
+     "slower": 0,
+     "faster": 0
+    }
+   }
+  },
+  "preemption_mp": {
+   "perfect": {
+    "runs": [
+     "outputs/camera_error/runs/20261024-065136_indian_2x2_peak_amb_preemption_mp_s0",
+     "outputs/camera_error/runs/20261024-065258_indian_2x2_peak_amb_preemption_mp_s1",
+     "outputs/camera_error/runs/20261024-065420_indian_2x2_peak_amb_preemption_mp_s2",
+     "outputs/camera_error/runs/20261024-065542_indian_2x2_peak_amb_preemption_mp_s3",
+     "outputs/camera_error/runs/20261024-065704_indian_2x2_peak_amb_preemption_mp_s4"
+    ],
+    "att": [
+     116.02468982394986,
+     0.7127239781597973
+    ],
+    "queue_mean_per_intersection": [
+     18.076097222222224,
+     0.4130086574614595
+    ],
+    "waiting_time_mean": [
+     54.49389310034345,
+     0.7517047261332824
+    ],
+    "throughput": [
+     4605.8,
+     61.116282609465046
+    ],
+    "ambulances_relevant": {
+     "n": 29,
+     "finished": 29,
+     "travel_time_mean_s": 81.17241379310344
+    }
+   },
+   "junction": {
+    "runs": [
+     "outputs/camera_error/runs/20261024-065216_indian_2x2_peak_amb_preemption_mp_junction_s0",
+     "outputs/camera_error/runs/20261024-065339_indian_2x2_peak_amb_preemption_mp_junction_s1",
+     "outputs/camera_error/runs/20261024-065500_indian_2x2_peak_amb_preemption_mp_junction_s2",
+     "outputs/camera_error/runs/20261024-065623_indian_2x2_peak_amb_preemption_mp_junction_s3",
+     "outputs/camera_error/runs/20261024-065745_indian_2x2_peak_amb_preemption_mp_junction_s4"
+    ],
+    "att": [
+     117.16628104293122,
+     2.257276268143959
+    ],
+    "queue_mean_per_intersection": [
+     18.434875,
+     0.4766807910769946
+    ],
+    "waiting_time_mean": [
+     55.604984127032196,
+     2.0398836470652153
+    ],
+    "throughput": [
+     4602.6,
+     67.12525605165317
+    ],
+    "att_vs_perfect": {
+     "mean": 1.1415912189813582,
+     "min": -0.8255717255717343,
+     "max": 5.126766595289084,
+     "per_seed": [
+      5.126766595289084,
+      -0.8255717255717343,
+      0.6750676942303642,
+      0.5476585163696654,
+      0.18403501458941207
+     ],
+     "pct_mean": 0.9860774748301693,
+     "pct_min": -0.7155999344048486,
+     "pct_max": 4.434541339290019
+    },
+    "ambulances_relevant": {
+     "n": 29,
+     "finished": 29,
+     "travel_time_mean_s": 84.51724137931035
+    },
+    "ambulances_vs_perfect": {
+     "n_paired": 29,
+     "mean_diff_s": 3.3448275862068964,
+     "slower": 16,
+     "faster": 12
+    }
+   }
+  },
+  "llm_guarded_mp": {
+   "perfect": {
+    "runs": [
+     "outputs/camera_error/runs/20261024-103709_indian_2x2_peak_amb_llm_guarded_mp_s0",
+     "outputs/camera_error/runs/20261024-110214_indian_2x2_peak_amb_llm_guarded_mp_s1",
+     "outputs/camera_error/runs/20261024-112741_indian_2x2_peak_amb_llm_guarded_mp_s2",
+     "outputs/camera_error/runs/20261024-115243_indian_2x2_peak_amb_llm_guarded_mp_s3",
+     "outputs/camera_error/runs/20261024-121743_indian_2x2_peak_amb_llm_guarded_mp_s4"
+    ],
+    "att": [
+     116.40417771078704,
+     3.054519561203309
+    ],
+    "queue_mean_per_intersection": [
+     18.1625,
+     0.7188726646535601
+    ],
+    "waiting_time_mean": [
+     54.78964693599679,
+     2.736933427472954
+    ],
+    "throughput": [
+     4604.4,
+     64.2674100925189
+    ],
+    "llm": {
+     "calls": 3632,
+     "failures": 0,
+     "guard_overrides": 2771,
+     "guard_override_rate": 0.7629405286343612,
+     "mp_disagreement_rate": 0.8689427312775331,
+     "latency_mean_s": 1.0265978237630207
+    },
+    "ambulances_relevant": {
+     "n": 29,
+     "finished": 29,
+     "travel_time_mean_s": 88.89655172413794
+    }
+   },
+   "junction": {
+    "runs": [
+     "outputs/camera_error/runs/20261024-104939_indian_2x2_peak_amb_llm_guarded_mp_junction_s0",
+     "outputs/camera_error/runs/20261024-111452_indian_2x2_peak_amb_llm_guarded_mp_junction_s1",
+     "outputs/camera_error/runs/20261024-114011_indian_2x2_peak_amb_llm_guarded_mp_junction_s2",
+     "outputs/camera_error/runs/20261024-120508_indian_2x2_peak_amb_llm_guarded_mp_junction_s3",
+     "outputs/camera_error/runs/20261024-123012_indian_2x2_peak_amb_llm_guarded_mp_junction_s4"
+    ],
+    "att": [
+     120.15804326537693,
+     1.7997860106498582
+    ],
+    "queue_mean_per_intersection": [
+     19.37838888888889,
+     0.5384400590980507
+    ],
+    "waiting_time_mean": [
+     58.42718958848082,
+     1.563995856704348
+    ],
+    "throughput": [
+     4601.8,
+     65.7890568407847
+    ],
+    "att_vs_perfect": {
+     "mean": 3.7538655545898876,
+     "min": -0.3010706638115579,
+     "max": 9.62901208837016,
+     "per_seed": [
+      -0.3010706638115579,
+      2.245738045738051,
+      1.8479483440949735,
+      5.347699958557811,
+      9.62901208837016
+     ],
+     "pct_mean": 3.2881807879519593,
+     "pct_min": -0.2488178497607341,
+     "pct_max": 8.486391465114876
+    },
+    "llm": {
+     "calls": 3646,
+     "failures": 0,
+     "guard_overrides": 2872,
+     "guard_override_rate": 0.7877125617114646,
+     "mp_disagreement_rate": 0.8784969829950631,
+     "latency_mean_s": 1.0306504660347826
+    },
+    "ambulances_relevant": {
+     "n": 29,
+     "finished": 29,
+     "travel_time_mean_s": 99.93103448275862
+    },
+    "ambulances_vs_perfect": {
+     "n_paired": 29,
+     "mean_diff_s": 11.03448275862069,
+     "slower": 17,
+     "faster": 11
+    }
+   }
+  }
+ },
+ "effective_p_detect": {
+  "indian_2x2_offpeak": {
+   "junction": 0.9215867490847987,
+   "crowded": 0.5731316443645211
+  },
+  "indian_2x2_peak": {
+   "junction": 0.9212968359140344,
+   "crowded": 0.5713963684208105
+  }
+ },
+ "params": {
+  "junction": {
+   "p_detect": {
+    "car": 0.9363,
+    "motorcycle": 0.9127,
+    "autorickshaw": 0.9442,
+    "bus": 0.9072,
+    "truck": 0.8318
+   },
+   "false_det_per_road_snapshot": {
+    "car": 0.2223,
+    "motorcycle": 0.2707,
+    "autorickshaw": 0.0697,
+    "bus": 0.0394,
+    "truck": 0.0788,
+    "bicycle": 0.0061
+   },
+   "source": {
+    "kind": "error_model",
+    "file": "outputs/perception/error_model.json",
+    "sha256": "8f30435d5bc2d2a8e4bb6ca4f2eff4915c118c774f0618437a851bc23fd98a53",
+    "conf_threshold": 0.3,
+    "p_detect_from": "medium+large objects"
+   }
+  },
+  "crowded": {
+   "p_detect": {
+    "car": 0.568,
+    "motorcycle": 0.5665,
+    "autorickshaw": 0.5977,
+    "bus": 0.6321,
+    "truck": 0.5372
+   },
+   "false_det_per_road_snapshot": {
+    "car": 0.2223,
+    "motorcycle": 0.2707,
+    "autorickshaw": 0.0697,
+    "bus": 0.0394,
+    "truck": 0.0788,
+    "bicycle": 0.0061
+   },
+   "source": {
+    "kind": "error_model",
+    "file": "outputs/perception/error_model.json",
+    "sha256": "8f30435d5bc2d2a8e4bb6ca4f2eff4915c118c774f0618437a851bc23fd98a53",
+    "conf_threshold": 0.3,
+    "p_detect_from": "all objects"
+   }
+  }
+ },
+ "realised": {
+  "junction": {
+   "target": {
+    "car": 0.9363,
+    "motorcycle": 0.9127,
+    "autorickshaw": 0.9442,
+    "bus": 0.9072,
+    "truck": 0.8318
+   },
+   "true": {
+    "car": 525072,
+    "motorcycle": 780460,
+    "autorickshaw": 312932,
+    "bus": 30522,
+    "truck": 91854
+   },
+   "detected": {
+    "car": 491924,
+    "motorcycle": 712166,
+    "autorickshaw": 295631,
+    "bus": 27666,
+    "truck": 76529
+   },
+   "realised": {
+    "car": 0.9368696102629734,
+    "motorcycle": 0.9124951951413269,
+    "autorickshaw": 0.9447132284330142,
+    "bus": 0.9064281501867505,
+    "truck": 0.8331591438587324
+   },
+   "max_abs_diff": 0.00135914385873237,
+   "z": {
+    "car": 1.6900906829848117,
+    "motorcycle": -0.6409799325149556,
+    "autorickshaw": 1.250796331426699,
+    "bus": -0.46474399673153177,
+    "truck": 1.101265439269614
+   }
+  },
+  "crowded": {
+   "target": {
+    "car": 0.568,
+    "motorcycle": 0.5665,
+    "autorickshaw": 0.5977,
+    "bus": 0.6321,
+    "truck": 0.5372
+   },
+   "true": {
+    "car": 183072,
+    "motorcycle": 269265,
+    "autorickshaw": 108800,
+    "bus": 10174,
+    "truck": 32985
+   },
+   "detected": {
+    "car": 103942,
+    "motorcycle": 152379,
+    "autorickshaw": 65125,
+    "bus": 6458,
+    "truck": 17713
+   },
+   "realised": {
+    "car": 0.5677656878168152,
+    "motorcycle": 0.5659071917998997,
+    "autorickshaw": 0.5985753676470589,
+    "bus": 0.634755258502064,
+    "truck": 0.5370016674245869
+   },
+   "max_abs_diff": 0.0026552585020640507,
+   "z": {
+    "car": -0.20239034575583725,
+    "motorcycle": -0.6207398792925964,
+    "autorickshaw": 0.5888277849931457,
+    "bus": 0.5553859458936731,
+    "truck": -0.07224164363468336
+   }
+  },
+  "uniform_p1.00": {
+   "target": {
+    "car": 1.0,
+    "motorcycle": 1.0,
+    "autorickshaw": 1.0,
+    "bus": 1.0,
+    "truck": 1.0
+   },
+   "true": {
+    "car": 92728,
+    "motorcycle": 135870,
+    "autorickshaw": 54819,
+    "bus": 5023,
+    "truck": 16643
+   },
+   "detected": {
+    "car": 92728,
+    "motorcycle": 135870,
+    "autorickshaw": 54819,
+    "bus": 5023,
+    "truck": 16643
+   },
+   "realised": {
+    "car": 1.0,
+    "motorcycle": 1.0,
+    "autorickshaw": 1.0,
+    "bus": 1.0,
+    "truck": 1.0
+   },
+   "max_abs_diff": 0.0,
+   "z": {}
+  },
+  "uniform_p0.90": {
+   "target": {
+    "car": 0.9,
+    "motorcycle": 0.9,
+    "autorickshaw": 0.9,
+    "bus": 0.9,
+    "truck": 0.9
+   },
+   "true": {
+    "car": 94123,
+    "motorcycle": 140290,
+    "autorickshaw": 56072,
+    "bus": 5113,
+    "truck": 17026
+   },
+   "detected": {
+    "car": 84693,
+    "motorcycle": 126386,
+    "autorickshaw": 50443,
+    "bus": 4606,
+    "truck": 15316
+   },
+   "realised": {
+    "car": 0.8998119481954464,
+    "motorcycle": 0.9008910114762279,
+    "autorickshaw": 0.8996112141532315,
+    "bus": 0.9008409935458634,
+    "truck": 0.8995653706096558
+   },
+   "max_abs_diff": 0.0008910114762278321,
+   "z": {
+    "car": -0.19231100218710812,
+    "motorcycle": 1.1124369371813163,
+    "autorickshaw": -0.30687549881478743,
+    "bus": 0.2004514972426121,
+    "truck": -0.1890401923327284
+   }
+  },
+  "uniform_p0.80": {
+   "target": {
+    "car": 0.8,
+    "motorcycle": 0.8,
+    "autorickshaw": 0.8,
+    "bus": 0.8,
+    "truck": 0.8
+   },
+   "true": {
+    "car": 92511,
+    "motorcycle": 137580,
+    "autorickshaw": 55154,
+    "bus": 5192,
+    "truck": 17263
+   },
+   "detected": {
+    "car": 73908,
+    "motorcycle": 110109,
+    "autorickshaw": 44322,
+    "bus": 4140,
+    "truck": 13758
+   },
+   "realised": {
+    "car": 0.7989103998443429,
+    "motorcycle": 0.800327082424771,
+    "autorickshaw": 0.8036044529861841,
+    "bus": 0.7973805855161787,
+    "truck": 0.796964606383595
+   },
+   "max_abs_diff": 0.003604452986184059,
+   "z": {
+    "car": -0.8285216340350021,
+    "motorcycle": 0.30330171771161735,
+    "autorickshaw": 2.1162544353960833,
+    "bus": -0.47185827440537065,
+    "truck": -0.9970413278157789
+   }
+  },
+  "uniform_p0.70": {
+   "target": {
+    "car": 0.7,
+    "motorcycle": 0.7,
+    "autorickshaw": 0.7,
+    "bus": 0.7,
+    "truck": 0.7
+   },
+   "true": {
+    "car": 90785,
+    "motorcycle": 134092,
+    "autorickshaw": 53873,
+    "bus": 5240,
+    "truck": 16045
+   },
+   "detected": {
+    "car": 63635,
+    "motorcycle": 93965,
+    "autorickshaw": 37959,
+    "bus": 3667,
+    "truck": 11132
+   },
+   "realised": {
+    "car": 0.7009417855372584,
+    "motorcycle": 0.7007502311845598,
+    "autorickshaw": 0.7046015629350509,
+    "bus": 0.6998091603053435,
+    "truck": 0.6937986911810533
+   },
+   "max_abs_diff": 0.006201308818946649,
+   "z": {
+    "car": 0.6192263354018864,
+    "motorcycle": 0.5994968412749779,
+    "autorickshaw": 2.330672753478159,
+    "bus": -0.030145653927975517,
+    "truck": -1.7141292770677719
+   }
+  },
+  "uniform_p0.60": {
+   "target": {
+    "car": 0.6,
+    "motorcycle": 0.6,
+    "autorickshaw": 0.6,
+    "bus": 0.6,
+    "truck": 0.6
+   },
+   "true": {
+    "car": 88510,
+    "motorcycle": 132405,
+    "autorickshaw": 52948,
+    "bus": 5116,
+    "truck": 16301
+   },
+   "detected": {
+    "car": 53215,
+    "motorcycle": 79261,
+    "autorickshaw": 31760,
+    "bus": 3128,
+    "truck": 9761
+   },
+   "realised": {
+    "car": 0.6012314992656197,
+    "motorcycle": 0.5986254295532646,
+    "autorickshaw": 0.5998337991992143,
+    "bus": 0.6114151681000782,
+    "truck": 0.5987976197779278
+   },
+   "max_abs_diff": 0.011415168100078255,
+   "z": {
+    "car": 0.7478675795011851,
+    "motorcycle": -1.0209713946895544,
+    "autorickshaw": -0.07806426430922567,
+    "bus": 1.666640604435279,
+    "truck": -0.31335983278422447
+   }
+  },
+  "uniform_p0.50": {
+   "target": {
+    "car": 0.5,
+    "motorcycle": 0.5,
+    "autorickshaw": 0.5,
+    "bus": 0.5,
+    "truck": 0.5
+   },
+   "true": {
+    "car": 93990,
+    "motorcycle": 139295,
+    "autorickshaw": 55770,
+    "bus": 5411,
+    "truck": 17185
+   },
+   "detected": {
+    "car": 46622,
+    "motorcycle": 69379,
+    "autorickshaw": 27666,
+    "bus": 2654,
+    "truck": 8661
+   },
+   "realised": {
+    "car": 0.49603149271199065,
+    "motorcycle": 0.4980724361965613,
+    "autorickshaw": 0.49607315761161913,
+    "bus": 0.4904823507669562,
+    "truck": 0.5039860343322665
+   },
+   "max_abs_diff": 0.009517649233043823,
+   "z": {
+    "car": -2.4333131474822407,
+    "motorcycle": -1.4388201850450841,
+    "autorickshaw": -1.8547004966359548,
+    "bus": -1.400227032308344,
+    "truck": 1.0450710057412502
+   }
+  }
+ },
+ "checks": {
+  "realised_largest_miss": {
+   "level": "uniform_p0.60",
+   "class": "bus",
+   "n": 5116,
+   "target": 0.6,
+   "realised": 0.6114151681000782,
+   "z": 1.666640604435279
+  },
+  "realised_max_abs_z": 2.4333131474822407,
+  "realised_n_z": 35,
+  "realised_n_abs_z_over_2": 3,
+  "uniform_p1_identical_to_perfect": true,
+  "webster_identical_across_levels": true,
+  "webster_max_snapshots": 0,
+  "perfect_vs_full_experiments": {
+   "compared": 27,
+   "mismatches": []
+  },
+  "realised_detection_max_abs_diff": {
+   "junction": 0.0014,
+   "crowded": 0.0027,
+   "uniform_p1.00": 0.0,
+   "uniform_p0.90": 0.0009,
+   "uniform_p0.80": 0.0036,
+   "uniform_p0.70": 0.0062,
+   "uniform_p0.60": 0.0114,
+   "uniform_p0.50": 0.0095
+  },
+  "realised_within_0_01": false
+ },
+ "provenance": {
+  "script": "scripts/make_camera_error.py",
+  "runs": 130,
+  "git_commit_of_this_summary": "40550013c25ea8f73ab605874709dce1f7a4f79b"
+ }
+}

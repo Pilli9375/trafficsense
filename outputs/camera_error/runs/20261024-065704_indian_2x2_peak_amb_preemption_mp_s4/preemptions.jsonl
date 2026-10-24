@@ -1,0 +1,7 @@
+{"step": 315, "intersection": "intersection_2_1", "vehicle": "flow_4792_0", "distance_m": 7.1, "approach": "E", "turn": "turn_left", "current_phase": 1, "phase": 3, "maxpressure_choice": 2, "changed_decision": true}
+{"step": 2025, "intersection": "intersection_1_2", "vehicle": "flow_4794_0", "distance_m": 21.4, "approach": "E", "turn": "go_straight", "current_phase": 2, "phase": 1, "maxpressure_choice": 1, "changed_decision": false}
+{"step": 2200, "intersection": "intersection_2_1", "vehicle": "flow_4795_0", "distance_m": 9.9, "approach": "S", "turn": "go_straight", "current_phase": 7, "phase": 2, "maxpressure_choice": 3, "changed_decision": true}
+{"step": 2225, "intersection": "intersection_2_2", "vehicle": "flow_4795_0", "distance_m": 14.9, "approach": "S", "turn": "go_straight", "current_phase": 5, "phase": 2, "maxpressure_choice": 2, "changed_decision": false}
+{"step": 2235, "intersection": "intersection_1_1", "vehicle": "flow_4796_0", "distance_m": 40.1, "approach": "W", "turn": "go_straight", "current_phase": 2, "phase": 1, "maxpressure_choice": 1, "changed_decision": false}
+{"step": 2255, "intersection": "intersection_1_1", "vehicle": "flow_4796_0", "distance_m": 18.0, "approach": "W", "turn": "go_straight", "current_phase": 1, "phase": 1, "maxpressure_choice": 4, "changed_decision": true}
+{"step": 2760, "intersection": "intersection_2_2", "vehicle": "flow_4797_0", "distance_m": 136.1, "approach": "S", "turn": "go_straight", "current_phase": 1, "phase": 7, "maxpressure_choice": 7, "changed_decision": false}
