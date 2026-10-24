@@ -95,9 +95,7 @@ class _RerunController:
 
     def __init__(self, cfg: dict[str, Any], provenance: dict[str, Any], env: TrafficEnv):
         self.ctl = make_controller(provenance["controller"], cfg)
-        if self.ctl.info() != provenance["controller_params"]:
-            raise ValueError(f"Controller parameters differ from the run's: {self.ctl.info()} vs "
-                             f"{provenance['controller_params']}")
+        self.saved_params = provenance["controller_params"]
         self.log: list[dict[str, Any]] = []
         request = env.request_phase
 
@@ -118,7 +116,10 @@ class _RerunController:
         self.ctl.act(env)
 
     def finish(self) -> None:
-        pass
+        # Checked at the end: some controllers (Webster) record parameters computed while running.
+        params = json.loads(json.dumps(self.ctl.info()))
+        if params != self.saved_params:
+            raise ValueError(f"Controller parameters differ from the run's: {params} vs {self.saved_params}")
 
 
 def _parse_cityflow_replay(path: Path, steps: int, type_of) -> dict[str, np.ndarray]:
