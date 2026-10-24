@@ -54,8 +54,8 @@ plan = load("run_camera_error")
 decomp = load("run_camera_decomposition")
 COMPONENT_LABEL = {"misses": "(a) misses only", "false": "(b) false detections only",
                    "confusion": "(c) class confusion only", "all": "(d) all (main batch junction level)"}
-COMPONENT_ON = {"misses": "measured p_detect; exact labels; none", "false": "1; exact labels; measured",
-                "confusion": "1; measured labels; none", "all": "measured; measured; measured"}
+COMPONENT_ON = {"misses": "measured; exact; none", "false": "1; exact; measured",
+                "confusion": "1; measured; none", "all": "measured; measured; measured"}
 
 
 def mean_std(xs):
