@@ -8,6 +8,13 @@ Restart after an interruption: start Ollama, then run the same command again, de
 Finished runs are skipped (a run folder with summary.json and metrics.csv is complete; see
 run_experiment). Progress goes to stdout and to outputs/camera_error/batch.log.
 
+Each run executes in a child process (spawn) with a timeout (TIMEOUT_S). The first attempt of
+this batch hung at the start of a run: the main thread and a newly created thread, which had
+used no CPU, both waited on a futex, most likely CityFlow's worker-thread start-up. A run that
+exceeds its timeout is killed, logged, and retried (at most MAX_RETRIES times); a run that
+fails with an error stops the batch as before. This changes how runs are executed, not which
+runs are made.
+
 Plan (docs/camera_error.md, committed BEFORE any run):
   Observation levels (sim/observation.py; the simulator itself always stays exact)
     perfect   exact counts (as in every earlier experiment)
@@ -36,7 +43,7 @@ import time
 from pathlib import Path
 
 from trafficsense.config import load_config, repo_root
-from trafficsense.experiment import git_info, run_experiment
+from trafficsense.experiment import git_info, run_experiment_isolated
 from trafficsense.llm.client import OllamaClient
 from trafficsense.llm.gpu import free_gpu
 from trafficsense.sim.observation import observation_key
@@ -49,6 +56,8 @@ SWEEP = [{"level": "uniform", "p_detect": p} for p in (1.0, 0.9, 0.8, 0.7, 0.6, 
 RUNS = Path("outputs/camera_error/runs")
 LOG = Path("outputs/camera_error/batch.log")
 ESTIMATE_S = {"maxpressure": 5, "preemption_mp": 5, "fixedtime_webster": 35, "llm_guarded_mp": 770}
+TIMEOUT_S = {"maxpressure": 300, "preemption_mp": 300, "fixedtime_webster": 600, "llm_guarded_mp": 3600}
+MAX_RETRIES = 2
 
 
 def full_plan():
@@ -105,6 +114,11 @@ def complete_runs(root: Path, log=None) -> dict[tuple, Path]:
     return done
 
 
+def run_with_timeout(c, j, out_root: Path, log) -> Path:
+    return run_experiment_isolated(c, j["scenario"], j["controller"], STEPS, j["seed"], out_root,
+                                   TIMEOUT_S[j["controller"]], MAX_RETRIES, log)
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--config", default="configs/default.yaml")
@@ -147,7 +161,7 @@ def main():
         tag = f"{j['scenario']} seed {j['seed']} {observation_key(j['observation'])} {j['controller']}"
         log.info("[%d/%d] start %s", n, len(todo), tag)
         t0 = time.perf_counter()
-        out = run_experiment(c, j["scenario"], j["controller"], steps=STEPS, seed=j["seed"], out_root=root / RUNS)
+        out = run_with_timeout(c, j, root / RUNS, log)
         log.info("[%d/%d] done in %.0f s: %s", n, len(todo), time.perf_counter() - t0, out.relative_to(root))
     log.info("All %d runs of the plan are complete", len(plan))
 

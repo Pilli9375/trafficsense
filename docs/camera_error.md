@@ -122,6 +122,18 @@ proxy for an intersection camera, not its true error.
   perfect run from the same commit (same scenario, seed and flow file).
 - Estimated time: ~6.4 h (LLM runs ~770 s each, measured in the full experiments).
 
+*Execution note, added after the design commit (`91aa214`) and before any result was looked
+at:* the first start of the batch hung after 11 runs, at the start of run 12 (Webster,
+off-peak, seed 1, crowded). The main thread and a newly created thread that had used no CPU
+both waited on a futex, which points to CityFlow's worker-thread start-up. Each run now
+executes in its own process with a timeout (5 / 10 / 60 min for MaxPressure / Webster /
+LLM runs) and is killed and retried, at most twice, if it hangs
+(`trafficsense.experiment.run_experiment_isolated`). Every hang is logged in
+`outputs/camera_error/batch.log`. One completed run of that first start (MaxPressure,
+off-peak, seed 1, crowded, 06:33) was recorded as `git_dirty` because analysis scripts
+written meanwhile were not committed yet; the batch ignores dirty runs and makes it again.
+The runs and the analysis are unchanged.
+
 ## 5. Analysis (fixed now)
 
 - **Primary:** per scenario and controller, ATT at each level, mean ± std over seeds, and

@@ -4,6 +4,8 @@ from __future__ import annotations
 import csv
 import hashlib
 import json
+import logging
+import multiprocessing as mp
 import platform
 import subprocess
 import time
@@ -121,3 +123,39 @@ def run_experiment(cfg: dict[str, Any], scenario: str, controller: str,
     tmp.write_text(json.dumps(summary, indent=2), encoding="utf-8")
     tmp.replace(out_dir / "summary.json")
     return out_dir
+
+
+def _isolated_child(conn, cfg, scenario, controller, steps, seed, out_root) -> None:
+    try:
+        conn.send(("ok", str(run_experiment(cfg, scenario, controller, steps=steps, seed=seed, out_root=out_root))))
+    except BaseException as e:                       # report any failure to the parent
+        import traceback
+        conn.send(("error", f"{type(e).__name__}: {e}\n{traceback.format_exc()}"))
+
+
+def run_experiment_isolated(cfg: dict[str, Any], scenario: str, controller: str, steps: int, seed: int,
+                            out_root: Path, timeout_s: float, retries: int, log: logging.Logger) -> Path:
+    """run_experiment in a spawned child process. A run that exceeds timeout_s (e.g. a hang in
+    the simulator) is killed, logged and started again, at most `retries` more times; a run
+    that fails with an error raises at once. A killed run leaves no run folder (run_experiment
+    creates it only at the end)."""
+    ctx = mp.get_context("spawn")
+    for attempt in range(retries + 1):
+        recv, send = ctx.Pipe(duplex=False)
+        p = ctx.Process(target=_isolated_child, args=(send, cfg, scenario, controller, steps, seed, out_root))
+        p.start()
+        send.close()
+        if recv.poll(timeout_s):
+            try:
+                status, msg = recv.recv()
+            except EOFError:                         # the child died without reporting (e.g. a crash)
+                p.join()
+                raise RuntimeError(f"Run process died with exit code {p.exitcode}")
+            p.join()
+            if status == "ok":
+                return Path(msg)
+            raise RuntimeError(f"Run failed: {msg}")
+        p.kill()
+        p.join()
+        log.warning("Run exceeded %.0f s and was killed (attempt %d of %d): hung", timeout_s, attempt + 1, retries + 1)
+    raise RuntimeError(f"Run hung {retries + 1} times; stopping")
