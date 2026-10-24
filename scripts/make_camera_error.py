@@ -23,7 +23,7 @@ from pathlib import Path
 from trafficsense.config import repo_root
 from trafficsense.experiment import git_info
 from trafficsense.sim.emergency import signal_relevant
-from trafficsense.sim.observation import SIM_TO_DETECTOR
+from trafficsense.sim.observation import SIM_TO_DETECTOR, repo_relative
 from trafficsense.sim.roadnet import load_roadnet
 
 ROOT = repo_root()
@@ -211,8 +211,10 @@ def report(root: Path = ROOT) -> dict:
     params = {}
     for key in ("junction", "crowded"):
         o = runs[("indian_2x2_peak", "maxpressure", 0, key)]["observation"]["params"]
+        # The runs of this batch recorded the absolute path of the error model; show it repo-relative.
+        source = dict(o["source"], file=repo_relative(Path(o["source"]["file"])))
         params[key] = {"p_detect": {c: o["p_detect"][c] for c in SIM_TO_DETECTOR.values()},
-                       "false_det_per_road_snapshot": o["false_det_per_road_snapshot"], "source": o["source"]}
+                       "false_det_per_road_snapshot": o["false_det_per_road_snapshot"], "source": source}
     b["params"] = params
     b["realised"] = realised_vs_target(runs)
     b["checks"] = checks(runs)

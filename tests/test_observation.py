@@ -136,7 +136,8 @@ def test_noise_params_from_error_model(tmp_path):
     j = ob.noise_params({"level": "junction"}, f)
     assert j.p_detect["car"] == pytest.approx(1 - 6 / 40)          # pooled medium + large
     assert ob.noise_params({"level": "crowded"}, f).p_detect["car"] == 0.6
-    assert set(j.false_det) == set(ob.COUNTED) and j.source["sha256"]
+    assert set(j.false_det) == set(ob.COUNTED) and j.source["sha256"] and j.source["file"] == str(f)
+    assert ob.repo_relative(ob.repo_root() / "outputs" / "x.json") == "outputs/x.json"
     u = ob.noise_params({"level": "uniform", "p_detect": 0.8}, f)
     assert u.key == "uniform_p0.80" and u.false_det["car"] == 0 and u.p_label["bus"] == {"bus": 1.0}
     with pytest.raises(ValueError):

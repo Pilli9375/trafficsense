@@ -35,6 +35,8 @@ from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
+from trafficsense.config import repo_root
+
 if TYPE_CHECKING:
     from trafficsense.sim.env import TrafficEnv
 
@@ -77,6 +79,14 @@ def observation_key(ocfg: dict[str, Any] | None) -> str:
     return level
 
 
+def repo_relative(path: Path) -> str:
+    """Path as recorded in result files: relative to the repo root when it lies inside it."""
+    try:
+        return str(path.resolve().relative_to(repo_root()))
+    except ValueError:
+        return str(path)
+
+
 def noise_params(ocfg: dict[str, Any], error_model_path: Path) -> NoiseParams:
     """Parameters of a noisy level. junction: detection rates of medium + large objects
     (pooled over their ground truth); crowded: overall rates; both with the measured label
@@ -106,7 +116,7 @@ def noise_params(ocfg: dict[str, Any], error_model_path: Path) -> NoiseParams:
     false_det = {c: float(em["false_det_per_image"][c]["value"]) for c in COUNTED}
     sha = hashlib.sha256(Path(error_model_path).read_bytes()).hexdigest()
     return NoiseParams(key, p_detect, p_label, false_det,
-                       {"kind": "error_model", "file": str(error_model_path), "sha256": sha,
+                       {"kind": "error_model", "file": repo_relative(Path(error_model_path)), "sha256": sha,
                         "conf_threshold": em["conf_threshold"],
                         "p_detect_from": "medium+large objects" if ocfg["level"] == "junction" else "all objects"})
 
