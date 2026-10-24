@@ -144,6 +144,7 @@ code {{ color: {TEXT}; background: {SURFACE_2}; font-family: {MONO}; font-size: 
 [data-testid="stHorizontalBlock"]:has(.ts-card), [data-testid="stHorizontalBlock"]:has(.ts-step) {{ align-items: stretch; }}
 [data-testid="stColumn"] > [data-testid="stVerticalBlock"] {{ height: 100%; }}
 [data-testid="stElementContainer"]:has(.ts-card), [data-testid="stElementContainer"]:has(.ts-step) {{ flex: 1 1 auto; }}
+[data-testid="stMarkdownContainer"]:has(> .ts-card), [data-testid="stMarkdownContainer"]:has(> .ts-step) {{ margin-bottom: 0 !important; }}
 [data-testid="stElementContainer"]:has(.ts-card) div:has(.ts-card),
 [data-testid="stElementContainer"]:has(.ts-step) div:has(.ts-step) {{ height: 100%; }}
 
