@@ -16,6 +16,11 @@ paths:
   # Create it once: ln -s /mnt/d/trafficsense/runs data/external/detector_runs
   detector_runs: data/external/detector_runs
   camera_error_model: outputs/perception/error_model.json   # scripts/eval_detector.py; camera-error experiment
+  # Dashboard data that is too large for git, on D. Create the symlinks once:
+  #   ln -s /mnt/d/trafficsense/replays data/external/replays
+  #   ln -s /mnt/d/trafficsense/dashboard_media data/external/dashboard_media
+  replays: data/external/replays                 # scripts/make_replays.py (Network Replay page)
+  dashboard_media: data/external/dashboard_media # scripts/make_sample_clip.py (Live Detection page)
 
 scenarios:
   synthetic_4x4:
@@ -195,3 +200,38 @@ llm_hosted:
     max_retries: 5           # on HTTP 429/5xx and dropped connections; counted, not failures
     backoff_s: 2             # exponential: 2, 4, 8, ... s
     backoff_max_s: 60
+
+# Streamlit dashboard (src/trafficsense/dashboard; docs/dashboard.md). It only reads files.
+dashboard:
+  # Network Replay page. Pre-registered in docs/dashboard.md before any replay was made:
+  # scenario indian_2x2_peak_amb, the seed whose flow file has the most ambulances among the
+  # emergency seeds 0-4 (scripts/make_replays.py checks this rule), and every full-length run
+  # of that scenario and seed with exact counts. No LLM is called: LLM runs are replayed from
+  # their decisions.jsonl, deterministic controllers are run again, and a replay is kept only
+  # if it reproduces the saved run's metrics exactly.
+  replays:
+    scenario: indian_2x2_peak_amb
+    seeds: [0, 1, 2, 3, 4]        # candidate seeds for the rule above
+    seed: 1
+    runs:
+      - outputs/emergency/runs/20261015-075228_indian_2x2_peak_amb_maxpressure_s1
+      - outputs/emergency/runs/20261015-075232_indian_2x2_peak_amb_fixedtime_webster_s1
+      - outputs/emergency/runs/20261015-075303_indian_2x2_peak_amb_preemption_mp_s1
+      - outputs/emergency/runs/20261015-092121_indian_2x2_peak_amb_llm_guarded_mp_s1
+      - outputs/emergency/runs/20261015-195338_indian_2x2_peak_amb_llm_guided_mp_v3_s1
+      - outputs/model_size/runs/20261022-215311_indian_2x2_peak_amb_llm_guided_mp_v3_s1
+      - outputs/model_size/runs/20261023-023239_indian_2x2_peak_amb_llm_guided_mp_v3_s1
+      - outputs/model_size/runs/20261023-071842_indian_2x2_peak_amb_llm_guided_mp_v3_s1
+      - outputs/model_size/runs/20261023-194651_indian_2x2_peak_amb_llm_guided_mp_v3_s1
+  # Live Detection page. Weights: paths.detector_runs/detector/<perception.train.run_name>/weights/best.pt
+  # (as scripts/train_detector.py); confidence threshold: the operating point frozen in
+  # outputs/perception/detector_val.json.
+  detection:
+    min_free_vram_mib: 1024   # use the GPU only if at least this much VRAM is free (else CPU)
+    max_frames: 300           # frames processed per run of the page (longer videos are cut)
+    sample_clip:              # scripts/make_sample_clip.py; from OUR TEST split (official IDD val)
+      file: idd_test_sample.mp4    # in paths.dashboard_media
+      sequence: frontNear/BLR-2018-06-05_08-39-44_frontNear
+      frames: 60              # first frames of the sequence's longest evenly spaced run
+      fps: 4
+      width: 1280
