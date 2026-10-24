@@ -51,7 +51,7 @@ html, body, .stApp { font-family: var(--ts-font); }
           mask-image: radial-gradient(ellipse 80% 70% at 60% 0%, #000 25%, transparent 75%);
 }
 .stApp::after {
-  opacity: .05; mix-blend-mode: overlay;
+  opacity: .035;
   background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 [data-testid="stAppViewContainer"], [data-testid="stMain"], [data-testid="stSidebar"] { position: relative; z-index: 1; }

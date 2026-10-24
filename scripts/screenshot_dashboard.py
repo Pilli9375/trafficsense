@@ -2,9 +2,10 @@
 
     python scripts/screenshot_dashboard.py                       # 1366x768 and 1920x1080
     python scripts/screenshot_dashboard.py --sizes 1366x768      # one size
-    python scripts/screenshot_dashboard.py --out <dir>
+    python scripts/screenshot_dashboard.py --out <dir> --extra-out <dir>
 
-The first size goes to --out (docs/screenshots), every other size to --out/<width>/. Per size:
+The first size goes to --out (docs/screenshots, in git); every other size to --extra-out/<width>/,
+by default <paths.dashboard_media>/screenshots (the symlink to D: not in git). Per size:
   overview(.png|_viewport.png), overview_source.png (a source chip opened),
   live_detection_preview.png (before a run), live_detection(.png|_viewport.png) (after running the
   detector on the bundled sample clip; its FPS are measured when the screenshot is taken),
@@ -12,8 +13,6 @@ The first size goes to --out (docs/screenshots), every other size to --out/<widt
   ambulance on screen), network_replay_follow.png (camera following the ambulance),
   network_replay_sim.png (as simulated, not mirrored), network_replay_info.png ("How it is drawn"),
   results(.png|_viewport.png) and results_2.png ... results_5.png (the other tabs).
-Each PNG is reduced to a 256-colour palette (Pillow) so the set stays small in git; the dark UI
-shows no visible difference. --full-colour keeps Chromium's original PNGs.
 Needs: pip install -e ".[dashboard,screenshots]" && python -m playwright install chromium
 """
 import argparse
@@ -23,23 +22,16 @@ import sys
 import time
 from pathlib import Path
 
-from PIL import Image
 from playwright.sync_api import sync_playwright
 
-from trafficsense.config import repo_root
+from trafficsense.config import load_config, repo_root, resolve_path
 
 RESULT_TABS = ["Signal control", "Ambulances", "Model size · exploratory", "Camera errors", "Detector"]
 PLAY_FROM = 955     # replay: seek here, then play briefly (the default ambulance is on screen in both runs)
 
 
-PALETTE = True
-
-
 def save(page, path: Path) -> None:
     page.screenshot(path=str(path))
-    if PALETTE:
-        Image.open(path).convert("RGB").quantize(256, method=Image.Quantize.FASTOCTREE,
-                                                 dither=Image.Dither.FLOYDSTEINBERG).save(path, optimize=True)
 
 
 def free_port() -> int:
@@ -155,10 +147,11 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--out", default="docs/screenshots")
     ap.add_argument("--sizes", default="1366x768,1920x1080", help="comma-separated WIDTHxHEIGHT")
-    ap.add_argument("--full-colour", action="store_true", help="keep Chromium's PNGs (no 256-colour palette)")
+    ap.add_argument("--extra-out", default=None,
+                    help="folder for every size after the first (default: <paths.dashboard_media>/screenshots)")
     args = ap.parse_args()
-    global PALETTE
-    PALETTE = not args.full_colour
+    extra = Path(args.extra_out) if args.extra_out else \
+        resolve_path(load_config("configs/default.yaml"), "dashboard_media") / "screenshots"
     root = repo_root()
     sizes = [tuple(int(v) for v in s.split("x")) for s in args.sizes.split(",")]
     port = free_port()
@@ -177,7 +170,7 @@ def main():
             browser = p.chromium.launch()
             for i, (w, h) in enumerate(sizes):
                 page = browser.new_page(viewport={"width": w, "height": h}, device_scale_factor=1)
-                shoot(page, url, root / args.out / ("" if i == 0 else str(w)), w, h)
+                shoot(page, url, root / args.out if i == 0 else extra / str(w), w, h)
                 page.close()
             browser.close()
     finally:
