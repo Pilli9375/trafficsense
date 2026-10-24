@@ -10,6 +10,8 @@ seed: each noisy run minus the perfect run of the same scenario, controller and 
 snapshots of its MaxPressure runs in that scenario (from summary.json `observation`).
 Ambulance numbers: signal-relevant ambulances (route crosses at least one signal-controlled
 movement), paired by (seed, vehicle) against the perfect run.
+Post-hoc decomposition (added after the results): the runs of scripts/run_camera_decomposition.py,
+paired by seed against the perfect runs of the main batch; "all" is the main batch's junction level.
 """
 import argparse
 import importlib.util
@@ -23,7 +25,7 @@ from pathlib import Path
 from trafficsense.config import repo_root
 from trafficsense.experiment import git_info
 from trafficsense.sim.emergency import signal_relevant
-from trafficsense.sim.observation import SIM_TO_DETECTOR, repo_relative
+from trafficsense.sim.observation import COMPONENTS, SIM_TO_DETECTOR, repo_relative
 from trafficsense.sim.roadnet import load_roadnet
 
 ROOT = repo_root()
@@ -49,24 +51,28 @@ def load(name):
 
 
 plan = load("run_camera_error")
+decomp = load("run_camera_decomposition")
+COMPONENT_LABEL = {"misses": "(a) misses only", "false": "(b) false detections only",
+                   "confusion": "(c) class confusion only", "all": "(d) all (main batch junction level)"}
+COMPONENT_ON = {"misses": "measured p_detect; exact labels; none", "false": "1; exact labels; measured",
+                "confusion": "1; measured labels; none", "all": "measured; measured; measured"}
 
 
 def mean_std(xs):
     return [statistics.mean(xs), statistics.stdev(xs) if len(xs) > 1 else 0.0]
 
 
-def load_runs(root: Path) -> dict[tuple, dict]:
+def load_runs(root: Path, runs_dir: Path = plan.RUNS, jobs=plan.jobs) -> dict[tuple, dict]:
     """(scenario, controller, seed, obs key) -> summary (+ dir); all planned runs must be there."""
-    done = plan.complete_runs(root)
+    done = plan.complete_runs(root, runs=runs_dir)
     runs = {}
     for k, d in done.items():
         s = json.loads((d / "summary.json").read_text())
         s["dir"] = str(d.relative_to(root))
         runs[(k[0], k[1], k[2], k[4])] = s
-    missing = [plan.job_key(j) for j in plan.jobs() if (j["scenario"], j["controller"], j["seed"],
-                                                       plan.job_key(j)[4]) not in runs]
+    missing = [k for k in map(plan.job_key, jobs()) if (k[0], k[1], k[2], k[4]) not in runs]
     if missing:
-        raise SystemExit(f"{len(missing)} planned runs missing, e.g. {missing[:3]}")
+        raise SystemExit(f"{len(missing)} planned runs missing from {runs_dir}, e.g. {missing[:3]}")
     return runs
 
 
@@ -130,6 +136,39 @@ def realised_vs_target(runs) -> dict:
         # observation is an independent Bernoulli(p_detect) draw, so realised - target ~ N(0, p(1-p)/n).
         e["z"] = {c: (e["realised"][c] - e["target"][c]) / math.sqrt(e["target"][c] * (1 - e["target"][c]) / e["true"][c])
                   for c in e["realised"] if 0 < e["target"][c] < 1}
+    return out
+
+
+def realised_pooled(rs) -> dict:
+    """Detection rate, vehicles lost to a non-vehicle label, phantoms per road and snapshot, pooled over runs."""
+    true = det = lost = 0
+    phantom = 0.0
+    snaps = 0
+    for r in rs:
+        o = r["observation"]
+        z = o["realized"]
+        for c, n in z["true_vehicle_observations"].items():
+            true += n
+            det += round(z["detection_rate"][c] * n)
+        lost += sum(z["lost_to_non_vehicle_label"].values())
+        phantom += sum(z["false_per_road_snapshot"].values()) * o["snapshots"]
+        snaps += o["snapshots"]
+    return {"detection_rate": det / true, "lost_to_non_vehicle_label": lost / true,
+            "phantoms_per_road_snapshot": phantom / snaps}
+
+
+def decomposition(runs, dec) -> dict:
+    allr = {**runs, **dec}
+    seeds = [0, 1, 2]
+    keys = {o: f"junction_only_{o}" for o in COMPONENTS} | {"all": "junction"}
+    out = {}
+    for o, key in keys.items():
+        rs = [allr[(sc, "maxpressure", s, key)] for sc in SCEN for s in seeds]
+        out[o] = {"key": key, "runs": [r["dir"] for r in rs], "realised": realised_pooled(rs),
+                  "att_vs_perfect": {sc: paired(allr, sc, "maxpressure", seeds, key) for sc in SCEN}}
+    out["sum_abc"] = {sc: {"mean": sum(out[o]["att_vs_perfect"][sc]["mean"] for o in COMPONENTS),
+                           "pct_mean": sum(out[o]["att_vs_perfect"][sc]["pct_mean"] for o in COMPONENTS)}
+                      for sc in SCEN}
     return out
 
 
@@ -217,6 +256,7 @@ def report(root: Path = ROOT) -> dict:
                        "false_det_per_road_snapshot": o["false_det_per_road_snapshot"], "source": source}
     b["params"] = params
     b["realised"] = realised_vs_target(runs)
+    b["decomposition"] = decomposition(runs, load_runs(root, decomp.RUNS, decomp.jobs))
     b["checks"] = checks(runs)
     b["provenance"] = {"script": "scripts/make_camera_error.py", "runs": len(runs),
                        "git_commit_of_this_summary": git_info()["commit"]}
@@ -288,6 +328,19 @@ def tables(b: dict) -> dict[str, str]:
                          f"{100 * l['mp_disagreement_rate']:.1f}%", f"{l['latency_mean_s']:.2f}"])
     t["camera_llm"] = table(["scenario", "level", "LLM calls", "failures", "guard overrides", "disagrees with MP",
                              "mean latency (s)"], rows)
+    dc = b["decomposition"]
+    rows = []
+    for o in list(COMPONENTS) + ["all"]:
+        e = dc[o]
+        rows.append([COMPONENT_LABEL[o], COMPONENT_ON[o]] + [delta(e["att_vs_perfect"][sc]) for sc in SCEN]
+                    + [f"{e['realised']['detection_rate']:.3f}", f"{100 * e['realised']['lost_to_non_vehicle_label']:.2f}%",
+                       f"{e['realised']['phantoms_per_road_snapshot']:.3f}"])
+    rows.append(["sum of (a) + (b) + (c)", ""] + [f"{dc['sum_abc'][sc]['mean']:+.1f}; {dc['sum_abc'][sc]['pct_mean']:+.1f}%"
+                                                  for sc in SCEN] + ["", "", ""])
+    t["camera_decomposition"] = table(
+        ["junction-camera errors", "p_detect; labels; false det.", "Off-peak: ATT vs perfect, paired (s; range; %)",
+         "Peak: ATT vs perfect, paired (s; range; %)", "realised detection rate", "lost to non-vehicle label",
+         "phantoms per road and snapshot"], rows)
     ch = b["checks"]
     pf = ch["perfect_vs_full_experiments"]
     rv = b["realised"]

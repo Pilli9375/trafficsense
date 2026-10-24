@@ -142,6 +142,18 @@ def test_noise_params_from_error_model(tmp_path):
     assert u.key == "uniform_p0.80" and u.false_det["car"] == 0 and u.p_label["bus"] == {"bus": 1.0}
     with pytest.raises(ValueError):
         ob.observation_key({"level": "blurry"})
+    # Post-hoc decomposition: one error component on, the others exact.
+    m = ob.noise_params({"level": "junction", "only": "misses"}, f)
+    assert m.key == "junction_only_misses" and m.p_detect == j.p_detect and m.source["only"] == "misses"
+    assert m.p_label["car"] == {"car": 1.0} and not any(m.false_det.values())
+    fd = ob.noise_params({"level": "junction", "only": "false"}, f)
+    assert set(fd.p_detect.values()) == {1.0} and fd.p_label["bus"] == {"bus": 1.0} and fd.false_det == j.false_det
+    cf = ob.noise_params({"level": "junction", "only": "confusion"}, f)
+    assert set(cf.p_detect.values()) == {1.0} and cf.p_label == j.p_label and not any(cf.false_det.values())
+    assert "only" not in j.source
+    for bad in ({"level": "junction", "only": "blur"}, {"level": "uniform", "p_detect": 0.5, "only": "misses"}):
+        with pytest.raises(ValueError):
+            ob.observation_key(bad)
     with pytest.raises(FileNotFoundError):
         ob.make_observer(None, {"level": "junction"}, tmp_path / "missing.json", 0)
 

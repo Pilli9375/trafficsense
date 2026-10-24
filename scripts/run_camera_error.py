@@ -95,9 +95,9 @@ def job_key(j: dict) -> tuple:
             observation_key(j["observation"]))
 
 
-def complete_runs(root: Path, log=None) -> dict[tuple, Path]:
+def complete_runs(root: Path, log=None, runs: Path = RUNS) -> dict[tuple, Path]:
     done = {}
-    for d in sorted((root / RUNS).glob("*/")):
+    for d in sorted((root / runs).glob("*/")):
         s = d / "summary.json"
         if not s.is_file() or not (d / "metrics.csv").is_file():
             if log:

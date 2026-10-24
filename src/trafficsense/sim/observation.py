@@ -51,6 +51,12 @@ COUNTED = ("car", "motorcycle", "autorickshaw", "bus", "truck", "bicycle")
 DETECTOR_TO_NAME = {**{d: s for s, d in SIM_TO_DETECTOR.items()}, "bicycle": "bicycle"}
 STOP_SPEED = 0.1
 LEVELS = ("perfect", "junction", "crowded", "uniform")
+# Post-hoc decomposition (docs/camera_error.md 7.7, added after the results): a camera level
+# with only one error component switched on, the others exact.
+#   misses: measured p_detect, exact labels, no false detections
+#   false: every vehicle detected, exact labels, measured false detections
+#   confusion: every vehicle detected, measured labels (incl. loss to `person`), no false detections
+COMPONENTS = ("misses", "false", "confusion")
 
 
 @dataclass
@@ -71,12 +77,15 @@ def observation_key(ocfg: dict[str, Any] | None) -> str:
     level = ocfg.get("level")
     if level not in LEVELS:
         raise ValueError(f"observation.level must be one of {LEVELS}, got {level!r}")
+    only = ocfg.get("only")
+    if only is not None and (level not in ("junction", "crowded") or only not in COMPONENTS):
+        raise ValueError(f"observation.only must be one of {COMPONENTS} on a camera level, got {only!r} on {level!r}")
     if level == "uniform":
         p = float(ocfg["p_detect"])
         if not 0 < p <= 1:
             raise ValueError(f"observation.p_detect must be in (0, 1], got {p}")
         return f"uniform_p{p:.2f}"
-    return level
+    return f"{level}_only_{only}" if only else level
 
 
 def repo_relative(path: Path) -> str:
@@ -114,11 +123,20 @@ def noise_params(ocfg: dict[str, Any], error_model_path: Path) -> NoiseParams:
         if abs(sum(row.values()) - 1) > 0.01:
             raise ValueError(f"{error_model_path}: label probabilities of {c} sum to {sum(row.values())}")
     false_det = {c: float(em["false_det_per_image"][c]["value"]) for c in COUNTED}
+    only = ocfg.get("only")
+    if only in ("false", "confusion"):
+        p_detect = {c: 1.0 for c in DETECTOR_CLASSES}
+    if only in ("misses", "false"):
+        p_label = {c: {c: 1.0} for c in DETECTOR_CLASSES}
+    if only in ("misses", "confusion"):
+        false_det = {c: 0.0 for c in COUNTED}
     sha = hashlib.sha256(Path(error_model_path).read_bytes()).hexdigest()
-    return NoiseParams(key, p_detect, p_label, false_det,
-                       {"kind": "error_model", "file": repo_relative(Path(error_model_path)), "sha256": sha,
-                        "conf_threshold": em["conf_threshold"],
-                        "p_detect_from": "medium+large objects" if ocfg["level"] == "junction" else "all objects"})
+    source = {"kind": "error_model", "file": repo_relative(Path(error_model_path)), "sha256": sha,
+              "conf_threshold": em["conf_threshold"],
+              "p_detect_from": "medium+large objects" if ocfg["level"] == "junction" else "all objects"}
+    if only:
+        source["only"] = only
+    return NoiseParams(key, p_detect, p_label, false_det, source)
 
 
 class LaneView:

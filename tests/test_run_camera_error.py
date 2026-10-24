@@ -33,3 +33,14 @@ def test_child_run_and_timeout(rc, cfg, tmp_path, monkeypatch):
     monkeypatch.setitem(rc.TIMEOUT_S, "maxpressure", 0.2)
     with pytest.raises(RuntimeError, match="hung"):
         rc.run_with_timeout(c, j, tmp_path / "t", logging.getLogger("t"))
+
+
+def test_decomposition_plan():
+    spec = importlib.util.spec_from_file_location("run_camera_decomposition",
+                                                  repo_root() / "scripts" / "run_camera_decomposition.py")
+    dec = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(dec)
+    keys = [dec.plan.job_key(j) for j in dec.jobs()]
+    assert len(keys) == len(set(keys)) == 18
+    assert {k[4] for k in keys} == {"junction_only_misses", "junction_only_false", "junction_only_confusion"}
+    assert {k[1] for k in keys} == {"maxpressure"} and dec.RUNS != dec.plan.RUNS
