@@ -9,7 +9,8 @@ in this chapter is generated from the result files.
 ## LLM benchmark and the design rounds {#sec:res-bench}
 
 Each LLM arm was benchmarked on the same 600<!--=b.steps--> s of Indian peak traffic (seed 0) with
-up to four local models, and the pre-registered rule (@sec:prereg) was applied. @fig:bench and
+up to four local models (`llama3.2:3b` from the Llama 3 family [@grattafiori2024llama3], `qwen2.5:3b`
+[@qwen2024qwen25], and Google's `gemma3:4b` and `gemma4:e4b`), and the pre-registered rule (@sec:prereg) was applied. @fig:bench and
 @tbl:bench summarise all rounds; @tbl:bench-selection gives what the rule chose.
 
 ![Mean queue per intersection over the first 600<!--=b.steps--> s of Indian peak traffic for every arm and

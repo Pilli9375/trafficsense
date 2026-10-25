@@ -515,7 +515,6 @@ def fig_det_size(root, fs):
 
 SHOTS = {"screen_overview": "docs/screenshots/overview_viewport.webp",
          "screen_replay": "docs/screenshots/network_replay_viewport.webp",
-         "screen_results": "docs/screenshots/results_viewport.webp",
          "screen_detection": "docs/screenshots/live_detection_viewport.webp"}
 
 
