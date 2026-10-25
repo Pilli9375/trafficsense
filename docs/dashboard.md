@@ -103,11 +103,15 @@ The replays and the sample clip live on D (not in git), behind gitignored symlin
 `configs/default.yaml`:
 
 ```bash
-ln -s /mnt/d/trafficsense/replays data/external/replays
+ln -s /mnt/d/trafficsense/replays data/external/replays                 # optional: keep them on D
 ln -s /mnt/d/trafficsense/dashboard_media data/external/dashboard_media
-python scripts/make_replays.py        # ~1 min, no LLM needed
+python scripts/build_replays.py       # no LLM needed; makes data/external/replays if there is no link
 python scripts/make_sample_clip.py    # needs the IDD symlink (paths.idd_root)
 ```
+
+`build_replays.py` runs `make_replays.py` and then its `--check`. In the fresh-clone check
+([`reproducibility.md`](reproducibility.md)) it rebuilt all nine replays from the committed
+runs, and the files were byte-identical to the originals.
 
 Without them the Overview and Results pages still work; the other two pages say which file is
 missing and which command makes it.

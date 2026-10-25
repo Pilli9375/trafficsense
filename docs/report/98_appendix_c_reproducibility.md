@@ -26,12 +26,14 @@ The project runs in WSL2 Ubuntu 22.04 with Python 3.10. The commands below are r
 repository root in its virtual environment; the batch scripts are resumable and skip finished runs.
 
 ```bash
-# environment
+# environment (exact versions: requirements-lock.txt)
 python3.10 -m venv .venv && source .venv/bin/activate
-git clone https://github.com/cityflow-project/CityFlow.git ../CityFlow && pip install ../CityFlow
-pip install -e ".[dev,dashboard,perception]"
+git clone https://github.com/cityflow-project/CityFlow.git ../CityFlow
+git -C ../CityFlow checkout 81ee0f4 && pip install ../CityFlow
+pip install torch==2.14.1 torchvision==0.29.1 --index-url https://download.pytorch.org/whl/cu126
+pip install -e ".[dev,dashboard,perception]" -c requirements-lock.txt
 scripts/fetch_collmlight_data.sh                      # CoLLMLight roadnets and flows
-curl -fsSL https://ollama.com/install.sh | sh
+curl -fsSL https://ollama.com/install.sh | sh         # or Ollama for Windows (README)
 ollama pull llama3.2:3b && ollama pull gemma4:e4b && ollama pull qwen2.5:3b
 
 # Chapter 4: validation, scenario, baselines
@@ -63,20 +65,43 @@ python scripts/make_camera_error.py
 python scripts/run_model_size.py --bench && python scripts/run_model_size.py --full
 python scripts/make_model_size.py
 
+# Dashboard replays, from the committed runs
+python scripts/build_replays.py
+
 # This report
 python scripts/make_report.py && python scripts/build_report.py
 
 # Checks
 pytest -q
 for s in validation/make_tables make_indian_tables make_baseline_tables make_results \
-         make_camera_error make_model_size make_perception_results make_report; do
+         make_camera_error make_model_size make_perception_results make_reproducibility make_report; do
   python scripts/$s.py --check
 done
 python scripts/benchmark_llm.py --check
 ```
 
-LLM runs are not bit-for-bit repeatable on a GPU (@sec:seeds): a re-run gives slightly different
-numbers. The logged decisions reproduce each run exactly, and the dashboard's replays are kept only
+## A check from a fresh clone
+
+To test these steps, the repository was cloned from GitHub into an empty folder and set up from
+the README alone, and every deterministic result was run again
+(`docs/reproducibility.md`, generated from `outputs/reproducibility/fresh_clone.json`). All
+42<!--=r.det_runs_identical--> of the 42<!--=r.det_runs--> runs of the fixed-time, Webster, MaxPressure and preemption
+controllers came out identical in every metric, as did the detector's test-split evaluation
+(mAP50 0.563<!--=r.map50-->, mAP50-95 0.375<!--=r.map5095-->, and the whole camera error model), the IDD label
+conversion and the dashboard's replays. A 600<!--=b.steps--> s run of the pre-registered LLM arm repeated
+the committed run exactly, in all 121<!--=r.llm_identical_answers--> answers. The check found gaps
+in the setup instructions, not in the results: tests and checks that failed in a clean
+install, an evaluation script that read an absolute path, a PyTorch build the GPU driver could
+not use, and no pinned versions. Each was fixed, and the affected steps were run again in the
+same clone.
+
+The one part that did not repeat exactly was CityFlow with lane changing on, which only the
+validation's matched runs use: the same run, repeated, gives a slightly different average
+travel time, in CoLLMLight's code as in ours, while throughput and their queue length never
+changed (@sec:validation).
+
+LLM runs are not guaranteed to be bit-for-bit repeatable on a GPU (@sec:seeds): a re-run can
+give slightly different numbers. The logged decisions reproduce each run exactly, and the dashboard's replays are kept only
 when they do. The hosted model of the model-size study needs an API key in a git-ignored `.env`
 file and is subject to the provider's rate limits.
 

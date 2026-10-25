@@ -10,7 +10,7 @@
 <img alt="Vision: YOLOv8n" src="https://img.shields.io/badge/vision-YOLOv8n-111F68">
 <img alt="LLM: Ollama, local" src="https://img.shields.io/badge/LLM-Ollama%20(local)-000000?logo=ollama&logoColor=white">
 <img alt="Dashboard: Streamlit" src="https://img.shields.io/badge/dashboard-Streamlit-FF4B4B?logo=streamlit&logoColor=white">
-<img alt="Tests: 277 passing" src="https://img.shields.io/badge/tests-277%20passing-2ea44f">
+<img alt="Tests: 280 passing" src="https://img.shields.io/badge/tests-280%20passing-2ea44f">
 <!-- END:readme_badges -->
 
 </div>
@@ -198,13 +198,38 @@ counted and falls back to MaxPressure's choice, never silently.
 ## ⚡ Quick start
 
 > 💡 **In plain words:** This section is for people who want to run the project on their own computer. You need a
-> Windows PC with [WSL](#g-wsl) (Linux inside Windows), a graphics card for the AI parts, and some comfort
-> with typing commands. You do not need any of this to read the results.
+> Windows PC with [WSL](#g-wsl) (Linux inside Windows) and some comfort with typing commands. A graphics card
+> ([GPU](#g-gpu)) speeds up the AI parts but is not required. You do not need any of this to read the results.
 
 
-Tested on WSL2 Ubuntu 22.04 with Python 3.10 (CityFlow does not build on Python 3.13), on
-a GTX 1650 (4 GB) with 16 GB RAM. The LLM and the detector cannot share this GPU, so do not
-run them at the same time.
+These steps were checked by cloning the repository into an empty folder and following this
+section to the letter ([`docs/reproducibility.md`](docs/reproducibility.md)): every
+deterministic result came out identical (42<!--=r.det_runs_identical--> of 42<!--=r.det_runs--> runs), and so did the
+detector's mAP50 of 0.563<!--=r.map50-->.
+
+<a id="requirements"></a>
+
+### Requirements
+
+| | Needed | Notes |
+|---|---|---|
+| System | Windows 10 or 11 with WSL2 and **Ubuntu 22.04** | Checked on Windows 11 with WSL2 Ubuntu 22.04.5. A native Ubuntu 22.04 should behave the same but was not tested. |
+| Python | **Python 3.10** | CityFlow does not build on Python 3.13. Python 3.11 is allowed by `pyproject.toml` but was not tested. |
+| Memory | 16 GB RAM tested | WSL was given 12 GB (`memory=12GB` in `.wslconfig`). |
+| Disk: simulation, checks, dashboard | about 0.9<!--=r.disk_base_gb--> GB | clone, Python environment, CityFlow, CoLLMLight's roadnets, the rebuilt replays |
+| Disk: detector (optional) | about 7.2<!--=r.disk_extras_gb--> GB more | PyTorch with its CUDA libraries (`perception` extra), Playwright |
+| Disk: LLMs (optional) | 2.0<!--=r.llama3b_gb--> GB for `llama3.2:3b`, 6.6<!--=r.gemma_gb--> GB for `gemma4:e4b` | Ollama's model store |
+| Disk: IDD (optional) | 24.6<!--=r.idd_gb--> GB, plus 3.8<!--=r.idd640_gb--> GB for the resized copy | only to re-evaluate or retrain the detector |
+| GPU | **optional**; tested on a GTX 1650 (4 GB) | The simulation, baselines, checks and dashboard never use it. Without one, Ollama and the detector run on the CPU (Ryzen 5 4600H here): an LLM call took 2.86<!--=r.llm_cpu_s--> s instead of 0.96<!--=r.llm_gpu_s--> s (3.0<!--=r.llm_cpu_over_gpu-->× slower), and detection 69<!--=r.det_cpu_ms--> ms per image instead of 45<!--=r.det_gpu_ms--> ms. Training on the CPU was not measured; on the GPU it took 13.3<!--=d.train_h--> h. |
+
+Keep the clone and its `.venv` on the Linux disk (under `~`) if there is room. On a Windows drive
+(`/mnt/c`, `/mnt/d`) everything works but steps that write many small files are slow: there the
+clone took 6<!--=r.clone_min--> min, the package install 25<!--=r.install_min--> min and PyTorch 62<!--=r.torch_min--> min.
+Leave `TMPDIR` on the Linux disk: pytest fails when it points at a Windows drive.
+
+<a id="install"></a>
+
+### 1. Install and run one simulation
 
 ```bash
 sudo apt install -y python3.10-venv build-essential cmake git
@@ -212,29 +237,103 @@ git clone https://github.com/Pilli9375/trafficsense.git && cd trafficsense
 python3.10 -m venv .venv && source .venv/bin/activate
 pip install -U pip
 
-# CityFlow, built from source
+# CityFlow, built from source at the commit every result was made with
 git clone https://github.com/cityflow-project/CityFlow.git ../CityFlow
+git -C ../CityFlow checkout 81ee0f4
 pip install ../CityFlow
 
-# This package (add ",perception" for YOLO training and evaluation)
-pip install -e ".[dev,dashboard]"
-pytest -q
+# This package, with the exact library versions the results were checked with
+pip install -e ".[dev,dashboard]" -c requirements-lock.txt
+pytest -q          # the detector and browser tests skip until their extras are installed
 
 # CoLLMLight's roadnets and flows (Jinan, Hangzhou, Synthetic) into data/external/ (gitignored)
 scripts/fetch_collmlight_data.sh
 
-# One baseline run: Indian 2x2 at peak demand, MaxPressure, seed 0 (about a minute)
+# One baseline run: Indian 2x2 at peak demand, MaxPressure, seed 0 (a few seconds)
 python scripts/run_experiment.py --scenario indian_2x2_peak --controller maxpressure --seed 0
 ```
 
-The LLM needs [Ollama](https://ollama.com) on `http://localhost:11434`:
+<a id="portable"></a>
+
+### 2. The dashboard on a new laptop
+
+All result files are in git; a few large files are not. This makes the Network Replay page's
+data from the committed runs, with no LLM or GPU (175<!--=r.build_replays_s--> s here), and starts the dashboard:
 
 ```bash
-curl -fsSL https://ollama.com/install.sh | sh
+python scripts/build_replays.py
+streamlit run src/trafficsense/dashboard/app.py
+```
+
+| Page | From a fresh clone |
+|---|---|
+| Overview, Results | work at once |
+| Network Replay | works after `scripts/build_replays.py`; before, it says so |
+| Live Detection | needs the detector weights and a sample clip made from IDD test images (step 4); until then it names the missing file and how to make it |
+
+<a id="ollama"></a>
+
+### 3. The LLM (Ollama)
+
+The LLM controllers call [Ollama](https://ollama.com) at `http://localhost:11434`. Either:
+
+* **Ollama for Windows** (what this project used): install it from ollama.com, then let WSL
+  reach it at `localhost` by adding these lines to `%UserProfile%\.wslconfig` and running
+  `wsl --shutdown` in Windows:
+
+  ```ini
+  [wsl2]
+  networkingMode=mirrored
+  ```
+* **Ollama inside WSL:** `curl -fsSL https://ollama.com/install.sh | sh`
+
+`curl http://localhost:11434/api/version` should answer. Then:
+
+```bash
 ollama pull llama3.2:3b             # the pre-registered model
 ollama pull gemma4:e4b              # exploratory arm only
-# A 600 s run of the pre-registered controller (needs a clean git tree and an idle GPU)
-python scripts/benchmark_llm.py --arm guarded_v3 --models llama3.2:3b
+# A 600 s trial run of the pre-registered controller, written to outputs/runs/ (needs a clean git tree)
+python scripts/benchmark_llm.py --arm guarded_v3 --models llama3.2:3b --out outputs/runs
+```
+
+The LLM and the detector cannot share a 4 GB GPU, so do not run them at the same time.
+
+<a id="detector"></a>
+
+### 4. The detector (optional)
+
+Install PyTorch's CUDA 12.6 build **before** the `perception` extra. The build pip picks by
+default needs a newer NVIDIA driver than the one this was tested with, and on an older driver it
+cannot use the GPU.
+
+```bash
+pip install torch==2.14.1 torchvision==0.29.1 --index-url https://download.pytorch.org/whl/cu126
+pip install -e ".[dev,dashboard,perception]" -c requirements-lock.txt
+```
+
+The trained weights (`best.pt`, sha256 `af7f77cc…683d`) are not in git. Put them at
+`data/external/detector_runs/detector/yolov8n_idd/weights/best.pt` (or link the folder, below)
+or train them with `scripts/train_detector.py --full`. To evaluate the detector or make the
+Live Detection sample clip you also need IDD Detection from
+[idd.insaan.iiit.ac.in](https://idd.insaan.iiit.ac.in) (free registration).
+
+<a id="large-files"></a>
+
+### Where the large files go
+
+Large files live outside git and are reached through gitignored symlinks under
+`data/external/` (`paths:` in `configs/default.yaml`). This project keeps them on a second
+drive; point the links at your own folder:
+
+```bash
+D=/mnt/d/trafficsense            # your folder for large files
+ln -s $D/replays          data/external/replays            # Network Replay (or let build_replays.py make a plain folder)
+ln -s $D/dashboard_media  data/external/dashboard_media    # Live Detection sample clip (scripts/make_sample_clip.py)
+ln -s $D/runs             data/external/detector_runs      # detector runs; weights in detector/yolov8n_idd/weights/
+ln -s $D/datasets/idd-detection/IDD_Detection      data/external/idd_detection
+ln -s $D/datasets/idd-detection/IDD_Detection_640  data/external/idd_detection_640   # made by scripts/resize_idd.py
+python scripts/prepare_idd.py                      # YOLO labels into data/external/idd_yolo (no image copies)
+python scripts/eval_detector.py --stage test       # test-split mAP, checked against best.pt's sha256
 ```
 
 Each run writes `outputs/runs/<time>_<scenario>_<controller>_s<seed>/` with `summary.json`
@@ -268,7 +367,8 @@ scripts are resumable and skip finished runs. Times are for the hardware above.
 | Detector on IDD | `python scripts/prepare_idd.py`, `train_detector.py --full`, `eval_detector.py --stage val`, then `--stage test` | [`perception.md`](docs/perception.md) |
 | Camera-error experiment (130<!--=c.runs--> runs) | `python scripts/run_camera_error.py`, `run_camera_decomposition.py`, `make_camera_error.py` | [`camera_error.md`](docs/camera_error.md) |
 | Model size (exploratory) | `python scripts/run_model_size.py --bench`, then `--full`, then `make_model_size.py` | [`model_size.md`](docs/model_size.md) |
-| Dashboard data | `python scripts/make_replays.py`, `make_sample_clip.py` | [`dashboard.md`](docs/dashboard.md) |
+| Dashboard data | `python scripts/build_replays.py` (replays from the committed runs), `make_sample_clip.py` | [`dashboard.md`](docs/dashboard.md) |
+| Fresh-clone check | `python scripts/make_reproducibility.py` | [`reproducibility.md`](docs/reproducibility.md) |
 | README and report | `python scripts/make_report.py`, `build_report.py` | [`docs/report/`](docs/report/) |
 
 To check everything at once:
@@ -276,7 +376,7 @@ To check everything at once:
 ```bash
 pytest -q
 for s in validation/make_tables make_indian_tables make_baseline_tables make_results \
-         make_camera_error make_model_size make_perception_results make_report; do
+         make_camera_error make_model_size make_perception_results make_reproducibility make_report; do
   python scripts/$s.py --check || echo "FAILED: $s"
 done
 python scripts/benchmark_llm.py --check
@@ -287,8 +387,8 @@ python scripts/make_replays.py --check
 </details>
 
 Large files live outside git: IDD and its resized copy, detector runs and weights, replays and
-the sample clip, all reached through gitignored symlinks under `data/external/` whose targets
-are set in `configs/default.yaml`.
+the sample clip ([where they go](#large-files)). How the whole setup was checked from a fresh
+clone, and what is and is not exactly repeatable: [`docs/reproducibility.md`](docs/reproducibility.md).
 
 <a id="repository-layout"></a>
 
