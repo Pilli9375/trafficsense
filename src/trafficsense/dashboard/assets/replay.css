@@ -98,11 +98,9 @@
 .rp-mark { position: absolute; top: 12px; width: 2px; height: 20px; border-radius: 1px; transform: translateX(-1px); pointer-events: none; }
 .rp-mark.amb { background: #ff3b3b; box-shadow: 0 0 8px #ff3b3b; }
 .rp-tick { position: absolute; width: 2px; height: 5px; border-radius: 1px; transform: translateX(-1px); pointer-events: none; opacity: .9; }
-.rp-mlab { position: absolute; top: -2px; transform: translateX(-50%); font-size: 10.5px; white-space: nowrap; color: var(--ts-text-3, #7d8896);
+.rp-mlab { position: absolute; top: -2px; font-size: 10.5px; white-space: nowrap; color: var(--ts-text-3, #7d8896);
   font-family: var(--ts-mono, monospace); pointer-events: none; }
 .rp-mlab.flip { top: 34px; }
-.rp-mlab.end { transform: translateX(-100%); }
-.rp-mlab.start { transform: none; }
 .rp-range { position: absolute; left: -7px; right: -7px; top: 13px; width: calc(100% + 14px); margin: 0; height: 18px; background: transparent;
   -webkit-appearance: none; appearance: none; cursor: pointer; }
 .rp-range::-webkit-slider-runnable-track { height: 18px; background: transparent; }

@@ -95,7 +95,7 @@ export default function (component) {
   const info = tool.appendChild(el('details', 'rp-info'));
   info.innerHTML = `<summary>${I.info}How it is drawn</summary><div class="pop">
     <p><b>Logged, then interpolated.</b> CityFlow logged every vehicle's position and heading at the end of each second while the run was replayed. Between two logged seconds a vehicle moves on the straight line between its two logged positions; vehicles that appear or leave fade in or out. No vehicle, position or second is invented.</p>
-    <p><b>Signals and queues</b> change only at logged seconds: the phase shown during each second, and the waiting vehicles (speed below 0.1 m/s) per approach at its end. Queue bars run back from the stop line, the same length per waiting vehicle in both panels; the number at a bar's far end is the queue (if the bar runs off the view, it sits at the bar's last point in view).</p>
+    <p><b>Signals and queues</b> change only at logged seconds: the phase shown during each second, and the waiting vehicles (speed below 0.1 m/s) per approach at its end. Queue bars run back from the stop line, the same length per waiting vehicle in both panels; the number at a bar's far end is the queue (if the bar runs off the view, or another label is in its place, it moves along the bar towards the stop line, or just beside the bar's end, joined to it by a thin line). No label covers another.</p>
     <p><b>As simulated</b> (the default) draws CityFlow's layout with north up; its traffic keeps right, as CityFlow simulates it. <b>Keep left</b> draws the left-right mirror image, which is how this project models India's left-hand traffic (docs/indian_scenario.md): north stays up, but east and west swap sides, so the road the decision log and the LLM's prompts call E is drawn on the left. The compass shows this.</p>
     <p><b>Sizes.</b> Vehicles are drawn to their length and width, never smaller than a few pixels; the selected ambulance is enlarged so it can be found.</p></div>`;
 
@@ -134,15 +134,25 @@ export default function (component) {
   const track = scrub.appendChild(el('div', 'rp-track'));
   const fill = track.appendChild(el('div', 'rp-fill'));
   const pct = (t) => `${(100 * (t - T0)) / Math.max(1, T1 - T0)}%`;
+  const mlabs = [];   // [label, its time as 0..1 of the window, wanted below the track]
   const mark = (t, cls, colour, label, flip) => {
     if (t == null || t < T0 || t > T1) return;
     const m = scrub.appendChild(el('div', `rp-mark ${cls}`)); m.style.left = pct(t); if (colour) m.style.background = colour;
-    if (label) {
-      const l = scrub.appendChild(el('div', `rp-mlab${flip ? ' flip' : ''}`, label)); l.style.left = pct(t);
-      const u = (t - T0) / Math.max(1, T1 - T0);
-      if (u > 0.85) l.classList.add('end'); else if (u < 0.15) l.classList.add('start');
-    }
+    if (label) mlabs.push([scrub.appendChild(el('div', 'rp-mlab', label)), (t - T0) / Math.max(1, T1 - T0), flip]);
   };
+  // each label centred on its time but kept on the timeline; one that would touch a label already placed in its
+  // row (above or below the track) goes to the other row. Run again when the width or the font changes.
+  function placeMarks() {
+    const W = scrub.clientWidth, rows = [[], []];
+    for (const [l, u, flip] of mlabs) {
+      const w = l.offsetWidth, x = clamp(u * W - w / 2, 0, Math.max(0, W - w));
+      const clear = (row) => rows[row].every(([a, b]) => x + w + 8 <= a || b + 8 <= x);
+      const want = flip ? 1 : 0, row = clear(want) || !clear(1 - want) ? want : 1 - want;
+      rows[row].push([x, x + w]);
+      l.style.left = `${x}px`;
+      l.classList.toggle('flip', row === 1);
+    }
+  }
   mark(runs[0].amb.start, 'amb', null, `ambulance starts ${runs[0].amb.start}`, false);
   runs.forEach((r, i) => mark(r.amb.finished, '', r.colour, `${r.short} arrives ${r.amb.finished}`, i === 1));
   runs.forEach((r, i) => r.decisions.forEach((d, k) => {
@@ -264,6 +274,7 @@ export default function (component) {
       p.w = r.width; p.h = r.height;
       p.canvas.width = Math.round(r.width * dpr()); p.canvas.height = Math.round(r.height * dpr());
     }
+    placeMarks();
     dirty = true;
   }
   const fx = () => VIEWS[side].x, fy = () => VIEWS[side].y;   // keep left: x = -1, a left-right mirror; north stays up
@@ -465,10 +476,13 @@ export default function (component) {
     c.textBaseline = 'middle';
     const inside = (x, y, hw, hh) => x - hw >= M && x + hw <= p.w - M && y - hh >= M && y + hh <= p.h - M;
     const put = (x, y, w, h) => [clamp(x, M, p.w - M - w), clamp(y, M, p.h - M - h)];   // keep a box on the canvas
+    // at least 2 px from every label drawn so far: no label covers another
+    const clear = (x, y, w, h) => boxes.every(([bx, by, bw, bh]) => x + w + 2 <= bx || bx + bw + 2 <= x || y + h + 2 <= by || by + bh + 2 <= y);
     const cs = toS(p, C.x, C.y);
+    // junction labels first, each in the land quadrant between its junction and the grid's centre; where another
+    // label is in the way it moves a row up or down, the nearest free row first
     for (const j of J) {
       const ji = r.ji[j.id], ph = r.phase[kph][ji], tr = ph === j.transition;
-      // label in the land quadrant between this junction and the grid's centre
       const js = toS(p, j.x, j.y), sx = Math.sign(cs[0] - js[0]) || 1, sy = Math.sign(cs[1] - js[1]) || 1;
       const corner = toS(p, j.x + Math.sign(C.x - j.x || 1) * j.w, j.y + Math.sign(C.y - j.y || 1) * j.w);
       const lab = tr ? 'yellow' : j.labels[String(ph)];
@@ -480,28 +494,48 @@ export default function (component) {
       const dy = 16 + (sx < 0 ? 24 : 0);
       const x0 = sx > 0 ? corner[0] + 6 : corner[0] - 6 - W, y0 = sy > 0 ? corner[1] + dy : corner[1] - dy;
       const far = js[0] < -W || js[0] > p.w + W || js[1] < -40 || js[1] > p.h + 40;   // junction well off the view
-      if (!far) {
-        const [x, top] = put(x0, y0 - 10, W, 20), y = top + 10;
-        c.fillStyle = 'rgba(7,9,13,.8)'; rrect(c, x, top, W, 20, 6); c.fill();
-        c.strokeStyle = tr ? 'rgba(245,165,36,.55)' : 'rgba(34,197,94,.45)'; c.lineWidth = 1; c.stroke();
-        c.fillStyle = '#e6edf3'; c.font = '600 11px "Geist Mono", ui-monospace, monospace'; c.fillText(j.label, x + 7, y);
-        c.fillStyle = tr ? SIG.amber : '#86efac'; c.font = '500 11px Geist, system-ui, sans-serif'; c.fillText(lab, x + 14 + w1, y);
-        boxes.push([x, top, W, 20]);
-      }
-      // queue counts at the far end of each bar, or where the bar leaves the view
+      if (far) continue;
+      const rows = [0, -1, 1, -2, 2, -3, 3].map((k) => put(x0, y0 - 10 + 24 * k * sy, W, 20));
+      const [x, top] = rows.find(([cx, ct]) => clear(cx, ct, W, 20)) || rows[0], y = top + 10;
+      c.fillStyle = 'rgba(7,9,13,.8)'; rrect(c, x, top, W, 20, 6); c.fill();
+      c.strokeStyle = tr ? 'rgba(245,165,36,.55)' : 'rgba(34,197,94,.45)'; c.lineWidth = 1; c.stroke();
+      c.fillStyle = '#e6edf3'; c.font = '600 11px "Geist Mono", ui-monospace, monospace'; c.fillText(j.label, x + 7, y);
+      c.fillStyle = tr ? SIG.amber : '#86efac'; c.font = '500 11px Geist, system-ui, sans-serif'; c.fillText(lab, x + 14 + w1, y);
+      boxes.push([x, top, W, 20]);
+    }
+    // then the queue counts: at the far end of each bar, or where the bar leaves the view; where that spot is taken,
+    // the first clear point towards the stop line, else the nearest clear spot around the bar's end
+    for (const j of J) {
+      const ji = r.ji[j.id];
       r.approaches.forEach((app, ai) => {
         const rid = j.inRoad[app]; if (!rid) return;
         const R = roads[rid], q = r.queue[kq][ji][ai]; if (!q) return;
         const end = R.len - R.wb - 1, L = Math.min(q * QM, R.len - R.wb - R.wa - 4), o = R.lanes * R.lw + 1.7;
         c.font = '600 10.5px "Geist Mono", ui-monospace, monospace';
         const t = String(q), tw = c.measureText(t).width, bw = tw + 8, bh = 16;
-        let at = null;
-        for (let k = 0; k <= 50 && !at; k++) {   // from the bar's far end towards the stop line: first point on the canvas
+        const free = (px, py) => inside(px, py, bw / 2, bh / 2) && clear(px - bw / 2, py - bh / 2, bw, bh);
+        let at = null, first = null;
+        for (let k = 0; k <= 50 && !at; k++) {   // from the bar's far end towards the stop line
           const u = 1 - k / 50, [px, py] = toS(p, ...pt(R, end - u * L - (k ? 0 : 3.5), o));
-          if (inside(px, py, bw / 2, bh / 2)) at = [px, py];
+          if (!inside(px, py, bw / 2, bh / 2)) continue;
+          first = first || [px, py];
+          if (free(px, py)) at = [px, py];
         }
-        if (!at) return;   // the bar is not on the canvas at all
+        if (!first) return;   // the bar is not on the canvas at all
+        let lead = false;
+        if (!at) {   // nowhere clear on the bar: the nearest clear spot around its end, joined to it by a thin line
+          const ring = [];
+          for (let i = -3; i <= 3; i++) for (let k = -3; k <= 3; k++) if (i || k) ring.push([i * (bw + 4), k * 19]);
+          ring.sort((a, b) => Math.hypot(a[0], a[1]) - Math.hypot(b[0], b[1]));
+          const near = ring.map(([dx, dy]) => [first[0] + dx, first[1] + dy]).find(([qx, qy]) => free(qx, qy));
+          lead = !!near;
+          at = near || first;
+        }
         const [bx, by] = put(at[0] - bw / 2, at[1] - bh / 2, bw, bh);
+        if (lead) {
+          c.strokeStyle = 'rgba(244,63,94,.7)'; c.lineWidth = 1;
+          c.beginPath(); c.moveTo(first[0], first[1]); c.lineTo(bx + bw / 2, by + bh / 2); c.stroke();
+        }
         c.fillStyle = 'rgba(244,63,94,.92)'; rrect(c, bx, by, bw, bh, 5); c.fill();
         c.fillStyle = '#fff'; c.fillText(t, bx + 4, by + bh / 2 + 0.5);
         boxes.push([bx, by, bw, bh]);
@@ -603,7 +637,7 @@ export default function (component) {
   resize();
   P.forEach(drawCompass);
   renderFeeds();
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { dirty = true; });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { placeMarks(); dirty = true; });
   raf = requestAnimationFrame(frame);
   return () => { cancelAnimationFrame(raf); ro.disconnect(); };
 }

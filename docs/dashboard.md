@@ -157,8 +157,10 @@ missing and which command makes it.
   the decision logs and the LLM prompts call E is drawn on the left (the compass says so). The
   default pair is MaxPressure and the pre-registered LLM arm. Nothing is drawn over the map: each
   panel's run name and timer sit in a bar above the canvas and its compass and zoom buttons in a bar
-  below it, and every label on the canvas is kept inside it (a queue count whose bar runs off the
-  view sits where the bar leaves it). Under the canvas, both runs' decisions as cards on
+  below it; every label on the canvas is kept inside it, and none covers another (a junction's
+  label moves a row up or down; a queue count whose bar runs off the view, or whose place another
+  label has taken, moves along its bar towards the stop line, or just beside the bar's end).
+  Under the canvas, both runs' decisions as cards on
   the same clock (the latest one highlighted, ambulance decisions marked): the LLM's own reason, a
   guard override, or MaxPressure's pressures; "Show raw decision data" adds every logged field.
   Below: the network queue over the whole hour for both runs.
@@ -210,10 +212,11 @@ screen. The sidebar starts closed on a phone and open on a laptop, and either wa
 reopened, with the page starting below the reopen button. The Overview hero's comparison cells line up
 (each colour dot on the first line of its name, the values of one row on one line). On the replay, at
 four of the widths, in both views, the grid and the follow camera, at four zoom levels and two moments,
-every label the canvas drew lies inside the canvas and nothing overlaps the canvas. After a real
-detector run on the sample clip, the player has none of those faults at any of the widths. Each check
-was seen to fail on a broken layout. The tests are skipped when Chromium cannot start (see Screenshots
-for its libraries) or the files kept on D are absent.
+every label the canvas drew lies inside the canvas, none overlaps another, and nothing overlaps the
+canvas; on a phone, for every ambulance, the timeline's labels stay on the timeline and apart. After a
+real detector run on the sample clip, the player has none of those faults at any of the widths. Each
+check was seen to fail on a broken layout. The tests are skipped when Chromium cannot start (see
+Screenshots for its libraries) or the files kept on D are absent.
 
 `tests/test_replay.py` checks the replay recorder on short runs made in a temp folder
 (MaxPressure re-run, and an injected fake LLM replayed from its decision log), and that a changed

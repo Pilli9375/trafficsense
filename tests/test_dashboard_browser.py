@@ -117,8 +117,8 @@ HERO_JS = r"""() => @ROOTS.flatMap(root => Array.from(root.querySelectorAll('.ts
           top: cell.getBoundingClientRect().top, value_bottom: cell.querySelector('.v').getBoundingClientRect().bottom};
 })""".replace("@ROOTS", ROOTS)
 
-# Per replay panel: the label boxes the canvas drew (its own record), the canvas size, and whether any panel
-# element (header, footer, timer, zoom, compass) overlaps the canvas.
+# Per replay panel: the label boxes the canvas drew (its own record), the canvas size, the pairs of labels that
+# overlap, and whether any panel element (header, footer, timer, zoom, compass) overlaps the canvas.
 LABELS_JS = r"""() => @ROOTS.flatMap(root => Array.from(root.querySelectorAll('.rp-panel'))).map(panel => {
   const area = panel.querySelector('.rp-canvas').getBoundingClientRect();
   const canvas = panel.querySelector('canvas');
@@ -128,10 +128,25 @@ LABELS_JS = r"""() => @ROOTS.flatMap(root => Array.from(root.querySelectorAll('.
     .map(e => e.getBoundingClientRect())
     .filter(o => o.right > area.left + 0.5 && o.left < area.right - 0.5 && o.bottom > area.top + 0.5 && o.top < area.bottom - 0.5).length;
   const outside = labels.filter(([x, y, bw, bh]) => x < -0.5 || y < -0.5 || x + bw > w + 0.5 || y + bh > h + 0.5);
-  return {n: labels.length, outside, covering, w, h};
+  const overlaps = [];
+  labels.forEach((a, i) => labels.slice(i + 1).forEach(b => {
+    if (a[0] < b[0] + b[2] - 0.5 && b[0] < a[0] + a[2] - 0.5 && a[1] < b[1] + b[3] - 0.5 && b[1] < a[1] + a[3] - 0.5) overlaps.push([a, b]);
+  }));
+  return {n: labels.length, outside, overlaps, covering, w, h};
 })""".replace("@ROOTS", ROOTS)
 
 # Whether the sidebar is open, whether the button that reopens it is on screen, and whether the page starts below it.
+# The replay timeline's labels (ambulance start, each run's arrival): any that leave the timeline or overlap.
+TIMELINE_JS = r"""() => @ROOTS.flatMap(r => Array.from(r.querySelectorAll('.rp-scrub'))).flatMap(sc => {
+  const s = sc.getBoundingClientRect(), bad = [];
+  const labs = Array.from(sc.querySelectorAll('.rp-mlab')).map(l => [l.textContent, l.getBoundingClientRect()]);
+  labs.forEach(([t, r]) => { if (r.left < s.left - 0.5 || r.right > s.right + 0.5) bad.push(['outside', t]); });
+  labs.forEach(([t, a], i) => labs.slice(i + 1).forEach(([u, b]) => {
+    if (a.left < b.right - 0.5 && b.left < a.right - 0.5 && a.top < b.bottom - 0.5 && b.top < a.bottom - 0.5) bad.push(['overlap', t, u]);
+  }));
+  return bad;
+})""".replace("@ROOTS", ROOTS)
+
 SIDEBAR_JS = r"""() => {
   const sb = document.querySelector('[data-testid="stSidebar"]'), btn = document.querySelector('[data-testid="stExpandSidebarButton"]');
   const b = btn ? btn.getBoundingClientRect() : null, m = document.querySelector('[data-testid="stMainBlockContainer"]');
@@ -263,7 +278,7 @@ def test_hero_cells_line_up(browser, app):
 
 def test_replay_labels_never_covered_or_clipped(browser, app):
     """In both views, the grid and the follow camera, at every zoom level: every label the canvas drew lies
-    inside the canvas, and no panel element overlaps the canvas."""
+    inside the canvas, no two labels overlap, and no panel element overlaps the canvas."""
     problems, checked = [], 0
     for w in LABEL_WIDTHS:
         page = browser.new_page(viewport={"width": w, "height": 900})
@@ -286,12 +301,35 @@ def test_replay_labels_never_covered_or_clipped(browser, app):
                         whole = mode == "Grid" and clicks in ((), ("Reset zoom and pan",))
                         for i, panel in enumerate(page.evaluate(LABELS_JS)):
                             checked += 1
-                            if panel["outside"] or panel["covering"] or (whole and not panel["n"]):
+                            if panel["outside"] or panel["overlaps"] or panel["covering"] or (whole and not panel["n"]):
                                 problems.append((w, t, side, mode, clicks[:1], i, panel))
                     page.get_by_role("button", name="Reset zoom and pan").first.click()
         page.close()
     assert checked == len(LABEL_WIDTHS) * len(TIMES) * 2 * 2 * len(ZOOMS) * 2
     assert not problems, problems[:5]
+
+
+def test_replay_timeline_labels(browser, app):
+    """On a phone, the narrowest timeline, for every ambulance: the start and arrival labels stay on the
+    timeline and apart (centred on its time, one arrival label ran off the end)."""
+    page = browser.new_page(viewport={"width": 390, "height": 900})
+    page.goto(f"{app}/network_replay")
+    _settle(page, 3000)
+    picker = page.get_by_label("Ambulance (signal-relevant, by start time)")
+    picker.click()
+    page.wait_for_timeout(500)
+    options = page.get_by_role("option").all_inner_texts()
+    page.keyboard.press("Escape")
+    bad = []
+    for k, opt in enumerate(options):
+        if k:
+            picker.click()
+            page.get_by_role("option", name=opt).click()
+            _settle(page, 2500)
+        bad += [(opt, *x) for x in page.evaluate(TIMELINE_JS)]
+    page.close()
+    assert len(options) > 1, options
+    assert not bad, bad[:5]
 
 
 def test_detection_player_layout(browser, app):
