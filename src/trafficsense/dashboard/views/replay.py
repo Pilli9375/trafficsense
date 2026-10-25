@@ -171,7 +171,7 @@ def queue_figure(runs: list[Run], zs: list[dict], t0: int, t1: int, va: dict, vb
     fig.add_vline(x=va["scheduled_start"], line=dict(color=theme.AMBULANCE, width=1, dash="dot"))
     for r, v in zip(runs, (va, vb)):
         fig.add_vline(x=v["finished"], line=dict(color=r.colour, width=1.2, dash="dot"))
-    fig.update_xaxes(title_text="simulation time (s) · shaded: the replayed window · dotted: ambulance start and arrivals")
+    fig.update_xaxes(title_text="simulation time (s)")
     fig.update_yaxes(title_text="waiting vehicles")
     fig.update_layout(hovermode="x unified", margin=dict(l=8, r=12, t=28, b=8), legend=dict(y=1.0, yanchor="bottom"))
     return fig
@@ -269,7 +269,8 @@ def render() -> None:
 
     ui.chart(queue_figure([A, B], [za, zb], t0, t1, va, vb), A.rdir + "/replay.npz", B.rdir + "/replay.npz",
              key="replay_queue", height=260, title="Network queue over the hour",
-             subtitle="Waiting vehicles on the whole grid, both runs; the replayed window is shaded")
+             subtitle="Waiting vehicles on the whole grid, both runs. Shaded: the replayed window; dotted: the "
+                      "ambulance's start and each run's arrival.")
 
     v = A.meta["verified"]
     ui.why(

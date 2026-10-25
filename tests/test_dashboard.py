@@ -464,3 +464,28 @@ def test_run_summaries_match_the_paired_block():
         for name, p in paired.items():
             a = att(name)
             assert [a[s] - mp[s] for s in p["seeds"]] == pytest.approx(p["att_minus_mp"], abs=1e-9), (sc, name)
+
+
+def test_seed_labels_never_overlap():
+    """Slope chart: a seed's label moves up or down only where two seeds end close together, so no two labels
+    of a panel overlap (two did, at every width, before)."""
+    from trafficsense.dashboard.views import results
+
+    assert results.spread([0.0, 40.0], 13) == [0.0, 40.0]            # apart already: unchanged
+    for ys in ([0.0, 5.0, 30.0], [10.0, 10.0, 10.0], [50.0, 0.0, 49.0, 3.0]):
+        out = results.spread(ys, 13)
+        order = sorted(range(len(ys)), key=lambda i: ys[i])
+        assert sorted(range(len(out)), key=lambda i: out[i]) == order    # order kept
+        assert all(out[b] - out[a] >= 13 - 1e-9 for a, b in zip(order, order[1:]))
+    full = json.loads((repo_root() / "outputs/full/results.json").read_text())
+    for sc in full["scenarios"]:
+        arms, _ = results._arms(full, sc)
+        keys = [k for k in results.ORDER if k in arms and k not in (results.MP, ("fixedtime", None))]
+        fig = results.slopes(arms, keys)
+        rng = fig.layout.yaxis.range
+        plot_h = results.SLOPES_H - 12 - 8 - 24
+        for j in range(1, len(keys) + 1):
+            xref = "x" if j == 1 else f"x{j}"
+            px = sorted((a.y - rng[0]) / (rng[1] - rng[0]) * plot_h + a.yshift
+                        for a in fig.layout.annotations if a.xref == xref)
+            assert all(b - a >= 13 - 1e-9 for a, b in zip(px, px[1:])), (sc, keys[j - 1], px)

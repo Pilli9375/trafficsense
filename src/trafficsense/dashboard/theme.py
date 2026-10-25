@@ -107,6 +107,24 @@ def short(controller: str, model: str | None) -> str:
     return SHORT[(controller, model)]
 
 
+def axis_label(label: str, width: int = 24) -> str:
+    """A long label on two lines for a chart axis (before ' (', else after ' · ', else at a middle space), so a
+    narrow chart keeps room for the plot. Legends, hovers and tables keep the one-line label."""
+    if len(label) <= width:
+        return label
+    if " (" in label:
+        head, tail = label.split(" (", 1)
+        return f"{head}<br>({tail}"
+    if " · " in label:
+        head, tail = label.split(" · ", 1)
+        return f"{head} ·<br>{tail}"
+    spaces = [i for i, ch in enumerate(label) if ch == " "]
+    if not spaces:
+        return label
+    i = min(spaces, key=lambda j: abs(j - len(label) / 2))
+    return f"{label[:i]}<br>{label[i + 1:]}"
+
+
 def is_exploratory(controller: str, model: str | None) -> bool:
     return (controller, model) in EXPLORATORY
 

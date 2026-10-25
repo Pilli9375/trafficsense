@@ -57,7 +57,7 @@ def forest(arms: dict, keys: list, x_title: str, metric: str = "att") -> go.Figu
         lab, col = theme.entity(*k)
         m, sd = arms[k][metric]
         fig.add_trace(go.Scatter(
-            x=[m], y=[lab], mode="markers", marker=dict(color=col, size=12, line=dict(color=theme.SURFACE, width=2)),
+            x=[m], y=[theme.axis_label(lab)], mode="markers", marker=dict(color=col, size=12, line=dict(color=theme.SURFACE, width=2)),
             error_x=dict(type="data", array=[sd], color=col, thickness=1.6, width=6),
             hovertemplate=f"<b>%{{x:.1f}} s</b> ± {sd:.1f}<br>{ui.esc(lab)}<extra></extra>", showlegend=False))
     hi = max(means[k] + arms[k][metric][1] for k in on)
@@ -66,13 +66,16 @@ def forest(arms: dict, keys: list, x_title: str, metric: str = "att") -> go.Figu
     for k in off:
         lab, col = theme.entity(*k)
         m, sd = arms[k][metric]
-        fig.add_trace(go.Scatter(x=[hi + pad], y=[lab], mode="markers", marker=dict(color=col, size=11, symbol="triangle-right"),
-                                 customdata=[[m, sd]], showlegend=False,
+        fig.add_trace(go.Scatter(x=[hi + pad], y=[theme.axis_label(lab)], mode="markers",
+                                 marker=dict(color=col, size=11, symbol="triangle-right"), customdata=[[m, sd]], showlegend=False,
                                  hovertemplate="%{customdata[0]:.1f} ± %{customdata[1]:.1f} s (off this scale)<extra>"
                                                + ui.esc(lab) + "</extra>"))
-        fig.add_annotation(x=hi + pad, y=lab, xanchor="right", xshift=-12, text=f"{m:.1f} ± {sd:.1f} s, off scale",
+        # above its marker, on the card's colour: clear of the axis labels however narrow the chart, and the
+        # dotted MaxPressure line does not run through the text
+        fig.add_annotation(x=hi + pad, y=theme.axis_label(lab), xanchor="right", yanchor="bottom", yshift=9,
+                           text=f"{m:.1f} ± {sd:.1f} s, off scale", bgcolor=theme.SURFACE, borderpad=2,
                            font=dict(color=theme.TEXT_2, size=11.5))
-    order = [_label(k) for k in keys]
+    order = [theme.axis_label(_label(k)) for k in keys]
     fig.update_yaxes(categoryorder="array", categoryarray=order[::-1], showgrid=False)
     fig.update_xaxes(title_text=x_title, range=[lo - pad, hi + pad * 1.6], nticks=6)
     fig.update_layout(height=max(330, 70 + 46 * len(keys)), margin=dict(l=8, r=16, t=8, b=8))
@@ -88,16 +91,49 @@ def per_seed_att(arm: dict) -> dict[int, float]:
     return out
 
 
+def spread(ys: list[float], gap: float) -> list[float]:
+    """Label positions (pixels) as close as possible to `ys` with at least `gap` between neighbours: labels that
+    would collide are spread evenly around their mean, keeping their order."""
+    order = sorted(range(len(ys)), key=lambda i: ys[i])
+    clusters: list[list[int]] = []
+    span = lambda c: (sum(ys[i] for i in c) / len(c) - gap * (len(c) - 1) / 2, gap * (len(c) - 1))
+    for i in order:
+        clusters.append([i])
+        while len(clusters) > 1:
+            (s0, w0), (s1, _) = span(clusters[-2]), span(clusters[-1])
+            if s1 - (s0 + w0) >= gap:
+                break
+            clusters[-2:] = [clusters[-2] + clusters[-1]]
+    out = [0.0] * len(ys)
+    for c in clusters:
+        start, _ = span(c)
+        for n, i in enumerate(c):
+            out[i] = start + n * gap
+    return out
+
+
+SLOPES_H = 330    # px; the seed labels are spread on this height's pixel scale
+
+
 def slopes(arms: dict, keys: list) -> go.Figure:
-    """Paired by seed: MaxPressure's ATT -> the controller's, one line per seed; green = faster on that seed."""
+    """Paired by seed: MaxPressure's ATT -> the controller's, one line per seed; green = faster on that seed.
+    Each panel's arm is named by its right-hand tick (no panel titles: they collided on narrow screens)."""
     mp = per_seed_att(arms[MP])
-    fig = make_subplots(rows=1, cols=len(keys), shared_yaxes=True, horizontal_spacing=0.05,
-                        subplot_titles=[theme.short(*k) for k in keys])
+    att = {k: per_seed_att(arms[k]) for k in keys}
+    vals = list(mp.values()) + [v for a in att.values() for v in a.values()]
+    lo, hi = min(vals), max(vals)
+    pad = 0.07 * (hi - lo) + 0.2
+    rng = [lo - pad, hi + pad]
+    plot_h = SLOPES_H - 12 - 8 - 24          # margins and the tick labels
+    fig = make_subplots(rows=1, cols=len(keys), shared_yaxes=True, horizontal_spacing=0.05)
     for j, k in enumerate(keys, start=1):
-        att = per_seed_att(arms[k])
         col = theme.entity(*k)[1]
-        for seed in sorted(att):
-            a, b = mp[seed], att[seed]
+        seeds = sorted(att[k])
+        # seed labels at the arm's end, spread apart where two seeds end close together
+        px = [(att[k][s] - rng[0]) / (rng[1] - rng[0]) * plot_h for s in seeds]
+        shift = [p2 - p1 for p1, p2 in zip(px, spread(px, 13))]
+        for seed, dy in zip(seeds, shift):
+            a, b = mp[seed], att[k][seed]
             line = theme.GREEN if b < a else theme.RED if b > a else theme.TEXT_3
             fig.add_trace(go.Scatter(
                 x=["MP", "arm"], y=[a, b], mode="lines+markers", showlegend=False,
@@ -105,13 +141,13 @@ def slopes(arms: dict, keys: list) -> go.Figure:
                                                             line=dict(color=theme.SURFACE, width=2)),
                 customdata=["MaxPressure", theme.short(*k)],
                 hovertemplate=f"seed {seed} · %{{customdata}}: <b>%{{y:.1f}} s</b><extra></extra>"), row=1, col=j)
-            fig.add_annotation(x="arm", y=b, text=f"s{seed}", xshift=14, showarrow=False,
+            fig.add_annotation(x="arm", y=b, text=f"s{seed}", xshift=14, yshift=dy, showarrow=False,
                                font=dict(size=10.5, color=theme.TEXT_3), row=1, col=j)
         fig.update_xaxes(showgrid=False, tickmode="array", tickvals=["MP", "arm"], ticktext=["MaxPressure", theme.short(*k)],
                          tickfont=dict(size=10.5), range=[-0.25, 1.35], row=1, col=j)
     fig.update_yaxes(title_text="ATT (s)", row=1, col=1)
-    fig.update_annotations(selector=dict(xref="paper"), font=dict(color=theme.TEXT_2, size=12.5))
-    fig.update_layout(height=330, margin=dict(l=8, r=20, t=30, b=8))
+    fig.update_yaxes(range=rng)
+    fig.update_layout(height=SLOPES_H, margin=dict(l=8, r=20, t=12, b=8))
     return fig
 
 
@@ -139,8 +175,8 @@ def signal_control(full: dict) -> None:
 
     c1, c2 = st.columns([1, 1.25], gap="medium")
     with c1:
-        ui.chart(forest(arms, keys, "ATT (s) · dotted line: MaxPressure"), FULL, key="res_att",
-                 title="Average travel time", subtitle=f"Mean ± std over {'/'.join(str(n) for n in n_seeds)} seeds")
+        ui.chart(forest(arms, keys, "ATT (s)"), FULL, key="res_att", title="Average travel time",
+                 subtitle=f"Mean ± std over {'/'.join(str(n) for n in n_seeds)} seeds; dotted line: MaxPressure")
     with c2:
         pkeys = [k for k in keys if k not in (MP, ("fixedtime", None))]
         runs = [f"{r}/summary.json" for k in [MP] + pkeys for r in arms[k]["runs"]]
@@ -209,7 +245,7 @@ def emergency(full: dict, ms: dict) -> None:
                 ["pre-registered", "no significance test"], FULL)
 
     # where the time goes: stopped vs the rest of the trip
-    labels = [_label(k) for k, _ in rows]
+    labels = [theme.axis_label(_label(k)) for k, _ in rows]
     stopped = [a["stopped_time_mean_s"] for _, a in rows]
     travel = [a["travel_time_mean_s"] for _, a in rows]
     rest = [data.derived(t - s) for t, s in zip(travel, stopped)]
@@ -225,10 +261,11 @@ def emergency(full: dict, ms: dict) -> None:
     fig.update_layout(barmode="stack", bargap=0.38, height=70 + 40 * len(rows), margin=dict(l=8, r=56, t=28, b=8),
                       legend=dict(y=1.0, yanchor="bottom", x=0, traceorder="normal"))
     fig.update_yaxes(categoryorder="array", categoryarray=labels[::-1], showgrid=False)
-    fig.update_xaxes(title_text="mean travel time of the signal-relevant ambulances (s) · dotted: preemption", rangemode="tozero")
+    fig.update_xaxes(title_text="mean travel time (s)", rangemode="tozero")
     ui.chart(fig, FULL, MODEL_SIZE, key="res_amb", grow="h", title="Where the ambulances' time goes",
-             subtitle=f"Mean over the {ctl['maxpressure']['ambulances_relevant']['n']} ambulances whose route crosses a "
-                      "signal, all seeds pooled. Red: stopped in the network; colour: the rest of the trip.",
+             subtitle=f"Mean travel time of the {ctl['maxpressure']['ambulances_relevant']['n']} ambulances whose route "
+                      "crosses a signal, all seeds pooled. Red: stopped in the network; colour: the rest of the trip; "
+                      "dotted line: rule-based preemption.",
              tags=["exploratory"])
 
     tbl = []
@@ -295,34 +332,36 @@ def model_size(ms: dict) -> None:
     cols = [theme.entity("llm_guided_mp_v3", m)[1] for m in order]
     c1, c2 = st.columns([1.35, 1], gap="medium")
     with c1:
+        # models down the side (their names never collide, however narrow the chart), smallest on top; the bands'
+        # meaning is in the subtitle, which wraps, rather than in labels over the plot
         a = [blk["models"][m]["att_vs_mp"] for m in order]
         mean = [100 * v["mean"] for v in a]
+        n = len(order)
         fig = go.Figure()
+        bands = []
         if boundary is not None:
             i0 = order.index(boundary)
-            fig.add_vrect(x0=i0 - 0.45, x1=len(order) - 0.55, fillcolor=theme.rgba(theme.GREEN, .07), line_width=0)
-            fig.add_annotation(x=(i0 + len(order) - 1) / 2, y=1.0, yref="paper", yanchor="bottom",
-                               text=f"≈ MaxPressure from ~{active_b(ms, boundary)}B up",
-                               font=dict(color="#4ade80", size=12.5))
+            fig.add_hrect(y0=i0 - 0.45, y1=n - 0.55, fillcolor=theme.rgba(theme.GREEN, .07), line_width=0)
+            bands.append(f"green band: within seed-to-seed noise of MaxPressure, from ~{active_b(ms, boundary)}B active up")
         if worse_all:
             idx = [order.index(m) for m in worse_all]
-            fig.add_vrect(x0=min(idx) - 0.45, x1=max(idx) + 0.45, fillcolor=theme.rgba(theme.RED, .07), line_width=0)
-            fig.add_annotation(x=(min(idx) + max(idx)) / 2, y=1.0, yref="paper", yanchor="bottom",
-                               text="slower on every seed", font=dict(color="#fb7185", size=12.5))
-        fig.add_hline(y=0, line=dict(color=theme.entity(*MP)[1], width=1, dash="dot"))
+            fig.add_hrect(y0=min(idx) - 0.45, y1=max(idx) + 0.45, fillcolor=theme.rgba(theme.RED, .07), line_width=0)
+            bands.append("red band: slower than MaxPressure on every seed")
+        fig.add_vline(x=0, line=dict(color=theme.entity(*MP)[1], width=1, dash="dot"))
         fig.add_trace(go.Scatter(
-            x=list(range(len(order))), y=mean, mode="markers", marker=dict(color=cols, size=13, line=dict(color=theme.SURFACE, width=2)),
-            error_y=dict(type="data", symmetric=False, array=[100 * (v["max"] - v["mean"]) for v in a],
+            x=mean, y=list(range(n)), mode="markers", marker=dict(color=cols, size=13, line=dict(color=theme.SURFACE, width=2)),
+            error_x=dict(type="data", symmetric=False, array=[100 * (v["max"] - v["mean"]) for v in a],
                          arrayminus=[100 * (v["mean"] - v["min"]) for v in a], color=theme.TEXT_3, thickness=1.4, width=6),
             customdata=[[100 * v["min"], 100 * v["max"]] for v in a], text=[theme.model_short(m) for m in order],
-            hovertemplate="<b>%{y:+.1f}%</b> vs MaxPressure<br>seed range %{customdata[0]:+.1f} to %{customdata[1]:+.1f}%"
+            hovertemplate="<b>%{x:+.1f}%</b> vs MaxPressure<br>seed range %{customdata[0]:+.1f} to %{customdata[1]:+.1f}%"
                           "<extra>%{text}</extra>", showlegend=False))
-        fig.update_xaxes(tickmode="array", tickvals=list(range(len(order))), ticktext=labels, showgrid=False,
-                         zeroline=False, range=[-0.6, len(order) - 0.4])
-        fig.update_yaxes(title_text="ATT vs MaxPressure (+ = slower)", ticksuffix="%")
-        fig.update_layout(margin=dict(l=8, r=12, t=34, b=8))
+        fig.update_yaxes(tickmode="array", tickvals=list(range(n)), ticktext=labels, showgrid=False, zeroline=False,
+                         range=[n - 0.4, -0.6])
+        fig.update_xaxes(title_text="ATT vs MaxPressure (+ = slower)", ticksuffix="%")
+        fig.update_layout(margin=dict(l=8, r=12, t=8, b=8))
         ui.chart(fig, MODEL_SIZE, key="ms_att", height=360, title="Average travel time vs MaxPressure, by model size",
-                 subtitle=f"Mean and range over {len(blk['seeds'])} seeds; models ordered by total parameters (not to scale)",
+                 subtitle=f"Mean and range over {len(blk['seeds'])} seeds; models by total parameters, smallest on top (not "
+                          "to scale); dotted line: MaxPressure." + "".join(f" {b[0].upper()}{b[1:]}." for b in bands),
                  tags=["exploratory"])
     with c2:
         fp = [100 * blk["models"][m]["follows_pressure_rate"] for m in order]
@@ -385,7 +424,7 @@ def camera(cam: dict) -> None:
 
     # paired change per scenario and camera level
     rows = [(sc, l) for sc in scens for l in lv]
-    ylab = [f"{theme.SCENARIO_LABELS[sc].split(' · ')[1]} · {theme.LEVEL_LABELS[l].lower()}" for sc, l in rows]
+    ylab = [theme.axis_label(f"{theme.SCENARIO_LABELS[sc].split(' · ')[1]} · {theme.LEVEL_LABELS[l].lower()}") for sc, l in rows]
     fig = go.Figure()
     for c in affected:
         lab, col = theme.entity(*ctl_keys[c])
@@ -401,13 +440,13 @@ def camera(cam: dict) -> None:
     fig.update_layout(scattermode="group", scattergap=0.45, height=330, margin=dict(l=8, r=16, t=30, b=8),
                       legend=dict(y=1.0, yanchor="bottom"))
     fig.update_yaxes(categoryorder="array", categoryarray=ylab[::-1], showgrid=False)
-    fig.update_xaxes(title_text="ATT change vs exact counts (+ = slower)", ticksuffix="%")
+    fig.update_xaxes(title_text="ATT change (+ = slower)", ticksuffix="%")
     note = (f"{', '.join(theme.short(*ctl_keys[c]) for c in unaffected)}: unaffected (identical runs at every level)."
             if unaffected else None)
     c1, c2 = st.columns([1, 1], gap="medium")
     with c1:
         ui.chart(fig, CAMERA, key="cam_main", title="What camera errors cost",
-                 subtitle="Paired by seed; mean and seed range. " + (note or ""))
+                 subtitle="Change in travel time vs exact counts, paired by seed; mean and seed range. " + (note or ""))
     with c2:
         sweep = cam["sweep"]
         fig = make_subplots(rows=1, cols=len(scens), horizontal_spacing=0.1,
@@ -436,47 +475,58 @@ def camera(cam: dict) -> None:
         ui.chart(fig, CAMERA, key="cam_sweep", title="MaxPressure vs detection rate",
                  subtitle="Uniform sweep: the same rate for every class, no false detections. Hollow: the two camera levels.")
 
-    # post-hoc decomposition as a waterfall per scenario
+    # post-hoc decomposition as a waterfall per scenario, the steps down the side (their names never collide,
+    # however narrow the chart) and one scenario above the other on a shared scale
     dec = cam["decomposition"]
     comp = [("misses", "Misses"), ("false", "False detections"), ("confusion", "Class confusion")]
-    fig = make_subplots(rows=1, cols=len(scens), shared_yaxes=True, horizontal_spacing=0.06,
+    fig = make_subplots(rows=len(scens), cols=1, shared_xaxes=True, vertical_spacing=0.14,
                         subplot_titles=[theme.SCENARIO_LABELS[s].split(" · ")[1] for s in scens])
     for j, sc in enumerate(scens, start=1):
         vals = [dec[k]["att_vs_perfect"][sc] for k, _ in comp]
         tot, allv = dec["sum_abc"][sc], dec["all"]["att_vs_perfect"][sc]
-        xs = [lab.replace(" ", "<br>") for _, lab in comp] + ["Sum of<br>the three", "All three,<br>measured"]
-        ys = [v["mean"] for v in vals] + [tot["mean"], allv["mean"]]
+        steps = [lab for _, lab in comp] + ["Sum of the three", "All three, measured"]
+        xs = [v["mean"] for v in vals] + [tot["mean"], allv["mean"]]
         pcts = [v["pct_mean"] for v in vals] + [tot["pct_mean"], allv["pct_mean"]]
-        pos = list(range(len(xs)))
+        pos = list(range(len(steps)))
         fig.add_trace(go.Waterfall(
-            x=pos, y=ys, measure=["relative"] * 3 + ["total", "absolute"], customdata=pcts, width=0.62,
-            text=[f"{v:+.2f} s" for v in ys], textposition="outside", textfont=dict(color=theme.TEXT, size=11.5),
+            orientation="h", y=pos, x=xs, measure=["relative"] * 3 + ["total", "absolute"], customdata=pcts, width=0.62,
+            textinfo="none",
             increasing=dict(marker=dict(color=theme.rgba(theme.RED, .85))), decreasing=dict(marker=dict(color=theme.rgba(theme.GREEN, .85))),
             totals=dict(marker=dict(color=theme.entity(*MP)[1])), connector=dict(line=dict(color=theme.BORDER_2, width=1, dash="dot")),
-            hovertemplate="<b>%{y:+.2f} s</b> (%{customdata:+.1f}%)<extra></extra>", showlegend=False), row=1, col=j)
-        # each component's seed range, drawn at the step it adds
+            hovertemplate="<b>%{x:+.2f} s</b> (%{customdata:+.1f}%)<extra></extra>", showlegend=False), row=j, col=1)
+        # each step's value to the right of its bar, also for a step that saves time (Plotly would put that one on
+        # the left, into the step names)
+        cum, ends = 0.0, []
+        for v in vals:
+            ends.append(max(cum, cum + v["mean"]))
+            cum += v["mean"]
+        ends += [max(0.0, cum), max(0.0, allv["mean"])]
+        for x_end, p, v in zip(ends, pos, xs):
+            fig.add_annotation(x=x_end, y=p, text=f"{v:+.2f} s", xanchor="left", xshift=6, showarrow=False,
+                               font=dict(color=theme.TEXT, size=11.5), row=j, col=1)
+        # each component's seed range, drawn just under the step it adds
         base = 0.0
         for k, v in enumerate(vals):
             lo, hi = base + v["min"], base + v["max"]
-            fig.add_trace(go.Scatter(x=[pos[k] + 0.4] * 2, y=[lo, hi], mode="lines+markers", line=dict(color=theme.TEXT_2, width=1.4),
-                                     marker=dict(symbol="line-ew", size=7, line=dict(color=theme.TEXT_2, width=1.4)),
+            fig.add_trace(go.Scatter(x=[lo, hi], y=[pos[k] + 0.4] * 2, mode="lines+markers", line=dict(color=theme.TEXT_2, width=1.4),
+                                     marker=dict(symbol="line-ns", size=7, line=dict(color=theme.TEXT_2, width=1.4)),
                                      customdata=[v["min"], v["max"]], showlegend=False,
-                                     hovertemplate="seed range %{customdata:+.2f} s<extra></extra>"), row=1, col=j)
+                                     hovertemplate="seed range %{customdata:+.2f} s<extra></extra>"), row=j, col=1)
             base = data.derived(base + v["mean"])
         a = allv
-        fig.add_trace(go.Scatter(x=[pos[-1] + 0.4] * 2, y=[a["min"], a["max"]], mode="lines+markers", line=dict(color=theme.TEXT_2, width=1.4),
-                                 marker=dict(symbol="line-ew", size=7, line=dict(color=theme.TEXT_2, width=1.4)),
+        fig.add_trace(go.Scatter(x=[a["min"], a["max"]], y=[pos[-1] + 0.4] * 2, mode="lines+markers", line=dict(color=theme.TEXT_2, width=1.4),
+                                 marker=dict(symbol="line-ns", size=7, line=dict(color=theme.TEXT_2, width=1.4)),
                                  customdata=[a["min"], a["max"]], showlegend=False,
-                                 hovertemplate="seed range %{customdata:+.2f} s<extra></extra>"), row=1, col=j)
-        fig.update_xaxes(showgrid=False, zeroline=False, tickfont=dict(size=11), tickangle=0, tickmode="array", tickvals=pos,
-                         ticktext=xs, range=[-0.6, len(xs) - 0.2], row=1, col=j)
-    fig.add_hline(y=0, line=dict(color=theme.BORDER_2, width=1))
-    fig.update_yaxes(title_text="ATT change vs exact counts (s)", row=1, col=1)
+                                 hovertemplate="seed range %{customdata:+.2f} s<extra></extra>"), row=j, col=1)
+        fig.update_yaxes(showgrid=False, zeroline=False, tickfont=dict(size=11.5), tickmode="array", tickvals=pos,
+                         ticktext=steps, range=[len(steps) - 0.45, -0.6], row=j, col=1)
+    fig.add_vline(x=0, line=dict(color=theme.BORDER_2, width=1))
+    fig.update_xaxes(title_text="ATT change (s)", row=len(scens), col=1)
     fig.update_annotations(selector=dict(xref="paper"), font=dict(color=theme.TEXT_2, size=12.5))
-    fig.update_layout(height=360, margin=dict(l=8, r=8, t=30, b=8))
+    fig.update_layout(height=470, margin=dict(l=8, r=56, t=30, b=8))
     ui.chart(fig, CAMERA, key="cam_dec", title="Which junction-camera error costs what (MaxPressure)",
-             subtitle="Each error type switched on alone, then summed, next to all three together. Red adds time, green "
-                      "saves it; whiskers: seed range of each step.",
+             subtitle="Change in travel time vs exact counts, in seconds: each error type switched on alone, then summed, "
+                      "next to all three together. Red adds time, green saves it; whiskers: seed range of each step.",
              tags=[("post-hoc", "post")])
     ui.why(
         "<p><b>Pre-registered.</b> The simulator stays exact; only what the controllers <i>observe</i> is noised with "
