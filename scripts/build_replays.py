@@ -33,7 +33,7 @@ def main():
                          "Create the target folder or remove the symlink, then run again.")
     if not out.exists():
         out.mkdir(parents=True)
-        print(f"created {out}")
+        print(f"created {out}", flush=True)
     make = Path(__file__).resolve().parent / "make_replays.py"
     subprocess.run([sys.executable, str(make)] + (["--force"] if args.force else []), check=True)
     sys.exit(subprocess.run([sys.executable, str(make), "--check"]).returncode)

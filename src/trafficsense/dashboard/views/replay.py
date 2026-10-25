@@ -29,8 +29,8 @@ MAX_WINDOW_S = 600          # longest window sent to the browser (positions of e
 CONTEXT_S = 30              # decisions shown from this long before the window starts
 POS_SCALE = 20              # positions in 1/20 m
 ANG_SCALE = 1000            # headings in 1/1000 rad
-HINT = ("Make the replays with `python scripts/make_replays.py` (after creating the symlink "
-        "`data/external/replays`, see configs/default.yaml).")
+HINT = ("The replays are not in git. Make them from the committed runs with "
+        "`python scripts/build_replays.py` (no LLM or GPU needed).")
 SCENARIO_CFG = "configs/scenarios/indian_2x2.yaml"
 # How world (x east, y north) maps to the screen in each view: the sign of each screen axis. North is up in
 # every view (y = -1). "left" is the left-right mirror that draws CityFlow's right-hand traffic as India's

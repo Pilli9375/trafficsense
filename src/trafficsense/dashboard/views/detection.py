@@ -161,12 +161,13 @@ def render() -> None:
         wrel = weights_rel(cfg)
         wpath = data.path(wrel)
         if not wpath.is_file():
-            raise data.MissingData(wrel, "Train the detector (scripts/train_detector.py) or create the "
-                                         "data/external/detector_runs symlink (configs/default.yaml).")
+            raise data.MissingData(wrel, "The detector weights are not in git. Put best.pt there (README, Quick start, "
+                                         "step 4: the detector), link data/external/detector_runs to the folder that "
+                                         "holds it, or train it (scripts/train_detector.py).")
         media = data.config_path("dashboard_media")
         clip_rel = f"{media}/{dcfg['sample_clip']['file']}"
         meta_rel = f"{media}/{Path(dcfg['sample_clip']['file']).stem}.json"
-        clip_meta = data.read_json(meta_rel, "Make it with `python scripts/make_sample_clip.py`.")
+        clip_meta = data.read_json(meta_rel, "Make it with `python scripts/make_sample_clip.py` (needs the IDD test images, README step 4).")
     except data.MissingData as e:
         ui.missing(e)
         return
@@ -207,7 +208,7 @@ def render() -> None:
             if src == "Sample clip":
                 video, label = str(data.path(clip_rel)), "IDD test-split sample"
                 if not Path(video).is_file():
-                    ui.missing(data.MissingData(clip_rel, "Make it with `python scripts/make_sample_clip.py`."))
+                    ui.missing(data.MissingData(clip_rel, "Make it with `python scripts/make_sample_clip.py` (needs the IDD test images, README step 4)."))
                     return
             else:
                 tmp = tempfile.NamedTemporaryFile(suffix=Path(up.name).suffix, delete=False)
@@ -232,7 +233,7 @@ def render() -> None:
             if src == "Sample clip":
                 p = data.path(clip_rel)
                 if not p.is_file():
-                    ui.missing(data.MissingData(clip_rel, "Make it with `python scripts/make_sample_clip.py`."))
+                    ui.missing(data.MissingData(clip_rel, "Make it with `python scripts/make_sample_clip.py` (needs the IDD test images, README step 4)."))
                     return
                 first, thumbs, n = clip_preview(str(p), p.stat().st_mtime)
                 cap = (f'<span class="ts-pill">Sample · IDD test split</span><span class="ts-pill">'
