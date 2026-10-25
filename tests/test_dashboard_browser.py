@@ -1,6 +1,6 @@
 """Browser checks of the dashboard's layout at several screen widths: nothing sticks out of its card, the
-Overview hero's comparison cells line up, and nothing covers or clips a label drawn on the replay canvas in
-any replay view or zoom level.
+sidebar can always be reopened, the Overview hero's comparison cells line up, and nothing covers or clips a
+label drawn on the replay canvas in any replay view or zoom level.
 
 The app is started on a free port and driven with Playwright's Chromium. Skipped when Playwright is not
 installed, when Chromium cannot start here (it needs libnspr4, libnss3 and libasound2: docs/dashboard.md,
@@ -74,6 +74,16 @@ LABELS_JS = r"""() => @ROOTS.flatMap(root => Array.from(root.querySelectorAll('.
 })""".replace("@ROOTS", ROOTS)
 
 
+# Whether the sidebar is open, whether the button that reopens it is on screen, and whether the page starts below it.
+SIDEBAR_JS = r"""() => {
+  const sb = document.querySelector('[data-testid="stSidebar"]'), btn = document.querySelector('[data-testid="stExpandSidebarButton"]');
+  const b = btn ? btn.getBoundingClientRect() : null, m = document.querySelector('[data-testid="stMainBlockContainer"]');
+  const content = m.getBoundingClientRect().top + parseFloat(getComputedStyle(m).paddingTop);
+  return {expanded: sb.getAttribute('aria-expanded'), button: !!(b && b.width > 0 && b.height > 0 && getComputedStyle(btn).visibility !== 'hidden'),
+          below_button: !b || !b.width || content >= b.bottom};
+}"""
+
+
 def _free_port() -> int:
     with socket.socket() as s:
         s.bind(("127.0.0.1", 0))
@@ -136,6 +146,35 @@ def test_nothing_overflows_its_card(browser, app):     # browser first: skip bef
             bad += [(w, f"results/{tab}", *x) for x in page.evaluate(OVERFLOW_JS)]
         page.close()
     assert not bad, bad[:10]
+
+
+def test_sidebar_can_always_be_reopened(browser, app):
+    """The sidebar starts closed on a phone and open on a laptop, where it can be closed. Either way the button
+    that reopens it is on screen, the page starts below it, and it works (theme.css once hid it together with
+    Streamlit's toolbar, leaving no way back to the page links)."""
+    page = browser.new_page(viewport={"width": 390, "height": 800})
+    page.goto(app)
+    _settle(page, 1500)
+    s = page.evaluate(SIDEBAR_JS)
+    assert s == {"expanded": "false", "button": True, "below_button": True}, s
+    page.locator('[data-testid="stExpandSidebarButton"]').click()
+    page.wait_for_timeout(1000)
+    assert page.evaluate(SIDEBAR_JS)["expanded"] == "true"
+    page.close()
+
+    page = browser.new_page(viewport={"width": 1366, "height": 800})
+    page.goto(app)
+    _settle(page, 1500)
+    assert page.evaluate(SIDEBAR_JS)["expanded"] == "true"
+    # the collapse button shows on hover; a click by script is the same click
+    page.locator('[data-testid="stSidebarCollapseButton"]').evaluate("e => (e.querySelector('button') || e).click()")
+    page.wait_for_timeout(1000)
+    s = page.evaluate(SIDEBAR_JS)
+    assert s == {"expanded": "false", "button": True, "below_button": True}, s
+    page.locator('[data-testid="stExpandSidebarButton"]').click()
+    page.wait_for_timeout(1000)
+    assert page.evaluate(SIDEBAR_JS)["expanded"] == "true"
+    page.close()
 
 
 def test_hero_cells_line_up(browser, app):

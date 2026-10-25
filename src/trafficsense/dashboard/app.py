@@ -15,7 +15,7 @@ from trafficsense.dashboard import data, theme, ui
 HERE = Path(__file__).parent
 
 st.set_page_config(page_title="TrafficSense", page_icon=":material/traffic:", layout="wide",
-                   initial_sidebar_state="expanded")
+                   initial_sidebar_state="auto")
 st.html(theme.css())
 
 pages = [

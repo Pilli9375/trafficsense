@@ -57,17 +57,21 @@ html, body, .stApp { font-family: var(--ts-font); }
 [data-testid="stAppViewContainer"], [data-testid="stMain"], [data-testid="stSidebar"] { position: relative; z-index: 1; }
 [data-testid="stAppViewContainer"], [data-testid="stMain"] { background: transparent; }
 
-/* Streamlit chrome: no menu, toolbar, decoration bar, footer or status widget. The header stays
-   (it holds the button that re-opens a collapsed sidebar) but is transparent and takes no space. */
-#MainMenu, [data-testid="stMainMenu"], [data-testid="stToolbar"], [data-testid="stDecoration"],
+/* Streamlit chrome: no menu, toolbar actions, decoration bar, footer or status widget. The header and
+   the toolbar stay (the toolbar holds the button that re-opens a collapsed sidebar: without it there is
+   no way back to the page links), transparent and taking no space. */
+#MainMenu, [data-testid="stMainMenu"], [data-testid="stToolbarActions"], [data-testid="stDecoration"],
 [data-testid="stStatusWidget"], [data-testid="stAppDeployButton"], footer { display: none !important; }
 header[data-testid="stHeader"] { background: transparent !important; height: 0; min-height: 0; }
-[data-testid="stExpandSidebarButton"] { position: fixed; top: 12px; left: 12px; z-index: 1000; }
+[data-testid="stExpandSidebarButton"] { position: fixed; top: 12px; left: 12px; z-index: 1000; width: 36px; height: 36px;
+  border-radius: var(--ts-r-sm); border: 1px solid var(--ts-border-2); background: rgba(14, 18, 25, .92) !important; }
 
 .block-container, [data-testid="stMainBlockContainer"] {
   max-width: 1400px; padding: 40px 40px 72px 40px !important;
 }
 @media (max-width: 1500px) { [data-testid="stMainBlockContainer"] { padding: 32px 32px 64px 32px !important; } }
+/* with the sidebar closed, the button that re-opens it sits at the top left: the page starts below it */
+.stApp:has([data-testid="stSidebar"][aria-expanded="false"]) [data-testid="stMainBlockContainer"] { padding-top: 64px !important; }
 
 /* ---- type -------------------------------------------------------------------------------- */
 h1, h2, h3, h4, h5 { color: var(--ts-text); letter-spacing: -0.02em; font-family: var(--ts-font) !important; }
