@@ -181,8 +181,6 @@ missing and which command makes it.
   pre-registered arm.
 * Planting a made-up number in a page ("latency 87.3 ms") makes the first two tests fail (checked
   by hand when the tests were written, and again after the redesign).
-* Planting a made-up number in a page ("latency 87.3 ms") makes the first two tests fail (checked
-  by hand when the tests were written, and again after the redesign).
 
 `tests/test_replay.py` checks the replay recorder on short runs made in a temp folder
 (MaxPressure re-run, and an injected fake LLM replayed from its decision log), and that a changed
