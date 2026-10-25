@@ -90,6 +90,11 @@ Times are wall-clock on this machine, with the clone and its environment on a Wi
 | IDD labels | `python scripts/prepare_idd.py` | ok, conversion report identical | 44 min |
 | Detector, test split | `python scripts/eval_detector.py --stage test` | ok (fresh copy of best.pt, no cached detections) | 10 min |
 | Replays | `python scripts/build_replays.py` | ok, 9 replays, each reproduces its run; files byte-identical to the originals | 3 min |
+| After the last fixes, no large files: replays | `python scripts/build_replays.py` | ok | 3 min |
+| After the last fixes: tests | `pytest -q` | ok (browser tests skip: no Chromium libraries on the path; 2 dashboard tests skip: no sample clip) | 5 min |
+| After the last fixes: every --check | `the README's check loop` | all pass, after one more fix: make_camera_error turned a path recorded on the project laptop into a repo-relative one only when the clone sat at the same place | 64 s |
+| Without the perception and screenshots extras (simulated) | `pytest --collect-only, then the detector and browser tests` | 280 tests collected, as with every extra; the torch and Playwright tests skip | – |
+| Browser tests, every large file linked | `pytest tests/test_dashboard.py tests/test_dashboard_browser.py` | all 23 pass (17 dashboard, 6 browser at 390-1920 px, including a detector run on the sample clip), none skipped | 24 min |
 <!-- END:repro_steps -->
 
 ### Gaps found, and what was changed
@@ -106,6 +111,8 @@ Times are wall-clock on this machine, with the clone and its environment on a Wi
 | The dashboard's replays are not in git and making them needed a symlink the README never showed. | `scripts/build_replays.py` makes them from the committed runs in one command; the README lists the symlinks. |
 | WSL could only reach the Windows Ollama app because `networkingMode=mirrored` is set in `.wslconfig`; the README only showed the Linux installer. | README describes both ways. |
 | Hardware and disk needs, and what works without a GPU, were not stated. | README "Requirements" table, measured here. |
+| `make_camera_error.py --check` passed only when the clone sat where the runs were made: the runs recorded the error model's absolute path, which the script made repo-relative against the current folder. (Hidden at first, because the check had already failed on the missing `metrics.csv`.) | The path comes from `paths.camera_error_model`; the recorded one must end with it. |
+| The browser layout tests failed in a clone on a Windows drive: they waited for Streamlit's "running" indicator, which on a slow first run appears only after they had looked, so a card was measured before its chart existed. | They wait for Streamlit's own script state to be `notRunning`, then for every chart to be drawn. |
 | `docs/validation.md` called the 15 s MaxPressure "now" the default; the default changed later. | Wording fixed; `run_matched.py --profile default_maxpressure_15s` reproduces those rows. |
 
 ## Deterministic runs: committed vs re-run
@@ -293,10 +300,16 @@ Inference speed, one image at a time at 640 px:
 Started with `streamlit run src/trafficsense/dashboard/app.py` from the fresh clone; each page
 was loaded in Chromium, screenshotted, and checked for error boxes, exceptions shown on the
 page, browser console errors and tracebacks in the server log.
+The first four rows were taken after the last fixes; the two middle setups before the
+missing-data hints were reworded (same files reported missing, older wording).
 
 <!-- BEGIN:repro_dashboard -->
 | Setup | Page | Loads without error | What it shows |
 |---|---|---|---|
+| Fresh clone, no large files | Overview | yes | full page |
+| Fresh clone, no large files | Live Detection | yes | says what is missing: Data file missing: data/external/detector_runs/detector/yolov8n_idd/weights/best.pt The detector weights are not in git. Put best.pt there (README, Quick start, step 4: the detector), link data/external/detector_runs to  |
+| Fresh clone, no large files | Network Replay | yes | says what is missing: Data file missing: data/external/replays/20261015-075228_indian_2x2_peak_amb_maxpressure_s1/meta.json The replays are not in git. Make them from the committed runs with python scripts/build_replays.py (no LLM or GPU need |
+| Fresh clone, no large files | Results | yes | full page |
 | + build_replays.py | Overview | yes | full page |
 | + build_replays.py | Live Detection | yes | says what is missing: Data file missing: data/external/detector_runs/detector/yolov8n_idd/weights/best.pt Train the detector (scripts/train_detector.py) or create the data/external/detector_runs symlink (configs/default.yaml). |
 | + build_replays.py | Network Replay | yes | full page |
@@ -316,7 +329,7 @@ page, browser console errors and tracebacks in the server log.
 <!-- BEGIN:repro_sizes -->
 | Item | Size |
 |---|---|
-| Clone (history + files) | 351 MB |
+| Clone (history + files) | 357 MB |
 | Python environment, dev + dashboard | 531 MB |
 | Python environment, + perception and screenshots | 7.8 GB |
 | CityFlow source and build | 8 MB |

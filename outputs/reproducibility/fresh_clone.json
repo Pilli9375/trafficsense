@@ -157,6 +157,36 @@
    "command": "python scripts/build_replays.py",
    "result": "ok, 9 replays, each reproduces its run; files byte-identical to the originals",
    "seconds": 175
+  },
+  {
+   "step": "After the last fixes, no large files: replays",
+   "command": "python scripts/build_replays.py",
+   "result": "ok",
+   "seconds": 156
+  },
+  {
+   "step": "After the last fixes: tests",
+   "command": "pytest -q",
+   "result": "ok (browser tests skip: no Chromium libraries on the path; 2 dashboard tests skip: no sample clip)",
+   "seconds": 297
+  },
+  {
+   "step": "After the last fixes: every --check",
+   "command": "the README's check loop",
+   "result": "all pass, after one more fix: make_camera_error turned a path recorded on the project laptop into a repo-relative one only when the clone sat at the same place",
+   "seconds": 64
+  },
+  {
+   "step": "Without the perception and screenshots extras (simulated)",
+   "command": "pytest --collect-only, then the detector and browser tests",
+   "result": "280 tests collected, as with every extra; the torch and Playwright tests skip",
+   "seconds": null
+  },
+  {
+   "step": "Browser tests, every large file linked",
+   "command": "pytest tests/test_dashboard.py tests/test_dashboard_browser.py",
+   "result": "all 23 pass (17 dashboard, 6 browser at 390-1920 px, including a detector run on the sample clip), none skipped",
+   "seconds": 1451
   }
  ],
  "deterministic_runs": [
@@ -2135,6 +2165,34 @@
  },
  "dashboard": [
   {
+   "setup": "Fresh clone, no large files",
+   "page": "Overview",
+   "ok": true,
+   "shows": "full page",
+   "load_s": 23.8
+  },
+  {
+   "setup": "Fresh clone, no large files",
+   "page": "Live Detection",
+   "ok": true,
+   "shows": "says what is missing: Data file missing: data/external/detector_runs/detector/yolov8n_idd/weights/best.pt The detector weights are not in git. Put best.pt there (README, Quick start, step 4: the detector), link data/external/detector_runs to ",
+   "load_s": 31.3
+  },
+  {
+   "setup": "Fresh clone, no large files",
+   "page": "Network Replay",
+   "ok": true,
+   "shows": "says what is missing: Data file missing: data/external/replays/20261015-075228_indian_2x2_peak_amb_maxpressure_s1/meta.json The replays are not in git. Make them from the committed runs with python scripts/build_replays.py (no LLM or GPU need",
+   "load_s": 31.2
+  },
+  {
+   "setup": "Fresh clone, no large files",
+   "page": "Results",
+   "ok": true,
+   "shows": "full page",
+   "load_s": 24.3
+  },
+  {
    "setup": "+ build_replays.py",
    "page": "Overview",
    "ok": true,
@@ -2220,7 +2278,7 @@
   }
  ],
  "sizes_gb": {
-  "Clone (history + files)": 0.351458873,
+  "Clone (history + files)": 0.356739891,
   "Python environment, dev + dashboard": 0.530579456,
   "Python environment, + perception and screenshots": 7.778505158,
   "CityFlow source and build": 0.007626247,
@@ -2234,7 +2292,7 @@
  },
  "sizes_note": "du -sb (bytes / 10^9). The dev + dashboard environment was measured with du -sh (506 MiB) right after its install, before the extras; Ollama model sizes are those Ollama reports.",
  "facts": {
-  "disk_base_gb": 0.914291249,
+  "disk_base_gb": 0.919572267,
   "disk_extras_gb": 7.247925702,
   "install_min": 25.466666666666665,
   "clone_min": 5.983333333333333,
