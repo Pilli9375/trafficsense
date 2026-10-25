@@ -72,7 +72,9 @@ python scripts/probe_hosted.py --capabilities     # hosted (NVIDIA NIM) endpoint
 python scripts/train_detector.py --full            # YOLO detector on IDD (resumable; --probe, --summarize)
 python scripts/eval_detector.py --stage val        # then --stage test (once); writes the camera error model
 python scripts/make_perception_results.py --check  # docs/perception.md tables vs outputs/perception
+python scripts/build_replays.py                   # dashboard replays from the committed runs (then --check)
 python scripts/make_replays.py --check            # dashboard replays (on D) still match their runs
+python scripts/make_reproducibility.py --check    # docs/reproducibility.md vs the fresh-clone record
 python scripts/make_sample_clip.py                 # Live Detection sample clip from IDD test frames (on D)
 streamlit run src/trafficsense/dashboard/app.py
 python scripts/screenshot_dashboard.py             # screenshots of every page into docs/screenshots/

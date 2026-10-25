@@ -22,6 +22,7 @@ gem = the exploratory gemma4:e4b hybrid):
     d.<split>.map50 | map5095 ;  d.test.<class>.map50 | precision | recall | miss | fdet
     d.size.<class>.<small|medium|large> ;  d.conf | f1 | train_h | epochs | best_epoch
     cfg.<...>                                                             configs/*.yaml
+    r.<name>             setup measurements of the fresh-clone check (disk, times, CPU fallback)
 """
 from __future__ import annotations
 
@@ -61,6 +62,7 @@ FILES = {
     "indian": "outputs/indian_2x2/results.json",
     "calib": "outputs/validation/indian_demand_calibration.json",
     "mg_sweep": "outputs/baselines/maxpressure_min_green_sweep.json",
+    "repro": "outputs/reproducibility/fresh_clone.json",
 }
 
 
@@ -92,7 +94,14 @@ def facts(root: Path | None = None) -> dict[str, Fact]:
     _indian(r, _load(root, "indian"), _load(root, "calib"), _load(root, "mg_sweep"))
     _config(r, root)
     _validation(r, root)
+    _repro(r, _load(root, "repro"))
     return dict(r)
+
+
+def _repro(r: _Reg, b: dict):
+    """The fresh-clone check's measured setup numbers (docs/reproducibility.md), e.g. r.llm_cpu_s."""
+    for k, v in b["facts"].items():
+        r.put(f"r.{k}", v, FILES["repro"])
 
 
 def _validation(r: _Reg, root: Path):

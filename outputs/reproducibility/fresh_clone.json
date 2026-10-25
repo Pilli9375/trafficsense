@@ -1,0 +1,2261 @@
+{
+ "title": "Fresh-clone reproducibility check",
+ "date": "2026-10-25",
+ "published_commit": "942f7b6",
+ "clone": "git clone https://github.com/Pilli9375/trafficsense.git into /mnt/d/trafficsense/fresh_check/",
+ "environment": [
+  [
+   "Windows",
+   "Windows 11 Home (NT 10.0.26300), WSL2 kernel 6.18.54.1, `networkingMode=mirrored`, `memory=12GB`"
+  ],
+  [
+   "Linux",
+   "Ubuntu 22.04.5 LTS, Python 3.10.12 (system `python3.10`)"
+  ],
+  [
+   "CPU, RAM",
+   "AMD Ryzen 5 4600H (6 cores, 12 threads), 16 GB (12 GB given to WSL)"
+  ],
+  [
+   "GPU",
+   "NVIDIA GTX 1650, 4 GB, driver 576.88 (CUDA up to 12.9)"
+  ],
+  [
+   "LLM server",
+   "Ollama 0.40.3, the Windows app, reached from WSL at localhost:11434"
+  ],
+  [
+   "Where",
+   "clone, venvs, pip cache and Chromium on D: (`/mnt/d`, a Windows drive); temp files in `/tmp`"
+  ],
+  [
+   "Code checked",
+   "`942f7b6` as published (README followed literally); the fixes were then pulled and the affected steps re-run"
+  ],
+  [
+   "Date",
+   "2026-10-25"
+  ]
+ ],
+ "steps": [
+  {
+   "step": "System packages",
+   "command": "sudo apt install -y python3.10-venv build-essential cmake git",
+   "result": "already installed",
+   "seconds": null
+  },
+  {
+   "step": "Clone",
+   "command": "git clone https://github.com/Pilli9375/trafficsense.git",
+   "result": "ok",
+   "seconds": 359
+  },
+  {
+   "step": "Virtual environment",
+   "command": "python3.10 -m venv .venv",
+   "result": "ok",
+   "seconds": 66
+  },
+  {
+   "step": "Upgrade pip",
+   "command": "pip install -U pip",
+   "result": "ok",
+   "seconds": 158
+  },
+  {
+   "step": "Clone CityFlow",
+   "command": "git clone https://github.com/cityflow-project/CityFlow.git ../CityFlow",
+   "result": "ok (commit 81ee0f4)",
+   "seconds": 18
+  },
+  {
+   "step": "Build CityFlow",
+   "command": "pip install ../CityFlow",
+   "result": "ok",
+   "seconds": 127
+  },
+  {
+   "step": "Install the package",
+   "command": "pip install -e \".[dev,dashboard]\"",
+   "result": "ok",
+   "seconds": 1528
+  },
+  {
+   "step": "Tests",
+   "command": "pytest -q",
+   "result": "**failed**: 3 detector tests need torch; the README check failed (test count depended on the extras)",
+   "seconds": 246
+  },
+  {
+   "step": "CoLLMLight data",
+   "command": "scripts/fetch_collmlight_data.sh",
+   "result": "ok (commit ce204a9)",
+   "seconds": 12
+  },
+  {
+   "step": "One baseline run",
+   "command": "python scripts/run_experiment.py --scenario indian_2x2_peak --controller maxpressure --seed 0",
+   "result": "ok",
+   "seconds": 8
+  },
+  {
+   "step": "Every --check",
+   "command": "the README's check loop",
+   "result": "**4 failed**: make_results, make_camera_error, make_model_size (runs 'missing': metrics.csv is gitignored), make_report (test count); make_replays (replays not in git, expected)",
+   "seconds": 45
+  },
+  {
+   "step": "Perception extra as written",
+   "command": "pip install -e \".[dev,dashboard,perception]\"",
+   "result": "**stopped**: pip chose PyPI's CUDA 13 build of PyTorch, which this driver cannot run",
+   "seconds": 1301
+  },
+  {
+   "step": "PyTorch, CUDA 12.6 build",
+   "command": "pip install torch==2.14.1 torchvision==0.29.1 --index-url https://download.pytorch.org/whl/cu126",
+   "result": "ok, CUDA available",
+   "seconds": 3736
+  },
+  {
+   "step": "Perception extra",
+   "command": "pip install -e \".[dev,dashboard,perception]\"",
+   "result": "ok, but ultralytics 8.4.189 (results: 8.4.183)",
+   "seconds": 794
+  },
+  {
+   "step": "LLM run",
+   "command": "python scripts/benchmark_llm.py --arm guarded_v3 --models llama3.2:3b",
+   "result": "run ok; **script exited 1** (the committed run of the same arm and model made its report step refuse two)",
+   "seconds": 186
+  },
+  {
+   "step": "Pull the fixes",
+   "command": "git pull",
+   "result": "ok",
+   "seconds": 8
+  },
+  {
+   "step": "Install with the lock file",
+   "command": "pip install -e \".[dev,dashboard,perception]\" -c requirements-lock.txt",
+   "result": "ok, every version as in the lock file",
+   "seconds": 92
+  },
+  {
+   "step": "IDD labels",
+   "command": "python scripts/prepare_idd.py",
+   "result": "ok, conversion report identical",
+   "seconds": 2630
+  },
+  {
+   "step": "Detector, test split",
+   "command": "python scripts/eval_detector.py --stage test",
+   "result": "ok (fresh copy of best.pt, no cached detections)",
+   "seconds": 577
+  },
+  {
+   "step": "Replays",
+   "command": "python scripts/build_replays.py",
+   "result": "ok, 9 replays, each reproduces its run; files byte-identical to the originals",
+   "seconds": 175
+  }
+ ],
+ "deterministic_runs": [
+  {
+   "run": "outputs/full/runs/20261015-074631_indian_2x2_offpeak_maxpressure_s0",
+   "scenario": "indian_2x2_offpeak",
+   "controller": "maxpressure",
+   "seed": 0,
+   "att_committed": 87.15692963752666,
+   "att_rerun": 87.15692963752666,
+   "throughput_committed": 2291,
+   "throughput_rerun": 2291,
+   "identical": true,
+   "seconds": 4.2,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/full/runs/20261015-074706_indian_2x2_offpeak_fixedtime_webster_s0",
+   "scenario": "indian_2x2_offpeak",
+   "controller": "fixedtime_webster",
+   "seed": 0,
+   "att_committed": 104.4051172707889,
+   "att_rerun": 104.4051172707889,
+   "throughput_committed": 2280,
+   "throughput_rerun": 2280,
+   "identical": true,
+   "seconds": 38.7,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/full/runs/20261015-074738_indian_2x2_offpeak_fixedtime_s0",
+   "scenario": "indian_2x2_offpeak",
+   "controller": "fixedtime",
+   "seed": 0,
+   "att_committed": 121.6409381663113,
+   "att_rerun": 121.6409381663113,
+   "throughput_committed": 2285,
+   "throughput_rerun": 2285,
+   "identical": true,
+   "seconds": 5.2,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/full/runs/20261015-074740_indian_2x2_offpeak_maxpressure_s1",
+   "scenario": "indian_2x2_offpeak",
+   "controller": "maxpressure",
+   "seed": 1,
+   "att_committed": 88.16555740432612,
+   "att_rerun": 88.16555740432612,
+   "throughput_committed": 2347,
+   "throughput_rerun": 2347,
+   "identical": true,
+   "seconds": 5.1,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/full/runs/20261015-074742_indian_2x2_offpeak_fixedtime_webster_s1",
+   "scenario": "indian_2x2_offpeak",
+   "controller": "fixedtime_webster",
+   "seed": 1,
+   "att_committed": 100.65349417637272,
+   "att_rerun": 100.65349417637272,
+   "throughput_committed": 2329,
+   "throughput_rerun": 2329,
+   "identical": true,
+   "seconds": 42.8,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/full/runs/20261015-074813_indian_2x2_offpeak_fixedtime_s1",
+   "scenario": "indian_2x2_offpeak",
+   "controller": "fixedtime",
+   "seed": 1,
+   "att_committed": 121.21547420965058,
+   "att_rerun": 121.21547420965058,
+   "throughput_committed": 2325,
+   "throughput_rerun": 2325,
+   "identical": true,
+   "seconds": 5.3,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/full/runs/20261015-074816_indian_2x2_offpeak_maxpressure_s2",
+   "scenario": "indian_2x2_offpeak",
+   "controller": "maxpressure",
+   "seed": 2,
+   "att_committed": 89.07777777777778,
+   "att_rerun": 89.07777777777778,
+   "throughput_committed": 2358,
+   "throughput_rerun": 2358,
+   "identical": true,
+   "seconds": 5.3,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/full/runs/20261015-074818_indian_2x2_offpeak_fixedtime_webster_s2",
+   "scenario": "indian_2x2_offpeak",
+   "controller": "fixedtime_webster",
+   "seed": 2,
+   "att_committed": 96.14115226337448,
+   "att_rerun": 96.14115226337448,
+   "throughput_committed": 2350,
+   "throughput_rerun": 2350,
+   "identical": true,
+   "seconds": 40.3,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/full/runs/20261015-074849_indian_2x2_offpeak_fixedtime_s2",
+   "scenario": "indian_2x2_offpeak",
+   "controller": "fixedtime",
+   "seed": 2,
+   "att_committed": 121.6,
+   "att_rerun": 121.6,
+   "throughput_committed": 2338,
+   "throughput_rerun": 2338,
+   "identical": true,
+   "seconds": 5.4,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/full/runs/20261015-074852_indian_2x2_peak_maxpressure_s0",
+   "scenario": "indian_2x2_peak",
+   "controller": "maxpressure",
+   "seed": 0,
+   "att_committed": 115.98907220912793,
+   "att_rerun": 115.98907220912793,
+   "throughput_committed": 4501,
+   "throughput_rerun": 4501,
+   "identical": true,
+   "seconds": 6.0,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/full/runs/20261015-074855_indian_2x2_peak_fixedtime_webster_s0",
+   "scenario": "indian_2x2_peak",
+   "controller": "fixedtime_webster",
+   "seed": 0,
+   "att_committed": 118.25541032783373,
+   "att_rerun": 118.25541032783373,
+   "throughput_committed": 4477,
+   "throughput_rerun": 4477,
+   "identical": true,
+   "seconds": 41.5,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/full/runs/20261015-074927_indian_2x2_peak_fixedtime_s0",
+   "scenario": "indian_2x2_peak",
+   "controller": "fixedtime",
+   "seed": 0,
+   "att_committed": 291.1763445468181,
+   "att_rerun": 291.1763445468181,
+   "throughput_committed": 4061,
+   "throughput_rerun": 4061,
+   "identical": true,
+   "seconds": 6.5,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/full/runs/20261015-074931_indian_2x2_peak_maxpressure_s1",
+   "scenario": "indian_2x2_peak",
+   "controller": "maxpressure",
+   "seed": 1,
+   "att_committed": 116.09987489574645,
+   "att_rerun": 116.09987489574645,
+   "throughput_committed": 4634,
+   "throughput_rerun": 4634,
+   "identical": true,
+   "seconds": 5.9,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/full/runs/20261015-074934_indian_2x2_peak_fixedtime_webster_s1",
+   "scenario": "indian_2x2_peak",
+   "controller": "fixedtime_webster",
+   "seed": 1,
+   "att_committed": 119.55879899916597,
+   "att_rerun": 119.55879899916597,
+   "throughput_committed": 4637,
+   "throughput_rerun": 4637,
+   "identical": true,
+   "seconds": 42.2,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/full/runs/20261015-075006_indian_2x2_peak_fixedtime_s1",
+   "scenario": "indian_2x2_peak",
+   "controller": "fixedtime",
+   "seed": 1,
+   "att_committed": 275.7714762301918,
+   "att_rerun": 275.7714762301918,
+   "throughput_committed": 4238,
+   "throughput_rerun": 4238,
+   "identical": true,
+   "seconds": 7.6,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/full/runs/20261015-075010_indian_2x2_peak_maxpressure_s2",
+   "scenario": "indian_2x2_peak",
+   "controller": "maxpressure",
+   "seed": 2,
+   "att_committed": 114.52325338894681,
+   "att_rerun": 114.52325338894681,
+   "throughput_committed": 4594,
+   "throughput_rerun": 4594,
+   "identical": true,
+   "seconds": 6.6,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/full/runs/20261015-075013_indian_2x2_peak_fixedtime_webster_s2",
+   "scenario": "indian_2x2_peak",
+   "controller": "fixedtime_webster",
+   "seed": 2,
+   "att_committed": 111.06736183524505,
+   "att_rerun": 111.06736183524505,
+   "throughput_committed": 4617,
+   "throughput_rerun": 4617,
+   "identical": true,
+   "seconds": 43.7,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/full/runs/20261015-075045_indian_2x2_peak_fixedtime_s2",
+   "scenario": "indian_2x2_peak",
+   "controller": "fixedtime",
+   "seed": 2,
+   "att_committed": 272.7249217935349,
+   "att_rerun": 272.7249217935349,
+   "throughput_committed": 4198,
+   "throughput_rerun": 4198,
+   "identical": true,
+   "seconds": 6.7,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/full/runs/20261015-075047_jinan_3x4_maxpressure_s0",
+   "scenario": "jinan_3x4",
+   "controller": "maxpressure",
+   "seed": 0,
+   "att_committed": 300.9289805269187,
+   "att_rerun": 300.9289805269187,
+   "throughput_committed": 4130,
+   "throughput_rerun": 4130,
+   "identical": true,
+   "seconds": 10.4,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/full/runs/20261015-075053_jinan_3x4_fixedtime_webster_s0",
+   "scenario": "jinan_3x4",
+   "controller": "fixedtime_webster",
+   "seed": 0,
+   "att_committed": 416.1298969072165,
+   "att_rerun": 416.1298969072165,
+   "throughput_committed": 3965,
+   "throughput_rerun": 3965,
+   "identical": true,
+   "seconds": 11.9,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/full/runs/20261015-075102_jinan_3x4_fixedtime_s0",
+   "scenario": "jinan_3x4",
+   "controller": "fixedtime",
+   "seed": 0,
+   "att_committed": 422.9672394043528,
+   "att_rerun": 422.9672394043528,
+   "throughput_committed": 3968,
+   "throughput_rerun": 3968,
+   "identical": true,
+   "seconds": 10.1,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/full/runs/20261015-075109_jinan_3x4_maxpressure_s1",
+   "scenario": "jinan_3x4",
+   "controller": "maxpressure",
+   "seed": 1,
+   "att_committed": 300.9289805269187,
+   "att_rerun": 300.9289805269187,
+   "throughput_committed": 4130,
+   "throughput_rerun": 4130,
+   "identical": true,
+   "seconds": 9.6,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/full/runs/20261015-075115_jinan_3x4_fixedtime_webster_s1",
+   "scenario": "jinan_3x4",
+   "controller": "fixedtime_webster",
+   "seed": 1,
+   "att_committed": 416.1298969072165,
+   "att_rerun": 416.1298969072165,
+   "throughput_committed": 3965,
+   "throughput_rerun": 3965,
+   "identical": true,
+   "seconds": 11.8,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/full/runs/20261015-075122_jinan_3x4_fixedtime_s1",
+   "scenario": "jinan_3x4",
+   "controller": "fixedtime",
+   "seed": 1,
+   "att_committed": 422.9672394043528,
+   "att_rerun": 422.9672394043528,
+   "throughput_committed": 3968,
+   "throughput_rerun": 3968,
+   "identical": true,
+   "seconds": 10.4,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/full/runs/20261015-075129_jinan_3x4_maxpressure_s2",
+   "scenario": "jinan_3x4",
+   "controller": "maxpressure",
+   "seed": 2,
+   "att_committed": 300.9289805269187,
+   "att_rerun": 300.9289805269187,
+   "throughput_committed": 4130,
+   "throughput_rerun": 4130,
+   "identical": true,
+   "seconds": 9.6,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/full/runs/20261015-075136_jinan_3x4_fixedtime_webster_s2",
+   "scenario": "jinan_3x4",
+   "controller": "fixedtime_webster",
+   "seed": 2,
+   "att_committed": 416.1298969072165,
+   "att_rerun": 416.1298969072165,
+   "throughput_committed": 3965,
+   "throughput_rerun": 3965,
+   "identical": true,
+   "seconds": 11.9,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/full/runs/20261015-075144_jinan_3x4_fixedtime_s2",
+   "scenario": "jinan_3x4",
+   "controller": "fixedtime",
+   "seed": 2,
+   "att_committed": 422.9672394043528,
+   "att_rerun": 422.9672394043528,
+   "throughput_committed": 3968,
+   "throughput_rerun": 3968,
+   "identical": true,
+   "seconds": 10.7,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/emergency/runs/20261015-075150_indian_2x2_peak_amb_maxpressure_s0",
+   "scenario": "indian_2x2_peak_amb",
+   "controller": "maxpressure",
+   "seed": 0,
+   "att_committed": 114.27665952890793,
+   "att_rerun": 114.27665952890793,
+   "throughput_committed": 4499,
+   "throughput_rerun": 4499,
+   "identical": true,
+   "seconds": 5.9,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/emergency/runs/20261015-075153_indian_2x2_peak_amb_fixedtime_webster_s0",
+   "scenario": "indian_2x2_peak_amb",
+   "controller": "fixedtime_webster",
+   "seed": 0,
+   "att_committed": 118.35653104925053,
+   "att_rerun": 118.35653104925053,
+   "throughput_committed": 4480,
+   "throughput_rerun": 4480,
+   "identical": true,
+   "seconds": 41.1,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/emergency/runs/20261015-075225_indian_2x2_peak_amb_preemption_mp_s0",
+   "scenario": "indian_2x2_peak_amb",
+   "controller": "preemption_mp",
+   "seed": 0,
+   "att_committed": 115.60985010706638,
+   "att_rerun": 115.60985010706638,
+   "throughput_committed": 4504,
+   "throughput_rerun": 4504,
+   "identical": true,
+   "seconds": 6.3,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/emergency/runs/20261015-075228_indian_2x2_peak_amb_maxpressure_s1",
+   "scenario": "indian_2x2_peak_amb",
+   "controller": "maxpressure",
+   "seed": 1,
+   "att_committed": 115.35883575883575,
+   "att_rerun": 115.35883575883575,
+   "throughput_committed": 4648,
+   "throughput_rerun": 4648,
+   "identical": true,
+   "seconds": 6.0,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/emergency/runs/20261015-075232_indian_2x2_peak_amb_fixedtime_webster_s1",
+   "scenario": "indian_2x2_peak_amb",
+   "controller": "fixedtime_webster",
+   "seed": 1,
+   "att_committed": 116.18212058212058,
+   "att_rerun": 116.18212058212058,
+   "throughput_committed": 4653,
+   "throughput_rerun": 4653,
+   "identical": true,
+   "seconds": 38.0,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/emergency/runs/20261015-075303_indian_2x2_peak_amb_preemption_mp_s1",
+   "scenario": "indian_2x2_peak_amb",
+   "controller": "preemption_mp",
+   "seed": 1,
+   "att_committed": 115.36777546777547,
+   "att_rerun": 115.36777546777547,
+   "throughput_committed": 4652,
+   "throughput_rerun": 4652,
+   "identical": true,
+   "seconds": 5.5,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/emergency/runs/20261015-075306_indian_2x2_peak_amb_maxpressure_s2",
+   "scenario": "indian_2x2_peak_amb",
+   "controller": "maxpressure",
+   "seed": 2,
+   "att_committed": 117.61820454072068,
+   "att_rerun": 117.61820454072068,
+   "throughput_committed": 4617,
+   "throughput_rerun": 4617,
+   "identical": true,
+   "seconds": 5.8,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/emergency/runs/20261015-075310_indian_2x2_peak_amb_fixedtime_webster_s2",
+   "scenario": "indian_2x2_peak_amb",
+   "controller": "fixedtime_webster",
+   "seed": 2,
+   "att_committed": 111.0506144553218,
+   "att_rerun": 111.0506144553218,
+   "throughput_committed": 4623,
+   "throughput_rerun": 4623,
+   "identical": true,
+   "seconds": 36.0,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/emergency/runs/20261015-075341_indian_2x2_peak_amb_preemption_mp_s2",
+   "scenario": "indian_2x2_peak_amb",
+   "controller": "preemption_mp",
+   "seed": 2,
+   "att_committed": 115.90981045615497,
+   "att_rerun": 115.90981045615497,
+   "throughput_committed": 4610,
+   "throughput_rerun": 4610,
+   "identical": true,
+   "seconds": 6.6,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/emergency/runs/20261015-075345_indian_2x2_peak_amb_maxpressure_s3",
+   "scenario": "indian_2x2_peak_amb",
+   "controller": "maxpressure",
+   "seed": 3,
+   "att_committed": 112.84065478657273,
+   "att_rerun": 112.84065478657273,
+   "throughput_committed": 4668,
+   "throughput_rerun": 4668,
+   "identical": true,
+   "seconds": 6.9,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/emergency/runs/20261015-075348_indian_2x2_peak_amb_fixedtime_webster_s3",
+   "scenario": "indian_2x2_peak_amb",
+   "controller": "fixedtime_webster",
+   "seed": 3,
+   "att_committed": 114.88043928719436,
+   "att_rerun": 114.88043928719436,
+   "throughput_committed": 4662,
+   "throughput_rerun": 4662,
+   "identical": true,
+   "seconds": 38.0,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/emergency/runs/20261015-075420_indian_2x2_peak_amb_preemption_mp_s3",
+   "scenario": "indian_2x2_peak_amb",
+   "controller": "preemption_mp",
+   "seed": 3,
+   "att_committed": 116.02175714877745,
+   "att_rerun": 116.02175714877745,
+   "throughput_committed": 4655,
+   "throughput_rerun": 4655,
+   "identical": true,
+   "seconds": 5.7,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/emergency/runs/20261015-075423_indian_2x2_peak_amb_maxpressure_s4",
+   "scenario": "indian_2x2_peak_amb",
+   "controller": "maxpressure",
+   "seed": 4,
+   "att_committed": 118.49166319299708,
+   "att_rerun": 118.49166319299708,
+   "throughput_committed": 4591,
+   "throughput_rerun": 4591,
+   "identical": true,
+   "seconds": 5.6,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/emergency/runs/20261015-075427_indian_2x2_peak_amb_fixedtime_webster_s4",
+   "scenario": "indian_2x2_peak_amb",
+   "controller": "fixedtime_webster",
+   "seed": 4,
+   "att_committed": 115.50917048770322,
+   "att_rerun": 115.50917048770322,
+   "throughput_committed": 4611,
+   "throughput_rerun": 4611,
+   "identical": true,
+   "seconds": 39.1,
+   "other_differences": []
+  },
+  {
+   "run": "outputs/emergency/runs/20261015-075458_indian_2x2_peak_amb_preemption_mp_s4",
+   "scenario": "indian_2x2_peak_amb",
+   "controller": "preemption_mp",
+   "seed": 4,
+   "att_committed": 117.21425593997499,
+   "att_rerun": 117.21425593997499,
+   "throughput_committed": 4608,
+   "throughput_rerun": 4608,
+   "identical": true,
+   "seconds": 5.5,
+   "other_differences": []
+  }
+ ],
+ "deterministic_note": "Every field of summary.json compared except run-time provenance (commit, dirty flag, time, wall time, Python). The only difference in every run is an `observation` block ({key: perfect, noised: false}) that code added later writes; an absent block means the same (the convention of make_replays.py).",
+ "validation": [
+  {
+   "side": "ours",
+   "file": "hangzhou_4x4_default_fixedtime_all_phases_s0.json",
+   "lane_change": false,
+   "att_committed": 590.515923566879,
+   "att_rerun": 590.515923566879,
+   "rel_diff": 0.0,
+   "throughput_identical": true,
+   "queue_identical": true,
+   "added_fields": [
+    ".trafficsense_metrics.vehicles_waiting_to_enter_at_end"
+   ],
+   "other_differences": [],
+   "outcome": "identical"
+  },
+  {
+   "side": "ours",
+   "file": "hangzhou_4x4_default_fixedtime_s0.json",
+   "lane_change": false,
+   "att_committed": 580.6382836071069,
+   "att_rerun": 580.6382836071069,
+   "rel_diff": 0.0,
+   "throughput_identical": true,
+   "queue_identical": true,
+   "added_fields": [
+    ".trafficsense_metrics.vehicles_waiting_to_enter_at_end"
+   ],
+   "other_differences": [],
+   "outcome": "identical"
+  },
+  {
+   "side": "ours",
+   "file": "hangzhou_4x4_default_maxpressure_5s_s0.json",
+   "lane_change": false,
+   "att_committed": 331.09554140127386,
+   "att_rerun": 331.09554140127386,
+   "rel_diff": 0.0,
+   "throughput_identical": true,
+   "queue_identical": true,
+   "added_fields": [
+    ".controller_params.min_green"
+   ],
+   "other_differences": [],
+   "outcome": "identical"
+  },
+  {
+   "side": "ours",
+   "file": "hangzhou_4x4_default_maxpressure_s0.json",
+   "lane_change": false,
+   "att_committed": 334.33724438484745,
+   "att_rerun": 335.64096547100235,
+   "rel_diff": 0.003899419248231324,
+   "throughput_identical": false,
+   "queue_identical": false,
+   "added_fields": [
+    ".controller_params.min_green"
+   ],
+   "other_differences": [
+    ".collmlight_metrics.cityflow_att",
+    ".collmlight_metrics.test_avg_queue_len_over",
+    ".collmlight_metrics.test_avg_travel_time_over",
+    ".collmlight_metrics.test_avg_waiting_time_over",
+    ".collmlight_metrics.test_throughput_over",
+    ".collmlight_metrics.vehicles_running_at_end",
+    ".controller_params.decision_interval",
+    ".green_phase_every_30s_first_intersection[3]",
+    ".green_phase_every_30s_first_intersection[9]",
+    ".green_phase_every_30s_first_intersection[12]",
+    ".green_phase_every_30s_first_intersection[15]",
+    ".green_phase_every_30s_first_intersection[16]",
+    ".green_phase_every_30s_first_intersection[18]",
+    ".green_phase_every_30s_first_intersection[19]",
+    ".green_phase_every_30s_first_intersection[20]",
+    ".green_phase_every_30s_first_intersection[21]",
+    ".green_phase_every_30s_first_intersection[22]",
+    ".green_phase_every_30s_first_intersection[23]",
+    ".green_phase_every_30s_first_intersection[25]",
+    ".green_phase_every_30s_first_intersection[26]",
+    ".green_phase_every_30s_first_intersection[27]",
+    ".green_phase_every_30s_first_intersection[29]",
+    ".green_phase_every_30s_first_intersection[30]",
+    ".green_phase_every_30s_first_intersection[31]",
+    ".green_phase_every_30s_first_intersection[32]",
+    ".green_phase_every_30s_first_intersection[33]",
+    ".green_phase_every_30s_first_intersection[34]",
+    ".green_phase_every_30s_first_intersection[35]",
+    ".green_phase_every_30s_first_intersection[36]",
+    ".green_phase_every_30s_first_intersection[37]",
+    ".green_phase_every_30s_first_intersection[38]",
+    ".green_phase_every_30s_first_intersection[39]",
+    ".green_phase_every_30s_first_intersection[40]",
+    ".green_phase_every_30s_first_intersection[41]",
+    ".green_phase_every_30s_first_intersection[43]",
+    ".green_phase_every_30s_first_intersection[46]",
+    ".green_phase_every_30s_first_intersection[48]",
+    ".green_phase_every_30s_first_intersection[49]",
+    ".green_phase_every_30s_first_intersection[52]",
+    ".green_phase_every_30s_first_intersection[53]",
+    ".green_phase_every_30s_first_intersection[54]",
+    ".green_phase_every_30s_first_intersection[56]",
+    ".green_phase_every_30s_first_intersection[57]",
+    ".green_phase_every_30s_first_intersection[58]",
+    ".green_phase_every_30s_first_intersection[59]",
+    ".green_phase_every_30s_first_intersection[60]",
+    ".green_phase_every_30s_first_intersection[61]",
+    ".green_phase_every_30s_first_intersection[62]",
+    ".green_phase_every_30s_first_intersection[63]",
+    ".green_phase_every_30s_first_intersection[64]",
+    ".green_phase_every_30s_first_intersection[69]",
+    ".green_phase_every_30s_first_intersection[72]",
+    ".green_phase_every_30s_first_intersection[73]",
+    ".green_phase_every_30s_first_intersection[74]",
+    ".green_phase_every_30s_first_intersection[75]",
+    ".green_phase_every_30s_first_intersection[76]",
+    ".green_phase_every_30s_first_intersection[79]",
+    ".green_phase_every_30s_first_intersection[80]",
+    ".green_phase_every_30s_first_intersection[81]",
+    ".green_phase_every_30s_first_intersection[83]",
+    ".green_phase_every_30s_first_intersection[84]",
+    ".green_phase_every_30s_first_intersection[85]",
+    ".green_phase_every_30s_first_intersection[86]",
+    ".green_phase_every_30s_first_intersection[87]",
+    ".green_phase_every_30s_first_intersection[90]",
+    ".green_phase_every_30s_first_intersection[91]",
+    ".green_phase_every_30s_first_intersection[94]",
+    ".green_phase_every_30s_first_intersection[96]",
+    ".green_phase_every_30s_first_intersection[97]",
+    ".green_phase_every_30s_first_intersection[98]",
+    ".green_phase_every_30s_first_intersection[99]",
+    ".green_phase_every_30s_first_intersection[101]",
+    ".green_phase_every_30s_first_intersection[102]",
+    ".green_phase_every_30s_first_intersection[103]",
+    ".green_phase_every_30s_first_intersection[104]",
+    ".green_phase_every_30s_first_intersection[105]",
+    ".green_phase_every_30s_first_intersection[106]",
+    ".green_phase_every_30s_first_intersection[108]",
+    ".green_phase_every_30s_first_intersection[109]",
+    ".green_phase_every_30s_first_intersection[110]",
+    ".green_phase_every_30s_first_intersection[111]",
+    ".green_phase_every_30s_first_intersection[116]",
+    ".green_phase_every_30s_first_intersection[119]",
+    ".signal.switches",
+    ".trafficsense_metrics.att",
+    ".trafficsense_metrics.queue_mean_per_intersection",
+    ".trafficsense_metrics.queue_mean_total",
+    ".trafficsense_metrics.throughput",
+    ".trafficsense_metrics.vehicles_running_at_end",
+    ".trafficsense_metrics.waiting_time_mean"
+   ],
+   "outcome": "settings changed since",
+   "made_with": "`maxpressure_15s` (15 s decisions, the default then)",
+   "rerun_with_that_setting_identical": true
+  },
+  {
+   "side": "ours",
+   "file": "hangzhou_4x4_matched_fixedtime_s47.json",
+   "lane_change": true,
+   "att_committed": 667.8813672922251,
+   "att_rerun": 667.879691689008,
+   "rel_diff": 2.5088336030426443e-06,
+   "throughput_identical": true,
+   "queue_identical": true,
+   "added_fields": [
+    ".trafficsense_metrics.vehicles_waiting_to_enter_at_end"
+   ],
+   "other_differences": [
+    ".collmlight_metrics.cityflow_att",
+    ".trafficsense_metrics.att"
+   ],
+   "outcome": "lane-change noise"
+  },
+  {
+   "side": "ours",
+   "file": "hangzhou_4x4_matched_maxpressure_s47.json",
+   "lane_change": true,
+   "att_committed": 365.719022103148,
+   "att_rerun": 365.72069658405894,
+   "rel_diff": 4.578599443107989e-06,
+   "throughput_identical": true,
+   "queue_identical": true,
+   "added_fields": [
+    ".controller_params.min_green",
+    ".trafficsense_metrics.vehicles_waiting_to_enter_at_end"
+   ],
+   "other_differences": [
+    ".collmlight_metrics.cityflow_att",
+    ".trafficsense_metrics.att"
+   ],
+   "outcome": "lane-change noise"
+  },
+  {
+   "side": "ours",
+   "file": "hangzhou_4x4_replica_fixedtime_s47.json",
+   "lane_change": true,
+   "att_committed": 1054.6758204956463,
+   "att_rerun": 1054.6758204956463,
+   "rel_diff": 0.0,
+   "throughput_identical": true,
+   "queue_identical": true,
+   "added_fields": [
+    ".trafficsense_metrics.vehicles_waiting_to_enter_at_end"
+   ],
+   "other_differences": [],
+   "outcome": "identical"
+  },
+  {
+   "side": "ours",
+   "file": "jinan_3x4_default_fixedtime_all_phases_s0.json",
+   "lane_change": false,
+   "att_committed": 434.8368843069874,
+   "att_rerun": 434.8368843069874,
+   "rel_diff": 0.0,
+   "throughput_identical": true,
+   "queue_identical": true,
+   "added_fields": [
+    ".trafficsense_metrics.vehicles_waiting_to_enter_at_end"
+   ],
+   "other_differences": [],
+   "outcome": "identical"
+  },
+  {
+   "side": "ours",
+   "file": "jinan_3x4_default_fixedtime_s0.json",
+   "lane_change": false,
+   "att_committed": 422.9672394043528,
+   "att_rerun": 422.9672394043528,
+   "rel_diff": 0.0,
+   "throughput_identical": true,
+   "queue_identical": true,
+   "added_fields": [
+    ".trafficsense_metrics.vehicles_waiting_to_enter_at_end"
+   ],
+   "other_differences": [],
+   "outcome": "identical"
+  },
+  {
+   "side": "ours",
+   "file": "jinan_3x4_default_maxpressure_5s_s0.json",
+   "lane_change": false,
+   "att_committed": 295.88911798396333,
+   "att_rerun": 295.88911798396333,
+   "rel_diff": 0.0,
+   "throughput_identical": true,
+   "queue_identical": true,
+   "added_fields": [
+    ".controller_params.min_green"
+   ],
+   "other_differences": [],
+   "outcome": "identical"
+  },
+  {
+   "side": "ours",
+   "file": "jinan_3x4_default_maxpressure_s0.json",
+   "lane_change": false,
+   "att_committed": 297.0318442153494,
+   "att_rerun": 300.9289805269187,
+   "rel_diff": 0.013120264333489586,
+   "throughput_identical": false,
+   "queue_identical": false,
+   "added_fields": [
+    ".controller_params.min_green"
+   ],
+   "other_differences": [
+    ".collmlight_metrics.cityflow_att",
+    ".collmlight_metrics.test_avg_queue_len_over",
+    ".collmlight_metrics.test_avg_travel_time_over",
+    ".collmlight_metrics.test_avg_waiting_time_over",
+    ".collmlight_metrics.test_throughput_over",
+    ".collmlight_metrics.vehicles_running_at_end",
+    ".controller_params.decision_interval",
+    ".green_phase_every_30s_first_intersection[4]",
+    ".green_phase_every_30s_first_intersection[5]",
+    ".green_phase_every_30s_first_intersection[8]",
+    ".green_phase_every_30s_first_intersection[9]",
+    ".green_phase_every_30s_first_intersection[10]",
+    ".green_phase_every_30s_first_intersection[11]",
+    ".green_phase_every_30s_first_intersection[12]",
+    ".green_phase_every_30s_first_intersection[13]",
+    ".green_phase_every_30s_first_intersection[14]",
+    ".green_phase_every_30s_first_intersection[15]",
+    ".green_phase_every_30s_first_intersection[16]",
+    ".green_phase_every_30s_first_intersection[17]",
+    ".green_phase_every_30s_first_intersection[18]",
+    ".green_phase_every_30s_first_intersection[19]",
+    ".green_phase_every_30s_first_intersection[20]",
+    ".green_phase_every_30s_first_intersection[21]",
+    ".green_phase_every_30s_first_intersection[23]",
+    ".green_phase_every_30s_first_intersection[24]",
+    ".green_phase_every_30s_first_intersection[25]",
+    ".green_phase_every_30s_first_intersection[26]",
+    ".green_phase_every_30s_first_intersection[27]",
+    ".green_phase_every_30s_first_intersection[28]",
+    ".green_phase_every_30s_first_intersection[29]",
+    ".green_phase_every_30s_first_intersection[32]",
+    ".green_phase_every_30s_first_intersection[34]",
+    ".green_phase_every_30s_first_intersection[35]",
+    ".green_phase_every_30s_first_intersection[36]",
+    ".green_phase_every_30s_first_intersection[37]",
+    ".green_phase_every_30s_first_intersection[38]",
+    ".green_phase_every_30s_first_intersection[39]",
+    ".green_phase_every_30s_first_intersection[40]",
+    ".green_phase_every_30s_first_intersection[41]",
+    ".green_phase_every_30s_first_intersection[42]",
+    ".green_phase_every_30s_first_intersection[43]",
+    ".green_phase_every_30s_first_intersection[44]",
+    ".green_phase_every_30s_first_intersection[45]",
+    ".green_phase_every_30s_first_intersection[46]",
+    ".green_phase_every_30s_first_intersection[47]",
+    ".green_phase_every_30s_first_intersection[48]",
+    ".green_phase_every_30s_first_intersection[49]",
+    ".green_phase_every_30s_first_intersection[50]",
+    ".green_phase_every_30s_first_intersection[51]",
+    ".green_phase_every_30s_first_intersection[52]",
+    ".green_phase_every_30s_first_intersection[53]",
+    ".green_phase_every_30s_first_intersection[54]",
+    ".green_phase_every_30s_first_intersection[55]",
+    ".green_phase_every_30s_first_intersection[56]",
+    ".green_phase_every_30s_first_intersection[58]",
+    ".green_phase_every_30s_first_intersection[59]",
+    ".green_phase_every_30s_first_intersection[60]",
+    ".green_phase_every_30s_first_intersection[61]",
+    ".green_phase_every_30s_first_intersection[62]",
+    ".green_phase_every_30s_first_intersection[63]",
+    ".green_phase_every_30s_first_intersection[64]",
+    ".green_phase_every_30s_first_intersection[65]",
+    ".green_phase_every_30s_first_intersection[67]",
+    ".green_phase_every_30s_first_intersection[68]",
+    ".green_phase_every_30s_first_intersection[69]",
+    ".green_phase_every_30s_first_intersection[70]",
+    ".green_phase_every_30s_first_intersection[71]",
+    ".green_phase_every_30s_first_intersection[72]",
+    ".green_phase_every_30s_first_intersection[73]",
+    ".green_phase_every_30s_first_intersection[74]",
+    ".green_phase_every_30s_first_intersection[75]",
+    ".green_phase_every_30s_first_intersection[76]",
+    ".green_phase_every_30s_first_intersection[77]",
+    ".green_phase_every_30s_first_intersection[78]",
+    ".green_phase_every_30s_first_intersection[79]",
+    ".green_phase_every_30s_first_intersection[82]",
+    ".green_phase_every_30s_first_intersection[83]",
+    ".green_phase_every_30s_first_intersection[84]",
+    ".green_phase_every_30s_first_intersection[85]",
+    ".green_phase_every_30s_first_intersection[87]",
+    ".green_phase_every_30s_first_intersection[88]",
+    ".green_phase_every_30s_first_intersection[89]",
+    ".green_phase_every_30s_first_intersection[91]",
+    ".green_phase_every_30s_first_intersection[92]",
+    ".green_phase_every_30s_first_intersection[94]",
+    ".green_phase_every_30s_first_intersection[95]",
+    ".green_phase_every_30s_first_intersection[96]",
+    ".green_phase_every_30s_first_intersection[97]",
+    ".green_phase_every_30s_first_intersection[99]",
+    ".green_phase_every_30s_first_intersection[100]",
+    ".green_phase_every_30s_first_intersection[101]",
+    ".green_phase_every_30s_first_intersection[103]",
+    ".green_phase_every_30s_first_intersection[104]",
+    ".green_phase_every_30s_first_intersection[105]",
+    ".green_phase_every_30s_first_intersection[106]",
+    ".green_phase_every_30s_first_intersection[107]",
+    ".green_phase_every_30s_first_intersection[108]",
+    ".green_phase_every_30s_first_intersection[109]",
+    ".green_phase_every_30s_first_intersection[110]",
+    ".green_phase_every_30s_first_intersection[111]",
+    ".green_phase_every_30s_first_intersection[112]",
+    ".green_phase_every_30s_first_intersection[113]",
+    ".green_phase_every_30s_first_intersection[115]",
+    ".green_phase_every_30s_first_intersection[117]",
+    ".green_phase_every_30s_first_intersection[119]",
+    ".signal.switches",
+    ".trafficsense_metrics.att",
+    ".trafficsense_metrics.queue_mean_per_intersection",
+    ".trafficsense_metrics.queue_mean_total",
+    ".trafficsense_metrics.throughput",
+    ".trafficsense_metrics.vehicles_running_at_end",
+    ".trafficsense_metrics.waiting_time_mean"
+   ],
+   "outcome": "settings changed since",
+   "made_with": "`maxpressure_15s` (15 s decisions, the default then)",
+   "rerun_with_that_setting_identical": true
+  },
+  {
+   "side": "ours",
+   "file": "jinan_3x4_matched_fixedtime_s47.json",
+   "lane_change": true,
+   "att_committed": 479.55893797207597,
+   "att_rerun": 479.31794285714284,
+   "rel_diff": 0.0005025349250130347,
+   "throughput_identical": true,
+   "queue_identical": true,
+   "added_fields": [
+    ".trafficsense_metrics.vehicles_waiting_to_enter_at_end"
+   ],
+   "other_differences": [
+    ".collmlight_metrics.cityflow_att",
+    ".collmlight_metrics.test_avg_travel_time_over",
+    ".collmlight_metrics.test_avg_waiting_time_over",
+    ".trafficsense_metrics.att",
+    ".trafficsense_metrics.queue_mean_per_intersection",
+    ".trafficsense_metrics.queue_mean_total",
+    ".trafficsense_metrics.waiting_time_mean"
+   ],
+   "outcome": "lane-change noise"
+  },
+  {
+   "side": "ours",
+   "file": "jinan_3x4_matched_maxpressure_s47.json",
+   "lane_change": true,
+   "att_committed": 317.84104443426475,
+   "att_rerun": 317.84104443426475,
+   "rel_diff": 0.0,
+   "throughput_identical": true,
+   "queue_identical": true,
+   "added_fields": [
+    ".controller_params.min_green",
+    ".trafficsense_metrics.vehicles_waiting_to_enter_at_end"
+   ],
+   "other_differences": [],
+   "outcome": "identical"
+  },
+  {
+   "side": "ours",
+   "file": "jinan_3x4_replica_fixedtime_s47.json",
+   "lane_change": true,
+   "att_committed": 1257.9583142464498,
+   "att_rerun": 1257.9587723316538,
+   "rel_diff": 3.641497486502223e-07,
+   "throughput_identical": true,
+   "queue_identical": true,
+   "added_fields": [
+    ".trafficsense_metrics.vehicles_waiting_to_enter_at_end"
+   ],
+   "other_differences": [
+    ".collmlight_metrics.cityflow_att",
+    ".trafficsense_metrics.att"
+   ],
+   "outcome": "lane-change noise"
+  },
+  {
+   "side": "ours",
+   "file": "synthetic_4x4_default_fixedtime_all_phases_s0.json",
+   "lane_change": false,
+   "att_committed": 1441.68575,
+   "att_rerun": 1441.68575,
+   "rel_diff": 0.0,
+   "throughput_identical": true,
+   "queue_identical": true,
+   "added_fields": [
+    ".trafficsense_metrics.vehicles_waiting_to_enter_at_end"
+   ],
+   "other_differences": [],
+   "outcome": "identical"
+  },
+  {
+   "side": "ours",
+   "file": "synthetic_4x4_default_fixedtime_s0.json",
+   "lane_change": false,
+   "att_committed": 1460.318125,
+   "att_rerun": 1460.318125,
+   "rel_diff": 0.0,
+   "throughput_identical": true,
+   "queue_identical": true,
+   "added_fields": [
+    ".trafficsense_metrics.vehicles_waiting_to_enter_at_end"
+   ],
+   "other_differences": [],
+   "outcome": "identical"
+  },
+  {
+   "side": "ours",
+   "file": "synthetic_4x4_default_maxpressure_5s_s0.json",
+   "lane_change": false,
+   "att_committed": 1293.4905,
+   "att_rerun": 1293.4905,
+   "rel_diff": 0.0,
+   "throughput_identical": true,
+   "queue_identical": true,
+   "added_fields": [
+    ".controller_params.min_green"
+   ],
+   "other_differences": [],
+   "outcome": "identical"
+  },
+  {
+   "side": "ours",
+   "file": "synthetic_4x4_default_maxpressure_s0.json",
+   "lane_change": false,
+   "att_committed": 1231.451875,
+   "att_rerun": 1248.429875,
+   "rel_diff": 0.013786978074153378,
+   "throughput_identical": false,
+   "queue_identical": false,
+   "added_fields": [
+    ".controller_params.min_green",
+    ".trafficsense_metrics.vehicles_waiting_to_enter_at_end"
+   ],
+   "other_differences": [
+    ".collmlight_metrics.cityflow_att",
+    ".collmlight_metrics.test_avg_queue_len_over",
+    ".collmlight_metrics.test_avg_travel_time_over",
+    ".collmlight_metrics.test_avg_waiting_time_over",
+    ".collmlight_metrics.test_throughput_over",
+    ".collmlight_metrics.vehicles_running_at_end",
+    ".controller_params.decision_interval",
+    ".green_phase_every_30s_first_intersection[3]",
+    ".green_phase_every_30s_first_intersection[5]",
+    ".green_phase_every_30s_first_intersection[8]",
+    ".green_phase_every_30s_first_intersection[12]",
+    ".green_phase_every_30s_first_intersection[13]",
+    ".green_phase_every_30s_first_intersection[15]",
+    ".green_phase_every_30s_first_intersection[20]",
+    ".green_phase_every_30s_first_intersection[24]",
+    ".green_phase_every_30s_first_intersection[25]",
+    ".green_phase_every_30s_first_intersection[26]",
+    ".green_phase_every_30s_first_intersection[27]",
+    ".green_phase_every_30s_first_intersection[28]",
+    ".green_phase_every_30s_first_intersection[29]",
+    ".green_phase_every_30s_first_intersection[31]",
+    ".green_phase_every_30s_first_intersection[32]",
+    ".green_phase_every_30s_first_intersection[33]",
+    ".green_phase_every_30s_first_intersection[37]",
+    ".green_phase_every_30s_first_intersection[38]",
+    ".green_phase_every_30s_first_intersection[39]",
+    ".green_phase_every_30s_first_intersection[41]",
+    ".green_phase_every_30s_first_intersection[42]",
+    ".green_phase_every_30s_first_intersection[43]",
+    ".green_phase_every_30s_first_intersection[44]",
+    ".green_phase_every_30s_first_intersection[45]",
+    ".green_phase_every_30s_first_intersection[46]",
+    ".green_phase_every_30s_first_intersection[47]",
+    ".green_phase_every_30s_first_intersection[48]",
+    ".green_phase_every_30s_first_intersection[49]",
+    ".green_phase_every_30s_first_intersection[50]",
+    ".green_phase_every_30s_first_intersection[51]",
+    ".green_phase_every_30s_first_intersection[52]",
+    ".green_phase_every_30s_first_intersection[57]",
+    ".green_phase_every_30s_first_intersection[58]",
+    ".green_phase_every_30s_first_intersection[59]",
+    ".green_phase_every_30s_first_intersection[60]",
+    ".green_phase_every_30s_first_intersection[61]",
+    ".green_phase_every_30s_first_intersection[64]",
+    ".green_phase_every_30s_first_intersection[65]",
+    ".green_phase_every_30s_first_intersection[66]",
+    ".green_phase_every_30s_first_intersection[69]",
+    ".green_phase_every_30s_first_intersection[71]",
+    ".green_phase_every_30s_first_intersection[72]",
+    ".green_phase_every_30s_first_intersection[73]",
+    ".green_phase_every_30s_first_intersection[77]",
+    ".green_phase_every_30s_first_intersection[78]",
+    ".green_phase_every_30s_first_intersection[79]",
+    ".green_phase_every_30s_first_intersection[80]",
+    ".green_phase_every_30s_first_intersection[84]",
+    ".green_phase_every_30s_first_intersection[85]",
+    ".green_phase_every_30s_first_intersection[86]",
+    ".green_phase_every_30s_first_intersection[88]",
+    ".green_phase_every_30s_first_intersection[89]",
+    ".green_phase_every_30s_first_intersection[93]",
+    ".green_phase_every_30s_first_intersection[94]",
+    ".green_phase_every_30s_first_intersection[95]",
+    ".green_phase_every_30s_first_intersection[97]",
+    ".green_phase_every_30s_first_intersection[98]",
+    ".green_phase_every_30s_first_intersection[99]",
+    ".green_phase_every_30s_first_intersection[100]",
+    ".green_phase_every_30s_first_intersection[104]",
+    ".green_phase_every_30s_first_intersection[108]",
+    ".green_phase_every_30s_first_intersection[109]",
+    ".green_phase_every_30s_first_intersection[110]",
+    ".green_phase_every_30s_first_intersection[114]",
+    ".green_phase_every_30s_first_intersection[115]",
+    ".green_phase_every_30s_first_intersection[116]",
+    ".green_phase_every_30s_first_intersection[119]",
+    ".signal.switches",
+    ".trafficsense_metrics.att",
+    ".trafficsense_metrics.queue_mean_per_intersection",
+    ".trafficsense_metrics.queue_mean_total",
+    ".trafficsense_metrics.throughput",
+    ".trafficsense_metrics.vehicles_entered",
+    ".trafficsense_metrics.vehicles_running_at_end",
+    ".trafficsense_metrics.waiting_time_mean"
+   ],
+   "outcome": "settings changed since",
+   "made_with": "`maxpressure_15s` (15 s decisions, the default then)",
+   "rerun_with_that_setting_identical": true
+  },
+  {
+   "side": "ours",
+   "file": "synthetic_4x4_matched_fixedtime_s47.json",
+   "lane_change": true,
+   "att_committed": 1420.594125,
+   "att_rerun": 1420.594,
+   "rel_diff": 8.79913536355543e-08,
+   "throughput_identical": true,
+   "queue_identical": true,
+   "added_fields": [
+    ".trafficsense_metrics.vehicles_waiting_to_enter_at_end"
+   ],
+   "other_differences": [
+    ".collmlight_metrics.cityflow_att",
+    ".trafficsense_metrics.att"
+   ],
+   "outcome": "lane-change noise"
+  },
+  {
+   "side": "ours",
+   "file": "synthetic_4x4_matched_maxpressure_s47.json",
+   "lane_change": true,
+   "att_committed": 1263.29775,
+   "att_rerun": 1263.296625,
+   "rel_diff": 8.905264020313651e-07,
+   "throughput_identical": true,
+   "queue_identical": true,
+   "added_fields": [
+    ".controller_params.min_green",
+    ".trafficsense_metrics.vehicles_waiting_to_enter_at_end"
+   ],
+   "other_differences": [
+    ".collmlight_metrics.cityflow_att",
+    ".collmlight_metrics.test_avg_travel_time_over",
+    ".trafficsense_metrics.att"
+   ],
+   "outcome": "lane-change noise"
+  },
+  {
+   "side": "ours",
+   "file": "synthetic_4x4_replica_fixedtime_s47.json",
+   "lane_change": true,
+   "att_committed": 1611.97975,
+   "att_rerun": 1611.98,
+   "rel_diff": 1.550887968976854e-07,
+   "throughput_identical": true,
+   "queue_identical": true,
+   "added_fields": [
+    ".trafficsense_metrics.vehicles_waiting_to_enter_at_end"
+   ],
+   "other_differences": [
+    ".collmlight_metrics.cityflow_att",
+    ".trafficsense_metrics.att"
+   ],
+   "outcome": "lane-change noise"
+  },
+  {
+   "side": "collmlight",
+   "file": "hangzhou_Fixedtime_s0.json",
+   "lane_change": true,
+   "att_committed": 1054.6758204956463,
+   "att_rerun": 1054.675485599464,
+   "rel_diff": 3.175347113858079e-07,
+   "throughput_identical": true,
+   "queue_identical": true,
+   "added_fields": [],
+   "other_differences": [
+    ".results.cityflow_att"
+   ],
+   "outcome": "lane-change noise"
+  },
+  {
+   "side": "collmlight",
+   "file": "hangzhou_MaxPressure_s0.json",
+   "lane_change": true,
+   "att_committed": 365.72069658405894,
+   "att_rerun": 365.719022103148,
+   "rel_diff": 4.5785784796311124e-06,
+   "throughput_identical": true,
+   "queue_identical": true,
+   "added_fields": [],
+   "other_differences": [
+    ".results.cityflow_att"
+   ],
+   "outcome": "lane-change noise"
+  },
+  {
+   "side": "collmlight",
+   "file": "jinan_Fixedtime_s0.json",
+   "lane_change": true,
+   "att_committed": 1257.958085203848,
+   "att_rerun": 1257.9587723316538,
+   "rel_diff": 5.46224722338757e-07,
+   "throughput_identical": true,
+   "queue_identical": true,
+   "added_fields": [],
+   "other_differences": [
+    ".results.cityflow_att"
+   ],
+   "outcome": "lane-change noise"
+  },
+  {
+   "side": "collmlight",
+   "file": "jinan_MaxPressure_s0.json",
+   "lane_change": true,
+   "att_committed": 317.8405863490609,
+   "att_rerun": 317.840357306459,
+   "rel_diff": 7.206210023293469e-07,
+   "throughput_identical": true,
+   "queue_identical": true,
+   "added_fields": [],
+   "other_differences": [
+    ".results.cityflow_att"
+   ],
+   "outcome": "lane-change noise"
+  },
+  {
+   "side": "collmlight",
+   "file": "synthetic_4x4_Fixedtime_s0.json",
+   "lane_change": true,
+   "att_committed": 1611.98025,
+   "att_rerun": 1611.98,
+   "rel_diff": 1.550887487926305e-07,
+   "throughput_identical": true,
+   "queue_identical": true,
+   "added_fields": [],
+   "other_differences": [
+    ".results.cityflow_att"
+   ],
+   "outcome": "lane-change noise"
+  },
+  {
+   "side": "collmlight",
+   "file": "synthetic_4x4_Fixedtime_s1.json",
+   "lane_change": true,
+   "att_committed": 1611.97975,
+   "att_rerun": 1611.9795,
+   "rel_diff": 1.550887968976854e-07,
+   "throughput_identical": true,
+   "queue_identical": true,
+   "added_fields": [],
+   "other_differences": [
+    ".results.cityflow_att"
+   ],
+   "outcome": "lane-change noise"
+  },
+  {
+   "side": "collmlight",
+   "file": "synthetic_4x4_Fixedtime_s2.json",
+   "lane_change": true,
+   "att_committed": 1611.979625,
+   "att_rerun": 1611.97975,
+   "rel_diff": 7.754440446197691e-08,
+   "throughput_identical": true,
+   "queue_identical": true,
+   "added_fields": [],
+   "other_differences": [
+    ".results.cityflow_att"
+   ],
+   "outcome": "lane-change noise"
+  },
+  {
+   "side": "collmlight",
+   "file": "synthetic_4x4_MaxPressure_s0.json",
+   "lane_change": true,
+   "att_committed": 1263.2965,
+   "att_rerun": 1263.29825,
+   "rel_diff": 1.3852646628318438e-06,
+   "throughput_identical": true,
+   "queue_identical": true,
+   "added_fields": [],
+   "other_differences": [
+    ".results.cityflow_att",
+    ".results.test_avg_travel_time_over"
+   ],
+   "outcome": "lane-change noise"
+  },
+  {
+   "side": "collmlight",
+   "file": "synthetic_4x4_MaxPressure_s1.json",
+   "lane_change": true,
+   "att_committed": 1263.298625,
+   "att_rerun": 1263.295875,
+   "rel_diff": 2.176840808227847e-06,
+   "throughput_identical": true,
+   "queue_identical": true,
+   "added_fields": [],
+   "other_differences": [
+    ".results.cityflow_att",
+    ".results.test_avg_travel_time_over",
+    ".results.test_avg_waiting_time_over"
+   ],
+   "outcome": "lane-change noise"
+  },
+  {
+   "side": "collmlight",
+   "file": "synthetic_4x4_MaxPressure_s2.json",
+   "lane_change": true,
+   "att_committed": 1263.298625,
+   "att_rerun": 1263.29825,
+   "rel_diff": 2.9684192828835215e-07,
+   "throughput_identical": true,
+   "queue_identical": true,
+   "added_fields": [],
+   "other_differences": [
+    ".results.cityflow_att"
+   ],
+   "outcome": "lane-change noise"
+  }
+ ],
+ "lane_change_repeats": {
+  "profiles": {
+   "runs": 45,
+   "profiles": 9
+  },
+  "by_profile": {
+   "hangzhou_4x4_matched_fixedtime": {
+    "att": [
+     667.8813672922251,
+     667.8860589812332,
+     667.8817024128687,
+     667.8793565683646,
+     667.879691689008
+    ],
+    "throughput": [
+     2368,
+     2368,
+     2368,
+     2368,
+     2368
+    ],
+    "waiting_time_mean": [
+     362.2908966461328,
+     362.2908966461328,
+     362.2908966461328,
+     362.2908966461328,
+     362.2908966461328
+    ],
+    "queue_mean_per_intersection": [
+     18.377152777777773,
+     18.377152777777773,
+     18.377152777777773,
+     18.377152777777773,
+     18.377152777777773
+    ],
+    "collmlight_queue": [
+     301.325,
+     301.325,
+     301.325,
+     301.325,
+     301.325
+    ],
+    "collmlight_throughput": [
+     2450.0,
+     2450.0,
+     2450.0,
+     2450.0,
+     2450.0
+    ],
+    "collmlight_waiting": [
+     73.98746370200257,
+     73.98746370200257,
+     73.98746370200257,
+     73.98746370200257,
+     73.98746370200257
+    ],
+    "collmlight_travel_time": [
+     616.0167693360712,
+     616.0167693360712,
+     616.0167693360712,
+     616.0167693360712,
+     616.0167693360712
+    ]
+   },
+   "hangzhou_4x4_matched_maxpressure": {
+    "att": [
+     365.7217012726055,
+     365.7213663764233,
+     365.7217012726055,
+     365.7217012726055,
+     365.72069658405894
+    ],
+    "throughput": [
+     2702,
+     2702,
+     2702,
+     2702,
+     2702
+    ],
+    "waiting_time_mean": [
+     70.00871605766007,
+     70.00871605766007,
+     70.00871605766007,
+     70.00871605766007,
+     70.00871605766007
+    ],
+    "queue_mean_per_intersection": [
+     3.623836805555555,
+     3.623836805555555,
+     3.623836805555555,
+     3.623836805555555,
+     3.623836805555555
+    ],
+    "collmlight_queue": [
+     68.99166666666666,
+     68.99166666666666,
+     68.99166666666666,
+     68.99166666666666,
+     68.99166666666666
+    ],
+    "collmlight_throughput": [
+     2751.0,
+     2751.0,
+     2751.0,
+     2751.0,
+     2751.0
+    ],
+    "collmlight_waiting": [
+     49.600853612314374,
+     49.600853612314374,
+     49.600853612314374,
+     49.600853612314374,
+     49.600853612314374
+    ],
+    "collmlight_travel_time": [
+     325.32886356017434,
+     325.32886356017434,
+     325.32886356017434,
+     325.32886356017434,
+     325.32886356017434
+    ]
+   },
+   "hangzhou_4x4_replica_fixedtime": {
+    "att": [
+     1054.675485599464,
+     1054.675485599464,
+     1054.6764902880107,
+     1054.676825184193,
+     1054.675150703282
+    ],
+    "throughput": [
+     1444,
+     1444,
+     1444,
+     1444,
+     1444
+    ],
+    "waiting_time_mean": [
+     862.5548545390817,
+     862.5548545390817,
+     862.5548545390817,
+     862.5548545390817,
+     862.5548545390817
+    ],
+    "queue_mean_per_intersection": [
+     42.72250000000001,
+     42.72250000000001,
+     42.72250000000001,
+     42.72250000000001,
+     42.72250000000001
+    ],
+    "collmlight_queue": [
+     694.5416666666666,
+     694.5416666666666,
+     694.5416666666666,
+     694.5416666666666,
+     694.5416666666666
+    ],
+    "collmlight_throughput": [
+     1526.0,
+     1526.0,
+     1526.0,
+     1526.0,
+     1526.0
+    ],
+    "collmlight_waiting": [
+     827.5488426109895,
+     827.5488426109895,
+     827.5488426109895,
+     827.5488426109895,
+     827.5488426109895
+    ],
+    "collmlight_travel_time": [
+     1002.7630564318262,
+     1002.7630564318262,
+     1002.7630564318262,
+     1002.7630564318262,
+     1002.7630564318262
+    ]
+   },
+   "jinan_3x4_matched_fixedtime": {
+    "att": [
+     479.5616845960174,
+     479.5603112840467,
+     479.34659350708733,
+     479.3816601875143,
+     479.31794285714284
+    ],
+    "throughput": [
+     3942,
+     3942,
+     3942,
+     3942,
+     3942
+    ],
+    "waiting_time_mean": [
+     236.31042382588774,
+     236.31042382588774,
+     236.31042382588774,
+     236.31042382588774,
+     236.31042382588774
+    ],
+    "queue_mean_per_intersection": [
+     23.858865740740736,
+     23.858865740740736,
+     23.858865740740736,
+     23.858865740740736,
+     23.858865740740736
+    ],
+    "collmlight_queue": [
+     294.14166666666665,
+     294.14166666666665,
+     294.14166666666665,
+     294.14166666666665,
+     294.14166666666665
+    ],
+    "collmlight_throughput": [
+     4027.0,
+     4027.0,
+     4027.0,
+     4027.0,
+     4027.0
+    ],
+    "collmlight_waiting": [
+     66.7199500370679,
+     66.7199500370679,
+     66.7199500370679,
+     66.7199500370679,
+     66.7199500370679
+    ],
+    "collmlight_travel_time": [
+     441.1901489117984,
+     441.1906071019473,
+     441.1906071019473,
+     441.1906071019473,
+     441.1906071019473
+    ]
+   },
+   "jinan_3x4_matched_maxpressure": {
+    "att": [
+     317.84104443426475,
+     317.8412734768667,
+     317.84104443426475,
+     317.84104443426475,
+     317.84104443426475
+    ],
+    "throughput": [
+     4115,
+     4115,
+     4115,
+     4115,
+     4115
+    ],
+    "waiting_time_mean": [
+     73.94455899198167,
+     73.94455899198167,
+     73.94455899198167,
+     73.94455899198167,
+     73.94455899198167
+    ],
+    "queue_mean_per_intersection": [
+     7.463310185185186,
+     7.463310185185186,
+     7.463310185185186,
+     7.463310185185186,
+     7.463310185185186
+    ],
+    "collmlight_queue": [
+     106.575,
+     106.575,
+     106.575,
+     106.575,
+     106.575
+    ],
+    "collmlight_throughput": [
+     4187.0,
+     4187.0,
+     4187.0,
+     4187.0,
+     4187.0
+    ],
+    "collmlight_waiting": [
+     38.248717948276514,
+     38.248717948276514,
+     38.248717948276514,
+     38.248717948276514,
+     38.248717948276514
+    ],
+    "collmlight_travel_time": [
+     273.1993127147766,
+     273.1993127147766,
+     273.1993127147766,
+     273.1993127147766,
+     273.1993127147766
+    ]
+   },
+   "jinan_3x4_replica_fixedtime": {
+    "att": [
+     1257.9590013742556,
+     1257.9587723316538,
+     1257.9585432890517,
+     1257.9587723316538,
+     1257.9587723316538
+    ],
+    "throughput": [
+     1728,
+     1728,
+     1728,
+     1728,
+     1728
+    ],
+    "waiting_time_mean": [
+     1167.3822809593735,
+     1167.3822809593735,
+     1167.3822809593735,
+     1167.3822809593735,
+     1167.3822809593735
+    ],
+    "queue_mean_per_intersection": [
+     110.41337962962963,
+     110.41337962962963,
+     110.41337962962963,
+     110.41337962962963,
+     110.41337962962963
+    ],
+    "collmlight_queue": [
+     1338.625,
+     1338.625,
+     1338.625,
+     1338.625,
+     1338.625
+    ],
+    "collmlight_throughput": [
+     1786.0,
+     1786.0,
+     1786.0,
+     1786.0,
+     1786.0
+    ],
+    "collmlight_waiting": [
+     920.2962486334892,
+     920.2962486334892,
+     920.2962486334892,
+     920.2962486334892,
+     920.2962486334892
+    ],
+    "collmlight_travel_time": [
+     1239.3127753303966,
+     1239.3127753303966,
+     1239.3127753303966,
+     1239.3127753303966,
+     1239.3127753303966
+    ]
+   },
+   "synthetic_4x4_matched_fixedtime": {
+    "att": [
+     1420.59375,
+     1420.59275,
+     1420.594125,
+     1420.593125,
+     1420.594
+    ],
+    "throughput": [
+     1708,
+     1708,
+     1708,
+     1708,
+     1708
+    ],
+    "waiting_time_mean": [
+     758.4004115226337,
+     758.4004115226337,
+     758.4004115226337,
+     758.4004115226337,
+     758.4004115226337
+    ],
+    "queue_mean_per_intersection": [
+     31.700625000000006,
+     31.700625000000006,
+     31.700625000000006,
+     31.700625000000006,
+     31.700625000000006
+    ],
+    "collmlight_queue": [
+     510.8,
+     510.8,
+     510.8,
+     510.8,
+     510.8
+    ],
+    "collmlight_throughput": [
+     1724.0,
+     1724.0,
+     1724.0,
+     1724.0,
+     1724.0
+    ],
+    "collmlight_waiting": [
+     205.48359477785237,
+     205.48359477785237,
+     205.48359477785237,
+     205.48359477785237,
+     205.48359477785237
+    ],
+    "collmlight_travel_time": [
+     875.5777777777778,
+     875.5777777777778,
+     875.5777777777778,
+     875.5777777777778,
+     875.5777777777778
+    ]
+   },
+   "synthetic_4x4_matched_maxpressure": {
+    "att": [
+     1263.297,
+     1263.296875,
+     1263.2965,
+     1263.295625,
+     1263.296625
+    ],
+    "throughput": [
+     2470,
+     2470,
+     2470,
+     2470,
+     2470
+    ],
+    "waiting_time_mean": [
+     540.2012002526848,
+     540.2008843967151,
+     540.2024636765635,
+     540.2012002526848,
+     540.2012002526848
+    ],
+    "queue_mean_per_intersection": [
+     29.165798611111114,
+     29.165781250000002,
+     29.165868055555556,
+     29.165798611111114,
+     29.165798611111114
+    ],
+    "collmlight_queue": [
+     468.43333333333334,
+     468.43333333333334,
+     468.43333333333334,
+     468.43333333333334,
+     468.43333333333334
+    ],
+    "collmlight_throughput": [
+     2505.0,
+     2505.0,
+     2505.0,
+     2505.0,
+     2505.0
+    ],
+    "collmlight_waiting": [
+     84.81417210828953,
+     84.81415722733713,
+     84.81421675114666,
+     84.81417210828953,
+     84.81417210828953
+    ],
+    "collmlight_travel_time": [
+     683.1042324699937,
+     683.1042324699937,
+     683.1036007580543,
+     683.1036007580543,
+     683.1042324699937
+    ]
+   },
+   "synthetic_4x4_replica_fixedtime": {
+    "att": [
+     1611.98,
+     1611.98,
+     1611.98,
+     1611.9795,
+     1611.98
+    ],
+    "throughput": [
+     737,
+     737,
+     737,
+     737,
+     737
+    ],
+    "waiting_time_mean": [
+     1155.5031141868512,
+     1155.5031141868512,
+     1155.5031141868512,
+     1155.5031141868512,
+     1155.5031141868512
+    ],
+    "queue_mean_per_intersection": [
+     28.946822916666658,
+     28.946822916666658,
+     28.946822916666658,
+     28.946822916666658,
+     28.946822916666658
+    ],
+    "collmlight_queue": [
+     467.26666666666665,
+     467.26666666666665,
+     467.26666666666665,
+     467.26666666666665,
+     467.26666666666665
+    ],
+    "collmlight_throughput": [
+     751.0,
+     751.0,
+     751.0,
+     751.0,
+     751.0
+    ],
+    "collmlight_waiting": [
+     1215.554608988661,
+     1215.554608988661,
+     1215.554608988661,
+     1215.554608988661,
+     1215.554608988661
+    ],
+    "collmlight_travel_time": [
+     1192.537716262976,
+     1192.537716262976,
+     1192.537716262976,
+     1192.537716262976,
+     1192.537716262976
+    ]
+   }
+  }
+ },
+ "pure_cityflow": {
+  "setup": "Jinan 3x4 roadnet and real flow, CityFlow seed 47, built-in signal plan (rlTrafficLight false), thread_num 1, only next_step() for 3600 steps, 5 engines in one process",
+  "runs": [
+   {
+    "lane_change": true,
+    "threads": 1,
+    "att": [
+     377.9787087912088,
+     377.9800824175824,
+     377.9784798534798,
+     377.9787087912088,
+     377.98031135531136
+    ]
+   },
+   {
+    "lane_change": false,
+    "threads": 1,
+    "att": [
+     378.40801832760593,
+     378.40801832760593,
+     378.40801832760593,
+     378.40801832760593,
+     378.40801832760593
+    ]
+   }
+  ]
+ },
+ "llm": {
+  "committed_run": "outputs/llm_benchmark/runs/20261015-001333_indian_2x2_peak_llm_guarded_mp_s0",
+  "rerun_folder": "20261025-232911_indian_2x2_peak_llm_guarded_mp_s0",
+  "committed": {
+   "calls": 121,
+   "failures": 0,
+   "latency_mean_s": 1.0006636475703368,
+   "latency_p95_s": 1.1799617739998212,
+   "att": 92.22089947089947,
+   "queue": 11.621666666666666,
+   "model": "llama3.2:3b",
+   "model_digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72"
+  },
+  "rerun": {
+   "calls": 121,
+   "failures": 0,
+   "latency_mean_s": 0.9905509162316106,
+   "latency_p95_s": 1.161958800003049,
+   "att": 92.22089947089947,
+   "queue": 11.621666666666666,
+   "model": "llama3.2:3b",
+   "model_digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72"
+  },
+  "calls": 121,
+  "failures": 0,
+  "identical_answers": 121,
+  "metrics_identical": true,
+  "provenance_fields_missing": [],
+  "seconds": 186
+ },
+ "llm_cpu_gpu": {
+  "gpu": {
+   "calls": 24,
+   "failures": 0,
+   "latency_mean_s": 0.9582330193346328,
+   "latency_p95_s": 1.12798365296112,
+   "wall_s": 26.019779994006967
+  },
+  "cpu": {
+   "calls": 24,
+   "failures": 0,
+   "latency_mean_s": 2.862052507877403,
+   "latency_p95_s": 3.347989874397171,
+   "wall_s": 71.69459978499799
+  },
+  "cpu_over_gpu_mean": 2.9868022183839202,
+  "setup": "llm_guarded_mp, llama3.2:3b, indian_2x2_peak seed 0, decision interval 5 s, min green 15 s, 120 s; CPU = Ollama option num_gpu 0"
+ },
+ "detector": {
+  "weights_sha256": "af7f77cc14d5fec51ac54cdb9d17bdb9108f75eed3eab37e223462dd8e3a683d",
+  "images": 10225,
+  "committed": {
+   "mAP50": 0.5629749701799927,
+   "mAP50_95": 0.37484794316189707
+  },
+  "rerun": {
+   "mAP50": 0.5629749701799927,
+   "mAP50_95": 0.37484794316189707
+  },
+  "detector_test_differences": [],
+  "error_model_differences": [],
+  "seconds": 577,
+  "speed": {
+   "gpu": {
+    "images": 200,
+    "s_per_image": 0.04481379273980565
+   },
+   "cpu": {
+    "images": 200,
+    "s_per_image": 0.0692239363455883
+   },
+   "cpu_over_gpu": 1.5447015776484465
+  }
+ },
+ "dashboard": [
+  {
+   "setup": "+ build_replays.py",
+   "page": "Overview",
+   "ok": true,
+   "shows": "full page",
+   "load_s": 24.1
+  },
+  {
+   "setup": "+ build_replays.py",
+   "page": "Live Detection",
+   "ok": true,
+   "shows": "says what is missing: Data file missing: data/external/detector_runs/detector/yolov8n_idd/weights/best.pt Train the detector (scripts/train_detector.py) or create the data/external/detector_runs symlink (configs/default.yaml).",
+   "load_s": 32.0
+  },
+  {
+   "setup": "+ build_replays.py",
+   "page": "Network Replay",
+   "ok": true,
+   "shows": "full page",
+   "load_s": 32.9
+  },
+  {
+   "setup": "+ build_replays.py",
+   "page": "Results",
+   "ok": true,
+   "shows": "full page",
+   "load_s": 26.0
+  },
+  {
+   "setup": "+ detector weights",
+   "page": "Overview",
+   "ok": true,
+   "shows": "full page",
+   "load_s": 23.9
+  },
+  {
+   "setup": "+ detector weights",
+   "page": "Live Detection",
+   "ok": true,
+   "shows": "says what is missing: Data file missing: data/external/dashboard_media/idd_test_sample.json Make it with python scripts/make_sample_clip.py.",
+   "load_s": 31.6
+  },
+  {
+   "setup": "+ detector weights",
+   "page": "Network Replay",
+   "ok": true,
+   "shows": "full page",
+   "load_s": 23.7
+  },
+  {
+   "setup": "+ detector weights",
+   "page": "Results",
+   "ok": true,
+   "shows": "full page",
+   "load_s": 26.7
+  },
+  {
+   "setup": "Everything linked (as on the project laptop)",
+   "page": "Overview",
+   "ok": true,
+   "shows": "full page",
+   "load_s": 23.8
+  },
+  {
+   "setup": "Everything linked (as on the project laptop)",
+   "page": "Live Detection",
+   "ok": true,
+   "shows": "full page",
+   "load_s": 24.1
+  },
+  {
+   "setup": "Everything linked (as on the project laptop)",
+   "page": "Network Replay",
+   "ok": true,
+   "shows": "full page",
+   "load_s": 23.7
+  },
+  {
+   "setup": "Everything linked (as on the project laptop)",
+   "page": "Results",
+   "ok": true,
+   "shows": "full page",
+   "load_s": 27.4
+  }
+ ],
+ "sizes_gb": {
+  "Clone (history + files)": 0.351458873,
+  "Python environment, dev + dashboard": 0.530579456,
+  "Python environment, + perception and screenshots": 7.778505158,
+  "CityFlow source and build": 0.007626247,
+  "CoLLMLight roadnets and flows": 0.009577509,
+  "Rebuilt replays": 0.015049164,
+  "Chromium for screenshots and browser tests": 0.711381258,
+  "Ollama model llama3.2:3b": 2.019393189,
+  "Ollama model gemma4:e4b": 6.583656505,
+  "IDD Detection": 24.563436653,
+  "IDD resized copy (640 px)": 3.812311723
+ },
+ "sizes_note": "du -sb (bytes / 10^9). The dev + dashboard environment was measured with du -sh (506 MiB) right after its install, before the extras; Ollama model sizes are those Ollama reports.",
+ "facts": {
+  "disk_base_gb": 0.914291249,
+  "disk_extras_gb": 7.247925702,
+  "install_min": 25.466666666666665,
+  "clone_min": 5.983333333333333,
+  "baseline_run_s": 8,
+  "build_replays_s": 175,
+  "torch_min": 62.266666666666666,
+  "llm_gpu_s": 0.9582330193346328,
+  "llm_cpu_s": 2.862052507877403,
+  "llm_cpu_over_gpu": 2.9868022183839202,
+  "det_gpu_ms": 44.81379273980565,
+  "det_cpu_ms": 69.2239363455883,
+  "det_cpu_over_gpu": 1.5447015776484465,
+  "det_runs_identical": 42,
+  "det_runs": 42,
+  "llm_identical_answers": 121,
+  "llm_calls": 121,
+  "map50": 0.5629749701799927,
+  "map5095": 0.37484794316189707,
+  "llama3b_gb": 2.019393189,
+  "gemma_gb": 6.583656505,
+  "idd_gb": 24.563436653,
+  "idd640_gb": 3.812311723
+ }
+}
