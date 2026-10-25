@@ -199,6 +199,22 @@ def _settle(page, extra_ms: int) -> None:
     page.wait_for_selector('[data-testid="stAppViewContainer"]', timeout=60000)
     page.wait_for_timeout(1500)
     page.wait_for_function("() => !document.querySelector('[data-testid=\"stStatusWidget\"]')", timeout=600000)
+    # The status widget can appear only after the check above when the first run is slow (a clone on a Windows
+    # drive), so also wait for Streamlit's own script state (the attribute its end-to-end tests use) to be
+    # 'notRunning' and stay so for three polls.
+    stable, t0 = 0, time.time()
+    while stable < 3 and time.time() - t0 < 600:
+        state = page.evaluate("() => (document.querySelector('[data-testid=\"stApp\"]') || {dataset: {}})"
+                              ".dataset.testScriptState")
+        stable = stable + 1 if state == "notRunning" else 0
+        page.wait_for_timeout(500)
+    # and until every Plotly chart has drawn (a card measured before its chart is drawn is too short)
+    from playwright.sync_api import TimeoutError as PlaywrightTimeout   # installed: the browser fixture ran
+    try:
+        page.wait_for_function("() => Array.from(document.querySelectorAll('[data-testid=\"stPlotlyChart\"]'))"
+                               ".every(c => c.querySelector('.main-svg'))", timeout=60000)
+    except PlaywrightTimeout:
+        pass   # measured as it is; a chart that never draws shows up as a layout fault
     page.wait_for_timeout(extra_ms)
 
 
