@@ -198,7 +198,47 @@ function Pandoc(doc)
     return t
   end
 
+  -- DOCX: tables too wide for 9 pt get smaller paragraph styles in their cells
+  local function docx_sized(t)
+    local need = {}
+    local function scan(rows)
+      for _, row in ipairs(rows) do
+        for i, cell in ipairs(row.cells) do need[i] = math.max(need[i] or 0, cell_need(cell.contents) + 2) end
+      end
+    end
+    scan(t.head.rows)
+    for _, body in ipairs(t.bodies) do scan(body.body) end
+    local total = 0
+    for _, n in pairs(need) do total = total + n end
+    local style = total > 120 and "Table Tiny" or (total > 88 and "Table Small" or nil)
+    if not style then return {t} end
+    local function wrap(rows)
+      local out = pandoc.List()
+      for _, row in ipairs(rows) do
+        local cells = pandoc.List()
+        for _, cell in ipairs(row.cells) do
+          -- pandoc's DOCX writer styles every cell paragraph "Compact"; a character style on the
+          -- inlines is what it honours inside table cells
+          cell.contents = pandoc.Blocks(cell.contents):walk({
+            Code = function(c) return pandoc.Str(c.text) end}):walk({
+            Plain = function(b) return pandoc.Plain({pandoc.Span(b.content, pandoc.Attr("", {}, {["custom-style"] = style}))}) end,
+            Para = function(b) return pandoc.Para({pandoc.Span(b.content, pandoc.Attr("", {}, {["custom-style"] = style}))}) end})
+          cells:insert(cell)
+        end
+        row.cells = cells
+        out:insert(row)
+      end
+      return out
+    end
+    t.head.rows = wrap(t.head.rows)
+    local bodies = pandoc.List()
+    for _, body in ipairs(t.bodies) do body.body = wrap(body.body); bodies:insert(body) end
+    t.bodies = bodies
+    return {t}
+  end
+
   local function sized(t)
+    if is_docx then return docx_sized(t) end
     if not is_latex then return {t} end
     local size, landscape = table_size(t)
     local nrows = #t.head.rows

@@ -47,7 +47,7 @@ calls.
 ::: {#tbl:bench}
 <!-- BEGIN:tab_bench -->
 | Arm | Model | Failures | Latency p95 (s) | Queue / int. (veh) | ATT at 600 s (s) | Eligible |
-|-------------|--------------------|----------------------------|---------:|--------:|-------:|-----------|
+|--------------|--------------------|----------------------|-----------:|---------:|---------:|------------|
 | v1 | `gemma3:4b` | 0.0% (none) | 5.43 | 46.35 | 197.4 | no |
 | v1 | `gemma4:e4b` | 0.6% (reason_too_long 1) | 8.36 | 19.44 | 112.2 | no |
 | v1 | `llama3.2:3b` | 6.2% (reason_too_long 18) | 3.35 | 40.94 | 181.1 | no |
@@ -88,7 +88,7 @@ of its latency (95th percentile 4.80<!--=b.hybrid_v3.gemma4:e4b.p95--> s).
 ::: {#tbl:bench-selection}
 <!-- BEGIN:tab_bench_selection -->
 | Applied to | Eligible | Chosen | Decision interval |
-|--------------------|-----------------------------|-----------------------------|---------------------|
+|-------------------------|-------------------------|-------------------------|-------------------------|
 | v1 | none | none | – |
 | v2 | llama3.2:3b | llama3.2:3b | 10 s (p95 × intersections = 6.1 s) |
 | hybrid | llama3.2:3b | llama3.2:3b | 5 s (p95 × intersections = 4.5 s) |
@@ -113,7 +113,7 @@ The two LLM arms are close to MaxPressure everywhere; FixedTime fails at peak.](
 ::: {#tbl:full-off}
 <!-- BEGIN:tab_full_off -->
 | Controller | Seeds | ATT (s) | Queue / int. (veh) | Waiting / vehicle (s) | Finished trips | ATT vs MaxPressure |
-|-------------------------------------|------:|-----------:|-----------:|----------:|---------:|-----------:|
+|---------------------|--------:|-------------:|--------------:|------------:|------------:|-------------:|
 | MaxPressure | 3 | 88.1 ± 1.0 | 4.94 ± 0.23 | 29.8 ± 0.9 | 2332 ± 36 | +0.0% |
 | Webster fixed time | 3 | 100.4 ± 4.1 | 6.82 ± 0.52 | 41.1 ± 3.9 | 2320 ± 36 | +13.9% |
 | FixedTime (4 phases, 30 s) | 3 | 121.5 ± 0.2 | 10.58 ± 0.17 | 63.7 ± 0.5 | 2316 ± 28 | +37.8% |
@@ -127,7 +127,7 @@ The two LLM arms are close to MaxPressure everywhere; FixedTime fails at peak.](
 ::: {#tbl:full-peak}
 <!-- BEGIN:tab_full_peak -->
 | Controller | Seeds | ATT (s) | Queue / int. (veh) | Waiting / vehicle (s) | Finished trips | ATT vs MaxPressure |
-|------------------------------------|------:|-----------:|-----------:|-----------:|---------:|-----------:|
+|---------------------|--------:|-------------:|--------------:|-------------:|-----------:|-------------:|
 | MaxPressure | 3 | 115.5 ± 0.9 | 17.83 ± 0.32 | 54.1 ± 0.5 | 4576 ± 68 | +0.0% |
 | Webster fixed time | 3 | 116.3 ± 4.6 | 18.27 ± 1.28 | 55.4 ± 4.0 | 4577 ± 87 | +0.7% |
 | FixedTime (4 phases, 30 s) | 3 | 279.9 ± 9.9 | 44.44 ± 0.75 | 144.0 ± 1.6 | 4166 ± 93 | +142.3% |
@@ -141,7 +141,7 @@ The two LLM arms are close to MaxPressure everywhere; FixedTime fails at peak.](
 ::: {#tbl:full-jinan}
 <!-- BEGIN:tab_full_jinan -->
 | Controller | Seeds | ATT (s) | Queue / int. (veh) | Waiting / vehicle (s) | Finished trips | ATT vs MaxPressure |
-|-------------------------------------|------:|-----------:|-----------:|-----------:|--------:|-----------:|
+|---------------------|--------:|-------------:|--------------:|-------------:|-----------:|-------------:|
 | MaxPressure | 3 | 300.9 ± 0.0 | 5.62 ± 0.00 | 55.7 ± 0.0 | 4130 ± 0 | +0.0% |
 | Webster fixed time | 3 | 416.1 ± 0.0 | 16.42 ± 0.00 | 162.6 ± 0.0 | 3965 ± 0 | +38.3% |
 | FixedTime (4 phases, 30 s) | 3 | 423.0 ± 0.0 | 17.76 ± 0.00 | 176.2 ± 0.0 | 3968 ± 0 | +40.6% |
@@ -165,7 +165,7 @@ zero is faster than MaxPressure.](figures/paired.png){#fig:paired width=100%}
 ::: {#tbl:paired}
 <!-- BEGIN:tab_paired -->
 | Scenario | Controller | ATT minus MaxPressure, per seed (s) | Seeds lower / higher than MaxPressure |
-|----------------|------------------------------------|------------------------------|------------------|
+|-----------------------|--------------------------|--------------------------|--------------------------|
 | Indian 2x2 off-peak | LLM, pre-registered (guarded, `llama3.2:3b`) | +0.92 / +1.36 / +0.18 | 0 lower, 3 higher of 3 |
 | Indian 2x2 off-peak | LLM, exploratory (hybrid_v3, `gemma4:e4b`) | +2.30 / +2.09 / +2.70 | 0 lower, 3 higher of 3 |
 | Indian 2x2 peak | LLM, pre-registered (guarded, `llama3.2:3b`) | +0.81 / +2.42 / -1.63 | 1 lower, 2 higher of 3 |
@@ -203,7 +203,7 @@ against 0.6<!--=l.peak.llm.wall_h--> hours for the main arm.
 ::: {#tbl:llm-stats}
 <!-- BEGIN:tab_llm_stats -->
 | Scenario | Arm | Calls | Failures | Latency mean (s) | p95 per run (s) | Answer differs from MaxPressure | Guard replaced it | Applied phase differs |
-|------------|-----------------------------|----:|----------------|-----:|-------:|---------:|-------:|-----:|
+|--------------|----------------|------:|----------------|-------:|--------:|----------:|----------:|-------:|
 | Indian 2x2 off-peak | LLM, pre-registered (guarded, `llama3.2:3b`) | 2177 | 0.0% (none) | 1.05 | 1.21–1.22 | 91.5% | 81.2% | 10.4% |
 | Indian 2x2 off-peak | LLM, exploratory (hybrid_v3, `gemma4:e4b`) | 2802 | 0.1% (reason_too_long 4) | 4.61 | 4.92–5.02 | 32.1% | – (no guard) | 32.0% |
 | Indian 2x2 peak | LLM, pre-registered (guarded, `llama3.2:3b`) | 2167 | 0.0% (none) | 1.02 | 1.19–1.19 | 92.8% | 82.8% | 10.0% |
@@ -226,7 +226,7 @@ ambulances, seeds 0–4, with the primary metric the mean travel time of the
 ::: {#tbl:emergency}
 <!-- BEGIN:tab_emergency -->
 | Controller | ATT (s) | Queue / int. (veh) | Finished trips |
-|----------------------------------------------------|---------------:|-----------------:|-------------:|
+|----------------------------------|----------------------:|-----------------------:|-------------------:|
 | MaxPressure | 115.7 ± 2.3 | 17.97 ± 0.86 | 4605 ± 66 |
 | Webster fixed time | 115.2 ± 2.7 | 18.01 ± 0.64 | 4606 ± 73 |
 | MaxPressure + preemption | 116.0 ± 0.7 | 18.08 ± 0.41 | 4606 ± 61 |
@@ -240,7 +240,7 @@ ambulances, seeds 0–4, with the primary metric the mean travel time of the
 ::: {#tbl:ambulances}
 <!-- BEGIN:tab_ambulances -->
 | Controller | Finished | Travel time (s) | Median (s) | Stopped (s) | Per ambulance vs preemption (s) |
-|--------------------------------------|---------:|-------:|-------:|--------:|----------------------------|
+|-------------------------|-------------:|-----------:|-----------:|------------:|-------------------------|
 | MaxPressure | 29 / 29 | 130.1 | 126.0 | 62.3 | 48.9 (1 faster, 28 slower of 29) |
 | Webster fixed time | 29 / 29 | 123.5 | 123.0 | 55.0 | 42.3 (4 faster, 25 slower of 29) |
 | MaxPressure + preemption | 29 / 29 | 81.2 | 80.0 | 14.1 | – |
@@ -280,7 +280,7 @@ mixture-of-experts model (Nemotron 3 Ultra [@nemotron3ultra], 55<!--=m.active.ne
 ::: {#tbl:model-size}
 <!-- BEGIN:tab_model_size -->
 | Model | Total params (B) | ATT (s), mean ± std | ATT vs MaxPressure, mean (range over seeds) | Seeds worse than MaxPressure | Follows pressure | Answer differs from MaxPressure | Failed calls |
-|---------------|-----:|--------:|---------------|--------:|------:|--------:|------------------------------|
+|------------------|-------:|----------:|----------------|----------:|--------:|----------:|----------------|
 | `qwen2.5:3b` | 3.1 | 174.4 ± 2.8 | +51.0% (+47.6 to +53.5) | 3 of 3 | 17% | 83% | 308 of 5229 (5.9%): reason_too_long 308 |
 | `llama3.2:3b` | 3.2 | 209.6 ± 8.9 | +81.4% (+74.1 to +86.1) | 3 of 3 | 2% | 99% | 0 of 5393 (0.0%) |
 | `gemma4:e4b` | 7.5 | 113.7 ± 0.3 | -1.5% (-2.2 to -0.5) | 0 of 3 | 80% | 21% | 3 of 2541 (0.1%): reason_too_long 3 |
@@ -315,7 +315,7 @@ ambulances. Grey: models worse than MaxPressure on every seed.](figures/model_si
 ::: {#tbl:model-size-amb}
 <!-- BEGIN:tab_model_size_amb -->
 | Controller / model | Signal-relevant ambulances finished | Travel time, mean (s) | Stopped time, mean (s) | vs MaxPressure, paired | vs MaxPressure + preemption, paired |
-|------------------------|-----------:|------:|------:|-------------------------|------------------------|
+|----------------------|----------------:|---------:|----------:|--------------------|--------------------|
 | `qwen2.5:3b` | 29 of 29 | 148.5 | 77.5 | +18.4 s (11 faster, 18 slower, of 29) | +67.3 s (3 faster, 26 slower, of 29) |
 | `llama3.2:3b` | 29 of 29 | 161.8 | 86.4 | +31.7 s (13 faster, 16 slower, of 29) | +80.6 s (5 faster, 24 slower, of 29) |
 | `gemma4:e4b` | 29 of 29 | 82.2 | 15.3 | -47.9 s (27 faster, 2 slower, of 29) | +1.1 s (16 faster, 12 slower, of 29) |
@@ -344,7 +344,7 @@ main block and @fig:camera the paired changes.
 ::: {#tbl:camera-off}
 <!-- BEGIN:tab_camera_off -->
 | controller | level | ATT (s) | ATT vs perfect, paired (s; range; %) | queue / int. (veh) | waiting / veh (s) | finished trips |
-|------------------------|---------|-----------:|----------------------|-----------:|----------:|---------:|
+|-------------------|-----------|------------:|-------------------|------------:|-----------:|-----------:|
 | MaxPressure | perfect | 88.1 ± 1.0 | – | 4.94 ± 0.23 | 29.8 ± 0.9 | 2332 ± 36 |
 |  | junction | 92.4 ± 0.5 | +4.3 (+3.7 to +4.7); +4.8% | 5.64 ± 0.16 | 33.9 ± 0.4 | 2323 ± 35 |
 |  | crowded | 95.4 ± 1.7 | +7.3 (+6.4 to +8.8); +8.2% | 6.15 ± 0.34 | 37.0 ± 1.5 | 2320 ± 38 |
@@ -363,7 +363,7 @@ same seed.
 ::: {#tbl:camera-peak}
 <!-- BEGIN:tab_camera_peak -->
 | controller | level | ATT (s) | ATT vs perfect, paired (s; range; %) | queue / int. (veh) | waiting / veh (s) | finished trips |
-|------------------------|---------|-----------:|----------------------|-----------:|----------:|---------:|
+|-------------------|-----------|------------:|-------------------|-------------:|-----------:|-----------:|
 | MaxPressure | perfect | 115.5 ± 0.9 | – | 17.83 ± 0.32 | 54.1 ± 0.5 | 4576 ± 68 |
 |  | junction | 118.2 ± 1.8 | +2.7 (+1.2 to +4.3); +2.3% | 18.62 ± 0.21 | 56.5 ± 1.6 | 4584 ± 80 |
 |  | crowded | 120.6 ± 1.4 | +5.1 (+3.5 to +7.7); +4.4% | 19.37 ± 0.67 | 58.8 ± 1.4 | 4582 ± 84 |
@@ -409,7 +409,7 @@ all counted as stopped.
 ::: {#tbl:camera-sweep}
 <!-- BEGIN:tab_camera_sweep -->
 | p_detect (all classes, no false detections) | Off-peak: MaxPressure ATT (s) | Peak: MaxPressure ATT (s) |
-|------------------------------------|------------------------------:|---------------------------------|
+|---------------------------|------------------------------------:|-----------------------------------|
 | 1.00 | 88.1 ± 1.0 | 115.5 ± 0.9 |
 | 0.90 | 88.1 ± 0.8 (-0.0%) | 117.7 ± 1.5 (+1.8%) |
 | 0.80 | 89.7 ± 0.3 (+1.8%) | 116.6 ± 1.3 (+0.9%) |
@@ -434,7 +434,7 @@ measurable effect because these controllers read class-free counts.
 ::: {#tbl:decomposition}
 <!-- BEGIN:tab_decomposition -->
 | junction-camera errors | Off-peak: ATT vs perfect, paired (s; range; %) | Peak: ATT vs perfect, paired (s; range; %) | realised detection rate | phantoms per road and snapshot |
-|-------------------------------|-----------------------|-----------------------|----------:|------------:|
+|------------------------|------------------------|------------------------|-------------:|------------:|
 | (a) misses only | +0.7 (-0.6 to +1.7); +0.8% | +0.7 (+0.3 to +1.2); +0.6% | 0.920 | 0.000 |
 | (b) false detections only | +3.4 (+2.8 to +3.7); +3.8% | -0.3 (-1.8 to +1.0); -0.3% | 1.000 | 0.688 |
 | (c) class confusion only | +0.1 (-1.1 to +1.0); +0.2% | +0.1 (-1.6 to +1.4); +0.1% | 1.000 | 0.000 |
@@ -459,7 +459,7 @@ distinguishable from zero with 29<!--=e.mp.amb_n--> ambulances.
 ::: {#tbl:camera-emergency}
 <!-- BEGIN:tab_camera_emergency -->
 | controller | level | ATT (s) | ATT vs perfect, paired (s; range; %) | ambulances finished | ambulance travel time (s) | ambulance vs perfect, paired (s) |
-|---------------------|--------|---------:|-------------------|--------:|--------:|------------------------|
+|------------------|----------|-----------:|------------------|-----------:|----------:|------------------|
 | MaxPressure | perfect | 115.7 ± 2.3 | – | 29 / 29 | 130.1 | – |
 |  | junction | 117.6 ± 2.4 | +1.8 (-1.9 to +7.1); +1.6% | 29 / 29 | 135.9 | +5.8 (n 29; 14 slower, 13 faster) |
 | Webster fixed-time | perfect | 115.2 ± 2.7 | – | 29 / 29 | 123.5 | – |

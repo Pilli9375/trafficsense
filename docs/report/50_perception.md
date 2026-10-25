@@ -33,7 +33,7 @@ frozen on the validation split. @tbl:idd gives the sizes.
 ::: {#tbl:idd}
 <!-- BEGIN:tab_idd -->
 | Our split | From | Used for | Images | Drives | Boxes |
-|--------|-------------------------------------|--------------------------|--------:|--------:|---------:|
+|-----------|--------------------------|--------------------------|-----------:|-----------:|------------:|
 | train | official train minus held-out drives | training | 28,384 | 393 | 247,051 |
 | val | held-out official-train drives | early stopping, threshold | 3,185 | 45 | 28,722 |
 | test | official val | final numbers, used once | 10,225 | 119 | 88,755 |
@@ -91,7 +91,7 @@ whole drives, not frames, so that correlated frames do not make them look tighte
 ::: {#tbl:det-classes}
 <!-- BEGIN:tab_det_classes -->
 | Class | Boxes | mAP50 | mAP50-95 | Precision | Recall | Miss rate | False det. / image |
-|-------------------|----------:|---------:|-------------:|--------------:|----------:|---------:|----------:|
+|-----------------|-----------:|----------:|------------:|-------------:|-----------:|----------:|----------:|
 | car | 24,843 | 0.637 | 0.442 | 83.9% | 54.9% | 43.2% | 0.222 |
 | motorcycle | 25,489 | 0.630 | 0.373 | 81.9% | 56.2% | 43.4% | 0.271 |
 | autorickshaw | 7,782 | 0.652 | 0.461 | 82.0% | 56.0% | 40.2% | 0.070 |
@@ -125,7 +125,7 @@ pedestrians are small and possibly because the model was taught not to fire on r
 ::: {#tbl:det-sizes}
 <!-- BEGIN:tab_det_sizes -->
 | class | Small: miss rate (boxes) | Medium | Large |
-|---------------------------|------------------------:|-----------------------:|-----------------------:|
+|-------------------------|-------------------------:|------------------------:|------------------------:|
 | car | 65.4% (15,489) | 9.1% (6,065) | 1.3% (3,289) |
 | motorcycle | 59.0% (17,565) | 10.1% (6,250) | 3.8% (1,674) |
 | autorickshaw | 63.6% (4,646) | 7.8% (2,106) | 1.1% (1,030) |
@@ -158,7 +158,7 @@ distant ones. Both use the measured false-detection rates and label probabilitie
 ::: {#tbl:camera-params}
 <!-- BEGIN:tab_camera_params -->
 | detector class | junction p_detect | crowded p_detect | false det. per road and snapshot |
-|----------------------------------|------------------:|------------------:|---------------------------:|
+|-----------------------------------|---------------------:|---------------------:|---------------------:|
 | car | 0.936 | 0.568 | 0.222 |
 | motorcycle | 0.913 | 0.567 | 0.271 |
 | autorickshaw | 0.944 | 0.598 | 0.070 |

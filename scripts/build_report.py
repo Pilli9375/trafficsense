@@ -74,12 +74,13 @@ def pandoc_args(src: Path) -> list[str]:
 STYLE_PATCH = {
     # styleId: (pPr, rPr) inner XML
     "Normal": ('<w:spacing w:after="120" w:line="360" w:lineRule="auto"/>',
-               '<w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>'
-               '<w:sz w:val="24"/><w:szCs w:val="24"/>'),
-    "BodyText": ('<w:spacing w:before="0" w:after="120" w:line="360" w:lineRule="auto"/><w:jc w:val="both"/>', ""),
-    "FirstParagraph": ('<w:spacing w:before="0" w:after="120" w:line="360" w:lineRule="auto"/><w:jc w:val="both"/>', ""),
-    "Compact": ('<w:spacing w:before="0" w:after="0" w:line="240" w:lineRule="auto"/><w:jc w:val="left"/>',
-                '<w:sz w:val="18"/><w:szCs w:val="18"/>'),
+               '<w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>'),
+    "VerbatimChar": ("", '<w:rFonts w:ascii="Consolas" w:hAnsi="Consolas"/>'),   # size follows the text
+    "BodyText": ('<w:spacing w:before="120" w:after="120" w:line="360" w:lineRule="auto"/><w:jc w:val="both"/>', ""),
+    "FirstParagraph": ('<w:spacing w:before="120" w:after="120" w:line="360" w:lineRule="auto"/><w:jc w:val="both"/>', ""),
+    # Compact: table cells and tight lists. No size here: 12 pt comes from the document defaults,
+    # 9 pt in tables from the table style (paragraph style > table style > defaults in Word).
+    "Compact": ('<w:spacing w:before="0" w:after="40" w:line="240" w:lineRule="auto"/><w:jc w:val="left"/>', ""),
     "Heading1": ('<w:keepNext/><w:spacing w:before="240" w:after="240"/><w:jc w:val="center"/><w:outlineLvl w:val="0"/>',
                  '<w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/><w:b/><w:color w:val="000000"/>'
                  '<w:sz w:val="32"/><w:szCs w:val="32"/>'),
@@ -98,6 +99,10 @@ STYLE_PATCH = {
     "Bibliography": ('<w:spacing w:after="80" w:line="276" w:lineRule="auto"/><w:ind w:left="567" w:hanging="567"/>',
                      '<w:sz w:val="22"/><w:szCs w:val="22"/>'),
 }
+SMALL_TABLES = "".join(
+    f'<w:style w:type="character" w:customStyle="1" w:styleId="{sid}"><w:name w:val="{name}"/>'
+    f'<w:qFormat/><w:rPr><w:sz w:val="{hp}"/><w:szCs w:val="{hp}"/></w:rPr></w:style>'
+    for sid, name, hp in (("TableSmall", "Table Small", 15), ("TableTiny", "Table Tiny", 13)))
 CENTERED = ('<w:style w:type="paragraph" w:customStyle="1" w:styleId="Centered"><w:name w:val="Centered"/>'
             '<w:basedOn w:val="BodyText"/><w:qFormat/><w:pPr><w:jc w:val="center"/></w:pPr></w:style>')
 FOOTER = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
@@ -136,7 +141,11 @@ def reference_docx(tmp: Path) -> Path:
                 s = data.decode()
                 for sid, (ppr, rpr) in STYLE_PATCH.items():
                     s = patch_style(s, sid, ppr, rpr)
-                s = s.replace("</w:styles>", CENTERED + "</w:styles>")
+                s = s.replace("</w:styles>", CENTERED + SMALL_TABLES + "</w:styles>")
+                m = re.search(r'(<w:style [^>]*w:styleId="Table"[^>]*>.*?)(<w:tblPr>)', s, re.S)
+                if not m:
+                    raise SystemExit("table style 'Table' not in pandoc's reference.docx")
+                s = s[:m.end(1)] + '<w:rPr><w:sz w:val="18"/><w:szCs w:val="18"/></w:rPr>' + s[m.end(1):]
                 data = s.encode()
             elif item.filename == "word/document.xml":
                 s = data.decode()

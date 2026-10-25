@@ -49,7 +49,7 @@ is queried. We therefore consider the pipeline validated.
 ::: {#tbl:validation}
 <!-- BEGIN:tab_validation -->
 | Dataset | Controller | ATT | Throughput | Queue | Waiting | CityFlow ATT |
-|------------------|---------------|-------------|--------------|-------------|-------------|------------:|
+|-----------------|---------------|-------------|--------------|-------------|-------------|--------------:|
 | synthetic_4x4 | Fixedtime | identical | identical | identical | identical | 3.1e-07 rel. |
 | synthetic_4x4 | MaxPressure | 3.7e-06 rel. | identical | identical | identical | 9.9e-07 rel. |
 | Jinan 3x4 | Fixedtime | identical | identical | identical | identical | 1.8e-07 rel. |
@@ -83,7 +83,7 @@ take this into account; we use only our own, correct fixed-time controllers.
 ::: {#tbl:fixedtime-bug}
 <!-- BEGIN:tab_fixedtime_bug -->
 | Dataset | Controller | CityFlow ATT (s) | ATT, CoLLMLight's definition (s) | Throughput, CoLLMLight's definition |
-|-------------|------------------------------------------|----------:|---------------:|----------------:|
+|------------------|---------------------------|--------------:|-------------------:|-------------------:|
 | Synthetic 4x4 | CoLLMLight's FixedTime (bug: E-W only) | 1612.0 | 1192.5 | 751 |
 | Synthetic 4x4 | CoLLMLight's MaxPressure | 1263.3 | 683.1 | 2505 |
 | Synthetic 4x4 | Correct 4-phase FixedTime, same 30 s grid | 1420.6 | 875.6 | 1724 |
@@ -125,7 +125,7 @@ road.](figures/network.png){#fig:network width=48%}
 ::: {#tbl:network}
 <!-- BEGIN:tab_network -->
 | Parameter | Value | Source |
-|-------------------------|-----------------------------------------:|--------------------------------|
+|----------------------------------|-------------------------------:|----------------------------------|
 | Grid | 2 × 2 signalised intersections | project specification |
 | Spacing between intersections | 200 m | project specification |
 | Entry and exit roads | 200 m | assumption (same as spacing) |
@@ -153,7 +153,7 @@ controller.
 ::: {#tbl:mix}
 <!-- BEGIN:tab_mix -->
 | Type | Share | Length (m) | Width (m) | minGap (m) | headwayTime (s) | maxSpeed (m/s) |
-|---------------------|----------:|-----------:|----------:|-----------:|------------------:|--------------:|
+|--------------------|----------:|-----------:|----------:|-----------:|-----------------:|--------------:|
 | motorcycle | 45.1% | 1.67 | 0.7 | 1.0 | 1.0 | 12.5 |
 | auto_rickshaw | 17.6% | 3.2 | 1.4 | 1.5 | 1.5 | 11.1 |
 | car | 30.8% | 3.72 | 1.44 | 2.5 | 1.5 | 12.5 |
@@ -200,7 +200,7 @@ $R^*$.](figures/calibration.png){#fig:calibration width=100%}
 ::: {#tbl:capacity}
 <!-- BEGIN:tab_capacity -->
 | Quantity (mixed traffic, measured) | Value |
-|-----------------------------------------------------------------------------------|----------------:|
+|--------------------------------------------------------------|-------------------------------------:|
 | Saturation flow, straight lane | 2103 veh/h |
 | Saturation flow, protected-turn lane (Indian right turn) | 2024 veh/h |
 | Start-up lost time (mean of both lanes) | 1.88 s |
@@ -258,7 +258,7 @@ scenarios but last at Indian peak.
 ::: {#tbl:mg-selection}
 <!-- BEGIN:tab_mg_selection -->
 | Min green | Jinan | Hangzhou | Off-peak | Peak | Mean rank | Mean ATT / best | Chosen |
-|------------|-----------:|---------------:|---------------:|---------:|---------:|-----------:|-------------|
+|------------|-----------:|--------------:|--------------:|----------:|----------:|-----------:|-------------|
 | 10 s | 1 | 1 | 1 | 4 | 1.75 | 1.058 |  |
 | 15 s | 2 | 2 | 2 | 1 | 1.75 | 1.026 | chosen |
 | 20 s | 3 | 3 | 3 | 2 | 2.75 | 1.072 |  |
@@ -285,7 +285,7 @@ hour. This tie matters for reading the LLM results: at peak, "as good as MaxPres
 ::: {#tbl:baselines-indian}
 <!-- BEGIN:tab_baselines_indian -->
 | Level | Controller | ATT (s) | Queue / int. (veh) | Finished trips | Waiting to enter at end | Share of time in transition |
-|--------|-----------------------------------|-----------:|-----------:|---------:|-----------:|-----------:|
+|-----------|--------------------|-------------:|-------------:|-----------:|-------------:|--------------:|
 | off-peak | FixedTime, 4 paired phases, 30 s | 121.5 ± 0.2 | 10.58 ± 0.17 | 2316 ± 28 | 0.0 ± 0.0 | 0.142 ± 0.000 |
 | off-peak | FixedTime, all 8 phases, 30 s | 129.3 ± 1.3 | 11.88 ± 0.42 | 2298 ± 28 | 0.0 ± 0.0 | 0.142 ± 0.000 |
 | off-peak | FixedTime, 4 paired phases, Webster plan | 100.4 ± 4.1 | 6.82 ± 0.52 | 2320 ± 36 | 0.0 ± 0.0 | 0.326 ± 0.006 |

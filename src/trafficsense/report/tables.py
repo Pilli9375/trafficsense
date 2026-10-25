@@ -46,10 +46,14 @@ def md(header, rows, align=None):
     def words(i):
         cells = [str(header[i])] + [str(r[i]) for r in rows]
         return [w for c in cells for w in re.split(r"[ /]+", c) if w]
-    need = [max(width(w) for w in words(i)) + 3 for i in range(ncol)]          # longest unbreakable word
-    want = [min(max(len(str(header[i])) // 2, max(len(str(r[i])) for r in rows) if rows else 0, need[i]), 48)
-            for i in range(ncol)]
-    want = [max(w, n) for w, n in zip(want, need)]
+    want = []
+    for i in range(ncol):
+        longest_word = max(width(w) for w in words(i)) + 3
+        if align[i] == "r":     # numbers never wrap: the whole cell must fit
+            want.append(max([longest_word] + [width(str(r[i])) + 2 for r in rows if len(str(r[i])) <= 18]))
+        else:                   # text wraps at spaces: a moderate width, at least its longest word
+            want.append(max(longest_word, min(max([width(str(r[i])) for r in rows] or [0]), 22)))
+    want = [w + 3 for w in want]    # cell padding (Word and LaTeX both pad every column)
     total = sum(want)
     dashes = [max(3, round(100 * w / total)) for w in want]
     sep = []

@@ -28,7 +28,7 @@ slow for real-time control of four intersections.
 ::: {#tbl:app-per-seed}
 <!-- BEGIN:tab_app_per_seed -->
 | Level | Controller | Seed | ATT (s) | Queue / int. | Waiting (s) | Throughput | Waiting to enter |
-|---------|-----------------------------------------|-----:|------:|------:|--------:|-----------:|--------:|
+|------------|----------------------|--------:|---------:|---------:|-----------:|-------------:|-----------:|
 | offpeak | FixedTime, 4 paired phases, 30 s | 0 | 121.6 | 10.44 | 64.1 | 2285 | 0 |
 | offpeak | FixedTime, 4 paired phases, 30 s | 1 | 121.2 | 10.53 | 63.1 | 2325 | 0 |
 | offpeak | FixedTime, 4 paired phases, 30 s | 2 | 121.6 | 10.77 | 63.9 | 2338 | 0 |
@@ -76,7 +76,7 @@ settings not chosen by the tuning.
 ::: {#tbl:app-mp-selection}
 <!-- BEGIN:tab_app_mp_selection -->
 | Interval | Rank: jinan_3x4 | Rank: hangzhou_4x4 | Rank: indian_2x2_offpeak | Rank: indian_2x2_peak | Mean rank | Mean ATT / best |
-|------------|------------:|---------------:|----------------------:|-------------------:|-------:|--------:|
+|------------|------------:|---------------:|--------------------:|------------------:|--------:|---------:|
 | 5 s | 1 | 1 | 2 | 5 | 2.25 | 1.059 |
 | 10 s | 3 | 3 | 3 | 2 | 2.75 | 1.028 |
 | 15 s | 2 | 2 | 1 | 4 | 2.25 | 1.042 |
@@ -95,7 +95,7 @@ The 5 s and 15<!--=docs/baselines.md | mp_selection | chosen | Interval--> s set
 ::: {#tbl:app-crosscheck}
 <!-- BEGIN:tab_app_crosscheck -->
 | Dataset | Run | ATT (their def.) | Throughput (their def.) | Queue (their def.) | Waiting (their def.) | CityFlow ATT | Engine seed |
-|-----------|---------------------------------------|------:|----------:|------:|-------:|--------:|------:|
+|-------------|---------------------|---------:|------------:|---------:|----------:|-----------:|---------:|
 | Synthetic 4x4 | CoLLMLight code: FixedTime | 1192.5 | 751 | 467.3 | 1215.6 | 1612.0 | 47 |
 | Synthetic 4x4 | Ours, replaying their FixedTime (phases 1,3 on a 30 s grid) | 1192.5 | 751 | 467.3 | 1215.6 | 1612.0 | 47 |
 | Synthetic 4x4 | CoLLMLight code: MaxPressure | 683.1 | 2505 | 468.4 | 84.8 | 1263.3 | 47 |
@@ -119,7 +119,7 @@ settings and CityFlow seed.
 ::: {#tbl:app-bench-full}
 <!-- BEGIN:tab_app_bench_full -->
 | Arm (prompt) | Model | Successful calls | Kept current phase | Chose highest-pressure phase | Chose lowest-pressure phase | Kept current although another had higher pressure |
-|------------------|----------------|---------:|-------:|--------------:|-------------:|------------------:|
+|-------------------|-----------------|-----------:|---------:|---------------:|---------------:|---------:|
 | v1 (v1) | `gemma3:4b` | 333 | 86% | 4% | 51% | 95% |
 | v1 (v1) | `gemma4:e4b` | 159 | 35% | 9% | 29% | 34% |
 | v1 (v1) | `llama3.2:3b` | 270 | 77% | 2% | 34% | 84% |
@@ -150,7 +150,7 @@ the highest- or lowest-pressure option. Pressures are MaxPressure's at the momen
 ::: {#tbl:app-camera-llm}
 <!-- BEGIN:tab_app_camera_llm -->
 | scenario | level | LLM calls | failures | guard overrides | disagrees with MP | mean latency (s) |
-|----------------|--------------|----------:|-------------:|---------------:|---------------:|------------:|
+|---------------|--------------|----------:|-------------:|--------------:|--------------:|------------:|
 | Off-peak | perfect | 2177 | 0 | 81.2% | 91.5% | 1.02 |
 |  | junction | 2195 | 0 | 85.2% | 93.1% | 1.00 |
 |  | crowded | 2189 | 0 | 82.5% | 92.9% | 1.00 |
@@ -169,7 +169,7 @@ the highest- or lowest-pressure option. Pressures are MaxPressure's at the momen
 ::: {#tbl:app-hosted}
 <!-- BEGIN:tab_app_hosted -->
 | Started (IST) | Run | Calls | Calls that needed retries | Failed calls → MaxPressure's choice applied | Wall time (min) |
-|---------------|--------------------|------:|----------:|---------------------------------------|------:|
+|------------------|------------------------|---------:|------------:|------------------------|---------:|
 | 2026-10-22 12:33 | indian_2x2_peak s0 | 128 | 0 (0%) | 0 (0.0%) | 5 |
 | 2026-10-23 10:23 | indian_2x2_peak s0 | 736 | 286 (39%) | 11 (1.5%): retries_exhausted 10, timeout 1 | 121 |
 | 2026-10-23 12:22 | indian_2x2_peak s1 | 734 | 351 (48%) | 12 (1.6%): retries_exhausted 11, timeout 1 | 135 |
