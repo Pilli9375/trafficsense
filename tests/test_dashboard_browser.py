@@ -1,5 +1,6 @@
-"""Browser checks of the dashboard's layout: nothing sticks out of its card, and nothing covers or clips a
-label drawn on the replay canvas, at several screen widths, in every replay view and zoom level.
+"""Browser checks of the dashboard's layout at several screen widths: nothing sticks out of its card, the
+Overview hero's comparison cells line up, and nothing covers or clips a label drawn on the replay canvas in
+any replay view or zoom level.
 
 The app is started on a free port and driven with Playwright's Chromium. Skipped when Playwright is not
 installed, when Chromium cannot start here (it needs libnspr4, libnss3 and libasound2: docs/dashboard.md,
@@ -45,6 +46,18 @@ OVERFLOW_JS = r"""() => {
   });
   return bad;
 }""".replace("@ROOTS", ROOTS)
+
+# Per cell of the Overview hero's comparison row: its name, whether the colour dot sits on the name's first line
+# (left of it), and where the value ends.
+HERO_JS = r"""() => @ROOTS.flatMap(root => Array.from(root.querySelectorAll('.ts-hero .cmp > div'))).map(cell => {
+  const k = cell.querySelector('.k'), d = k.querySelector('.ts-dot').getBoundingClientRect();
+  const name = Array.from(k.childNodes).find(n => n.nodeType === Node.TEXT_NODE && n.textContent.trim());
+  const range = document.createRange();
+  range.selectNodeContents(name);
+  const line = range.getClientRects()[0], mid = d.top + d.height / 2;
+  return {name: name.textContent.trim(), dot_with_name: mid > line.top && mid < line.bottom && d.right <= line.left + 1,
+          value_bottom: cell.querySelector('.v').getBoundingClientRect().bottom};
+})""".replace("@ROOTS", ROOTS)
 
 # Per replay panel: the label boxes the canvas drew (its own record), the canvas size, and whether any panel
 # element (header, footer, timer, zoom, compass) overlaps the canvas.
@@ -123,6 +136,22 @@ def test_nothing_overflows_its_card(browser, app):     # browser first: skip bef
             bad += [(w, f"results/{tab}", *x) for x in page.evaluate(OVERFLOW_JS)]
         page.close()
     assert not bad, bad[:10]
+
+
+def test_hero_cells_line_up(browser, app):
+    """Overview hero, comparison row: every colour dot sits on the first line of its name (the 'exploratory'
+    badge wraps below the name, inside its cell, which the overflow test checks), and the four values share
+    one line whatever their labels' lengths."""
+    for w in WIDTHS:
+        page = browser.new_page(viewport={"width": w, "height": 900})
+        page.goto(app)
+        _settle(page, 2000)
+        cells = page.evaluate(HERO_JS)
+        page.close()
+        assert len(cells) == 4, (w, cells)
+        assert all(c["dot_with_name"] for c in cells), (w, cells)
+        bottoms = [c["value_bottom"] for c in cells]
+        assert max(bottoms) - min(bottoms) <= 1, (w, cells)
 
 
 def test_replay_labels_never_covered_or_clipped(browser, app):
