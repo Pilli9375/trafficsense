@@ -138,12 +138,12 @@ missing and which command makes it.
   approach (the same metres per vehicle in both panels) with its count, the phase in the LLM
   prompt's own words (`W+E straight`, `N only`). The selected ambulance is enlarged, flashes, and
   leaves a trail of its logged positions; a timer counts from its scheduled start and stops at the
-  travel time in `summary.json`. Views: the whole grid or a camera that follows the ambulance;
-  *Keep left* (default) draws the mirror image of CityFlow's right-hand network, as this project
-  models India's left-hand traffic (`docs/indian_scenario.md`), and *As simulated* draws CityFlow's
-  layout. Road names are the simulator's in both (as in the decision logs and the LLM prompts), so
-  the mirrored compass has north at the bottom. The default pair is MaxPressure and the pre-registered
-  LLM arm. Under the canvas, both runs' decisions as cards on
+  travel time in `summary.json`. Views: the whole grid or a camera that follows the ambulance.
+  North is up in every view. *As simulated* (the default) draws CityFlow's layout, whose road names
+  match the compass. *Keep left* draws the left–right mirror image, which is how this project models
+  India's left-hand traffic (`docs/indian_scenario.md`); there east and west swap sides, so the road
+  the decision logs and the LLM prompts call E is drawn on the left (the compass says so). The
+  default pair is MaxPressure and the pre-registered LLM arm. Under the canvas, both runs' decisions as cards on
   the same clock (the latest one highlighted, ambulance decisions marked): the LLM's own reason, a
   guard override, or MaxPressure's pressures; "Show raw decision data" adds every logged field.
   Below: the network queue over the whole hour for both runs.
@@ -176,8 +176,11 @@ missing and which command makes it.
   queues; the ambulance's times are those in `summary.json`.
 * **Per-seed values.** The run summaries behind the slope chart reproduce `results.json`'s paired
   differences exactly.
-* **What leads.** The Overview headline is the pre-registered arm's number, and the replay's default
-  pair is MaxPressure and the pre-registered arm.
+* **What leads.** The Overview headline is the pre-registered arm's number; every replay view keeps
+  north up, the default view is as simulated, and the default pair is MaxPressure and the
+  pre-registered arm.
+* Planting a made-up number in a page ("latency 87.3 ms") makes the first two tests fail (checked
+  by hand when the tests were written, and again after the redesign).
 * Planting a made-up number in a page ("latency 87.3 ms") makes the first two tests fail (checked
   by hand when the tests were written, and again after the redesign).
 

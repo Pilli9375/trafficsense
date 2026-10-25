@@ -130,7 +130,8 @@ def visible_text(at: AppTest) -> list[str]:
 
 # style values; the binary positions; flow indices, i.e. vehicle ids ("flow_4797_0") as numbers. The last two are
 # checked against replay.npz by test_replay_payload_is_the_logged_replay.
-PAYLOAD_SKIP = {"colour", "colours", "veh", "flow"}
+# View settings (screen-axis signs, default view) are checked by test_replay_views_keep_north_up.
+PAYLOAD_SKIP = {"colour", "colours", "veh", "flow", "views", "view"}
 
 
 def _payload_texts(o, out: list) -> None:
@@ -330,6 +331,17 @@ def test_replay_default_pair_is_pre_registered():
     assert [r["label"] for r in pay["runs"]] == [theme.entity("maxpressure", None)[0],
                                                 theme.entity("llm_guarded_mp", "llama3.2:3b")[0]]
     assert not any(r["exploratory"] for r in pay["runs"])
+
+
+def test_replay_views_keep_north_up():
+    """North is up in every view (the screen y axis points south); the default view is the layout as simulated,
+    whose road names match the compass; keep left is a left-right mirror."""
+    _need("{replays}")
+    at = render("network_replay")
+    (_, pay), = components(at)
+    assert all(v["y"] == -1 for v in pay["views"].values())
+    assert pay["views"]["sim"] == {"x": 1, "y": -1} and pay["views"]["left"] == {"x": -1, "y": -1}
+    assert pay["view"]["side"] == "sim"
 
 
 def _matches(run: dict, replay_rel: str) -> bool:

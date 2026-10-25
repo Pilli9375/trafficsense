@@ -32,6 +32,12 @@ ANG_SCALE = 1000            # headings in 1/1000 rad
 HINT = ("Make the replays with `python scripts/make_replays.py` (after creating the symlink "
         "`data/external/replays`, see configs/default.yaml).")
 SCENARIO_CFG = "configs/scenarios/indian_2x2.yaml"
+# How world (x east, y north) maps to the screen in each view: the sign of each screen axis. North is up in
+# every view (y = -1). "left" is the left-right mirror that draws CityFlow's right-hand traffic as India's
+# left-hand traffic (docs/indian_scenario.md); its east and west swap sides, so the simulator's road names no
+# longer match a standard compass there, and the view as simulated is the default.
+VIEWS = {"sim": {"x": 1, "y": -1}, "left": {"x": -1, "y": -1}}
+DEFAULT_VIEW = {"side": "sim", "mode": "fit", "speed": 5}
 
 
 @dataclass
@@ -250,6 +256,7 @@ def render() -> None:
     payload = {
         "t0": t0, "t1": t1, "focus": amb_id, "types": A.meta["vehicle_types"], "emergency": A.meta["emergency_type"],
         "dims": vehicle_dims(scfg), "colours": theme.VEHICLE_COLOURS, "geom": geometry(raw, net),
+        "views": VIEWS, "view": DEFAULT_VIEW,
         "runs": [run_payload(A, sa, za, da, t0, t1, amb_id, labels_by_iid),
                  run_payload(B, sb, zb, db, t0, t1, amb_id, labels_by_iid)],
     }
@@ -271,9 +278,9 @@ def render() -> None:
         "two logged positions; no vehicle, position or second is invented. Signals and queues change only at logged "
         "seconds. Vehicles are drawn to their length and width (with a minimum size on screen).</p>"
         "<p><b>Left-hand traffic.</b> CityFlow simulates right-hand traffic; India's left-hand network is its mirror "
-        "image (docs/indian_scenario.md), so <i>Keep left</i> draws the mirror image and <i>As simulated</i> draws "
-        "CityFlow's own layout. Road names (N, E, S, W) are the simulator's in both, as in the decision log and the "
-        "LLM's prompts, so the compass in the mirrored view has north at the bottom.</p>"
+        "image (docs/indian_scenario.md). <i>As simulated</i>, the default, draws CityFlow's own layout with north up. "
+        "<i>Keep left</i> draws the left-right mirror: north stays up, but east and west swap sides, so the road the "
+        "decision log and the LLM's prompts call E is drawn on the left (the compass shows it).</p>"
         f"<p><b>Verified.</b> Each replay reproduces its saved run's ATT, throughput, queue, waiting time and all "
         f"{v['emergency_vehicles_identical']} ambulances exactly. LLM runs are driven by their decisions.jsonl (no model "
         "is called); deterministic controllers are run again.</p>"

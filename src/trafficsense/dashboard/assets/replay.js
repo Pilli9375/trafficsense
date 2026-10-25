@@ -83,16 +83,18 @@ export default function (component) {
       b.onclick = () => { g.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); on(v); };
     }
   };
-  let speed = 5, mode = 'fit', side = 'left', zoom = 1;
+  // views come from the payload: screen-axis signs per view (y = -1 everywhere: north up) and the default
+  const VIEWS = data.views;
+  let speed = data.view.speed, mode = data.view.mode, side = data.view.side, zoom = 1;
   seg('Speed', [[1, '1×'], [2, '2×'], [5, '5×'], [10, '10×']], speed, 'mono', (v) => { speed = v; });
   seg('View', [['fit', 'Grid'], ['follow', 'Follow ambulance']], mode, '', (v) => { mode = v; pan = [0, 0]; dirty = true; });
-  seg('Drive', [['left', 'Keep left'], ['sim', 'As simulated']], side, '', (v) => { side = v; dirty = true; });
+  seg('Drive', [['sim', 'As simulated'], ['left', 'Keep left']], side, '', (v) => { side = v; dirty = true; });
   tool.appendChild(el('span', 'rp-sp'));
   const info = tool.appendChild(el('details', 'rp-info'));
   info.innerHTML = `<summary>${I.info}How it is drawn</summary><div class="pop">
     <p><b>Logged, then interpolated.</b> CityFlow logged every vehicle's position and heading at the end of each second while the run was replayed. Between two logged seconds a vehicle moves on the straight line between its two logged positions; vehicles that appear or leave fade in or out. No vehicle, position or second is invented.</p>
-    <p><b>Signals and queues</b> change only at logged seconds: the phase shown during each second, and the waiting vehicles (speed below 0.1 m/s) per approach at its end. Queue bars run back from the stop line, ${QM.toFixed(1)} m per waiting vehicle in both panels.</p>
-    <p><b>Keep left</b> draws the mirror image of CityFlow's right-hand network, which is how this project models India's left-hand traffic (docs/indian_scenario.md). Road names stay the simulator's (as in the LLM's prompts), so north is at the bottom; <b>As simulated</b> shows CityFlow's own layout.</p>
+    <p><b>Signals and queues</b> change only at logged seconds: the phase shown during each second, and the waiting vehicles (speed below 0.1 m/s) per approach at its end. Queue bars run back from the stop line, the same length per waiting vehicle in both panels; the number at the end is the queue.</p>
+    <p><b>As simulated</b> (the default) draws CityFlow's layout with north up; its traffic keeps right, as CityFlow simulates it. <b>Keep left</b> draws the left-right mirror image, which is how this project models India's left-hand traffic (docs/indian_scenario.md): north stays up, but east and west swap sides, so the road the decision log and the LLM's prompts call E is drawn on the left. The compass shows this.</p>
     <p><b>Sizes.</b> Vehicles are drawn to their length and width, never smaller than a few pixels; the selected ambulance is enlarged so it can be found.</p></div>`;
 
   const panels = root.appendChild(el('div', 'rp-panels'));
@@ -256,9 +258,12 @@ export default function (component) {
     }
     dirty = true;
   }
-  const fy = () => (side === 'left' ? 1 : -1);       // keep left = mirror image: screen y follows world y
-  const toS = (p, x, y) => [p.w / 2 + (x - p.cam.x) * p.cam.s, p.h / 2 + fy() * (y - p.cam.y) * p.cam.s];
-  const world = (p) => { const s = p.cam.s, k = dpr(); p.ctx.setTransform(k * s, 0, 0, k * fy() * s, k * (p.w / 2 - p.cam.x * s), k * (p.h / 2 - fy() * p.cam.y * s)); };
+  const fx = () => VIEWS[side].x, fy = () => VIEWS[side].y;   // keep left: x = -1, a left-right mirror; north stays up
+  const toS = (p, x, y) => [p.w / 2 + fx() * (x - p.cam.x) * p.cam.s, p.h / 2 + fy() * (y - p.cam.y) * p.cam.s];
+  const world = (p) => {
+    const s = p.cam.s, k = dpr();
+    p.ctx.setTransform(k * fx() * s, 0, 0, k * fy() * s, k * (p.w / 2 - fx() * p.cam.x * s), k * (p.h / 2 - fy() * p.cam.y * s));
+  };
   const screen = (p) => p.ctx.setTransform(dpr(), 0, 0, dpr(), 0, 0);
   const lerpA = (a, b, f) => { const d = ((b - a + 3 * Math.PI) % (2 * Math.PI)) - Math.PI; return a + d * f; };
 
@@ -483,17 +488,17 @@ export default function (component) {
         c.fillStyle = '#fff'; c.fillText(t, qx - tw / 2, qy + 0.5);
       });
     }
-    // compass: the simulator's north, which points down in the mirrored (keep-left) view
-    const up = side === 'left' ? 1 : -1, cx = 26, cy = p.h - (up > 0 ? 44 : 28);
+    // compass: north is up in every view; in the keep-left mirror east is on the left
+    const up = -fy(), east = fx(), cx = 44, cy = p.h - 30;
     c.fillStyle = 'rgba(7,9,13,.8)'; c.beginPath(); c.arc(cx, cy, 13, 0, 2 * Math.PI); c.fill();
     c.strokeStyle = 'rgba(255,255,255,.14)'; c.lineWidth = 1; c.stroke();
-    c.fillStyle = '#19e6d2'; c.beginPath(); c.moveTo(cx, cy + up * 10); c.lineTo(cx - 3.5, cy); c.lineTo(cx + 3.5, cy); c.closePath(); c.fill();
-    c.fillStyle = '#3a475a'; c.beginPath(); c.moveTo(cx, cy - up * 10); c.lineTo(cx - 3.5, cy); c.lineTo(cx + 3.5, cy); c.closePath(); c.fill();
+    c.fillStyle = '#19e6d2'; c.beginPath(); c.moveTo(cx, cy - up * 10); c.lineTo(cx - 3.5, cy); c.lineTo(cx + 3.5, cy); c.closePath(); c.fill();
+    c.fillStyle = '#3a475a'; c.beginPath(); c.moveTo(cx, cy + up * 10); c.lineTo(cx - 3.5, cy); c.lineTo(cx + 3.5, cy); c.closePath(); c.fill();
     c.textAlign = 'center'; c.font = '700 10px Geist, system-ui, sans-serif';
-    c.fillStyle = '#19e6d2'; c.fillText('N', cx, cy + up * 20);
-    c.fillStyle = '#a3afbd'; c.fillText('E', cx + 21, cy + 0.5);
+    c.fillStyle = '#19e6d2'; c.fillText('N', cx, cy - up * 20);
+    c.fillStyle = '#a3afbd'; c.fillText('E', cx + east * 21, cy + 0.5);
     c.textAlign = 'left';
-    if (side === 'left') { c.font = '500 10px Geist, system-ui, sans-serif'; c.fillStyle = '#7d8896'; c.fillText('mirrored', cx + 30, cy + 0.5); }
+    if (east < 0) { c.font = '500 10px Geist, system-ui, sans-serif'; c.fillStyle = '#7d8896'; c.fillText('mirrored east-west', cx + 20, cy + 0.5); }
   }
 
   function drawGrid(p) {
@@ -564,7 +569,7 @@ export default function (component) {
     p.canvas.onpointerdown = (e) => { if (mode !== 'fit') return; drag = [e.clientX, e.clientY, pan[0], pan[1]]; p.cv.classList.add('drag'); p.canvas.setPointerCapture(e.pointerId); };
     p.canvas.onpointerup = () => { drag = null; p.cv.classList.remove('drag'); };
     p.canvas.onpointermove = (e) => {
-      if (drag) { pan = [drag[2] + (e.clientX - drag[0]) / p.cam.s, drag[3] + fy() * (e.clientY - drag[1]) / p.cam.s]; dirty = true; p.tip.style.display = 'none'; return; }
+      if (drag) { pan = [drag[2] + fx() * (e.clientX - drag[0]) / p.cam.s, drag[3] + fy() * (e.clientY - drag[1]) / p.cam.s]; dirty = true; p.tip.style.display = 'none'; return; }
       const b = p.canvas.getBoundingClientRect(), mx = e.clientX - b.left, my = e.clientY - b.top;
       let best = null, bd = 14 * 14;
       for (const [x, y, vi] of p.drawn) { const [sx, sy] = toS(p, x, y), d = (sx - mx) ** 2 + (sy - my) ** 2; if (d < bd) { bd = d; best = vi; } }
