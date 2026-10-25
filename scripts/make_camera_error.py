@@ -22,10 +22,10 @@ import statistics
 import sys
 from pathlib import Path
 
-from trafficsense.config import repo_root
+from trafficsense.config import load_config, repo_root
 from trafficsense.experiment import git_info
 from trafficsense.sim.emergency import signal_relevant
-from trafficsense.sim.observation import COMPONENTS, SIM_TO_DETECTOR, repo_relative
+from trafficsense.sim.observation import COMPONENTS, SIM_TO_DETECTOR
 from trafficsense.sim.roadnet import load_roadnet
 
 ROOT = repo_root()
@@ -56,6 +56,16 @@ COMPONENT_LABEL = {"misses": "(a) misses only", "false": "(b) false detections o
                    "confusion": "(c) class confusion only", "all": "(d) all (main batch junction level)"}
 COMPONENT_ON = {"misses": "measured; exact; none", "false": "1; exact; measured",
                 "confusion": "1; measured; none", "all": "measured; measured; measured"}
+
+
+def error_model_rel(recorded: str) -> str:
+    """The error model's repo-relative path (paths.camera_error_model). Runs of the main batch recorded
+    the absolute path on the machine that made them; that only has to end with the configured path, so
+    the result does not depend on where this checkout lives."""
+    rel = load_config("configs/default.yaml")["paths"]["camera_error_model"]
+    if recorded != rel and not recorded.endswith("/" + rel):
+        raise ValueError(f"recorded error model {recorded!r} is not paths.camera_error_model ({rel})")
+    return rel
 
 
 def mean_std(xs):
@@ -251,7 +261,7 @@ def report(root: Path = ROOT) -> dict:
     for key in ("junction", "crowded"):
         o = runs[("indian_2x2_peak", "maxpressure", 0, key)]["observation"]["params"]
         # The runs of this batch recorded the absolute path of the error model; show it repo-relative.
-        source = dict(o["source"], file=repo_relative(Path(o["source"]["file"])))
+        source = dict(o["source"], file=error_model_rel(o["source"]["file"]))
         params[key] = {"p_detect": {c: o["p_detect"][c] for c in SIM_TO_DETECTOR.values()},
                        "false_det_per_road_snapshot": o["false_det_per_road_snapshot"], "source": source}
     b["params"] = params

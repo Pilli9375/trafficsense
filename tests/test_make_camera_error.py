@@ -36,7 +36,8 @@ def fake_runs(mc, root, jobs=None, runs_dir=None):
             snaps = 0 if j["controller"] == "fixedtime_webster" else 10
             obs.update(snapshots=snaps, params={"p_detect": {c: p for c in SIM_TO_DETECTOR.values()},
                                                 "false_det_per_road_snapshot": {c: 0.1 for c in COUNTED},
-                                                "source": {"file": "em.json", "sha256": "ab" * 32, "conf_threshold": 0.3}},
+                                                "source": {"file": "/another/clone/outputs/perception/error_model.json",   # absolute, from elsewhere
+                                                           "sha256": "ab" * 32, "conf_threshold": 0.3}},
                        realized={"true_vehicle_observations": {c: 1000 * bool(snaps) for c in SIM_TO_DETECTOR.values()},
                                  "detection_rate": {c: p for c in SIM_TO_DETECTOR.values()},
                                  "lost_to_non_vehicle_label": {c: 2 for c in SIM_TO_DETECTOR.values()},
@@ -65,6 +66,7 @@ def test_report_tables_and_chart(mc, tmp_path, monkeypatch):
     assert mp["crowded"]["att_vs_perfect"]["per_seed"] == pytest.approx([8.0] * 3)
     assert b["sweep"]["indian_2x2_peak"]["uniform_p0.50"]["att_vs_perfect"]["mean"] == pytest.approx(10.0)
     assert b["effective_p_detect"]["indian_2x2_offpeak"]["crowded"] == pytest.approx(0.6)
+    assert b["params"]["junction"]["source"]["file"] == "outputs/perception/error_model.json"   # not where the runs were made
     ch = b["checks"]
     assert ch["uniform_p1_identical_to_perfect"] and ch["webster_identical_across_levels"]
     assert ch["webster_max_snapshots"] == 0 and ch["realised_within_0_01"]
