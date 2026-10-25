@@ -18,8 +18,6 @@ import pytest
 
 from trafficsense.config import load_config, repo_root
 
-sync_api = pytest.importorskip("playwright.sync_api")
-
 # a phone; the narrowest window with the sidebar open (Streamlit opens it only above 768 px, so the main column
 # is ~420 px); an XGA projector; laptops; full HD
 WIDTHS = (390, 769, 1024, 1280, 1366, 1920)
@@ -186,6 +184,8 @@ def app():
 
 @pytest.fixture(scope="module")
 def browser():
+    # skip here, not at import: the tests are always collected, so the count is the same in every install
+    sync_api = pytest.importorskip("playwright.sync_api")
     with sync_api.sync_playwright() as pw:
         try:
             b = pw.chromium.launch()

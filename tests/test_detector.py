@@ -59,7 +59,7 @@ def test_batch_images_last_batch_is_remainder():
 
 def _stub_trainer(loss_items, batch_size=8, n_images=20):
     import types
-    import torch
+    torch = pytest.importorskip("torch")   # perception extra
     return types.SimpleNamespace(batch_size=batch_size, train_loader=types.SimpleNamespace(dataset=range(n_images)),
                                  epoch=0, epochs=1, loss=torch.tensor(1.0), loss_items=loss_items,
                                  tloss=loss_items, metrics={"metrics/mAP50(B)": 0.1}, fitness=0.1)
@@ -67,7 +67,7 @@ def _stub_trainer(loss_items, batch_size=8, n_images=20):
 
 @pytest.fixture
 def no_cuda(monkeypatch):
-    import torch
+    torch = pytest.importorskip("torch")   # perception extra
     for name in ("reset_peak_memory_stats", "synchronize"):
         monkeypatch.setattr(torch.cuda, name, lambda: None)
     for name in ("max_memory_allocated", "max_memory_reserved"):
@@ -75,7 +75,7 @@ def no_cuda(monkeypatch):
 
 
 def test_train_monitor_logs_epoch_and_stops_on_nan(tmp_path, no_cuda):
-    import torch
+    torch = pytest.importorskip("torch")   # perception extra
     mon = detector.TrainMonitor(tmp_path / "log.jsonl", batch=8, skip=1)
     t = _stub_trainer({"box_loss": torch.tensor(1.0), "cls_loss": torch.tensor(2.0)})
     mon.on_train_epoch_start(t)
@@ -96,7 +96,7 @@ def test_train_monitor_logs_epoch_and_stops_on_nan(tmp_path, no_cuda):
 
 
 def test_train_monitor_stops_when_batch_is_halved(tmp_path, no_cuda):
-    import torch
+    torch = pytest.importorskip("torch")   # perception extra
     mon = detector.TrainMonitor(tmp_path / "log.jsonl", batch=8)
     t = _stub_trainer({"box_loss": torch.tensor(1.0)}, batch_size=4)
     mon.on_train_epoch_start(t)
@@ -106,7 +106,7 @@ def test_train_monitor_stops_when_batch_is_halved(tmp_path, no_cuda):
 
 
 def test_final_validation_is_not_logged_as_an_epoch(tmp_path, no_cuda):
-    import torch
+    torch = pytest.importorskip("torch")   # perception extra
     mon = detector.TrainMonitor(tmp_path / "log.jsonl", batch=8)
     t = _stub_trainer({"box_loss": torch.tensor(1.0)})
     mon.on_train_epoch_start(t)
