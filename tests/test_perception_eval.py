@@ -76,3 +76,9 @@ def test_tables_render_and_check(ev, mp):
     assert "| motorcycle | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |" in new         # confusion row: all missed
     with pytest.raises(KeyError):
         mp.render("no markers", tabs)
+
+
+def test_weights_path_comes_from_the_config(ev):
+    # not from the absolute path detector_train.json recorded on the training machine
+    cfg = {"paths": {"detector_runs": "data/external/detector_runs"}, "perception": {"train": {"run_name": "run1"}}}
+    assert ev.run_dir(cfg) == repo_root() / "data/external/detector_runs/detector/run1"

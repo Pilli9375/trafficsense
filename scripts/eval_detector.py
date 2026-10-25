@@ -6,8 +6,9 @@
 Both stages run Ultralytics' validator once on the split with best.pt (conf 0.001, NMS IoU
 0.7, imgsz from config). It gives mAP50 and mAP50-95; a subclass also keeps every image's
 detections and ground truth from the same pass, which our own error statistics use
-(trafficsense.perception.errors). The detections are saved on D next to the run, and a
-later call reuses them instead of running the model again.
+(trafficsense.perception.errors). The detections are saved in the run folder's eval/ (on D), and a
+later call reuses them instead of running the model again. Weights: paths.detector_runs/detector/
+<perception.train.run_name>/weights/best.pt, which must match the sha256 in detector_train.json.
 
 --stage val picks the threshold that maximises the mean F1 over the 7 classes on a grid of
 0.01 steps and writes paths.perception_outputs/detector_val.json. --stage test refuses to
@@ -21,7 +22,7 @@ from pathlib import Path
 
 import numpy as np
 
-from trafficsense.config import load_config, resolve_path
+from trafficsense.config import load_config, repo_root, resolve_path
 from trafficsense.experiment import git_info
 from trafficsense.perception import detector, errors
 from trafficsense.perception.idd import CLASSES
@@ -102,6 +103,11 @@ def with_groups(images: list[dict]) -> list[dict]:
         k = len(parts) - 1 - parts[::-1].index("images")
         out.append({**im, "camera": parts[k + 1], "group": f"{parts[k + 1]}/{parts[k + 2]}"})
     return out
+
+
+def run_dir(cfg) -> Path:
+    """The training run folder: paths.detector_runs/detector/<perception.train.run_name>."""
+    return resolve_path(cfg, "detector_runs") / "detector" / cfg["perception"]["train"]["run_name"]
 
 
 def predictions(cfg, split: str, weights: Path, eval_dir: Path) -> tuple[dict, list]:
@@ -190,14 +196,20 @@ def main() -> None:
     cfg = load_config(args.config)
     out = resolve_path(cfg, "perception_outputs")
     train = json.loads((out / "detector_train.json").read_text())
-    weights = Path(train["weights"]["best"]["path"])
+    # The weights come from the config path, not the absolute path detector_train.json recorded
+    # (that is provenance of the machine it was trained on); the sha256 proves they are the same.
+    weights = run_dir(cfg) / "weights" / "best.pt"
+    if not weights.is_file():
+        raise FileNotFoundError(f"{weights} not found: train the detector (scripts/train_detector.py --full) or put "
+                                "best.pt there (paths.detector_runs in configs/default.yaml, README Quick start)")
     sha = detector.sha256(weights)
     if sha != train["weights"]["best"]["sha256"]:
         raise RuntimeError(f"{weights} does not match the sha256 in detector_train.json")
-    eval_dir = Path(train["run_dir"]) / "eval"
+    eval_dir = run_dir(cfg) / "eval"
     eval_dir.mkdir(exist_ok=True)
     git = git_info()
-    common = {"weights": {"path": str(weights), "sha256": sha}, "conf_for_inference": CONF, "nms_iou": NMS_IOU,
+    rel = weights.relative_to(repo_root()).as_posix()
+    common = {"weights": {"path": rel, "sha256": sha}, "conf_for_inference": CONF, "nms_iou": NMS_IOU,
               "match_iou": MATCH_IOU, "imgsz": int(cfg["perception"]["imgsz"]), "classes": list(CLASSES)}
     prov = lambda stage: {"script": f"scripts/eval_detector.py --stage {stage}", "git_commit": git["commit"],
                           "git_dirty": git["dirty"], "timestamp": now()}
