@@ -238,7 +238,7 @@ def render() -> None:
                 cap = (f'<span class="ts-pill">Sample · IDD test split</span><span class="ts-pill">'
                        f'{data.derived(len(clip_meta["frames"]))} frames · {clip_meta["fps"]} fps</span>')
                 ui.html(preview_html(first, thumbs, cap))
-                ui.html(f'<div class="ts-prev-src">{ui.source_chip(meta_rel, align="left")}</div>')
+                ui.html(f'<div class="ts-prev-src">{ui.source_chip(meta_rel)}</div>')   # right-hand chip: opens leftwards
             else:
                 ui.html('<div class="ts-prev ts-prev-empty"><div>Choose a video file on the left, then press '
                         '<b>Run detector</b>.</div></div>')

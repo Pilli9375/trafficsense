@@ -70,7 +70,7 @@ ARROW = ('<div class="ts-arrow"><svg width="22" height="22" viewBox="0 0 24 24" 
          'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg></div>')
 
 # ---- the architecture diagram (static, no data) ------------------------------------------------------
-ARCH = """<div class="ts-arch"><svg viewBox="0 0 1000 286" role="img" aria-label="System architecture: junction camera, YOLOv8n detector and vehicle counts; four cooperative LLM agents that pick among MaxPressure's top phases, with ambulance positions from GPS or V2X; signal timing; and the CityFlow simulator, whose traffic gives the next counts.">
+ARCH_SVG = """<svg viewBox="0 0 1000 286" role="img" aria-label="System architecture: junction camera, YOLOv8n detector and vehicle counts; four cooperative LLM agents that pick among MaxPressure's top phases, with ambulance positions from GPS or V2X; signal timing; and the CityFlow simulator, whose traffic gives the next counts.">
 <defs><marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#3a475a"/></marker>
 <marker id="ahl" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#19e6d2"/></marker>
 <marker id="ahr" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#ff6b6b"/></marker></defs>
@@ -106,7 +106,25 @@ ARCH = """<div class="ts-arch"><svg viewBox="0 0 1000 286" role="img" aria-label
 <path class="flow live" d="M830 150H848" marker-end="url(#ahl)"/>
 <path class="flow" d="M922 208V246H329V202" marker-end="url(#ah)"/>
 <text class="lbl" x="625" y="270" text-anchor="middle">simulated traffic gives the next counts: exact, or with the detector's measured errors</text>
-</svg></div>"""
+</svg>"""
+
+# The same diagram as a column of boxes, shown instead of the drawing when the page is too narrow for its
+# text (theme.css, .ts-arch-flow): the same boxes, words and colours; keep the two in step.
+ARCH_FLOW = """<div class="ts-arch-flow">
+<div class="grp"><div class="grpl">Perception · evaluated on IDD</div><div class="row">
+<div class="nd"><b>Camera</b><span>junction video</span></div><div class="ar" aria-hidden="true">→</div>
+<div class="nd"><b>YOLOv8n</b><span>trained on IDD</span></div><div class="ar" aria-hidden="true">→</div>
+<div class="nd"><b>Counts</b><span>queue per lane</span></div></div></div>
+<div class="join"><div class="dn">counts</div>
+<div><div class="nd amb"><b>Ambulance positions</b><span>GPS / V2X (assumed), never the camera</span></div><div class="dn amb" aria-hidden="true"></div></div></div>
+<div class="nd hot"><b>LLM agents ×4</b><em>cooperative · local</em><span>a small model on the 4 GB laptop GPU; each sees its neighbours and picks one of MaxPressure's top phases</span></div>
+<div class="dn" aria-hidden="true"></div>
+<div class="nd"><b>Signals</b><span>min green, yellow</span></div>
+<div class="dn" aria-hidden="true"></div>
+<div class="nd sim"><b>CityFlow</b><span>2x2 grid, Indian mix, with ambulances</span></div>
+<div class="loop">simulated traffic gives the next counts: exact, or with the detector's measured errors</div>
+</div>"""
+ARCH = f'<div class="ts-arch">{ARCH_SVG}{ARCH_FLOW}</div>'
 
 
 def render() -> None:

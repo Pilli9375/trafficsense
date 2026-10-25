@@ -150,7 +150,9 @@ def table(rows: list[dict], *, num: Iterable[str] = (), wide: str | None = None,
     def cls(c: str) -> str:
         return " ".join(x for x in (("num" if c in num else ""), ("wide" if c == wide else "")) if x)
 
-    head = "".join(f'<th class="{cls(c)}">{esc(c)}</th>' for c in cols)
+    # data-label: the column name, shown above each value when a narrow page lays the rows out as cards
+    # (theme.css); the explicit roles keep the table a table for screen readers in that layout.
+    head = "".join(f'<th role="columnheader" class="{cls(c)}">{esc(c)}</th>' for c in cols)
     body = []
     for r in rows:
         cells = []
@@ -160,10 +162,11 @@ def table(rows: list[dict], *, num: Iterable[str] = (), wide: str | None = None,
                 v_html = f'<span class="who"><span class="ts-dot" style="background:{colours[v]}"></span>{esc(v)}</span>'
             else:
                 v_html = esc(v)
-            cells.append(f'<td class="{cls(c)}">{v_html}</td>')
-        body.append("<tr>" + "".join(cells) + "</tr>")
+            cells.append(f'<td role="cell" class="{cls(c)}" data-label="{esc(c)}">{v_html}</td>')
+        body.append('<tr role="row">' + "".join(cells) + "</tr>")
     style = f' style="max-height:{max_height}px"' if max_height else ""
-    return f'<div class="ts-table"{style}><table><thead><tr>{head}</tr></thead><tbody>{"".join(body)}</tbody></table></div>'
+    return (f'<div class="ts-table"{style}><table role="table"><thead role="rowgroup"><tr role="row">{head}</tr></thead>'
+            f'<tbody role="rowgroup">{"".join(body)}</tbody></table></div>')
 
 
 def missing(e: data.MissingData) -> None:

@@ -66,12 +66,15 @@ header[data-testid="stHeader"] { background: transparent !important; height: 0; 
 [data-testid="stExpandSidebarButton"] { position: fixed; top: 12px; left: 12px; z-index: 1000; width: 36px; height: 36px;
   border-radius: var(--ts-r-sm); border: 1px solid var(--ts-border-2); background: rgba(14, 18, 25, .92) !important; }
 
+/* The main column is a size container: parts of a page change layout on the width they actually get
+   (the sidebar may be open or closed at any window width), not on the window's width. */
 .block-container, [data-testid="stMainBlockContainer"] {
-  max-width: 1400px; padding: 40px 40px 72px 40px !important;
+  max-width: 1400px; padding: 40px 40px 72px 40px !important; container: ts-main / inline-size;
 }
 @media (max-width: 1500px) { [data-testid="stMainBlockContainer"] { padding: 32px 32px 64px 32px !important; } }
 /* with the sidebar closed, the button that re-opens it sits at the top left: the page starts below it */
 .stApp:has([data-testid="stSidebar"][aria-expanded="false"]) [data-testid="stMainBlockContainer"] { padding-top: 64px !important; }
+@media (max-width: 640px) { [data-testid="stMainBlockContainer"] { padding-left: 16px !important; padding-right: 16px !important; } }
 
 /* ---- type -------------------------------------------------------------------------------- */
 h1, h2, h3, h4, h5 { color: var(--ts-text); letter-spacing: -0.02em; font-family: var(--ts-font) !important; }
@@ -152,14 +155,22 @@ details.ts-src.left .ts-src-pop { left: 0; right: auto; }
 .ts-src-row:first-of-type { border-top: none; }
 .ts-src-row .f { font-family: var(--ts-mono); font-size: 11.5px; color: var(--ts-text); word-break: break-all; }
 .ts-src-row .g { font-family: var(--ts-mono); font-size: 11px; color: var(--ts-text-3); }
+/* narrow: an opened panel opens in place, under its chip and within the page, instead of hanging from the chip's
+   right edge (on a phone a chip that wrapped to the left of its card would push it off the screen) */
+@container ts-main (max-width: 600px) {
+  details.ts-src[open] { display: block; }
+  details.ts-src[open] .ts-src-pop { position: static; min-width: 0; max-width: 100%; margin-top: 6px; }
+}
 
 /* ---- cards --------------------------------------------------------------------------------- */
 .ts-card { position: relative; background: linear-gradient(180deg, rgba(255, 255, 255, .025), rgba(255, 255, 255, 0) 40%), var(--ts-surface);
   border: 1px solid var(--ts-border); border-radius: var(--ts-r-lg); padding: 20px; box-shadow: var(--ts-shadow);
   transition: border-color .25s var(--ts-ease), transform .25s var(--ts-ease); }
 .ts-card:hover { border-color: var(--ts-border-2); }
-.ts-card-h { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 4px; }
-.ts-card-h .t { flex: 1; min-width: 0; }
+/* the title keeps at least ~240 px; when that and the badges / source chip do not fit on one line, they move
+   under the title instead of squeezing it */
+.ts-card-h { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 6px 12px; margin-bottom: 4px; }
+.ts-card-h .t { flex: 1 1 240px; min-width: 0; }
 .ts-card-title { color: var(--ts-text); font-weight: 600; font-size: 14.5px; letter-spacing: -0.01em; }
 .ts-card-sub { color: var(--ts-text-3); font-size: 12.5px; margin-top: 2px; line-height: 1.45; }
 
@@ -180,6 +191,12 @@ details.ts-src.left .ts-src-pop { left: 0; right: auto; }
 .ts-take .tx { flex: 1; color: var(--ts-text); font-size: 15px; font-weight: 500; line-height: 1.5; padding-top: 3px; }
 .ts-take .tx b { color: #fff; font-weight: 650; }
 .ts-take .bd { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; padding-top: 2px; }
+/* narrow: the badges and source chip go under the sentence instead of squeezing it */
+@container ts-main (max-width: 760px) {
+  .ts-take { flex-wrap: wrap; }
+  .ts-take .tx { flex: 1 1 calc(100% - 42px); }
+  .ts-take .bd { flex: 1 1 100%; justify-content: flex-start; padding-left: 42px; }
+}
 
 /* Streamlit expander, styled as a quiet "Why / How to read" drawer */
 [data-testid="stExpander"] details { border: 1px solid var(--ts-border) !important; border-radius: var(--ts-r) !important;
@@ -193,7 +210,11 @@ details.ts-src.left .ts-src-pop { left: 0; right: auto; }
 
 /* ---- stat tiles ------------------------------------------------------------------------------ */
 .ts-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-@media (max-width: 900px) { .ts-tiles { grid-template-columns: 1fr; } }
+@container ts-main (max-width: 900px) {
+  .ts-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ts-tiles > .ts-tile:last-child:nth-child(odd) { grid-column: 1 / -1; }
+}
+@container ts-main (max-width: 620px) { .ts-tiles { grid-template-columns: 1fr; } }
 .ts-tile { position: relative; padding: 18px 20px; border-radius: var(--ts-r-lg); border: 1px solid var(--ts-border);
   background: linear-gradient(180deg, rgba(255, 255, 255, .025), rgba(255, 255, 255, 0) 45%), var(--ts-surface);
   box-shadow: var(--ts-shadow); display: flex; flex-direction: column; gap: 6px; min-width: 0;
@@ -206,10 +227,12 @@ details.ts-src.left .ts-src-pop { left: 0; right: auto; }
 .ts-tile .cap { color: var(--ts-text-3); font-size: 12.5px; line-height: 1.45; }
 
 /* mini visuals inside tiles */
-.ts-mini { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
-.ts-mrow { display: grid; grid-template-columns: minmax(0, 1fr) minmax(40px, 64px) 54px; align-items: center; gap: 10px; font-size: 12px; min-height: 18px; }
+/* one grid for all rows, so the bars line up; names get their full width first, bars the rest */
+.ts-mini { display: grid; grid-template-columns: minmax(0, max-content) minmax(28px, 1fr) auto; align-items: center; gap: 6px 10px;
+  margin-top: 6px; font-size: 12px; grid-auto-rows: minmax(18px, auto); }
+.ts-mrow { display: contents; }
 .ts-mrow .v.wide { grid-column: 2 / 4; }
-.ts-mrow .n { color: var(--ts-text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ts-mrow .n { color: var(--ts-text-2); overflow-wrap: anywhere; }
 .ts-mrow .v { color: var(--ts-text); font-family: var(--ts-mono); font-size: 11.5px; text-align: right; font-variant-numeric: tabular-nums; }
 .ts-mrow .v.mute { color: var(--ts-text-3); font-family: var(--ts-font); font-style: italic; }
 .ts-track { position: relative; height: 6px; border-radius: 3px; background: var(--ts-surface-3); overflow: hidden; }
@@ -239,6 +262,24 @@ details.ts-src.left .ts-src-pop { left: 0; right: auto; }
 .ts-table tr:last-child td { border-bottom: none; }
 .ts-table .who { display: inline-flex; align-items: center; gap: 8px; }
 .ts-table .mute { color: var(--ts-text-3); font-style: italic; }
+/* Narrower than a wide table needs: each row becomes a small card, its cells labelled by their column
+   (data-label), so nothing scrolls sideways. One width for every table (they sit in full-width cards, so a
+   card is 880 px wide at a 922 px main column), so a tab's tables match. Keyed to the main column, not the
+   card: a size container is also a stacking layer, which would put a card's source popover under the next card. */
+@container ts-main (max-width: 921px) {
+  .ts-table { border: none; background: none; overflow: visible; }
+  .ts-table table, .ts-table tbody, .ts-table tr, .ts-table td { display: block; }
+  .ts-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .ts-table tbody tr { display: grid; grid-template-columns: repeat(auto-fill, minmax(124px, 1fr)); gap: 8px 18px; margin-top: 8px;
+    padding: 10px 12px 12px 12px; border: 1px solid var(--ts-border); border-radius: var(--ts-r); background: var(--ts-surface); }
+  .ts-table tbody tr:hover { background: var(--ts-surface); }
+  .ts-table td, .ts-table tr:last-child td { padding: 0; border: none; min-width: 0; }
+  .ts-table td.num { text-align: left; }
+  .ts-table td.wide { min-width: 0; }
+  .ts-table td:first-child { grid-column: 1 / -1; font-weight: 600; padding-bottom: 2px; }
+  .ts-table td:not(:first-child)::before { content: attr(data-label); display: block; margin-bottom: 2px; color: var(--ts-text-3);
+    font: 600 10px/1.35 var(--ts-font); letter-spacing: .06em; text-transform: uppercase; }
+}
 
 /* ---- native widgets ------------------------------------------------------------------------- */
 [data-testid="stWidgetLabel"] p { font-size: 11.5px !important; font-weight: 600; color: var(--ts-text-3) !important;
@@ -247,6 +288,12 @@ details.ts-src.left .ts-src-pop { left: 0; right: auto; }
   background: var(--ts-surface) !important; transition: border-color .2s; }
 .react-aria-ComboBox [role="group"]:hover { border-color: var(--ts-border-2) !important; }
 [data-testid="stSlider"] [data-testid="stSliderThumbValue"] p { font-family: var(--ts-mono); font-size: 11.5px; color: var(--ts-accent-2); }
+/* Streamlit stacks columns only on windows under 640 px; with the sidebar open the main column can be as
+   narrow as 420 px on a wider window. Columns stack whenever the main column is under 900 px. */
+@container ts-main (max-width: 899px) {
+  [data-testid="stHorizontalBlock"] { flex-direction: column; flex-wrap: nowrap; }
+  [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] { width: 100% !important; flex: 1 1 auto !important; min-width: 0 !important; }
+}
 [data-testid="stSliderTickBarMin"], [data-testid="stSliderTickBarMax"] { font-family: var(--ts-mono); font-size: 11px; color: var(--ts-text-3); }
 
 /* tabs: quiet text tabs with a glowing teal indicator */
@@ -312,7 +359,9 @@ button[kind="secondary"], [data-testid="stBaseButton-secondary"] { background: v
 .ts-hero { position: relative; overflow: hidden; border-radius: 20px; border: 1px solid var(--ts-border);
   background: radial-gradient(600px 300px at 85% 30%, rgba(255, 59, 59, .08), transparent 60%),
               radial-gradient(700px 360px at 10% 0%, rgba(25, 230, 210, .08), transparent 60%), #0b0f15;
-  padding: 36px 40px 32px 40px; box-shadow: 0 30px 80px -40px rgba(0, 0, 0, .9); animation: ts-fade-up .7s var(--ts-ease) both; }
+  padding: 36px 40px 32px 40px; box-shadow: 0 30px 80px -40px rgba(0, 0, 0, .9); animation: ts-fade-up .7s var(--ts-ease) both;
+  container: ts-hero / inline-size; }
+@container ts-main (max-width: 600px) { .ts-hero { padding: 28px 22px 24px 22px; } }
 .ts-hero-grid { position: absolute; right: -10px; top: 0; height: 100%; width: 58%; opacity: .9;
   -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 45%); mask-image: linear-gradient(90deg, transparent 0%, #000 45%); }
 .ts-hero-grid .roads path { stroke: #161c25; stroke-width: 18; fill: none; }
@@ -330,10 +379,13 @@ button[kind="secondary"], [data-testid="stBaseButton-secondary"] { background: v
 @keyframes ts-route { 0% { stroke-dashoffset: 600; opacity: 1; } 80% { stroke-dashoffset: 0; opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0; } }
 @keyframes ts-amb { 0% { offset-distance: 0%; opacity: 1; } 80% { offset-distance: 100%; opacity: 1; } 80.01%, 100% { offset-distance: 100%; opacity: 0; } }
 @keyframes ts-beacon { 0% { fill: #ff3b3b; } 50% { fill: #3b82f6; } }
-.ts-hero .q { position: relative; color: var(--ts-text-2); font-size: 15px; display: flex; align-items: center; gap: 10px; }
+.ts-hero .q { position: relative; color: var(--ts-text-2); font-size: 15px; display: flex; align-items: center; gap: 10px;
+  padding-right: 92px; }   /* clear of the source chip in the top right corner */
 .ts-hero .q::before { content: ""; width: 18px; height: 1px; background: var(--ts-accent); box-shadow: 0 0 8px var(--ts-accent-glow); }
-.ts-hero h1 { position: relative; margin: 14px 0 0 0 !important; padding: 0 !important; font-size: 64px !important; line-height: 1.02 !important;
-  font-weight: 700 !important; letter-spacing: -0.045em !important; color: #fff; }
+.ts-hero h1 { position: relative; margin: 14px 0 0 0 !important; padding: 0 !important; font-size: clamp(34px, 8.6cqi, 64px) !important;
+  line-height: 1.02 !important; font-weight: 700 !important; letter-spacing: -0.045em !important; color: #fff; }
+/* Streamlit gives every heading a hidden link icon; on a line of its own it left a gap under the headline */
+.ts-hero [data-testid="stHeaderActionElements"], .ts-head [data-testid="stHeaderActionElements"] { display: none !important; }
 .ts-hero h1 .num { white-space: nowrap; background: linear-gradient(90deg, #ffffff 0%, #ff9a9a 45%, #ff3b3b 100%); -webkit-background-clip: text;
   background-clip: text; color: transparent; }
 .ts-hero .lede { position: relative; color: var(--ts-text-2); font-size: 16px; margin: 14px 0 0 0; max-width: 50ch; line-height: 1.55; }
@@ -353,7 +405,14 @@ button[kind="secondary"], [data-testid="stBaseButton-secondary"] { background: v
 .ts-hero .cmp .k .ts-badge::before { display: none; }
 .ts-hero .badges { position: relative; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; }
 .ts-hero .src { position: absolute; top: 16px; right: 16px; z-index: 6; }
-@media (max-width: 1250px) { .ts-hero h1 { font-size: 54px !important; } .ts-hero-grid { width: 64%; opacity: .55; } }
+@container ts-hero (max-width: 840px) { .ts-hero-grid { width: 64%; opacity: .55; } }
+/* narrow: the four comparison cells as two rows of two */
+@container ts-hero (max-width: 540px) {
+  .ts-hero .cmp { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ts-hero .cmp > div:nth-child(odd) { border-left: none; }
+  .ts-hero .cmp > div:nth-child(n+3) { border-top: 1px solid var(--ts-border); }
+  .ts-hero-grid { width: 100%; opacity: .3; }
+}
 
 /* ---- overview: three steps, section titles ------------------------------------------------------ */
 .ts-steps { display: grid; grid-template-columns: 1fr 28px 1fr 28px 1fr; align-items: stretch; margin: 8px 0 4px 0; }
@@ -370,8 +429,8 @@ button[kind="secondary"], [data-testid="stBaseButton-secondary"] { background: v
 .ts-step .t { color: var(--ts-text); font-size: 14.5px; line-height: 1.5; margin-top: 4px; }
 .ts-step .t b { color: #fff; font-weight: 600; }
 .ts-arrow { display: grid; place-items: center; color: var(--ts-border-2); }
-@media (max-width: 1000px) { .ts-steps { grid-template-columns: 1fr; gap: 10px; } .ts-arrow { display: none; } }
-.ts-sec { display: flex; align-items: baseline; gap: 12px; margin: 36px 0 12px 0; }
+@container ts-main (max-width: 900px) { .ts-steps { grid-template-columns: 1fr; gap: 10px; } .ts-arrow { display: none; } }
+.ts-sec { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; margin: 36px 0 12px 0; }
 .ts-sec .h { font-size: 20px; font-weight: 650; color: #fff; letter-spacing: -0.02em; }
 .ts-sec span { color: var(--ts-text-3); font-size: 13px; }
 
@@ -398,12 +457,43 @@ button[kind="secondary"], [data-testid="stBaseButton-secondary"] { background: v
 .ts-arch .grp { fill: none; stroke: #26303f; stroke-dasharray: 3 5; }
 .ts-arch .grpl { fill: #7d8896; font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; font-weight: 600; }
 @keyframes ts-flow { to { stroke-dashoffset: -22; } }
+/* Narrower than this the drawing's smallest text would render below ~9.5 px: the same diagram as a
+   column of boxes in HTML (overview.ARCH_FLOW), whose text wraps at full size. */
+.ts-arch-flow { display: none; }
+@container ts-main (max-width: 939px) {
+  .ts-arch { padding: 16px; }
+  .ts-arch svg { display: none; }
+  .ts-arch-flow { display: flex; flex-direction: column; align-items: stretch; gap: 0; max-width: 620px; margin: 0 auto; }
+}
+.ts-arch-flow .grp { border: 1px dashed #2f3b4d; border-radius: 14px; padding: 10px 12px 12px 12px; }
+.ts-arch-flow .grpl { color: #7d8896; font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; font-weight: 600; margin-bottom: 8px; }
+.ts-arch-flow .row { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr); align-items: stretch; gap: 6px; }
+.ts-arch-flow .nd { border: 1px solid #26303f; background: #111722; border-radius: 12px; padding: 9px 11px; display: flex; flex-direction: column;
+  gap: 2px; min-width: 0; }
+.ts-arch-flow .nd b { color: #e6edf3; font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
+.ts-arch-flow .nd span { color: #8d98a6; font-size: 12px; line-height: 1.4; }
+.ts-arch-flow .nd em { color: #5eead4; font-style: normal; font-size: 10.5px; font-weight: 650; letter-spacing: .1em; text-transform: uppercase; }
+.ts-arch-flow .nd.hot { border-color: rgba(25, 230, 210, .6); background: #0e1a1d; box-shadow: 0 0 18px -6px rgba(25, 230, 210, .35); }
+.ts-arch-flow .nd.sim { border-color: rgba(57, 135, 229, .55); }
+.ts-arch-flow .nd.amb { border-color: rgba(255, 59, 59, .5); background: #1a1013; }
+.ts-arch-flow .ar { display: grid; place-items: center; color: #19e6d2; font-size: 14px; }
+.ts-arch-flow .dn { display: flex; align-items: center; justify-content: center; gap: 8px; height: 30px; color: #8d98a6; font-size: 12px; }
+.ts-arch-flow .dn::before { content: "↓"; color: #19e6d2; font-size: 15px; }
+.ts-arch-flow .dn.amb::before { color: #ff6b6b; }
+/* counts (left) and ambulance positions (right) both enter the LLM box from above */
+.ts-arch-flow .join { display: grid; grid-template-columns: minmax(84px, 1fr) minmax(0, 2fr); gap: 10px; align-items: end; padding-top: 8px; }
+.ts-arch-flow .loop { margin-top: 10px; color: #8d98a6; font-size: 12px; line-height: 1.45; text-align: center; }
+.ts-arch-flow .loop::before { content: "↺ "; color: #7d8896; }
+@container ts-main (max-width: 460px) {
+  .ts-arch-flow .row { grid-template-columns: 1fr; }
+  .ts-arch-flow .row .ar { transform: rotate(90deg); height: 16px; }
+}
 
 /* ---- live detection ---------------------------------------------------------------------------- */
 [class*="st-key-panel-"] { background: linear-gradient(180deg, rgba(255, 255, 255, .025), rgba(255, 255, 255, 0) 40%), var(--ts-surface);
   border: 1px solid var(--ts-border); border-radius: var(--ts-r-lg); padding: 18px 18px 16px 18px; gap: 14px !important;
   box-shadow: var(--ts-shadow); animation: ts-fade-up .5s var(--ts-ease) both; }
-.ts-kv { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 7px 0; font-size: 13px;
+.ts-kv { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 2px 12px; padding: 7px 0; font-size: 13px;
   border-top: 1px solid var(--ts-border); }
 .ts-kv:first-of-type { border-top: none; }
 .ts-kv > span:first-child { color: var(--ts-text-3); }
@@ -417,15 +507,17 @@ button[kind="secondary"], [data-testid="stBaseButton-secondary"] { background: v
 .ts-prev-stage { position: relative; aspect-ratio: 16 / 9; background: #05070a; }
 .ts-prev-stage > img { width: 100%; height: 100%; object-fit: cover; display: block; filter: saturate(.9) brightness(.82); }
 .ts-prev-stage::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(7, 9, 13, .1) 40%, rgba(7, 9, 13, .85)); }
-.ts-prev-cap { position: absolute; left: 14px; top: 14px; display: flex; gap: 6px; z-index: 1; }
+.ts-prev-cap { position: absolute; left: 14px; top: 14px; right: 14px; display: flex; flex-wrap: wrap; gap: 6px; z-index: 1; }
 .ts-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: 11.5px;
   background: rgba(7, 9, 13, .72); border: 1px solid rgba(255, 255, 255, .08); backdrop-filter: blur(6px); color: var(--ts-text);
   font-family: var(--ts-mono); }
 .ts-prev-play { position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 1; padding: 10px 18px;
   border-radius: 999px; background: rgba(7, 9, 13, .7); border: 1px solid rgba(25, 230, 210, .35); color: var(--ts-text-2);
-  font-size: 13.5px; backdrop-filter: blur(6px); box-shadow: 0 0 30px -8px var(--ts-accent-glow); white-space: nowrap; }
+  font-size: 13.5px; backdrop-filter: blur(6px); box-shadow: 0 0 30px -8px var(--ts-accent-glow); width: max-content;
+  max-width: calc(100% - 28px); text-align: center; }
 .ts-prev-play b { color: var(--ts-accent-2); font-weight: 600; }
 .ts-strip { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 6px; padding: 10px; border-top: 1px solid var(--ts-border); }
+@container ts-main (max-width: 480px) { .ts-strip { grid-template-columns: repeat(4, minmax(0, 1fr)); } .ts-prev-play { bottom: 12px; } }
 .ts-strip img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 6px; display: block; opacity: .85;
   transition: opacity .2s, transform .2s var(--ts-ease); }
 .ts-strip img:hover { opacity: 1; transform: translateY(-2px); }
@@ -436,19 +528,20 @@ button[kind="secondary"], [data-testid="stBaseButton-secondary"] { background: v
 
 /* ---- network replay (page parts; the canvas component styles itself) ---------------------------- */
 .ts-duos { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 4px 0 4px 0; }
-@media (max-width: 1000px) { .ts-duos { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@container ts-main (max-width: 1000px) { .ts-duos { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@container ts-main (max-width: 400px) { .ts-duos { grid-template-columns: 1fr; } }
+/* titles and names wrap rather than being cut off; the values sit at the bottom, level across a row */
 .ts-duo { padding: 12px 14px; border-radius: var(--ts-r); border: 1px solid var(--ts-border); background: var(--ts-surface);
-  animation: ts-fade-up .5s var(--ts-ease) both; min-width: 0; }
-.ts-duo .h { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ts-text-3); font-weight: 600;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ts-duo .vs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  animation: ts-fade-up .5s var(--ts-ease) both; min-width: 0; display: flex; flex-direction: column; }
+.ts-duo .h { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ts-text-3); font-weight: 600; line-height: 1.35; }
+.ts-duo .vs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: auto; padding-top: 6px; }
 .ts-duo .vs > div { display: flex; flex-direction: column; min-width: 0; }
-.ts-duo .who { display: block; color: var(--ts-text-2); font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ts-duo .who { display: block; color: var(--ts-text-2); font-size: 11.5px; line-height: 1.35; overflow-wrap: anywhere; }
 .ts-duo .vs .ts-dot { margin-bottom: 4px; }
 .ts-duo b { font-size: 22px; font-weight: 650; color: var(--ts-text-2); letter-spacing: -0.02em; line-height: 1.15; }
 .ts-duo .win b { color: #fff; }
 .ts-duo small { color: var(--ts-text-3); font-size: 12px; margin-left: 2px; }
 .ts-duo-head { display: flex; align-items: center; justify-content: space-between; margin: 6px 2px 8px 2px; font-size: 12px; color: var(--ts-text-3); }
-.ts-duo .n { display: flex; align-items: baseline; white-space: nowrap; }
+.ts-duo .n { display: flex; align-items: baseline; white-space: nowrap; margin-top: auto; }
 [class*="st-key-replay-stage"] { gap: 6px !important; }
 .ts-replay-src { display: flex; justify-content: flex-end; }

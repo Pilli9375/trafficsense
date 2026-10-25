@@ -1,7 +1,8 @@
 /* Live Detection player (a Streamlit v2 component, styles isolated in its shadow root).
    Theme variables (--ts-*) are inherited from the page. */
 :host { display: block; }
-.pl { font-family: var(--ts-font, system-ui, sans-serif); color: var(--ts-text, #e6edf3); }
+/* the component is its own size container: its layout follows its own width, not the window's */
+.pl { font-family: var(--ts-font, system-ui, sans-serif); color: var(--ts-text, #e6edf3); container: pl / inline-size; }
 .pl-grid { display: grid; grid-template-columns: 1fr; gap: 16px; align-items: start; }
 .pl-card { background: var(--ts-surface, #0e1219); border: 1px solid var(--ts-border, #1d2532); border-radius: 16px; overflow: hidden; }
 .pl-stage { position: relative; background: #05070a; aspect-ratio: 16 / 9; }
@@ -30,11 +31,17 @@
 .pl-side { padding: 16px 18px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); column-gap: 28px; row-gap: 12px; }
 .pl-side .pl-h { margin-bottom: 10px; }
 .pl-hint { font-size: 11.5px; color: var(--ts-text-3, #7d8896); margin-top: 10px; }
-@media (max-width: 900px) { .pl-side { grid-template-columns: 1fr; grid-auto-flow: row; } }
+@container pl (max-width: 700px) { .pl-side { grid-template-columns: 1fr; grid-auto-flow: row; } }
+/* narrow: the frame slider gets a row of its own under the play button, time and speed */
+@container pl (max-width: 560px) {
+  .pl-bar { flex-wrap: wrap; row-gap: 10px; }
+  .pl-range { order: 5; flex: 1 1 100%; }
+  .pl-time { min-width: max-content; flex: 1; text-align: left; }   /* never under its text: the speed buttons wrap instead */
+}
 .pl-h { font-size: 13.5px; font-weight: 600; color: #fff; display: flex; align-items: baseline; gap: 8px; }
 .pl-h span { color: var(--ts-text-3, #7d8896); font-weight: 500; font-size: 12px; }
 .pl-now { display: flex; flex-direction: column; gap: 7px; }
-.pl-row { display: grid; grid-template-columns: 92px minmax(0, 1fr) 30px; gap: 10px; align-items: center; font-size: 12.5px; cursor: pointer;
+.pl-row { display: grid; grid-template-columns: 104px minmax(0, 1fr) 30px; gap: 10px; align-items: center; font-size: 12.5px; cursor: pointer;
   border-radius: 6px; padding: 2px 4px; margin: 0 -4px; user-select: none; transition: background-color .15s, opacity .15s; }
 .pl-row:hover { background: rgba(255, 255, 255, .03); }
 .pl-row.off { opacity: .35; }
@@ -46,7 +53,7 @@
 .pl-chart { position: relative; height: 160px; }
 .pl-chart svg { width: 100%; height: 100%; display: block; overflow: visible; }
 .pl-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 16px; }
-@media (max-width: 1100px) { .pl-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@container pl (max-width: 760px) { .pl-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .pl-stat { background: var(--ts-surface, #0e1219); border: 1px solid var(--ts-border, #1d2532); border-radius: 14px; padding: 12px 14px; }
 .pl-stat .k { font-size: 11.5px; color: var(--ts-text-3, #7d8896); display: flex; align-items: center; gap: 6px; }
 .pl-stat .v { font-size: 22px; font-weight: 650; letter-spacing: -0.02em; margin-top: 4px; color: #fff; }

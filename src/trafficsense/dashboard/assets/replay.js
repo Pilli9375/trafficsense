@@ -76,8 +76,10 @@ export default function (component) {
   const backBtn = tool.appendChild(el('button', 'rp-ghost')); backBtn.innerHTML = I.back; backBtn.setAttribute('aria-label', 'Back to the start'); backBtn.title = 'Back to the start';
   const clock = tool.appendChild(el('span', 'rp-clock'));
   const seg = (label, opts, init, cls, on) => {
-    tool.appendChild(el('span', 'rp-lab', label));
-    const g = tool.appendChild(el('div', `rp-seg ${cls || ''}`)); g.setAttribute('role', 'group'); g.setAttribute('aria-label', label);
+    // label and buttons in one box, so a wrapping toolbar never leaves a label at the end of a line
+    const box = tool.appendChild(el('span', 'rp-grp'));
+    box.appendChild(el('span', 'rp-lab', label));
+    const g = box.appendChild(el('div', `rp-seg ${cls || ''}`)); g.setAttribute('role', 'group'); g.setAttribute('aria-label', label);
     for (const [v, t] of opts) {
       const b = g.appendChild(el('button', '', t)); b.setAttribute('aria-pressed', String(v === init));
       b.onclick = () => { g.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); on(v); };
