@@ -387,8 +387,8 @@ The project report (Markdown chapters, Word and PDF build) is in [`docs/report/`
 
 ## 📖 Glossary
 
-<details>
-<summary><b>Open the glossary</b>: every technical term on this page in one plain sentence</summary>
+<details open>
+<summary><b>Glossary</b>: every technical term on this page in one plain sentence (click to fold)</summary>
 
 - <a id="g-phase"></a>**Traffic signal phase**: one combination of green lights at a junction, for example "north and south may go straight"; changing phase costs a few seconds of yellow and red.
 - <a id="g-att"></a>**ATT (average travel time)**: how long a vehicle takes, on average, from the moment it is due to start its trip until it arrives, including any time spent waiting to enter the roads.
