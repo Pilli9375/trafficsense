@@ -9,11 +9,9 @@ from __future__ import annotations
 from trafficsense.dashboard import data, theme, ui
 
 FULL = "outputs/full/results.json"
-MODEL_SIZE = "outputs/model_size/model_size.json"
 DETECTOR = "outputs/perception/detector_test.json"
 CAMERA = "outputs/camera_error/results.json"
 BASELINES = ("maxpressure", "fixedtime_webster", "fixedtime")
-NEMOTRON = "nvidia/nemotron-3-ultra-550b-a55b"
 MAIN = ("llm_guarded_mp", "llama3.2:3b")
 EXPL = ("llm_guided_mp_v3", "gemma4:e4b")
 TILE_NAMES = {MAIN: "LLM main", EXPL: "gemma4 (expl.)", ("maxpressure", None): "MaxPressure",
@@ -114,7 +112,6 @@ ARCH = """<div class="ts-arch"><svg viewBox="0 0 1000 286" role="img" aria-label
 def render() -> None:
     try:
         full = data.read_json(FULL, "Run scripts/make_results.py.")
-        ms = data.read_json(MODEL_SIZE, "Run scripts/make_model_size.py.")
         det = data.read_json(DETECTOR, "Run scripts/eval_detector.py --stage test.")
         cam = data.read_json(CAMERA, "Run scripts/make_camera_error.py.")
     except data.MissingData as e:
@@ -128,41 +125,35 @@ def render() -> None:
     peak_base, peak_b, peak_llm = signal_rows(full, "indian_2x2_peak")
     off_base, off_b, off_llm = signal_rows(full, "indian_2x2_offpeak")
     d_peak, d_off = dict((k, d) for k, _, d in peak_llm), dict((k, d) for k, _, d in off_llm)
-    nem = ms["full"]["indian_2x2_peak_amb"]["models"][NEMOTRON]["ambulances"]
     cam_main = cam["main"]
 
-    # ---- hero: ambulance travel time, MaxPressure vs the fastest LLM arm --------------------------
-    amb = {("maxpressure", None): em["maxpressure"]["ambulances_relevant"]["travel_time_mean_s"],
-           ("preemption_mp", None): em["preemption_mp"]["ambulances_relevant"]["travel_time_mean_s"],
-           MAIN: em["llm_guarded_mp"]["ambulances_relevant"]["travel_time_mean_s"],
-           EXPL: em["llm_guided_mp_v3"]["ambulances_relevant"]["travel_time_mean_s"],
-           ("llm_guided_mp_v3", NEMOTRON): nem["travel_time_mean_s"]}
-    mp = amb[("maxpressure", None)]
-    best_k = min((k for k in amb if k[0].startswith("llm_")), key=lambda k: amb[k])
-    best = amb[best_k]
-    faster = data.derived(100 * (1 - best / mp))
-    faster_main = data.derived(100 * (1 - amb[MAIN] / mp))
-    best_lab = theme.entity(*best_k)[0].replace(" (exploratory)", "").replace(" (exploratory, hosted)", "")
-    tags = (["exploratory"] if theme.is_exploratory(*best_k) else ["pre-registered"]) + ["no significance test"]
+    # ---- hero: ambulance travel time, MaxPressure vs the pre-registered LLM arm ---------------------
+    # The biggest number is a pre-registered result; the exploratory hybrid is a secondary cell.
+    mp = em["maxpressure"]["ambulances_relevant"]["travel_time_mean_s"]
+    main_t = em["llm_guarded_mp"]["ambulances_relevant"]["travel_time_mean_s"]
+    expl_t = em["llm_guided_mp_v3"]["ambulances_relevant"]["travel_time_mean_s"]
+    pre_t = em["preemption_mp"]["ambulances_relevant"]["travel_time_mean_s"]
+    faster_main = data.derived(100 * (1 - main_t / mp))
+    faster_expl = data.derived(100 * (1 - expl_t / mp))
+    dot = lambda k: f'<span class="ts-dot" style="background:{theme.entity(*k)[1]}"></span>'
     hero = (
         '<section class="ts-hero">' + HERO_GRID
-        + f'<div class="src">{ui.source_chip(FULL, MODEL_SIZE)}</div>'
+        + f'<div class="src">{ui.source_chip(FULL)}</div>'
         + '<div class="q">Can a small, local LLM run Indian traffic signals?</div>'
-        + f'<h1>Ambulances <span class="num"><span class="ts-count">{faster:.0f}</span>% faster</span></h1>'
-        + f'<p class="lede">when the LLM controller is told where they are. Mean travel time of the <b>{n_amb} ambulances</b> '
-          f'whose route crosses a signal, {em_seeds} seeds of peak traffic, against MaxPressure.</p>'
+        + f'<h1>Ambulances <span class="num"><span class="ts-count">{faster_main:.0f}</span>% faster</span></h1>'
+        + f'<p class="lede">with the pre-registered LLM controller, told where they are. Mean travel time of the '
+          f'<b>{n_amb} ambulances</b> whose route crosses a signal, {em_seeds} seeds of peak traffic, against MaxPressure.</p>'
         + '<div class="cmp">'
-        + f'<div><div class="k"><span class="ts-dot" style="background:{theme.entity("maxpressure", None)[1]}"></span>MaxPressure</div>'
-          f'<div class="v">{mp:.1f}<small>s</small></div></div>'
-        + f'<div class="best"><div class="k"><span class="ts-dot" style="background:{theme.entity(*best_k)[1]}"></span>{ui.esc(best_lab)}</div>'
-          f'<div class="v">{best:.1f}<small>s</small></div></div>'
-        + f'<div><div class="k"><span class="ts-dot" style="background:{theme.entity(*MAIN)[1]}"></span>LLM main, pre-registered</div>'
-          f'<div class="v">{amb[MAIN]:.1f}<small>s · −{faster_main:.0f}%</small></div></div>'
-        + f'<div><div class="k"><span class="ts-dot" style="background:{theme.entity("preemption_mp", None)[1]}"></span>Rule-based preemption</div>'
-          f'<div class="v">{amb[("preemption_mp", None)]:.1f}<small>s</small></div></div>'
+        + f'<div><div class="k">{dot(("maxpressure", None))}MaxPressure</div><div class="v">{mp:.1f}<small>s</small></div></div>'
+        + f'<div class="best"><div class="k">{dot(MAIN)}LLM main, pre-registered</div>'
+          f'<div class="v">{main_t:.1f}<small>s · −{faster_main:.0f}%</small></div></div>'
+        + f'<div><div class="k">{dot(EXPL)}gemma4 hybrid {ui.badge("exploratory")}</div>'
+          f'<div class="v">{expl_t:.1f}<small>s · −{faster_expl:.0f}%</small></div></div>'
+        + f'<div><div class="k">{dot(("preemption_mp", None))}Rule-based preemption</div>'
+          f'<div class="v">{pre_t:.1f}<small>s</small></div></div>'
         + '</div>'
-        + '<div class="badges">' + "".join(ui.badge(t) for t in tags) + ui.badge("ambulances not noised", "plain")
-        + '</div></section>')
+        + '<div class="badges">' + ui.badge("pre-registered") + ui.badge("no significance test")
+        + ui.badge("ambulances not noised", "plain") + '</div></section>')
 
     # ---- tile 1: ATT vs MaxPressure ----------------------------------------------------------------
     att_rows = [(MAIN, "peak", d_peak[MAIN]), (MAIN, "off-peak", d_off[MAIN]),
@@ -235,7 +226,7 @@ def render() -> None:
         ("a", "Approach", "<b>Local LLM agents</b> on a laptop GPU pick the phases of a simulated 2x2 grid; a YOLOv8n "
                           "detector's measured errors stress-test them."),
         ("f", "Findings", f"Travel time on a par with MaxPressure ({ui.pct(d_peak[MAIN])} at peak); ambulances "
-                          f"<b>{faster_main:.0f}–{faster:.0f}% faster</b>; camera errors cost {min(mp_pcts):.1f}–{max(mp_pcts):.1f}%."),
+                          f"<b>{faster_main:.0f}% faster</b>; camera errors cost {min(mp_pcts):.1f}–{max(mp_pcts):.1f}%."),
     ]
     parts = []
     for i, (k, n, t) in enumerate(steps):
@@ -255,8 +246,8 @@ def render() -> None:
         "<p><b>How to read these numbers.</b> Simulation results are means over "
         f"{min(seeds.values())}–{em_seeds} seeds, reported as measured. No significance test was pre-registered, so "
         "small differences are leads, not proof. Arms marked <i>exploratory</i> were not chosen by the "
-        "pre-registered selection rule: the headline's fastest arm is one of them; the pre-registered main arm is "
-        "shown next to it.</p>"
+        "pre-registered selection rule. The headline is the pre-registered main arm; the exploratory gemma4 hybrid "
+        "(faster still) is shown next to it with its badge.</p>"
         "<p><b>Ambulances.</b> Positions are assumed to come from GPS / V2X, never from the camera, and are never "
         "noised. In CityFlow nobody yields and nothing overtakes, so only the signal can help an ambulance; the LLM "
         "arms see ambulances listed in their prompt and do not preempt.</p>"

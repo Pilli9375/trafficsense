@@ -342,6 +342,8 @@ button[kind="secondary"], [data-testid="stBaseButton-secondary"] { background: v
 .ts-hero .cmp .v { color: var(--ts-text); font-family: var(--ts-mono); font-size: 19px; font-weight: 600; margin-top: 4px; white-space: nowrap; }
 .ts-hero .cmp .v small { color: var(--ts-text-3); font-size: 12px; margin-left: 2px; font-weight: 500; }
 .ts-hero .cmp .best .v { color: #ff9a9a; }
+.ts-hero .cmp .k .ts-badge { padding: 2px 6px; font-size: 9px; letter-spacing: .06em; }
+.ts-hero .cmp .k .ts-badge::before { display: none; }
 .ts-hero .badges { position: relative; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; }
 .ts-hero .src { position: absolute; top: 16px; right: 16px; z-index: 6; }
 @media (max-width: 1250px) { .ts-hero h1 { font-size: 54px !important; } .ts-hero-grid { width: 64%; opacity: .55; } }

@@ -102,10 +102,10 @@ missing and which command makes it.
 
 ## Pages in detail
 
-* **Overview.** The headline is the ambulance result: MaxPressure's mean travel time for the
-  signal-relevant ambulances against the fastest LLM arm (computed: `1 − fastest / MaxPressure`).
-  That arm is exploratory, so the headline carries the *exploratory* badge, and the pre-registered
-  main arm and rule-based preemption are shown next to it. The grid animated behind it is a
+* **Overview.** The headline is the pre-registered LLM arm's ambulance result: `1 − LLM main /
+  MaxPressure` for the mean travel time of the signal-relevant ambulances. Beside it, as secondary
+  numbers: the exploratory gemma4 hybrid (with its badge) and rule-based preemption. Nothing
+  exploratory is the biggest number on a page. The grid animated behind it is a
   schematic, not data (said in the page's drawer). Stat tiles: average travel time of the
   pre-registered arm vs the best baseline, the detector's mAP50 on the IDD test split, and the
   camera-error impact (a fixed plan reads no counts, so it shows "unaffected" rather than +0.0%).
@@ -142,7 +142,8 @@ missing and which command makes it.
   *Keep left* (default) draws the mirror image of CityFlow's right-hand network, as this project
   models India's left-hand traffic (`docs/indian_scenario.md`), and *As simulated* draws CityFlow's
   layout. Road names are the simulator's in both (as in the decision logs and the LLM prompts), so
-  the mirrored compass has north at the bottom. Under the canvas, both runs' decisions as cards on
+  the mirrored compass has north at the bottom. The default pair is MaxPressure and the pre-registered
+  LLM arm. Under the canvas, both runs' decisions as cards on
   the same clock (the latest one highlighted, ambulance decisions marked): the LLM's own reason, a
   guard override, or MaxPressure's pressures; "Show raw decision data" adds every logged field.
   Below: the network queue over the whole hour for both runs.
@@ -175,6 +176,8 @@ missing and which command makes it.
   queues; the ambulance's times are those in `summary.json`.
 * **Per-seed values.** The run summaries behind the slope chart reproduce `results.json`'s paired
   differences exactly.
+* **What leads.** The Overview headline is the pre-registered arm's number, and the replay's default
+  pair is MaxPressure and the pre-registered arm.
 * Planting a made-up number in a page ("latency 87.3 ms") makes the first two tests fail (checked
   by hand when the tests were written, and again after the redesign).
 

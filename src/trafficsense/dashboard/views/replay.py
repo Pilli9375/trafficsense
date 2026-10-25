@@ -189,7 +189,8 @@ def render() -> None:
 
     c1, c2, c3 = st.columns([1, 1, 1.3], gap="small")
     a_lab = c1.selectbox("Left", labels, index=labels.index(theme.entity("maxpressure", None)[0]))
-    b_lab = c2.selectbox("Right", labels, index=labels.index(theme.entity("llm_guided_mp_v3", "gemma4:e4b")[0]))
+    # default pair: MaxPressure vs the pre-registered LLM arm (exploratory runs can be picked, with their badge)
+    b_lab = c2.selectbox("Right", labels, index=labels.index(theme.entity("llm_guarded_mp", "llama3.2:3b")[0]))
     A, B = by_label[a_lab], by_label[b_lab]
     try:
         sa = data.read_json(f"{A.src}/summary.json", "Source run missing.")

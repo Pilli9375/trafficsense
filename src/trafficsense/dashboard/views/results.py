@@ -131,8 +131,10 @@ def signal_control(full: dict) -> None:
         d = data.derived(100 * (arms[k]["att"][0] / arms[MP]["att"][0] - 1))
         p = paired[names[k]]
         phrase = _seeds_phrase(p["seeds_lower_att"], p["seeds_higher_att"], data.derived(len(p["seeds"])))
-        who = "Pre-registered LLM arm" if k == MAIN else "Exploratory gemma4 hybrid"
-        parts.append(f"{who}: <b>{ui.pct(d)}</b> average travel time vs MaxPressure, {phrase}")
+        if k == MAIN:
+            parts.append(f"Pre-registered LLM arm: <b>{ui.pct(d)}</b> average travel time vs MaxPressure, {phrase}")
+        else:    # exploratory: in the sentence, never the emphasised number
+            parts.append(f"Exploratory gemma4 hybrid: {ui.pct(d)}, {phrase}")
     ui.takeaway(". ".join(parts) + ".", ["pre-registered", "no significance test"], FULL)
 
     c1, c2 = st.columns([1, 1.25], gap="medium")
@@ -198,10 +200,12 @@ def emergency(full: dict, ms: dict) -> None:
     rows = [((c, m), ctl[c]["ambulances_relevant"]) for c, m in ORDER if c in ctl]
     rows += [(("llm_guided_mp_v3", m), v["ambulances"]) for m, v in models.items() if m != "gemma4:e4b"]
     mp = ctl["maxpressure"]["ambulances_relevant"]["travel_time_mean_s"]
-    llm = [a["travel_time_mean_s"] for k, a in rows if k in (MAIN, EXPL)]
+    main_t = ctl["llm_guarded_mp"]["ambulances_relevant"]["travel_time_mean_s"]
+    expl_t = ctl["llm_guided_mp_v3"]["ambulances_relevant"]["travel_time_mean_s"]
     pre = ctl["preemption_mp"]["ambulances_relevant"]["travel_time_mean_s"]
-    ui.takeaway(f"Told where ambulances are, the LLM arms cut their mean travel time from <b>{mp:.1f} s</b> "
-                f"(MaxPressure) to <b>{min(llm):.1f}–{max(llm):.1f} s</b>; rule-based preemption: {pre:.1f} s.",
+    ui.takeaway(f"Told where ambulances are, the pre-registered LLM arm cuts their mean travel time from "
+                f"<b>{mp:.1f} s</b> (MaxPressure) to <b>{main_t:.1f} s</b>; rule-based preemption: {pre:.1f} s; "
+                f"the exploratory gemma4 hybrid: {expl_t:.1f} s.",
                 ["pre-registered", "no significance test"], FULL)
 
     # where the time goes: stopped vs the rest of the trip

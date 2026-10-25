@@ -263,6 +263,18 @@ def test_every_number_traceable(page):
     assert not bad, f"{page}: numbers not found in {sorted(read)}: {bad}"
 
 
+def test_overview_headline_is_the_pre_registered_arm():
+    """The biggest number on the Overview is a pre-registered result: MaxPressure vs the main LLM arm."""
+    at = render("overview")
+    hero = next(b for b in html_blocks(at) if 'class="ts-hero"' in b)
+    h1 = re.search(r"<h1>(.*?)</h1>", hero, re.S).group(1)
+    shown = int(re.search(r'class="ts-count">(\d+)<', h1).group(1))
+    em = json.loads((repo_root() / "outputs/full/results.json").read_text())["emergency"]["controllers"]
+    mp = em["maxpressure"]["ambulances_relevant"]["travel_time_mean_s"]
+    main = em["llm_guarded_mp"]["ambulances_relevant"]["travel_time_mean_s"]
+    assert shown == round(100 * (1 - main / mp))
+
+
 def test_replay_numbers_traceable():
     _need("{replays}")
     at = render("network_replay")
@@ -308,6 +320,16 @@ def test_replay_payload_is_the_logged_replay():
         amb = {x["vehicle"]: x for x in summary["emergency"]["vehicles"]}[pay["focus"]]
         assert (run["amb"]["start"], run["amb"]["finished"], run["amb"]["travel"]) == \
             (amb["scheduled_start"], amb["finished"], amb["travel_time_s"])
+
+
+def test_replay_default_pair_is_pre_registered():
+    """The replay opens on MaxPressure vs the pre-registered LLM arm: nothing exploratory leads the page."""
+    _need("{replays}")
+    at = render("network_replay")
+    (_, pay), = components(at)
+    assert [r["label"] for r in pay["runs"]] == [theme.entity("maxpressure", None)[0],
+                                                theme.entity("llm_guarded_mp", "llama3.2:3b")[0]]
+    assert not any(r["exploratory"] for r in pay["runs"])
 
 
 def _matches(run: dict, replay_rel: str) -> bool:
