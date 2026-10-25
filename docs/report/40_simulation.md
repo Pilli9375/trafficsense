@@ -17,10 +17,11 @@ Indian **vehicle mix** (sizes, headways, accelerations) but not Indian **driving
 results describe "a lane-based simulation with an Indian vehicle mix", and capacities measured
 in it are probably lower in vehicles per hour than on a real road with the same mix.
 
-We run CityFlow with lane changing switched off. With lane changing on, CityFlow's results
-depend very slightly on which read-only queries are made between steps, so two controllers that
-query different things could see different traffic. With it off, the same phase sequence always
-gives exactly the same run, which we verified.
+We run CityFlow with lane changing switched off. With lane changing on, CityFlow is not exactly
+repeatable: the same run, repeated with identical inputs, gives slightly different travel times.
+With it off, the same phase sequence always gives exactly the same run, which we verified by
+re-running every deterministic experiment from a fresh copy of the repository
+(@sec:app-repro).
 
 ## Validation against CoLLMLight's code {#sec:validation}
 
@@ -37,14 +38,16 @@ differ from ours (they measure travel time per intersection approach rather than
 queues over the network, and sample at their decision times), so every matched run was scored twice: with our
 metrics and with a line-by-line reimplementation of theirs.
 
-**Result.** @tbl:validation compares the two implementations under their metric definitions.
-Throughput, queue length and waiting time are identical floating-point numbers for both
-controllers on all three datasets. Average travel time under their definition is identical in
-all but one of the six runs; there, and in CityFlow's own average travel time, the differences
-are in the sixth significant digit or beyond. We traced them to CityFlow's lane changing: with lane changing on, extra
-read-only queries alter the run in the sixth significant digit, and their environment makes
-more such queries than ours. With lane changing off, the result is bit-for-bit identical whatever
-is queried. We therefore consider the pipeline validated.
+**Result.** @tbl:validation compares one run of each implementation under their metric
+definitions. Throughput, queue length and waiting time are identical floating-point numbers for
+both controllers on all three datasets. Average travel time under their definition is identical
+in all but one of the six runs; there, and in CityFlow's own average travel time, the differences
+are in the sixth significant digit or beyond. These comparisons need lane changing on, and with
+it CityFlow is not exactly repeatable: repeating the same run, in their code or ours, moves the
+average travel time by similar or larger amounts, while throughput and their queue length never
+changed (@sec:app-repro). The remaining differences are therefore within the simulator's
+own noise. (An earlier draft attributed them to extra read-only queries; the fresh-clone check
+showed that test could not separate the two.) We therefore consider the pipeline validated.
 
 ::: {#tbl:validation}
 <!-- BEGIN:tab_validation -->

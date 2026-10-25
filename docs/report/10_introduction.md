@@ -70,8 +70,9 @@ reproduce lane-free driving. This is stated wherever it matters
 ## Contributions {#sec:contributions}
 
 * **A validated simulation pipeline.** Driven the way CoLLMLight's own code drives CityFlow, our
-  environment reproduces their FixedTime and MaxPressure throughput, queue length and waiting
-  time exactly on all three of their datasets (@sec:validation). We also found that CoLLMLight's
+  environment reproduces their FixedTime and MaxPressure throughput and queue length exactly on
+  all three of their datasets, and their waiting time to within CityFlow's own run-to-run noise
+  (@sec:validation). We also found that CoLLMLight's
   FixedTime baseline never gives north–south traffic a green (@sec:fixedtime-bug).
 * **A local, guarded LLM controller with honest results.** Six controller designs and four
   local models were compared under a pre-registered rule; the selected design reaches

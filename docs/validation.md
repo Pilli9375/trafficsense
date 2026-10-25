@@ -10,10 +10,14 @@ from the JSON files in `outputs/validation/` by `scripts/validation/make_tables.
 
 **The simulator is validated.** When our environment is driven exactly the way CoLLMLight's
 code drives CityFlow (same phases, same 30 s decision grid, same CityFlow seed, lane changing
-on), it reproduces CoLLMLight's own reported throughput, queue length and waiting time
-**bit-for-bit** for FixedTime and MaxPressure on all three datasets (Synthetic 4x4, Jinan 3x4,
-Hangzhou 4x4). Their ATT is identical in 5 of 6 runs; every other difference is at most
-5×10⁻⁶ relative and is explained below. Remaining differences between
+on), it reproduces CoLLMLight's own reported throughput and queue length **exactly**, and their
+waiting and travel times to within CityFlow's own run-to-run variation, for FixedTime and
+MaxPressure on all three datasets (Synthetic 4x4, Jinan 3x4, Hangzhou 4x4). With lane changing
+on, CityFlow does not give exactly the same result twice, in their code as in ours (see
+[CityFlow is not repeatable with lane changing on](#cityflow-is-not-repeatable-with-lane-changing-on)).
+The table below compares one run of each: where it says "identical", that pair of runs matched
+exactly; every other difference is at most 5×10⁻⁶ relative, within the spread that repeating
+the same run shows. Remaining differences between
 our numbers and theirs come from three known, explained sources: different settings, different
 metric definitions, and a bug in CoLLMLight's FixedTime. None of them is a fault in our simulator.
 
@@ -75,8 +79,8 @@ Because of these definitions, the same simulation gives very different-looking n
 | Ours, MaxPressure matched to theirs | 683.1 | 2505 | 468.4 | 84.8 | 1263.3 | 47 |
 <!-- END:crosscheck_synthetic -->
 
-Throughput, queue and waiting time are identical. ATT (their definition) and CityFlow ATT
-differ in the 4th–6th significant digit; see "Why ATT differs by a hair" below.
+Throughput, queue and waiting time are identical in this pair of runs. ATT (their definition) and
+CityFlow ATT differ in the 4th–6th significant digit; see "CityFlow is not repeatable with lane changing on" below.
 
 ### CoLLMLight's FixedTime only serves East-West traffic
 
@@ -88,14 +92,25 @@ hour (60 / 60 of 120 actions): **north-south traffic never gets a green**. Their
 numbers on these datasets therefore describe a broken baseline. A correct 4-phase cycle on
 the same 30 s grid ("Ours: FixedTime, 4 phases, 30 s grid") is shown in the tables below.
 
-### Why ATT differs by a hair
+### CityFlow is not repeatable with lane changing on
 
-With `laneChange: true`, CityFlow's results depend very slightly on which read-only API calls
-are made between steps (`get_vehicle_info`, `get_vehicle_distance`, ...): the same run with
-different extra calls gave CityFlow ATT 1611.787 / 1611.979 / 1611.981 s. With
-`laneChange: false` the result is bit-for-bit identical whatever is called (checked:
-1293.49050 s in all three cases). Their env makes more such calls than ours, which fully
-accounts for the ~0.0005 s gap. This is one reason our default is `lane_change: false`.
+The matched runs need `laneChange: true`, and with it CityFlow does not give the same result
+twice. This was found in the fresh-clone check ([`reproducibility.md`](reproducibility.md),
+where the measurements are). Plain CityFlow, with only `next_step()` calls, its own signal plan
+and one thread, gives a different ATT almost every time the same run is repeated; with
+`laneChange: false` it gives the same ATT every time. Fixing Python's hash seed or switching off
+address-space randomisation does not help, so the variation is inside CityFlow. Over repeated
+matched runs, throughput (both definitions) and CoLLMLight's queue never changed; CityFlow's ATT
+changed in every profile, mostly by about 10⁻⁶ to 10⁻⁵ relative and at most by about 5×10⁻⁴
+(Jinan, matched FixedTime); waiting and travel times moved in a few profiles by a few parts per
+million. CoLLMLight's own unmodified code, run again, behaves the same way.
+
+An earlier version of this section explained the ATT gap by *which* read-only API calls are made
+between steps (the same run with different extra calls gave 1611.787 / 1611.979 / 1611.981 s).
+That test did not separate the extra calls from this run-to-run variation, which explains those
+values on its own, so that explanation is withdrawn. With `laneChange: false`, our default for
+every experiment, runs are exactly repeatable: every committed deterministic run re-run from a
+fresh clone was identical. This is the reason our default is `lane_change: false`.
 
 ### Seed sensitivity of their code (Synthetic 4x4)
 
@@ -294,9 +309,13 @@ cannot be converted to ours, so those cells are blank. "Matched" rows use their 
 
 * On every dataset our MaxPressure beats FixedTime by a wide margin, in both settings and
   under both metric definitions.
-* The default MaxPressure decision interval is now **15 s**, chosen by the pre-registered
-  sweep in `docs/baselines.md` (section 1); the previous 5 s default is kept as
-  `maxpressure_5s`. Re-running `maxpressure_5s` reproduces the earlier 5 s results exactly.
+* The "Ours default: MaxPressure" rows were made when the default decision interval was
+  **15 s**, chosen by the pre-registered sweep in `docs/baselines.md` (section 1). The later
+  minimum-green sweep (same doc) changed the default to 5 s decisions with a 15 s minimum green,
+  so `--profile default_maxpressure` no longer makes these rows: the 15 s setting is kept as
+  controller `maxpressure_15s`, and `--profile default_maxpressure_15s` reproduces them exactly
+  (checked in the fresh-clone check, [`reproducibility.md`](reproducibility.md)). The earlier 5 s
+  default is kept as `maxpressure_5s`; re-running it reproduces the earlier 5 s results exactly.
   Synthetic 4x4 was **not** part of that sweep. On it, 15 s does better than both 5 s and
   the matched 30 s setting (CityFlow ATT 1231.5 vs 1293.5 and 1263.3 s; 19% of
   intersection-time in transition vs 22% and 11%). On Jinan and Hangzhou, 15 s is slightly

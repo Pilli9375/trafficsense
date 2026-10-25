@@ -8,7 +8,8 @@ reasons and acts, adapted from CoLLMLight to a 4 GB laptop GPU. The objectives s
 @sec:objectives were met as follows.
 
 1. **A validated pipeline.** Our CityFlow environment reproduces the CoLLMLight authors' own
-   baseline results exactly when driven the same way, and the validation exposed a bug in their
+   baseline results when driven the same way (throughput and queue exactly, waiting and travel times
+   to within the simulator's run-to-run noise), and the validation exposed a bug in their
    fixed-time baseline.
 2. **An Indian test network with documented parameters**, calibrated against measured capacity,
    and **baselines tuned before the comparison**: MaxPressure with a 15<!--=cfg.mp.min_green--> s

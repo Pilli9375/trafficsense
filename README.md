@@ -10,7 +10,7 @@
 <img alt="Vision: YOLOv8n" src="https://img.shields.io/badge/vision-YOLOv8n-111F68">
 <img alt="LLM: Ollama, local" src="https://img.shields.io/badge/LLM-Ollama%20(local)-000000?logo=ollama&logoColor=white">
 <img alt="Dashboard: Streamlit" src="https://img.shields.io/badge/dashboard-Streamlit-FF4B4B?logo=streamlit&logoColor=white">
-<img alt="Tests: 275 passing" src="https://img.shields.io/badge/tests-275%20passing-2ea44f">
+<img alt="Tests: 277 passing" src="https://img.shields.io/badge/tests-277%20passing-2ea44f">
 <!-- END:readme_badges -->
 
 </div>
@@ -123,8 +123,9 @@ keeps the current phase, and a guard applies the LLM's pick only if its pressure
    75.7<!--=d.size.person.small-->% for pedestrians) but only
    1.3<!--=d.size.car.large-->% of large cars ([`docs/perception.md`](docs/perception.md)).
 5. **The simulator was validated** against the CoLLMLight authors' own code. Driven the same way,
-   it reproduces their FixedTime and MaxPressure throughput, queue and waiting time
-   bit-for-bit on all three of their datasets. Along the way we found that **CoLLMLight's
+   it reproduces their FixedTime and MaxPressure throughput and queue exactly on all three of their
+   datasets, and their waiting and travel times to within CityFlow's own run-to-run noise
+   (with lane changing on, as their settings need, CityFlow is not exactly repeatable). Along the way we found that **CoLLMLight's
    FixedTime baseline never gives north–south traffic a green**
    ([`docs/validation.md`](docs/validation.md)).
 

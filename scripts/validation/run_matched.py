@@ -2,9 +2,12 @@
 with BOTH our metrics and CoLLMLight's metric definitions.
 
 Profiles:
-  default_fixedtime / default_fixedtime_all_phases / default_maxpressure / default_maxpressure_5s
+  default_fixedtime / default_fixedtime_all_phases / default_maxpressure / default_maxpressure_5s /
+  default_maxpressure_15s
                         our configs/default.yaml settings (default_maxpressure_5s = the
-                        maxpressure_5s controller, the default before tuning)
+                        maxpressure_5s controller, the default before tuning; default_maxpressure_15s
+                        = maxpressure_15s, the default when the committed default_maxpressure files
+                        were made, so it reproduces them)
   matched_fixedtime     4 paired phases, 30 s green, switch checked on a 30 s grid
   matched_maxpressure   4 paired phases, decision every 30 s, np.argmax tie-break, no max green
   replica_fixedtime     matched_fixedtime but cycling phases 1 and 3 only, which is what
@@ -30,7 +33,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))   # sibling validation 
 from collmlight_metrics import CoLLMLightMetrics  # noqa: E402
 
 PROFILES = ("default_fixedtime", "default_fixedtime_all_phases", "default_maxpressure", "default_maxpressure_5s",
-            "matched_fixedtime",
+            "default_maxpressure_15s", "matched_fixedtime",
             "matched_maxpressure", "replica_fixedtime")
 
 

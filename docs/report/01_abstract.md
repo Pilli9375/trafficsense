@@ -8,7 +8,7 @@ small model on a laptop GPU, can control signals as well as the best classical m
 they cope with vehicle counts from a real camera detector instead of exact simulator counts.
 
 We built TrafficSense on the CityFlow simulator and validated it against the CoLLMLight authors'
-own code, whose baseline results it reproduces exactly; along the way we found a bug in their
+own code, whose baseline results it reproduces to within the simulator's own run-to-run noise; along the way we found a bug in their
 fixed-time baseline. We built a 2x2 network with an Indian vehicle mix, calibrated its demand,
 and tuned MaxPressure and a Webster fixed-time plan before any LLM run. The LLM controller, its
 selection rule and the experiment plan were fixed in advance (pre-registration).
