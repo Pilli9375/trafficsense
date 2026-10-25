@@ -28,8 +28,9 @@ Pages:
 Dark "mission control": a near-black page with a faint grid, one accent colour (electric teal) for
 the interface, and colours that keep one meaning everywhere: green = good / green light, amber =
 the transition (yellow) phase, red = queue / bad, the ambulance red and white. Fonts are Geist and
-Geist Mono from Google Fonts (`.streamlit/config.toml`); offline, the browser falls back to its
-system fonts. The theme lives in three files that are changed together: `.streamlit/config.toml`
+Geist Mono, bundled in `src/trafficsense/dashboard/static/fonts/` (SIL OFL 1.1; source, versions and
+sha256 in its `README.md`) and served by Streamlit's static file serving, so the dashboard looks the
+same without a network. The theme lives in three files that are changed together: `.streamlit/config.toml`
 (Streamlit's own widgets), `src/trafficsense/dashboard/assets/theme.css` (everything else, injected
 once by `app.py`) and `theme.py` (the same tokens for Python and the shared Plotly template).
 

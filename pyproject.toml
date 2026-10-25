@@ -25,7 +25,7 @@ where = ["src"]
 include = ["trafficsense*"]
 
 [tool.setuptools.package-data]
-"trafficsense.dashboard" = ["assets/*"]   # the dashboard's CSS theme and its canvas components (JS/CSS)
+"trafficsense.dashboard" = ["assets/*", "static/fonts/*"]   # CSS theme, canvas components, bundled fonts (OFL)
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
