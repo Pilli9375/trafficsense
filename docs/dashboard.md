@@ -144,7 +144,10 @@ missing and which command makes it.
   match the compass. *Keep left* draws the left–right mirror image, which is how this project models
   India's left-hand traffic (`docs/indian_scenario.md`); there east and west swap sides, so the road
   the decision logs and the LLM prompts call E is drawn on the left (the compass says so). The
-  default pair is MaxPressure and the pre-registered LLM arm. Under the canvas, both runs' decisions as cards on
+  default pair is MaxPressure and the pre-registered LLM arm. Nothing is drawn over the map: each
+  panel's run name and timer sit in a bar above the canvas and its compass and zoom buttons in a bar
+  below it, and every label on the canvas is kept inside it (a queue count whose bar runs off the
+  view sits where the bar leaves it). Under the canvas, both runs' decisions as cards on
   the same clock (the latest one highlighted, ambulance decisions marked): the LLM's own reason, a
   guard override, or MaxPressure's pressures; "Show raw decision data" adds every logged field.
   Below: the network queue over the whole hour for both runs.
@@ -184,8 +187,10 @@ missing and which command makes it.
   by hand when the tests were written, and again after the redesign).
 
 `tests/test_dashboard_browser.py` starts the app and drives it with Playwright's Chromium at
-1280, 1366 and 1920 px wide: nothing sticks out of its card on any page or Results tab. It is skipped
-when Chromium cannot start (see Screenshots for its libraries) or the replays are absent.
+1280, 1366 and 1920 px wide: nothing sticks out of its card on any page or Results tab, and on the
+replay, in both views, the grid and the follow camera, at four zoom levels and two moments, every
+label the canvas drew lies inside the canvas and nothing overlaps the canvas. It is skipped when
+Chromium cannot start (see Screenshots for its libraries) or the replays are absent.
 
 `tests/test_replay.py` checks the replay recorder on short runs made in a temp folder
 (MaxPressure re-run, and an injected fake LLM replayed from its decision log), and that a changed

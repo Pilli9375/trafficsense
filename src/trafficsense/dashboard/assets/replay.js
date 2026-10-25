@@ -49,7 +49,7 @@ export default function (component) {
   const jx = J.map((j) => j.x), jy = J.map((j) => j.y);
   const C = { x: (Math.min(...jx) + Math.max(...jx)) / 2, y: (Math.min(...jy) + Math.max(...jy)) / 2 };
   const SPAN = Math.max(Math.max(...jx) - Math.min(...jx), Math.max(...jy) - Math.min(...jy)) + 2 * 64;
-  const HUD = 54;   // px at the top of each panel kept free for the run label and the timer
+  const MARGIN = 4;   // px: every canvas label stays this far inside the canvas (nothing overlays it)
   const pt = (R, along, off) => [R.a[0] + R.ux * along + R.nx * off, R.a[1] + R.uy * along + R.ny * off];  // point on a road
 
   // ---- runs -------------------------------------------------------------------------------------
@@ -88,7 +88,7 @@ export default function (component) {
   let speed = data.view.speed, mode = data.view.mode, side = data.view.side, zoom = 1;
   seg('Speed', [[1, '1×'], [2, '2×'], [5, '5×'], [10, '10×']], speed, 'mono', (v) => { speed = v; });
   seg('View', [['fit', 'Grid'], ['follow', 'Follow ambulance']], mode, '', (v) => { mode = v; pan = [0, 0]; dirty = true; });
-  seg('Drive', [['sim', 'As simulated'], ['left', 'Keep left']], side, '', (v) => { side = v; dirty = true; });
+  seg('Drive', [['sim', 'As simulated'], ['left', 'Keep left']], side, '', (v) => { side = v; P.forEach(drawCompass); dirty = true; });
   tool.appendChild(el('span', 'rp-sp'));
   const info = tool.appendChild(el('details', 'rp-info'));
   info.innerHTML = `<summary>${I.info}How it is drawn</summary><div class="pop">
@@ -100,25 +100,31 @@ export default function (component) {
   const panels = root.appendChild(el('div', 'rp-panels'));
   const P = runs.map((r) => {
     const pn = panels.appendChild(el('div', 'rp-panel'));
+    // header: the run and the ambulance timer, above the map (never over it)
+    const head = pn.appendChild(el('div', 'rp-head'));
+    const who = head.appendChild(el('div', 'rp-who'));
+    const d = who.appendChild(el('span', 'd')); d.style.background = r.colour;
+    who.appendChild(el('span', 'nm', r.short));
+    if (r.exploratory) who.appendChild(el('span', 'ex', 'exploratory'));
+    const timer = head.appendChild(el('div', 'rp-timer wait'));
+    const tk = timer.appendChild(el('span', 'k')); tk.appendChild(el('i')); const tkt = tk.appendChild(el('span', '', ''));
+    const tv = timer.appendChild(el('span', 'v'));
     const cv = pn.appendChild(el('div', 'rp-canvas'));
     const canvas = cv.appendChild(el('canvas'));
     canvas.setAttribute('role', 'img');
     canvas.setAttribute('aria-label', `${r.label}: replay of the 2x2 grid`);
-    const hud = cv.appendChild(el('div', 'rp-hud'));
-    const who = hud.appendChild(el('div', 'rp-who'));
-    const d = who.appendChild(el('span', 'd')); d.style.background = r.colour;
-    who.appendChild(el('span', 'nm', r.short));
-    if (r.exploratory) who.appendChild(el('span', 'ex', 'exploratory'));
-    const timer = hud.appendChild(el('div', 'rp-timer wait'));
-    const tk = timer.appendChild(el('span', 'k')); tk.appendChild(el('i')); const tkt = tk.appendChild(el('span', '', ''));
-    const tv = timer.appendChild(el('span', 'v'));
-    const zoomBox = cv.appendChild(el('div', 'rp-zoom'));
-    const zin = zoomBox.appendChild(el('button', '', '+')), zout = zoomBox.appendChild(el('button', '', '−'));
-    zin.setAttribute('aria-label', 'Zoom in'); zout.setAttribute('aria-label', 'Zoom out');
+    const tip = cv.appendChild(el('div', 'rp-tip'));
+    // footer: compass and zoom, below the map
+    const foot = pn.appendChild(el('div', 'rp-foot'));
+    const compass = foot.appendChild(el('div', 'rp-compass'));
+    const zoomBox = foot.appendChild(el('div', 'rp-zoom'));
+    const zout = zoomBox.appendChild(el('button', '', '−')), zin = zoomBox.appendChild(el('button', '', '+'));
+    const zfit = zoomBox.appendChild(el('button', 'fit', 'reset'));
+    zin.setAttribute('aria-label', 'Zoom in'); zout.setAttribute('aria-label', 'Zoom out'); zfit.setAttribute('aria-label', 'Reset zoom and pan');
     zin.onclick = () => { zoom = clamp(zoom * 1.4, 0.6, 8); dirty = true; };
     zout.onclick = () => { zoom = clamp(zoom / 1.4, 0.6, 8); dirty = true; };
-    const tip = cv.appendChild(el('div', 'rp-tip'));
-    return { r, cv, canvas, ctx: canvas.getContext('2d'), timer, tkt, tv, tip, cam: null, w: 0, h: 0, drawn: [] };
+    zfit.onclick = () => { zoom = 1; pan = [0, 0]; dirty = true; };
+    return { r, cv, canvas, ctx: canvas.getContext('2d'), timer, tkt, tv, tip, compass, cam: null, w: 0, h: 0, drawn: [] };
   });
 
   // scrubber
@@ -277,10 +283,9 @@ export default function (component) {
     return null;
   }
   function camera(p, dt) {
-    const fit = Math.min(p.w, p.h - HUD) / SPAN;
+    const fit = Math.min(p.w, p.h) / SPAN;
     let tx = C.x - pan[0], ty = C.y - pan[1], ts = fit * zoom;
     if (mode === 'follow') { const f = focusAt(p.r, tau); if (f) { tx = f[0]; ty = f[1]; } ts = Math.max(fit * zoom, 3.6 * zoom); }
-    ty -= fy() * HUD / (2 * ts);   // content centred in the area below the HUD
     if (!p.cam) p.cam = { x: tx, y: ty, s: ts };
     const k = dt == null ? 1 : 1 - Math.exp(-dt * 7);
     p.cam.x += (tx - p.cam.x) * k; p.cam.y += (ty - p.cam.y) * k; p.cam.s += (ts - p.cam.s) * k;
@@ -453,13 +458,15 @@ export default function (component) {
   }
 
   function drawLabels(p, kph, kq) {
-    const c = p.ctx, r = p.r;
+    const c = p.ctx, r = p.r, M = MARGIN, boxes = [];
     screen(p);
     c.textBaseline = 'middle';
+    const inside = (x, y, hw, hh) => x - hw >= M && x + hw <= p.w - M && y - hh >= M && y + hh <= p.h - M;
+    const put = (x, y, w, h) => [clamp(x, M, p.w - M - w), clamp(y, M, p.h - M - h)];   // keep a box on the canvas
     const cs = toS(p, C.x, C.y);
     for (const j of J) {
       const ji = r.ji[j.id], ph = r.phase[kph][ji], tr = ph === j.transition;
-      // label in the land quadrant between this junction and the grid's centre (never off the panel's edge)
+      // label in the land quadrant between this junction and the grid's centre
       const js = toS(p, j.x, j.y), sx = Math.sign(cs[0] - js[0]) || 1, sy = Math.sign(cs[1] - js[1]) || 1;
       const corner = toS(p, j.x + Math.sign(C.x - j.x || 1) * j.w, j.y + Math.sign(C.y - j.y || 1) * j.w);
       const lab = tr ? 'yellow' : j.labels[String(ph)];
@@ -469,36 +476,45 @@ export default function (component) {
       const w2 = c.measureText(lab).width, W = w1 + w2 + 22;
       // labels that extend leftwards sit one row further in, so two labels meeting in the middle never overlap
       const dy = 16 + (sx < 0 ? 24 : 0);
-      const x = sx > 0 ? corner[0] + 6 : corner[0] - 6 - W, y = sy > 0 ? corner[1] + dy : corner[1] - dy;
-      if (y >= HUD + 6) {   // not under the run label and the timer
-        c.fillStyle = 'rgba(7,9,13,.8)'; rrect(c, x, y - 10, W, 20, 6); c.fill();
+      const x0 = sx > 0 ? corner[0] + 6 : corner[0] - 6 - W, y0 = sy > 0 ? corner[1] + dy : corner[1] - dy;
+      const far = js[0] < -W || js[0] > p.w + W || js[1] < -40 || js[1] > p.h + 40;   // junction well off the view
+      if (!far) {
+        const [x, top] = put(x0, y0 - 10, W, 20), y = top + 10;
+        c.fillStyle = 'rgba(7,9,13,.8)'; rrect(c, x, top, W, 20, 6); c.fill();
         c.strokeStyle = tr ? 'rgba(245,165,36,.55)' : 'rgba(34,197,94,.45)'; c.lineWidth = 1; c.stroke();
         c.fillStyle = '#e6edf3'; c.font = '600 11px "Geist Mono", ui-monospace, monospace'; c.fillText(j.label, x + 7, y);
         c.fillStyle = tr ? SIG.amber : '#86efac'; c.font = '500 11px Geist, system-ui, sans-serif'; c.fillText(lab, x + 14 + w1, y);
+        boxes.push([x, top, W, 20]);
       }
-      // queue counts at the far end of each bar
+      // queue counts at the far end of each bar, or where the bar leaves the view
       r.approaches.forEach((app, ai) => {
         const rid = j.inRoad[app]; if (!rid) return;
         const R = roads[rid], q = r.queue[kq][ji][ai]; if (!q) return;
-        const L = Math.min(q * QM, R.len - R.wb - R.wa - 4), o = R.lanes * R.lw + 1.7;
-        const [qx, qy] = toS(p, ...pt(R, R.len - R.wb - 1 - L - 3.5, o));
+        const end = R.len - R.wb - 1, L = Math.min(q * QM, R.len - R.wb - R.wa - 4), o = R.lanes * R.lw + 1.7;
         c.font = '600 10.5px "Geist Mono", ui-monospace, monospace';
-        const t = String(q), tw = c.measureText(t).width;
-        c.fillStyle = 'rgba(244,63,94,.92)'; rrect(c, qx - tw / 2 - 4, qy - 8, tw + 8, 16, 5); c.fill();
-        c.fillStyle = '#fff'; c.fillText(t, qx - tw / 2, qy + 0.5);
+        const t = String(q), tw = c.measureText(t).width, bw = tw + 8, bh = 16;
+        let at = null;
+        for (let k = 0; k <= 50 && !at; k++) {   // from the bar's far end towards the stop line: first point on the canvas
+          const u = 1 - k / 50, [px, py] = toS(p, ...pt(R, end - u * L - (k ? 0 : 3.5), o));
+          if (inside(px, py, bw / 2, bh / 2)) at = [px, py];
+        }
+        if (!at) return;   // the bar is not on the canvas at all
+        const [bx, by] = put(at[0] - bw / 2, at[1] - bh / 2, bw, bh);
+        c.fillStyle = 'rgba(244,63,94,.92)'; rrect(c, bx, by, bw, bh, 5); c.fill();
+        c.fillStyle = '#fff'; c.fillText(t, bx + 4, by + bh / 2 + 0.5);
+        boxes.push([bx, by, bw, bh]);
       });
     }
-    // compass: north is up in every view; in the keep-left mirror east is on the left
-    const up = -fy(), east = fx(), cx = 44, cy = p.h - 30;
-    c.fillStyle = 'rgba(7,9,13,.8)'; c.beginPath(); c.arc(cx, cy, 13, 0, 2 * Math.PI); c.fill();
-    c.strokeStyle = 'rgba(255,255,255,.14)'; c.lineWidth = 1; c.stroke();
-    c.fillStyle = '#19e6d2'; c.beginPath(); c.moveTo(cx, cy - up * 10); c.lineTo(cx - 3.5, cy); c.lineTo(cx + 3.5, cy); c.closePath(); c.fill();
-    c.fillStyle = '#3a475a'; c.beginPath(); c.moveTo(cx, cy + up * 10); c.lineTo(cx - 3.5, cy); c.lineTo(cx + 3.5, cy); c.closePath(); c.fill();
-    c.textAlign = 'center'; c.font = '700 10px Geist, system-ui, sans-serif';
-    c.fillStyle = '#19e6d2'; c.fillText('N', cx, cy - up * 20);
-    c.fillStyle = '#a3afbd'; c.fillText('E', cx + east * 21, cy + 0.5);
-    c.textAlign = 'left';
-    if (east < 0) { c.font = '500 10px Geist, system-ui, sans-serif'; c.fillStyle = '#7d8896'; c.fillText('mirrored east-west', cx + 20, cy + 0.5); }
+    p.canvas.dataset.labels = JSON.stringify(boxes.map((bx) => bx.map((v) => Math.round(v * 10) / 10)));
+    p.canvas.dataset.size = `${Math.round(p.w * 10) / 10},${Math.round(p.h * 10) / 10}`;
+  }
+
+  // compass (in the footer): north is up in every view; in the keep-left mirror east is on the left
+  function drawCompass(p) {
+    const east = fx() > 0;
+    p.compass.innerHTML = `<svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10" fill="#07090d" stroke="#2a3444"/>`
+      + `<path d="M11 2.5L14 11H8z" fill="#19e6d2"/><path d="M11 19.5L14 11H8z" fill="#3a475a"/></svg>`
+      + `<span><b>N</b> up · <b>E</b> ${east ? 'right' : 'left'}${east ? '' : ' (mirrored east-west)'}</span>`;
   }
 
   function drawGrid(p) {
@@ -583,6 +599,7 @@ export default function (component) {
   const ro = new ResizeObserver(resize);
   P.forEach((p) => ro.observe(p.cv));
   resize();
+  P.forEach(drawCompass);
   renderFeeds();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { dirty = true; });
   raf = requestAnimationFrame(frame);
