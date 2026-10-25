@@ -190,10 +190,12 @@ metric or a tampered decision log makes it fail.
 ## Screenshots
 
 `python scripts/screenshot_dashboard.py` starts the app on a free port and saves every page and
-state with Playwright: each page, the Results tabs, Live Detection before and after a run, and the
-replay as loaded, mid-playback, following the ambulance, as simulated, and with its notes open. The
-1366×768 set goes to `docs/screenshots/` (in git); the 1920×1080 set, checked the same way, to
-`<paths.dashboard_media>/screenshots/1920/` (on D, not in git). Chromium needs `libnspr4`, `libnss3` and `libasound2`; without root they can be unpacked from
+state with Playwright as lossless WebP: each page, the Results tabs, Live Detection before and after
+a run, and the replay as loaded, mid-playback, following the ambulance, in the keep-left mirror, and
+with its notes open. The 1366×768 set goes to `docs/screenshots/` (in git); the 1920×1080 set, checked
+the same way, to `<paths.dashboard_media>/screenshots/1920/` (on D, not in git). `--offline` blocks
+every request that is not to the app and fails if one is attempted; the screenshots in `docs/` were
+taken that way. Chromium needs `libnspr4`, `libnss3` and `libasound2`; without root they can be unpacked from
 the Ubuntu packages into a user folder (`apt-get download libnspr4 libnss3 libasound2`,
 `dpkg -x <deb> ~/.cache/pw-libs/root`) and passed with
 `LD_LIBRARY_PATH=~/.cache/pw-libs/root/usr/lib/x86_64-linux-gnu`.

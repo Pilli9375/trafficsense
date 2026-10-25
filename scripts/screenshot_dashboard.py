@@ -1,27 +1,33 @@
 """Launch the dashboard and screenshot every page and state with Playwright (Chromium).
 
     python scripts/screenshot_dashboard.py                       # 1366x768 and 1920x1080
+    python scripts/screenshot_dashboard.py --offline             # the same with every non-local request blocked
     python scripts/screenshot_dashboard.py --sizes 1366x768      # one size
     python scripts/screenshot_dashboard.py --out <dir> --extra-out <dir>
 
 The first size goes to --out (docs/screenshots, in git); every other size to --extra-out/<width>/,
-by default <paths.dashboard_media>/screenshots (the symlink to D: not in git). Per size:
-  overview(.png|_viewport.png), overview_source.png (a source chip opened),
-  live_detection_preview.png (before a run), live_detection(.png|_viewport.png) (after running the
+by default <paths.dashboard_media>/screenshots (the symlink to D: not in git). Files are lossless WebP
+(Chromium's PNG, re-encoded without loss by Pillow). With --offline every request that is not to the app is
+blocked, and the script fails if any was attempted: the dashboard must not need the network. Per size:
+  overview(.webp|_viewport.webp), overview_source.webp (a source chip opened),
+  live_detection_preview.webp (before a run), live_detection(.webp|_viewport.webp) (after running the
   detector on the bundled sample clip; its FPS are measured when the screenshot is taken),
-  network_replay(.png|_viewport.png) (as loaded), network_replay_playing.png (mid-playback, the
-  ambulance on screen), network_replay_follow.png (camera following the ambulance),
-  network_replay_sim.png (as simulated, not mirrored), network_replay_info.png ("How it is drawn"),
-  results(.png|_viewport.png) and results_2.png ... results_5.png (the other tabs).
+  network_replay(.webp|_viewport.webp) (as loaded), network_replay_playing.webp (mid-playback, the
+  ambulance on screen), network_replay_follow.webp (camera following the ambulance),
+  network_replay_keepleft.webp (keep left: the left-right mirror, north still up), network_replay_info.webp
+  ("How it is drawn"),
+  results(.webp|_viewport.webp) and results_2.webp ... results_5.webp (the other tabs).
 Needs: pip install -e ".[dashboard,screenshots]" && python -m playwright install chromium
 """
 import argparse
+import io
 import socket
 import subprocess
 import sys
 import time
 from pathlib import Path
 
+from PIL import Image
 from playwright.sync_api import sync_playwright
 
 from trafficsense.config import load_config, repo_root, resolve_path
@@ -31,7 +37,8 @@ PLAY_FROM = 955     # replay: seek here, then play briefly (the default ambulanc
 
 
 def save(page, path: Path) -> None:
-    page.screenshot(path=str(path))
+    """Screenshot as lossless WebP (same pixels as Chromium's PNG)."""
+    Image.open(io.BytesIO(page.screenshot())).save(path, "WEBP", lossless=True, quality=100, method=6)
 
 
 def free_port() -> int:
@@ -86,60 +93,60 @@ def shoot(page, url: str, out: Path, width: int, height: int) -> None:
 
     page.goto(f"{url}/")
     wait_ready(page)
-    save(page, out / "overview_viewport.png")
-    full_shot(page, out / "overview.png", width, height)
+    save(page, out / "overview_viewport.webp")
+    full_shot(page, out / "overview.webp", width, height)
     page.locator(".ts-hero details.ts-src summary").click()
     page.wait_for_timeout(600)
-    save(page, out / "overview_source.png")
+    save(page, out / "overview_source.webp")
     say("overview")
 
     page.goto(f"{url}/live_detection")
     wait_ready(page)
-    full_shot(page, out / "live_detection_preview.png", width, height)
+    full_shot(page, out / "live_detection_preview.webp", width, height)
     page.get_by_role("button", name="Run detector").click()
     page.wait_for_selector(".pl-stats .pl-stat", timeout=600000)
     wait_ready(page)
     page.locator(".pl-btn").click()              # play the annotated clip for a moment, then pause
     page.wait_for_timeout(2600)
     page.locator(".pl-btn").click()
-    save(page, out / "live_detection_viewport.png")
-    full_shot(page, out / "live_detection.png", width, height)
+    save(page, out / "live_detection_viewport.webp")
+    full_shot(page, out / "live_detection.webp", width, height)
     say("live_detection")
 
     page.goto(f"{url}/network_replay")
     wait_ready(page)
     page.wait_for_selector(".rp-panel canvas", timeout=120000)
     page.wait_for_timeout(1500)
-    save(page, out / "network_replay_viewport.png")
-    full_shot(page, out / "network_replay.png", width, height)
+    save(page, out / "network_replay_viewport.webp")
+    full_shot(page, out / "network_replay.webp", width, height)
     tool = page.locator(".rp-tool")
     page.get_by_role("button", name="2×").click()
     seek(page, PLAY_FROM)
     page.get_by_role("button", name="Play").click()
     page.wait_for_timeout(1300)
     page.get_by_role("button", name="Pause").click()
-    scrolled_shot(page, tool, out / "network_replay_playing.png")
+    scrolled_shot(page, tool, out / "network_replay_playing.webp")
     page.get_by_role("button", name="Follow ambulance").click()
     page.wait_for_timeout(1500)
-    scrolled_shot(page, tool, out / "network_replay_follow.png")
+    scrolled_shot(page, tool, out / "network_replay_follow.webp")
     page.get_by_role("button", name="Grid").click()
-    page.get_by_role("button", name="As simulated").click()
-    page.wait_for_timeout(1200)
-    scrolled_shot(page, tool, out / "network_replay_sim.png")
     page.get_by_role("button", name="Keep left").click()
+    page.wait_for_timeout(1200)
+    scrolled_shot(page, tool, out / "network_replay_keepleft.webp")
+    page.get_by_role("button", name="As simulated").click()
     page.locator(".rp-info summary").click()
     page.wait_for_timeout(600)
-    scrolled_shot(page, tool, out / "network_replay_info.png")
+    scrolled_shot(page, tool, out / "network_replay_info.webp")
     say("network_replay")
 
     page.goto(f"{url}/results")
     wait_ready(page)
-    save(page, out / "results_viewport.png")
-    full_shot(page, out / "results.png", width, height)
+    save(page, out / "results_viewport.webp")
+    full_shot(page, out / "results.webp", width, height)
     for i, tab in enumerate(RESULT_TABS[1:], start=2):
         page.get_by_role("tab", name=tab).click()
         wait_ready(page)
-        full_shot(page, out / f"results_{i}.png", width, height)
+        full_shot(page, out / f"results_{i}.webp", width, height)
     say("results")
 
 
@@ -147,6 +154,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--out", default="docs/screenshots")
     ap.add_argument("--sizes", default="1366x768,1920x1080", help="comma-separated WIDTHxHEIGHT")
+    ap.add_argument("--offline", action="store_true", help="block every request that is not to the app; fail if one is made")
     ap.add_argument("--extra-out", default=None,
                     help="folder for every size after the first (default: <paths.dashboard_media>/screenshots)")
     args = ap.parse_args()
@@ -166,13 +174,28 @@ def main():
                 break
             except OSError:
                 time.sleep(0.5)
+        external: list[str] = []
+
+        def guard(route) -> None:
+            u = route.request.url
+            if u.startswith(url) or u.startswith(("data:", "blob:")):
+                route.continue_()
+                return
+            external.append(u)
+            route.abort() if args.offline else route.continue_()
+
         with sync_playwright() as p:
             browser = p.chromium.launch()
             for i, (w, h) in enumerate(sizes):
                 page = browser.new_page(viewport={"width": w, "height": h}, device_scale_factor=1)
+                page.route("**/*", guard)
                 shoot(page, url, root / args.out if i == 0 else extra / str(w), w, h)
                 page.close()
             browser.close()
+        if external:
+            raise SystemExit(f"{len(external)} request(s) left the machine{' (blocked)' if args.offline else ''}: "
+                             + ", ".join(sorted(set(external))[:5]))
+        print("no request left the machine" + (" (network blocked)" if args.offline else ""))
     finally:
         proc.terminate()
         proc.wait(timeout=30)
