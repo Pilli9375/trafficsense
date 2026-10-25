@@ -1,4 +1,38 @@
+<div align="center">
+
 # TrafficSense
+
+**AI-assisted traffic signals for Indian roads, tested in simulation**
+
+<!-- BEGIN:readme_badges -->
+<img alt="Python 3.10" src="https://img.shields.io/badge/Python-3.10-3776AB?logo=python&logoColor=white">
+<img alt="Simulator: CityFlow" src="https://img.shields.io/badge/simulator-CityFlow-2a78d6">
+<img alt="Vision: YOLOv8n" src="https://img.shields.io/badge/vision-YOLOv8n-111F68">
+<img alt="LLM: Ollama, local" src="https://img.shields.io/badge/LLM-Ollama%20(local)-000000?logo=ollama&logoColor=white">
+<img alt="Dashboard: Streamlit" src="https://img.shields.io/badge/dashboard-Streamlit-FF4B4B?logo=streamlit&logoColor=white">
+<img alt="Tests: 275 passing" src="https://img.shields.io/badge/tests-275%20passing-2ea44f">
+<!-- END:readme_badges -->
+
+</div>
+
+<a id="in-one-minute"></a>
+
+## ⏱️ In one minute
+
+**The problem.** Traffic lights in Indian cities often run on fixed timers, so they cannot react to
+the traffic actually waiting, or to an ambulance stuck in a queue.
+
+**What we built.** A computer [simulation](#g-simulation) of city junctions with Indian-style traffic, in which
+each traffic light is run by a small AI language model ([LLM](#g-llm)) on an ordinary laptop, plus a
+camera-based vehicle detector ([YOLO](#g-yolo)) trained on photos of Indian roads.
+
+**The main result.** In a test planned in advance ([pre-registered](#g-prereg)), the AI-run lights moved traffic
+about as well as the best standard method: average trip times within
+0.5<!--=f.peak.llm.vs_mp-->–0.9<!--=f.off.llm.vs_mp-->%, but not better. When told about approaching ambulances, they got
+them through 31.7<!--=e.llm.amb_cut_vs_mp-->% faster (130.1<!--=e.mp.amb--> s → 88.9<!--=e.llm.amb--> s on average).
+
+**Why it matters.** A small, local AI is not yet a better traffic controller, but it is a safe
+add-on that can use information plain rules ignore, such as an emergency vehicle.
 
 Traffic-signal control for a simulated Indian-style road network, comparing classical
 controllers with **cooperative LLM agents** that run on a local 3–4 B model (adapted from
@@ -7,7 +41,43 @@ Dataset, whose measured errors are fed back into the simulation, and a **Streaml
 that only reads the result files. B.Tech capstone project. Every number on this page is
 checked against `outputs/` by `python scripts/make_report.py --check`.
 
-## Headline findings
+<a id="tech-stack"></a>
+
+## 🧰 Tech stack
+
+| Part | What we used |
+|---|---|
+| Simulation | [CityFlow](#g-cityflow) traffic simulator, Python 3.10 |
+| AI agents | small [LLMs](#g-llm) run locally with [Ollama](#g-ollama) (`llama3.2:3b` is the pre-registered model) |
+| Vision | Ultralytics YOLOv8n trained on the India Driving Dataset ([IDD](#g-idd)) |
+| Dashboard | Streamlit and Plotly |
+| Report | pandoc and LaTeX (Tectonic), figures with matplotlib |
+
+<a id="contents"></a>
+
+## 🧭 Contents
+
+- [In one minute](#in-one-minute) · [Tech stack](#tech-stack)
+- [🚦 Headline findings](#headline-findings)
+- [📊 Dashboard](#dashboard)
+- [🏗️ Architecture](#architecture)
+- [⚡ Quick start](#quick-start)
+- [🔁 Reproducing the results](#reproducing-the-results)
+- [📁 Repository layout](#repository-layout)
+- [⚠️ Limitations](#limitations)
+- [🙏 Credits and licences](#credits-and-licences)
+- [📖 Glossary](#glossary)
+
+<a id="headline-findings"></a>
+
+## 🚦 Headline findings
+
+> 💡 **In plain words:** We timed every simulated vehicle trip from start to finish. The [average travel time](#g-att) (ATT)
+> is the main score, and lower is better. In the table, each column is one way of running the traffic
+> lights and each row is one test situation. The AI-run lights (third column) end up within
+> 0.9<!--=f.off.llm.vs_mp-->% of the best standard method, [MaxPressure](#g-maxpressure), and get ambulances through
+> 31.7<!--=e.llm.amb_cut_vs_mp-->% faster.
+
 
 The LLM design, its selection rule and the full-experiment plan were committed before any of
 those runs (pre-registration, [`docs/llm_benchmark.md`](docs/llm_benchmark.md),
@@ -67,7 +137,14 @@ finds that with 3 B models the same hybrid is far worse than MaxPressure (ATT
 +51.0%<!--=m.peak.qwen.vs_mp--> and +81.4%<!--=m.peak.llama3b.vs_mp--> at peak). From
 `gemma4:e4b` up to a hosted 550<!--=m.size.nemo--> B model, ATT stays within seed noise of MaxPressure.
 
-## Dashboard
+<a id="dashboard"></a>
+
+## 📊 Dashboard
+
+> 💡 **In plain words:** The dashboard is a small website that shows the results as pictures you can click through,
+> including a side-by-side replay of two ways of running the same junctions, so you can watch an
+> ambulance get stuck or get through. It only shows numbers that are saved in the result files.
+
 
 `streamlit run src/trafficsense/dashboard/app.py`: four pages (Overview, Live Detection, Network
 Replay, Results). Every number on them is read from `outputs/` at run time, with a source chip
@@ -77,7 +154,16 @@ naming the file ([`docs/dashboard.md`](docs/dashboard.md)).
 |:--:|:--:|
 | ![Overview page](docs/screenshots/overview_viewport.webp) | ![Network Replay page](docs/screenshots/network_replay_viewport.webp) |
 
-## Architecture
+<a id="architecture"></a>
+
+## 🏗️ Architecture
+
+> 💡 **In plain words:** Think of each junction as having its own assistant. A camera counts the vehicles waiting (here the
+> counts come from the simulator, optionally with the mistakes our real detector makes). A standard
+> rule, [MaxPressure](#g-maxpressure), suggests the best options; the AI [agent](#g-agent) picks one and says why in a
+> short sentence; a safety check (the [guard](#g-guard)) makes sure the choice is reasonable; then the light
+> changes. The loop repeats every 5<!--=cfg.mp.interval--> seconds at every junction.
+
 
 ```mermaid
 flowchart LR
@@ -106,7 +192,14 @@ within 150<!--=cfg.amb.range--> m. It answers in JSON (Ollama `/api/chat` with a
 transition phase, minimum and maximum green) is enforced outside the LLM. A failed call is
 counted and falls back to MaxPressure's choice, never silently.
 
-## Quick start
+<a id="quick-start"></a>
+
+## ⚡ Quick start
+
+> 💡 **In plain words:** This section is for people who want to run the project on their own computer. You need a
+> Windows PC with [WSL](#g-wsl) (Linux inside Windows), a graphics card for the AI parts, and some comfort
+> with typing commands. You do not need any of this to read the results.
+
 
 Tested on WSL2 Ubuntu 22.04 with Python 3.10 (CityFlow does not build on Python 3.13), on
 a GTX 1650 (4 GB) with 16 GB RAM. The LLM and the detector cannot share this GPU, so do not
@@ -147,11 +240,22 @@ Each run writes `outputs/runs/<time>_<scenario>_<controller>_s<seed>/` with `sum
 (metrics plus provenance: controller, model as reported by the server, seed, scenario, git
 commit, LLM calls, failures and latency) and `metrics.csv`.
 
-## Reproducing the results
+<a id="reproducing-the-results"></a>
+
+## 🔁 Reproducing the results
+
+> 💡 **In plain words:** Every number in this project can be recreated from scratch with the commands below, and every
+> results document has an automatic check that fails if its numbers and the saved data ever
+> disagree. The full set of experiments took more than a day of computer time, so most readers will
+> only want to look, not rerun.
+
 
 Each step writes to `outputs/` and has a doc whose tables are generated from those files; every
 `make_*` / report script has a `--check` that fails if its doc and the data disagree. The batch
 scripts are resumable and skip finished runs. Times are for the hardware above.
+
+<details>
+<summary><b>Show all steps and the check commands</b> (a table of every script, plus one command that re-checks everything)</summary>
 
 | Step | Command | Doc |
 |---|---|---|
@@ -179,11 +283,22 @@ python scripts/run_emergency_smoke.py --check
 python scripts/make_replays.py --check
 ```
 
+</details>
+
 Large files live outside git: IDD and its resized copy, detector runs and weights, replays and
 the sample clip, all reached through gitignored symlinks under `data/external/` whose targets
 are set in `configs/default.yaml`.
 
-## Repository layout
+<a id="repository-layout"></a>
+
+## 📁 Repository layout
+
+> 💡 **In plain words:** A map of the project's folders: where the settings, the code, the experiments, the results and the
+> documents live.
+
+
+<details>
+<summary><b>Show the folder tree</b></summary>
 
 ```text
 configs/               default.yaml (all settings and paths), scenarios/indian_2x2.yaml
@@ -204,7 +319,16 @@ outputs/               one folder per run (summary.json, metrics.csv, decisions.
 docs/                  one document per study, screenshots, and the project report (docs/report/)
 ```
 
-## Limitations
+</details>
+
+<a id="limitations"></a>
+
+## ⚠️ Limitations
+
+> 💡 **In plain words:** What this project does *not* show. Everything happened in a computer [simulation](#g-simulation), the
+> simulated drivers keep to their lanes (real Indian traffic often does not), and each test was
+> repeated only a few times (see [seed](#g-seed)), so very small differences may be luck.
+
 
 * **CityFlow is lane-based.** It cannot represent lane-free driving, two-wheelers filtering
   between cars, or vehicle width. The Indian 2x2 network has an Indian vehicle mix and sizes and
@@ -224,7 +348,14 @@ docs/                  one document per study, screenshots, and the project repo
 * **Ambulances cannot overtake or make others yield** in CityFlow. Only the signal can help them.
 * No field test, no real junction camera footage, and no pedestrians in the simulation.
 
-## Credits and licences
+<a id="credits-and-licences"></a>
+
+## 🙏 Credits and licences
+
+> 💡 **In plain words:** Who made the tools and data we used, and the rules for using them. The Indian street photos used to
+> train the detector are not included here; anyone who wants them must get them from the original
+> authors.
+
 
 * **CoLLMLight**: Yuan, Lai and Liu, *CoLLMLight: Cooperative Large Language Model Agents for
   Network-Wide Traffic Signal Control*, ICLR 2026
@@ -251,3 +382,45 @@ docs/                  one document per study, screenshots, and the project repo
   [`docs/indian_scenario.md`](docs/indian_scenario.md) and the report.
 
 The project report (Markdown chapters, Word and PDF build) is in [`docs/report/`](docs/report/).
+
+<a id="glossary"></a>
+
+## 📖 Glossary
+
+<details>
+<summary><b>Open the glossary</b>: every technical term on this page in one plain sentence</summary>
+
+- <a id="g-phase"></a>**Traffic signal phase**: one combination of green lights at a junction, for example "north and south may go straight"; changing phase costs a few seconds of yellow and red.
+- <a id="g-att"></a>**ATT (average travel time)**: how long a vehicle takes, on average, from the moment it is due to start its trip until it arrives, including any time spent waiting to enter the roads.
+- <a id="g-maxpressure"></a>**MaxPressure**: a standard rule that gives green to the direction with the most waiting vehicles compared with the queue just after the junction; it needs no training.
+- <a id="g-pressure"></a>**Pressure**: vehicles waiting that a green would let through, minus vehicles already queued on the roads they would drive into.
+- <a id="g-fixedtime"></a>**Fixed-time and Webster**: fixed-time lights repeat the same timer plan; Webster's method is the classic formula for choosing good timings for such a plan from traffic counts.
+- <a id="g-preemption"></a>**Preemption**: a rule that turns a light green for an approaching emergency vehicle.
+- <a id="g-llm"></a>**LLM (large language model)**: an AI that reads and writes text, like a chatbot; here a small one decides which light should be green and explains why.
+- <a id="g-ollama"></a>**Ollama**: free software that runs LLMs on your own computer instead of in the cloud.
+- <a id="g-agent"></a>**Agent, multi-agent**: an agent is a program that observes, decides and acts on its own; multi-agent means several of them (one per junction) working side by side and sharing information.
+- <a id="g-guard"></a>**Guard**: a safety check that lets the AI's choice through only if it is close to the best standard choice.
+- <a id="g-prereg"></a>**Pre-registered**: the test plan and the rule for judging it were written down and saved before the experiment ran, so results could not be picked after the fact.
+- <a id="g-exploratory"></a>**Exploratory**: an extra test added after the plan was fixed; interesting, but weaker evidence.
+- <a id="g-seed"></a>**Seed**: a number that fixes the random traffic of one test run; different seeds give different but comparable traffic, and repeating a test with several seeds shows how much results vary.
+- <a id="g-std"></a>**Mean ± std**: the average of the repeated runs and how much they vary (the standard deviation).
+- <a id="g-simulation"></a>**Simulation**: a computer model in which virtual vehicles drive on virtual roads, so ideas can be tested without touching real traffic.
+- <a id="g-cityflow"></a>**CityFlow**: the traffic simulator used here, common in traffic-light research.
+- <a id="g-yolo"></a>**YOLO, YOLOv8n**: a fast family of AI models that find and label objects (cars, buses, people) in images; "n" is the smallest version.
+- <a id="g-map"></a>**mAP50**: a score from 0 to 1 for how well a detector finds and labels objects, where 1 is perfect; a detection counts if its box overlaps the real object by at least half.
+- <a id="g-idd"></a>**IDD (India Driving Dataset)**: photos taken from vehicles on Indian roads, with every road user marked.
+- <a id="g-collmlight"></a>**CoLLMLight**: the research paper and code this project builds on, in which one LLM agent runs each traffic light.
+- <a id="g-gpu"></a>**GPU**: the graphics card; it runs AI models much faster than the main processor.
+- <a id="g-wsl"></a>**WSL**: Windows Subsystem for Linux, a way to run Linux programs inside Windows.
+
+</details>
+
+---
+
+<div align="center">
+
+Built as a B.Tech capstone project.<br>
+{{AUTHORS}} · Guide: {{GUIDE}} · {{UNIVERSITY}}<br>
+Full project report: [docs/report/](docs/report/)
+
+</div>

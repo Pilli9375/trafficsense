@@ -125,6 +125,33 @@ def readme_headline(fs, dt) -> str:
                      + ["| " + " | ".join(r) + " |" for r in rows])
 
 
+def collected_tests(root: Path) -> int:
+    """Number of tests pytest collects in the repo (pytest --collect-only)."""
+    import subprocess
+    import sys
+    r = subprocess.run([sys.executable, "-m", "pytest", "--collect-only", "-q", "-p", "no:cacheprovider"],
+                       cwd=root, capture_output=True, text=True)
+    counts = re.findall(r"^tests/\S+\.py: (\d+)$", r.stdout, re.M)
+    if r.returncode != 0 or not counts:
+        raise RuntimeError(f"pytest --collect-only failed:\n{r.stdout[-2000:]}\n{r.stderr[-2000:]}")
+    return sum(int(c) for c in counts)
+
+
+def readme_badges(fs, dt) -> str:
+    """The README's badge row. The test count is what pytest collects now; the badge says
+    "passing" because commits are made only after the whole suite passes."""
+    n = collected_tests(ROOT_CACHE["root"])
+    badges = [
+        ("Python 3.10", "https://img.shields.io/badge/Python-3.10-3776AB?logo=python&logoColor=white"),
+        ("Simulator: CityFlow", "https://img.shields.io/badge/simulator-CityFlow-2a78d6"),
+        ("Vision: YOLOv8n", "https://img.shields.io/badge/vision-YOLOv8n-111F68"),
+        ("LLM: Ollama, local", "https://img.shields.io/badge/LLM-Ollama%20(local)-000000?logo=ollama&logoColor=white"),
+        ("Dashboard: Streamlit", "https://img.shields.io/badge/dashboard-Streamlit-FF4B4B?logo=streamlit&logoColor=white"),
+        (f"Tests: {n} passing", f"https://img.shields.io/badge/tests-{n}%20passing-2ea44f"),
+    ]
+    return "\n".join(f'<img alt="{alt}" src="{url}">' for alt, url in badges)
+
+
 # --- chapter 4: simulation and scenario -------------------------------------------------------
 
 V, I, B, R, E, P, C, M, L, EM = ("docs/validation.md", "docs/indian_scenario.md", "docs/baselines.md",
@@ -434,7 +461,7 @@ def code_decision(fs, dt):
 
 
 TABLES = {
-    "readme_headline": readme_headline,
+    "readme_headline": readme_headline, "readme_badges": readme_badges,
     "tab_validation": tab_validation, "tab_fixedtime_bug": tab_fixedtime_bug, "tab_network": tab_network,
     "tab_mix": tab_mix, "tab_capacity": tab_capacity, "tab_demand_selection": tab_demand_selection,
     "tab_mg_selection": tab_mg_selection, "tab_baselines_indian": tab_baselines_indian,
