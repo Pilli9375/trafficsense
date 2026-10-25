@@ -226,7 +226,7 @@ details.ts-src.left .ts-src-pop { left: 0; right: auto; }
   padding: 10px 12px; border-bottom: 1px solid var(--ts-border); white-space: normal; vertical-align: bottom; font-size: 10.5px;
   line-height: 1.35; letter-spacing: .06em; text-transform: uppercase; }
 .ts-table td { padding: 9px 12px; font-size: 12.5px; border-bottom: 1px solid rgba(29, 37, 50, .7); color: var(--ts-text); vertical-align: top;
-  white-space: nowrap; font-variant-numeric: tabular-nums; }
+  white-space: normal; font-variant-numeric: tabular-nums; }   /* cells wrap rather than push the table past its card */
 .ts-table td.num { font-family: var(--ts-mono); font-size: 12px; text-align: right; }
 .ts-table th.num { text-align: right; }
 .ts-table td.wide { white-space: normal; color: var(--ts-text-2); min-width: 9rem; overflow-wrap: anywhere; }
@@ -338,11 +338,12 @@ button[kind="secondary"], [data-testid="stBaseButton-secondary"] { background: v
   border: 1px solid var(--ts-border); border-radius: 14px; background: rgba(9, 12, 17, .78); backdrop-filter: blur(6px); }
 .ts-hero .cmp > div { padding: 12px 16px; border-left: 1px solid var(--ts-border); min-width: 0; }
 .ts-hero .cmp > div:first-child { border-left: none; }
-.ts-hero .cmp .k { color: var(--ts-text-3); font-size: 11.5px; display: flex; align-items: center; gap: 6px; line-height: 1.3; min-height: 30px; }
+.ts-hero .cmp .k { color: var(--ts-text-3); font-size: 11.5px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px;
+  line-height: 1.3; min-height: 30px; }
 .ts-hero .cmp .v { color: var(--ts-text); font-family: var(--ts-mono); font-size: 19px; font-weight: 600; margin-top: 4px; white-space: nowrap; }
 .ts-hero .cmp .v small { color: var(--ts-text-3); font-size: 12px; margin-left: 2px; font-weight: 500; }
 .ts-hero .cmp .best .v { color: #ff9a9a; }
-.ts-hero .cmp .k .ts-badge { padding: 2px 6px; font-size: 9px; letter-spacing: .06em; }
+.ts-hero .cmp .k .ts-badge { padding: 2px 6px; font-size: 9px; letter-spacing: .06em; max-width: 100%; }   /* wraps below the name */
 .ts-hero .cmp .k .ts-badge::before { display: none; }
 .ts-hero .badges { position: relative; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; }
 .ts-hero .src { position: absolute; top: 16px; right: 16px; z-index: 6; }

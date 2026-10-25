@@ -176,7 +176,8 @@ def pct(x: float, digits: int = 1, sign: bool = True) -> str:
 
 
 def mean_std(ms: list[float], digits: int = 1) -> str:
-    return f"{ms[0]:.{digits}f} ± {ms[1]:.{digits}f}"
+    """'115.5 ± 0.9', with no-break spaces so a wrapping table cell never splits the pair."""
+    return f"{ms[0]:.{digits}f}\u00a0±\u00a0{ms[1]:.{digits}f}"
 
 
 # Count-up: elements with class ts-count hold their final text (a number read from the data);

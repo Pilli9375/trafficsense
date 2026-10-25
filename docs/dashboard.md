@@ -183,6 +183,10 @@ missing and which command makes it.
 * Planting a made-up number in a page ("latency 87.3 ms") makes the first two tests fail (checked
   by hand when the tests were written, and again after the redesign).
 
+`tests/test_dashboard_browser.py` starts the app and drives it with Playwright's Chromium at
+1280, 1366 and 1920 px wide: nothing sticks out of its card on any page or Results tab. It is skipped
+when Chromium cannot start (see Screenshots for its libraries) or the replays are absent.
+
 `tests/test_replay.py` checks the replay recorder on short runs made in a temp folder
 (MaxPressure re-run, and an injected fake LLM replayed from its decision log), and that a changed
 metric or a tampered decision log makes it fail.
