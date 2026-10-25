@@ -9,7 +9,7 @@ MaxPressure, indian_2x2_offpeak and indian_2x2_peak, seeds 0-2: 18 runs of 3600 
 components" case and the perfect reference are the junction and perfect runs of the main batch
 (scripts/run_camera_error.py), made by the same code path. Outputs:
 outputs/camera_error/decomposition/runs/, log decomposition.log next to it. Resumable like the
-main batch (a run folder with summary.json and metrics.csv is complete); each run in a child
+main batch (a run folder with a summary.json is complete); each run in a child
 process with a timeout. Table: scripts/make_camera_error.py (camera_decomposition).
 """
 import argparse

@@ -141,11 +141,12 @@ def job_key(j: dict) -> tuple:
 
 
 def complete_runs(root: Path, log=None) -> dict[tuple, Path]:
-    """Complete, citable runs of this study: summary.json + metrics.csv, clean tree, our controller."""
+    """Complete, citable runs of this study: summary.json (written last; metrics.csv is gitignored,
+    so it is not required), clean tree, our controller."""
     done = {}
     for d in sorted((root / RUNS).glob("*/")):
         s = d / "summary.json"
-        if not s.is_file() or not (d / "metrics.csv").is_file():
+        if not s.is_file():
             if log:
                 log.warning("Incomplete run folder (left in place, run again): %s", d.relative_to(root))
             continue

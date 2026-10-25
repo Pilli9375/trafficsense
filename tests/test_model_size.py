@@ -65,8 +65,9 @@ def test_resume_keys_on_requested_model(ms, tmp_path):
     run("b", ["metrics"], "llama3.1:8b")                                           # interrupted
     run("c", ["summary", "metrics"], "llama3.1:8b", git_dirty=True)                # not citable
     run("d", ["summary", "metrics"], "llama3.1:8b", controller="llm_guarded_mp")   # other controller
+    run("f", ["summary"], "llama3.1:8b", seed=1)                    # fresh clone: metrics.csv is gitignored
     done = ms.complete_runs(tmp_path)
-    assert set(done) == {("indian_2x2_peak", 0, 3600, ms.HOSTED)}
+    assert set(done) == {("indian_2x2_peak", 0, 3600, ms.HOSTED), ("indian_2x2_peak", 1, 3600, "llama3.1:8b")}
     run("e", ["summary", "metrics"], ms.HOSTED)
     with pytest.raises(SystemExit, match="Two complete runs"):
         ms.complete_runs(tmp_path)

@@ -5,7 +5,7 @@
 
 Restart after an interruption (laptop restart, crash): start Ollama, then run the same command
 again (detached: setsid nohup .venv/bin/python scripts/run_full_experiments.py >/dev/null 2>&1 &). Finished runs are skipped: run_experiment() writes summary.json last (atomic rename), so
-a run folder with a readable summary.json and metrics.csv is complete; an interrupted run
+a run folder with a readable summary.json is complete; an interrupted run
 leaves no summary.json and is simply run again (its partial folder is reported in the log and
 left in place). Progress goes to stdout and to outputs/full/batch.log.
 
@@ -98,11 +98,14 @@ def job_key(j: dict) -> tuple:
 
 
 def complete_runs(root: Path, out_root: Path, log=None) -> dict[tuple, Path]:
-    """Complete run folders: summary.json readable, metrics.csv present, clean tree, STEPS long."""
+    """Complete run folders: summary.json readable, clean tree, STEPS long.
+
+    summary.json is written last, so it alone marks a finished run. metrics.csv is not required:
+    it is gitignored, and a fresh clone has only the summaries."""
     done = {}
     for d in sorted((root / out_root).glob("*/")):
         s = d / "summary.json"
-        if not s.is_file() or not (d / "metrics.csv").is_file():
+        if not s.is_file():
             if log:
                 log.warning("Incomplete run folder (left in place, run again): %s", d.relative_to(root))
             continue

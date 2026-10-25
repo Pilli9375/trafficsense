@@ -5,7 +5,7 @@
 
 Restart after an interruption: start Ollama, then run the same command again, detached:
     setsid nohup .venv/bin/python scripts/run_camera_error.py >/dev/null 2>&1 < /dev/null &
-Finished runs are skipped (a run folder with summary.json and metrics.csv is complete; see
+Finished runs are skipped (a run folder with a summary.json is complete; see
 run_experiment). Progress goes to stdout and to outputs/camera_error/batch.log.
 
 Each run executes in a child process (spawn) with a timeout (TIMEOUT_S). The first attempt of
@@ -96,10 +96,11 @@ def job_key(j: dict) -> tuple:
 
 
 def complete_runs(root: Path, log=None, runs: Path = RUNS) -> dict[tuple, Path]:
+    """Run folders with a summary.json (written last; metrics.csv is gitignored, so not required)."""
     done = {}
     for d in sorted((root / runs).glob("*/")):
         s = d / "summary.json"
-        if not s.is_file() or not (d / "metrics.csv").is_file():
+        if not s.is_file():
             if log:
                 log.warning("Incomplete run folder (left in place, run again): %s", d.relative_to(root))
             continue

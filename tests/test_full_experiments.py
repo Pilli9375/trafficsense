@@ -43,8 +43,10 @@ def test_resume_skips_only_complete_runs(batch, tmp_path):
     run("b", ["metrics"], seed=1)                         # interrupted: no summary.json
     run("c", ["summary", "metrics"], seed=2, git_dirty=True)
     run("d", ["summary", "metrics"], seed=0, controller="llm_guarded_mp", model="llama3.2:3b")
+    run("f", ["summary"], seed=1, controller="fixedtime")    # fresh clone: metrics.csv is gitignored
     done = batch.complete_runs(tmp_path, batch.FULL_RUNS)
-    assert set(done) == {("indian_2x2_peak", "maxpressure", 0, None), ("indian_2x2_peak", "llm_guarded_mp", 0, "llama3.2:3b")}
+    assert set(done) == {("indian_2x2_peak", "maxpressure", 0, None), ("indian_2x2_peak", "llm_guarded_mp", 0, "llama3.2:3b"),
+                         ("indian_2x2_peak", "fixedtime", 1, None)}
     run("e", ["summary", "metrics"])                      # a second complete copy is an error
     with pytest.raises(SystemExit, match="Two complete runs"):
         batch.complete_runs(tmp_path, batch.FULL_RUNS)
