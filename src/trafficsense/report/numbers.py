@@ -31,14 +31,14 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
-NUM = r"[+\-−]?\d[\d,]*(?:\.\d+)?%?"
+NUM = r"[+\-−]?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?%?"
 TAG = re.compile(r"(?P<num>" + NUM + r")<!--=(?P<key>[^>]*?)-->")
 BLOCK = re.compile(r"<!-- BEGIN:(?P<name>[\w.\-]+) -->\n(?P<body>.*?)<!-- END:(?P=name) -->", re.S)
 CELL_NUM = re.compile(NUM)
 
 # Not measurements: names, versions and fixed hardware facts. Matched case-sensitively.
 ALLOWED_PHRASES = [
-    r"GTX 1650", r"RTX \d+", r"Ubuntu 22\.04", r"Python 3\.1[0-3](?:\.\d+)?", r"Python 3\.x",
+    r"GTX 1650", r"GTX 16-series", r"RTX \d+", r"Ubuntu 22\.04", r"Python 3\.1[0-3](?:\.\d+)?", r"Python 3\.x",
     r"WSL ?2", r"YOLOv\d+\w*", r"ICLR 20\d\d", r"pandoc 3\.\d+(?:\.\d+)?", r"16 GB RAM",
     r"4 GB", r"Ryzen 5 4600H", r"CUDA 12\.\d", r"SIL Open Font License 1\.1", r"OFL 1\.1",
     r"Apache-2\.0", r"Apache License 2\.0", r"CC BY(?:-NC)?(?:-SA)? \d\.\d", r"Tectonic 0\.\d+(?:\.\d+)?",
@@ -168,7 +168,14 @@ def check_tags(text: str, facts: dict, tables: DocTables) -> tuple[list[Problem]
 def refresh_tags(text: str, facts: dict, tables: DocTables) -> str:
     def sub(m):
         kind, ref = resolve(m["key"], facts, tables)
-        new = fmt_like(ref, m["num"]) if kind == "fact" else ref
+        if kind == "fact":
+            new = fmt_like(ref, m["num"])
+        elif matches(m["num"], kind, ref):
+            new = m["num"]
+        else:   # the cell's number, written the way the text writes it (sign style, %, commas)
+            shown = m["num"]
+            new = fmt_like(to_float(ref), shown[:len(shown) - len(shown.lstrip("+-−"))] + ref.lstrip("+-−").rstrip("%")
+                           + ("%" if shown.endswith("%") else ""))
         return f"{new}<!--={m['key']}-->"
     return TAG.sub(sub, text)
 
@@ -192,6 +199,8 @@ _STRIP = [
     TAG,                                                   # tagged numbers
     re.compile(r"<!--.*?-->", re.S),                       # comments
     re.compile(r"`[^`\n]+`"),                              # inline code
+    re.compile(r"\$\$.*?\$\$", re.S),                        # display math (formulas, not results)
+    re.compile(r"(?<![\\\w])\$[^$\n]+\$"),                  # inline math
     re.compile(r"\]\([^)]*\)"),                            # link / image targets
     re.compile(r"\{[#.][^}]*\}"),                          # pandoc attributes
     re.compile(r"<[^>\n]+>"),                              # HTML tags

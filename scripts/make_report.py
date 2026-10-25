@@ -68,7 +68,10 @@ def main():
         for k in sorted(used):
             print(f"{k:40s} {fs[k].source if k in fs else k.split('|')[0].strip()}")
         return
-    blocks = report_tables.blocks(ROOT, fs, dt)
+    used = set()
+    for p in documents():
+        used |= {m["name"] for m in numbers.BLOCK.finditer((ROOT / p).read_text())}
+    blocks = report_tables.blocks(ROOT, fs, dt, used)
     errors = []
     if not args.check:
         from trafficsense.report import figures

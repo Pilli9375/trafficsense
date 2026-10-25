@@ -76,7 +76,13 @@ python scripts/make_replays.py --check            # dashboard replays (on D) sti
 python scripts/make_sample_clip.py                 # Live Detection sample clip from IDD test frames (on D)
 streamlit run src/trafficsense/dashboard/app.py
 python scripts/screenshot_dashboard.py             # screenshots of every page into docs/screenshots/
+python scripts/make_report.py --check             # every number in README + docs/report vs outputs/
+python scripts/build_report.py                    # docs/report -> report.docx + report.pdf (pandoc, tectonic in ~/.local/bin)
 ```
+
+Numbers in README.md and docs/report/*.md are tagged, `88.1<!--=f.off.mp.att-->`. The key is
+a fact from `src/trafficsense/report/facts.py` or a `doc | block | row | column` cell of a
+checked doc. Never type a result number untagged; the lint in `make_report.py --check` fails on it.
 
 ## Working style
 

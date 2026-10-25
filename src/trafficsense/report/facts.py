@@ -91,7 +91,15 @@ def facts(root: Path | None = None) -> dict[str, Fact]:
     _bench(r, _load(root, "bench"))
     _indian(r, _load(root, "indian"), _load(root, "calib"), _load(root, "mg_sweep"))
     _config(r, root)
+    _validation(r, root)
     return dict(r)
+
+
+def _validation(r: _Reg, root: Path):
+    src = "outputs/validation/ours/jinan_3x4_matched_maxpressure_s47.json"
+    v = json.loads((root / src).read_text())
+    r.put("val.matched.interval", v["controller_params"]["decision_interval"], src)
+    r.put("val.matched.engine_seed", v["engine_config"]["seed"], src)
 
 
 def _full(r: _Reg, b: dict):
@@ -204,6 +212,7 @@ def _camera(r: _Reg, b: dict):
         for lvl, x in levels.items():
             p = round(100 * float(lvl.split("_p")[1]))
             r.put(f"c.sweep.{sc}.p{p}.att", x["att"][0], src)
+            r.put(f"c.sweep.{sc}.p{p}.level_pct", p, src)
             d = x.get("att_vs_perfect")
             if d:
                 r.put(f"c.sweep.{sc}.p{p}.pct", d["pct_mean"], src)
@@ -211,6 +220,7 @@ def _camera(r: _Reg, b: dict):
         sc = {v: k for k, v in SC.items()}[scname]
         for lvl, v in levels.items():
             r.put(f"c.peff.{sc}.{lvl}", v, src)
+            r.put(f"c.peff.{sc}.{lvl}.pct", 100 * v, src)
     for part, x in b["decomposition"].items():
         if part == "sum_abc":
             for scname, y in x.items():
@@ -239,6 +249,9 @@ def _model_size(r: _Reg, b: dict):
     src = FILES["model_size"]
     for m, name in MODELS.items():
         r.put(f"m.size.{m}", b["sizes"][name]["total_b"], src)
+        act = str(b["sizes"][name]["active"]).split()[0]
+        if act.replace(".", "").isdigit():
+            r.put(f"m.active.{m}", float(act), src)
     for scname, block in b["full"].items():
         sc = {v: k for k, v in SC.items()}[scname]
         for m, name in MODELS.items():
@@ -292,6 +305,12 @@ def _detector(r: _Reg, t: dict, v: dict, tr: dict, idd: dict):
         for size, x in e["miss_rate_by_size"][c].items():
             r.put(f"d.size.{c}.{size}", 100 * x["miss_rate"], src)
     r.put("d.conf", t["conf_threshold"], src)
+    r.put("d.match_iou", t["match_iou"], src)
+    r.put("d.nms_iou", t["nms_iou"], src)
+    r.put("d.bootstrap_reps", e["bootstrap"]["reps"], src)
+    r.put("d.camera.hq.images", e["by_camera"]["highquality_16k"]["images"], src)
+    r.put("d.camera.hq.gt", e["by_camera"]["highquality_16k"]["gt_total"], src)
+    r.put("d.camera.hq.small", 100 * e["by_camera"]["highquality_16k"]["gt_small_share"], src)
     r.put("d.f1", v["threshold"]["mean_f1"], FILES["det_val"])
     src = FILES["det_train"]
     r.put("d.train_h", tr["train_hours"], src)
@@ -319,6 +338,13 @@ def _bench(r: _Reg, b: dict):
         r.put(f"b.base.{c}.queue", y["queue_mean_per_intersection"], src)
         r.put(f"b.base.{c}.att", y["att_s"], src)
     r.put("b.final.round_p95x4", b["final"]["round_p95_s"], src)
+    import re
+    m = re.search(r"failure rate < ([\d.]+)% and p95 latency < ([\d.]+) s", b["final"]["rule"])
+    if not m:
+        raise ValueError("benchmark.json: selection rule text not in the expected form")
+    r.put("b.rule.fail_pct", float(m.group(1)), src)
+    r.put("b.rule.p95_s", float(m.group(2)), src)
+    r.put("b.steps", b["provenance"]["steps"], src)
 
 
 def _indian(r: _Reg, b: dict, cal: dict, mg: dict):
@@ -343,6 +369,11 @@ def _indian(r: _Reg, b: dict, cal: dict, mg: dict):
         r.put(f"cal.sat.{turn}", x["fit_saturation_flow_veh_per_hour"], src)
     r.put("cal.entry_admission", cal["capacity"]["entry_admission"]["measured_veh_per_hour"], src)
     r.put("cal.lost_time", cal["capacity"]["startup_lost_time_s"], src)
+    rule = sel["rule"]
+    r.put("cal.rule.backlog_pct", 100 * rule["backlog_max_share"], src)
+    r.put("cal.rule.drain_s", rule["drain_max_s"], src)
+    r.put("cal.rule.peak_fraction", rule["peak_fraction_of_R_star"], src)
+    r.put("cal.rule.offpeak_over_peak", rule["offpeak_over_peak"], src)
     w = cal["selection"]["webster_reference_ANALYTIC"]
     r.put("cal.y_cap", w["Y_cap"], src)
     src = FILES["mg_sweep"]
@@ -358,20 +389,28 @@ def _config(r: _Reg, root: Path):
     mp = cfg["controllers"]["maxpressure"]
     r.put("cfg.mp.interval", mp["decision_interval"], src)
     r.put("cfg.mp.min_green", mp["min_green"], src)
+    r.put("cfg.guard.ratio", cfg["controllers"]["llm_guarded_mp"]["guard_ratio"], src)
     r.put("cfg.guard.margin", 100 * (1 - cfg["controllers"]["llm_guarded_mp"]["guard_ratio"]), src)
     r.put("cfg.ft.green", cfg["controllers"]["fixedtime"]["green_time"], src)
+    r.put("cfg.web.reps", cfg["controllers"]["fixedtime_webster"]["measurement_reps"], src)
     r.put("cfg.web.cycle_min", cfg["controllers"]["fixedtime_webster"]["cycle_min"], src)
     r.put("cfg.web.cycle_max", cfg["controllers"]["fixedtime_webster"]["cycle_max"], src)
     r.put("cfg.amb.range", cfg["emergency"]["detection_range_m"], src)
     r.put("cfg.imgsz", cfg["perception"]["imgsz"], src)
+    r.put("cfg.det.val_pct", 100 * cfg["perception"]["val_fraction"], src)
     tr = cfg["perception"]["train"]
     r.put("cfg.det.epochs", tr["epochs"], src)
     r.put("cfg.det.batch", tr["batch"], src)
     r.put("cfg.det.patience", tr["patience"], src)
     llm = cfg.get("llm", {})
-    for k in ("temperature", "num_ctx", "timeout_s"):
+    for k in ("temperature", "num_ctx", "timeout_s", "num_predict"):
         if k in llm:
             r.put(f"cfg.llm.{k}", llm[k], src)
+    from trafficsense.llm import prompt
+    from trafficsense.sim import metrics
+    r.put("code.stop_speed", metrics.STOP_SPEED, "src/trafficsense/sim/metrics.py")
+    for v, n in prompt.MAX_REASON_WORDS.items():
+        r.put(f"code.reason_words.{v}", n, "src/trafficsense/llm/prompt.py")
     sc = load_config(root / "configs/scenarios/indian_2x2.yaml")
     src = "configs/scenarios/indian_2x2.yaml"
     for k, v in _flatten_numbers(sc).items():

@@ -76,3 +76,48 @@ def test_readme_and_report_match_outputs():
     r = subprocess.run([sys.executable, "scripts/make_report.py", "--check"], cwd=ROOT,
                        capture_output=True, text=True)
     assert r.returncode == 0, r.stdout + r.stderr
+
+
+def test_refresh_keeps_the_text_format_of_a_cell_reference(tmp_path):
+    (tmp_path / "d.md").write_text("<!-- BEGIN:t -->\n| Name | Share |\n|---|---|\n| car | 45.1% |\n<!-- END:t -->\n")
+    dt = numbers.DocTables(tmp_path)
+    text = "cars are 45.1<!--=d.md | t | car | Share-->% and 40.0<!--=d.md | t | car | Share-->%"
+    assert numbers.refresh_tags(text, {}, dt) == ("cars are 45.1<!--=d.md | t | car | Share-->% and "
+                                                  "45.1<!--=d.md | t | car | Share-->%")
+
+
+def _build_module():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("build_report", ROOT / "scripts/build_report.py")
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    return m
+
+
+def test_short_captions_use_the_first_sentence():
+    b = _build_module()
+    tex = r"\caption{System architecture. The {simulator} holds it.}\label{fig:a} \caption{One sentence only.}"
+    assert b.short_captions(tex) == (r"\caption[System architecture.]{System architecture. The {simulator} holds it.}"
+                                     r"\label{fig:a} \caption{One sentence only.}")
+
+
+def test_filter_numbers_figures_tables_and_appendices(tmp_path):
+    import json
+    import shutil
+    pandoc = shutil.which("pandoc") or str(Path.home() / ".local/bin/pandoc")
+    if not Path(pandoc).is_file():
+        pytest.skip("pandoc not installed")
+    md = ("# Front {.unnumbered}\n\n# One {#sec:one}\n\n## Part {#sec:part}\n\n![a](x.png){#fig:a}\n\n"
+          "::: {#tbl:t}\n| a | b |\n|---|---|\n| 1 | 2 |\n\n: cap\n:::\n\n# Two\n\n![b](x.png){#fig:b}\n\n"
+          "# Extra {.appendix #sec:app}\n\n![c](x.png){#fig:c}\n\nSee @fig:b, @tbl:t, @sec:part and @sec:app.\n")
+    src = tmp_path / "t.md"
+    src.write_text(md)
+    out = tmp_path / "n.json"
+    r = subprocess.run([pandoc, str(src), "--lua-filter", str(ROOT / "docs/report/template/report.lua"),
+                        "-t", "plain"], capture_output=True, text=True,
+                       env={**__import__("os").environ, "REPORT_NUMBERS_JSON": str(out)})
+    assert r.returncode == 0, r.stderr
+    nums = {k: v["num"] for k, v in json.loads(out.read_text()).items()}
+    assert nums == {"sec:one": "1", "sec:part": "1.1", "fig:a": "1.1", "tbl:t": "1.1", "fig:b": "2.1",
+                    "sec:app": "A", "fig:c": "A.1", "two": "2"}
+    assert "See Figure 2.1, Table 1.1, Section 1.1 and Appendix A." in r.stdout
