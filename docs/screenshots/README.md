@@ -1,8 +1,9 @@
 # Dashboard screenshots
 
 Made by `python scripts/screenshot_dashboard.py --offline` (Playwright, Chromium, 1366×768, every request
-that is not to the app blocked), saved as lossless WebP. The same pages and states at 1920×1080 are saved on
-D (`<paths.dashboard_media>/screenshots/1920/`, not in git). `<page>.webp` is the whole page,
+that is not to the app blocked), saved as lossless WebP. The same pages and states at 1920×1080, 1024×768 (an
+XGA projector) and 390×844 (a phone, where the sidebar starts closed) are saved on D
+(`<paths.dashboard_media>/screenshots/<width>/`, not in git). `<page>.webp` is the whole page,
 `<page>_viewport.webp` the first screen.
 
 * `overview.webp`, `overview_viewport.webp`; `overview_source.webp` with a source chip opened.

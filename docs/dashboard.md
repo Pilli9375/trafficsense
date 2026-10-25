@@ -47,6 +47,17 @@ once by `app.py`) and `theme.py` (the same tokens for Python and the shared Plot
   `prefers-reduced-motion`.
 * **Custom components.** The replay canvas and the detection player are Streamlit components
   (`st.components.v2`, `assets/replay.js` and `assets/player.js`) that get their data as JSON.
+* **Any width, from a phone to a wide screen.** Layouts follow the width the main column actually has
+  (CSS container queries), not the window's: the sidebar can be open or closed at any window width.
+  It starts closed below 769 px, and the button that reopens it is always on screen, with the page
+  starting below it. On a narrow page the hero's four comparison cells become two rows of two, the
+  stat tiles and the side-by-side charts stack, wide tables show each row as a card with its values
+  labelled, the architecture drawing becomes a column of boxes (its text would otherwise shrink below
+  ~9.5 px), the replay's two panels stack, and an opened "source" panel opens in place under its chip
+  rather than floating beside it. Charts keep long explanations in their subtitles, which wrap,
+  rather than in axis titles, which Plotly cannot wrap; long names on an axis go on two lines.
+  Nothing scrolls sideways except Streamlit's own tab bar, which scrolls with arrow buttons when its
+  tabs do not fit.
 
 ## Replays (pre-registered)
 
@@ -110,8 +121,8 @@ missing and which command makes it.
   schematic, not data (said in the page's drawer). Stat tiles: average travel time of the
   pre-registered arm vs the best baseline, the detector's mAP50 on the IDD test split, and the
   camera-error impact (a fixed plan reads no counts, so it shows "unaffected" rather than +0.0%).
-  The three-step story and the architecture diagram follow; the decision interval in the diagram's
-  caption is read from `results.json`.
+  The three-step story and the architecture diagram follow (on a narrow page, the same diagram as a
+  column of boxes); the decision interval in the diagram's caption is read from `results.json`.
 * **Live Detection.** `best.pt` is found from `paths.detector_runs` and `perception.train.run_name`
   and refused unless its sha256 matches the evaluated weights in `detector_test.json`. Default
   confidence: the operating point frozen on validation (`detector_val.json`). Device: the GPU if
@@ -155,11 +166,13 @@ missing and which command makes it.
   computed from it: signal control (ATT mean ± std per controller as a dot plot, a paired-by-seed
   slope chart read from the run summaries `results.json` lists, all metrics, LLM decision
   statistics), ambulances (where their time goes: stopped vs the rest of the trip, per controller,
-  model-size rows labelled exploratory), model size (labelled exploratory; the split "slower than
-  MaxPressure on every seed" / "≈ MaxPressure" is computed from `seeds_worse`, the first model from
-  which no model is worse on every seed), camera errors (paired change per level, the
-  detection-rate sweep, the post-hoc decomposition as a waterfall per scenario) and the detector
-  (mAP50 per class, miss rate by object size). Each tab carries its honesty notes.
+  model-size rows labelled exploratory), model size (labelled exploratory; models down the side,
+  smallest on top; the split "slower than MaxPressure on every seed" / "≈ MaxPressure" is computed
+  from `seeds_worse`, the first model from which no model is worse on every seed, and shaded, its
+  meaning in the subtitle), camera errors (paired change per level, the detection-rate sweep, the
+  post-hoc decomposition as a waterfall per scenario, the steps down the side) and the detector
+  (mAP50 per class, miss rate by object size). Each tab carries its honesty notes. In the slope
+  chart a seed's label is moved up or down where two seeds end close together, so no two overlap.
 
 ## Tests
 
@@ -180,18 +193,27 @@ missing and which command makes it.
   queues; the ambulance's times are those in `summary.json`.
 * **Per-seed values.** The run summaries behind the slope chart reproduce `results.json`'s paired
   differences exactly.
+* **Seed labels apart.** In every scenario's slope chart, no two seed labels of a panel are closer
+  than 13 px (they are moved up or down where seeds end close together).
 * **What leads.** The Overview headline is the pre-registered arm's number; every replay view keeps
   north up, the default view is as simulated, and the default pair is MaxPressure and the
   pre-registered arm.
 * Planting a made-up number in a page ("latency 87.3 ms") makes the first two tests fail (checked
   by hand when the tests were written, and again after the redesign).
 
-`tests/test_dashboard_browser.py` starts the app and drives it with Playwright's Chromium at 1280, 1366
-and 1920 px wide: nothing sticks out of its card on any page or Results tab, the Overview hero's four
-comparison cells line up (each colour dot on the first line of its name, the four values on one line),
-and on the replay, in both views, the grid and the follow camera, at four zoom levels and two moments,
-every label the canvas drew lies inside the canvas and nothing overlaps the canvas. It is skipped when
-Chromium cannot start (see Screenshots for its libraries) or the replays are absent.
+`tests/test_dashboard_browser.py` starts the app and drives it with Playwright's Chromium at 390 (a
+phone), 769 (the narrowest window with the sidebar open), 1024, 1280, 1366 and 1920 px wide, each page
+loaded at that width. On every page and Results tab nothing sticks out of its card, scrolls sideways
+(Streamlit's tab bar excepted), is cut off with an ellipsis or spills over its neighbour, no drawing's
+text renders under 9.5 px, the page does not scroll sideways, and no "source" panel, opened, leaves the
+screen. The sidebar starts closed on a phone and open on a laptop, and either way it can be closed and
+reopened, with the page starting below the reopen button. The Overview hero's comparison cells line up
+(each colour dot on the first line of its name, the values of one row on one line). On the replay, at
+four of the widths, in both views, the grid and the follow camera, at four zoom levels and two moments,
+every label the canvas drew lies inside the canvas and nothing overlaps the canvas. After a real
+detector run on the sample clip, the player has none of those faults at any of the widths. Each check
+was seen to fail on a broken layout. The tests are skipped when Chromium cannot start (see Screenshots
+for its libraries) or the files kept on D are absent.
 
 `tests/test_replay.py` checks the replay recorder on short runs made in a temp folder
 (MaxPressure re-run, and an injected fake LLM replayed from its decision log), and that a changed
@@ -199,13 +221,13 @@ metric or a tampered decision log makes it fail.
 
 ## Screenshots
 
-`python scripts/screenshot_dashboard.py` starts the app on a free port and saves every page and
-state with Playwright as lossless WebP: each page, the Results tabs, Live Detection before and after
-a run, and the replay as loaded, mid-playback, following the ambulance, in the keep-left mirror, and
-with its notes open. The 1366×768 set goes to `docs/screenshots/` (in git); the 1920×1080 set, checked
-the same way, to `<paths.dashboard_media>/screenshots/1920/` (on D, not in git). `--offline` blocks
-every request that is not to the app and fails if one is attempted; the screenshots in `docs/` were
-taken that way. Chromium needs `libnspr4`, `libnss3` and `libasound2`; without root they can be unpacked from
-the Ubuntu packages into a user folder (`apt-get download libnspr4 libnss3 libasound2`,
-`dpkg -x <deb> ~/.cache/pw-libs/root`) and passed with
+`python scripts/screenshot_dashboard.py` starts the app on a free port and saves every page and state
+with Playwright as lossless WebP: each page, the Results tabs, Live Detection before and after a run,
+and the replay as loaded, mid-playback, following the ambulance, in the keep-left mirror, and with its
+notes open. The 1366×768 set goes to `docs/screenshots/` (in git); the 1920×1080, 1024×768 (projector)
+and 390×844 (phone) sets, taken the same way, to `<paths.dashboard_media>/screenshots/<width>/` (on D,
+not in git). `--offline` blocks every request that is not to the app and fails if one is attempted; the
+screenshots in `docs/` were taken that way. Chromium needs `libnspr4`, `libnss3` and `libasound2`;
+without root they can be unpacked from the Ubuntu packages into a user folder (`apt-get download
+libnspr4 libnss3 libasound2`, `dpkg -x <deb> ~/.cache/pw-libs/root`) and passed with
 `LD_LIBRARY_PATH=~/.cache/pw-libs/root/usr/lib/x86_64-linux-gnu`.

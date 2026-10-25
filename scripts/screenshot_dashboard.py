@@ -1,14 +1,15 @@
 """Launch the dashboard and screenshot every page and state with Playwright (Chromium).
 
-    python scripts/screenshot_dashboard.py                       # 1366x768 and 1920x1080
+    python scripts/screenshot_dashboard.py                       # 1366x768, 1920x1080, 1024x768, 390x844
     python scripts/screenshot_dashboard.py --offline             # the same with every non-local request blocked
     python scripts/screenshot_dashboard.py --sizes 1366x768      # one size
     python scripts/screenshot_dashboard.py --out <dir> --extra-out <dir>
 
 The first size goes to --out (docs/screenshots, in git); every other size to --extra-out/<width>/,
-by default <paths.dashboard_media>/screenshots (the symlink to D: not in git). Files are lossless WebP
-(Chromium's PNG, re-encoded without loss by Pillow). With --offline every request that is not to the app is
-blocked, and the script fails if any was attempted: the dashboard must not need the network. Per size:
+by default <paths.dashboard_media>/screenshots (the symlink to D: not in git): full HD, an XGA projector and
+a phone (on a phone the sidebar starts closed). Files are lossless WebP (Chromium's PNG, re-encoded without
+loss by Pillow). With --offline every request that is not to the app is blocked, and the script fails if any
+was attempted: the dashboard must not need the network. Per size:
   overview(.webp|_viewport.webp), overview_source.webp (a source chip opened),
   live_detection_preview.webp (before a run), live_detection(.webp|_viewport.webp) (after running the
   detector on the bundled sample clip; its FPS are measured when the screenshot is taken),
@@ -153,7 +154,7 @@ def shoot(page, url: str, out: Path, width: int, height: int) -> None:
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--out", default="docs/screenshots")
-    ap.add_argument("--sizes", default="1366x768,1920x1080", help="comma-separated WIDTHxHEIGHT")
+    ap.add_argument("--sizes", default="1366x768,1920x1080,1024x768,390x844", help="comma-separated WIDTHxHEIGHT")
     ap.add_argument("--offline", action="store_true", help="block every request that is not to the app; fail if one is made")
     ap.add_argument("--extra-out", default=None,
                     help="folder for every size after the first (default: <paths.dashboard_media>/screenshots)")
