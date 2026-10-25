@@ -119,3 +119,32 @@ def test_final_decision_falls_back_to_every_round(bench):
     assert bench.final_decision(none, {"queue_mean_per_intersection": 1}, 4)["step"] == 3
     incomplete = dict(arms, v3={"models": {}, "selection": None})
     assert bench.final_decision(incomplete, {"queue_mean_per_intersection": 1}, 4) is None
+
+
+def test_trial_run_writes_to_out_and_leaves_the_benchmark_alone(bench, tmp_path, monkeypatch):
+    import json
+    import sys
+    calls = []
+
+    def fake_run_model(cfg, arm, model, root, runs):
+        out = root / runs / "trial"
+        out.mkdir(parents=True)
+        (out / "summary.json").write_text(json.dumps(
+            {"provenance": {"llm": {"calls": 3, "failures": 0, "latency_p95_s": 1.0}}}))
+        calls.append((arm, model, runs))
+        return out
+
+    def no_report(root):
+        raise AssertionError("a trial run must not rebuild benchmark.json or the doc")
+
+    monkeypatch.setattr(bench, "repo_root", lambda: tmp_path)
+    monkeypatch.setattr(bench, "git_info", lambda: {"dirty": False})
+    monkeypatch.setattr(bench, "load_runs", lambda root: {})
+    monkeypatch.setattr(bench, "run_experiment", lambda *a, **k: (_ for _ in ()).throw(AssertionError("no baselines")))
+    monkeypatch.setattr(bench, "run_model", fake_run_model)
+    monkeypatch.setattr(bench, "report", no_report)
+    monkeypatch.setattr(sys, "argv", ["benchmark_llm.py", "--arm", "guarded_v3", "--models", "llama3.2:3b",
+                                      "--out", "outputs/runs"])
+    bench.main()
+    assert calls == [("guarded_v3", "llama3.2:3b", bench.Path("outputs/runs"))]
+    assert (tmp_path / "outputs/runs/trial/summary.json").is_file()

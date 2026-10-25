@@ -3,6 +3,9 @@
     python scripts/benchmark_llm.py --arm v2                       # run an arm's models (clean git tree, free GPU)
     python scripts/benchmark_llm.py --arm v2 --models qwen2.5:3b   # (re)run some models only
     python scripts/benchmark_llm.py --report-only    # rebuild benchmark.json and the doc from the run folders
+    python scripts/benchmark_llm.py --arm guarded_v3 --models llama3.2:3b --out outputs/runs
+                                                     # a trial run: same setup, written to outputs/runs
+                                                     # (gitignored); benchmark.json and the doc are untouched
     python scripts/benchmark_llm.py --check          # exit 1 if docs/llm_benchmark.md is out of date
 
 Setup (fixed): indian_2x2_peak, seed 0, 600 steps, decision interval 5 s and min green 15 s
@@ -111,7 +114,7 @@ def bench_cfg(cfg: dict, model: str | None) -> dict:
     return c
 
 
-def run_model(cfg: dict, arm: str, model: str, root: Path) -> Path:
+def run_model(cfg: dict, arm: str, model: str, root: Path, runs: Path = RUNS) -> Path:
     c = bench_cfg(cfg, model)
     client = OllamaClient.from_config(c["llm"])
     idle = free_gpu(client)   # <= 300 MiB used with no model loaded, else SystemExit
@@ -122,7 +125,7 @@ def run_model(cfg: dict, arm: str, model: str, root: Path) -> Path:
     sampler = VramSampler()
     sampler.start()
     try:
-        out = run_experiment(c, SCENARIO, ARMS[arm]["controller"], steps=STEPS, seed=SEED, out_root=root / RUNS)
+        out = run_experiment(c, SCENARIO, ARMS[arm]["controller"], steps=STEPS, seed=SEED, out_root=root / runs)
     finally:
         samples = sampler.stop()
     ps = [m for m in client.loaded_models() if m["name"] == info["name"]]
@@ -367,6 +370,8 @@ def main():
     ap.add_argument("--report-only", action="store_true")
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--allow-dirty", action="store_true", help="for testing only; results are not citable")
+    ap.add_argument("--out", type=Path, help="trial run: write the run folders here (relative to the repo root) "
+                    "and leave outputs/llm_benchmark, benchmark.json and the doc untouched")
     args = ap.parse_args()
     root = repo_root()
 
@@ -389,17 +394,21 @@ def main():
         if git_info()["dirty"] and not args.allow_dirty:
             raise SystemExit("Git tree is dirty: commit first so the runs' provenance points at the exact code")
         cfg = load_config(args.config)
+        if args.out and args.out.is_absolute():
+            raise SystemExit("--out must be relative to the repo root")
         have = load_runs(root)
-        for ctl in BASELINES:
+        for ctl in [] if args.out else BASELINES:
             if (None, ctl) not in have:
                 out = run_experiment(cfg, SCENARIO, ctl, steps=STEPS, seed=SEED, out_root=root / RUNS)
                 print(f"Wrote {out.relative_to(root)}", flush=True)
         for m in args.models or ARMS[args.arm]["models"]:
             print(f"[{datetime.now():%H:%M:%S}] {args.arm} {m} ...", flush=True)
-            out = run_model(cfg, args.arm, m, root)
+            out = run_model(cfg, args.arm, m, root, args.out or RUNS)
             llm = json.loads((out / "summary.json").read_text())["provenance"]["llm"]
             print(f"  {out.relative_to(root)}: {llm['calls']} calls, {llm['failures']} failures, "
                   f"p95 {llm['latency_p95_s']:.2f} s", flush=True)
+        if args.out:
+            return
 
     b = report(root)
     (root / OUT).parent.mkdir(parents=True, exist_ok=True)
