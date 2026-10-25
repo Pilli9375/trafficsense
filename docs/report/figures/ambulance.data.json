@@ -1,0 +1,25 @@
+{
+ "bars": {
+  "gem": {
+   "stopped": 15.276,
+   "travel": 82.241
+  },
+  "llm": {
+   "stopped": 21.241,
+   "travel": 88.897
+  },
+  "mp": {
+   "stopped": 62.31,
+   "travel": 130.103
+  },
+  "pre": {
+   "stopped": 14.138,
+   "travel": 81.172
+  },
+  "web": {
+   "stopped": 55.034,
+   "travel": 123.517
+  }
+ },
+ "source": "outputs/full/results.json"
+}

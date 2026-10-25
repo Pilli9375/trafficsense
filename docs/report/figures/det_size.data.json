@@ -1,0 +1,40 @@
+{
+ "miss_pct": {
+  "autorickshaw": {
+   "large": 1.07,
+   "medium": 7.79,
+   "small": 63.62
+  },
+  "bicycle": {
+   "large": 21.62,
+   "medium": 33.84,
+   "small": 71.86
+  },
+  "bus": {
+   "large": 2.1,
+   "medium": 19.19,
+   "small": 70.76
+  },
+  "car": {
+   "large": 1.34,
+   "medium": 9.1,
+   "small": 65.44
+  },
+  "motorcycle": {
+   "large": 3.76,
+   "medium": 10.06,
+   "small": 58.97
+  },
+  "person": {
+   "large": 11.97,
+   "medium": 20.74,
+   "small": 75.74
+  },
+  "truck": {
+   "large": 10.23,
+   "medium": 22.42,
+   "small": 72.98
+  }
+ },
+ "source": "outputs/perception/detector_test.json"
+}

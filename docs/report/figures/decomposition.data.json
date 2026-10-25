@@ -1,0 +1,53 @@
+{
+ "parts": {
+  "all": {
+   "indian_2x2_offpeak": [
+    4.847,
+    3.655,
+    4.73
+   ],
+   "indian_2x2_peak": [
+    2.3,
+    1.164,
+    4.333
+   ]
+  },
+  "confusion": {
+   "indian_2x2_offpeak": [
+    0.173,
+    -1.094,
+    0.968
+   ],
+   "indian_2x2_peak": [
+    0.062,
+    -1.557,
+    1.417
+   ]
+  },
+  "false": {
+   "indian_2x2_offpeak": [
+    3.836,
+    2.813,
+    3.723
+   ],
+   "indian_2x2_peak": [
+    -0.298,
+    -1.819,
+    0.982
+   ]
+  },
+  "misses": {
+   "indian_2x2_offpeak": [
+    0.828,
+    -0.574,
+    1.674
+   ],
+   "indian_2x2_peak": [
+    0.6,
+    0.289,
+    1.188
+   ]
+  }
+ },
+ "source": "outputs/camera_error/results.json"
+}

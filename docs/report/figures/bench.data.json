@@ -1,0 +1,37 @@
+{
+ "maxpressure": 11.85,
+ "queue": {
+  "guarded_v3": {
+   "gemma4:e4b": 11.558,
+   "llama3.2:3b": 11.622,
+   "qwen2.5:3b": 11.85
+  },
+  "hybrid": {
+   "gemma4:e4b": 23.385,
+   "llama3.2:3b": 26.636,
+   "qwen2.5:3b": 22.05
+  },
+  "hybrid_v3": {
+   "gemma4:e4b": 12.456,
+   "llama3.2:3b": 28.345,
+   "qwen2.5:3b": 21.437
+  },
+  "v1": {
+   "gemma4:e4b": 19.442,
+   "llama3.2:3b": 40.945,
+   "qwen2.5:3b": 29.15
+  },
+  "v2": {
+   "gemma4:e4b": 17.953,
+   "llama3.2:3b": 42.256,
+   "qwen2.5:3b": 31.11
+  },
+  "v3": {
+   "gemma4:e4b": 15.115,
+   "llama3.2:3b": 36.618,
+   "qwen2.5:3b": 33.666
+  }
+ },
+ "source": "outputs/llm_benchmark/benchmark.json",
+ "webster": 13.486
+}

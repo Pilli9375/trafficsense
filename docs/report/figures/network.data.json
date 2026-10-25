@@ -1,0 +1,66 @@
+{
+ "intersections": {
+  "intersection_0_1": [
+   -200,
+   0,
+   true
+  ],
+  "intersection_0_2": [
+   -200,
+   200,
+   true
+  ],
+  "intersection_1_0": [
+   0,
+   -200,
+   true
+  ],
+  "intersection_1_1": [
+   0,
+   0,
+   false
+  ],
+  "intersection_1_2": [
+   0,
+   200,
+   false
+  ],
+  "intersection_1_3": [
+   0,
+   400,
+   true
+  ],
+  "intersection_2_0": [
+   200,
+   -200,
+   true
+  ],
+  "intersection_2_1": [
+   200,
+   0,
+   false
+  ],
+  "intersection_2_2": [
+   200,
+   200,
+   false
+  ],
+  "intersection_2_3": [
+   200,
+   400,
+   true
+  ],
+  "intersection_3_1": [
+   400,
+   0,
+   true
+  ],
+  "intersection_3_2": [
+   400,
+   200,
+   true
+  ]
+ },
+ "roads": 24,
+ "source": "data/scenarios/indian_2x2/roadnet.json"
+}

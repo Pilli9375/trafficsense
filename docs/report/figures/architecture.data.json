@@ -1,0 +1,14 @@
+{
+ "kind": "diagram",
+ "labels": [
+  "CityFlow engine",
+  "Observation layer",
+  "MaxPressure ranking",
+  "LLM agent",
+  "Guard + timing",
+  "IDD detector",
+  "Error model",
+  "outputs/",
+  "Dashboard"
+ ]
+}

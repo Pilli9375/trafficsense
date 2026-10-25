@@ -1,0 +1,10 @@
+{
+ "kind": "diagram",
+ "labels": [
+  "Observe",
+  "Reason",
+  "Act",
+  "Enforce",
+  "Log"
+ ]
+}
