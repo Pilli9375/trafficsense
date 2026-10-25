@@ -80,9 +80,9 @@ Dashboard at 1366×768 (`python scripts/screenshot_dashboard.py`). Every number 
 
 | Overview | Live Detection |
 |:--------:|:--------------:|
-| ![Overview](docs/screenshots/overview.png) | ![Live Detection](docs/screenshots/live_detection.png) |
+| ![Overview](docs/screenshots/overview.webp) | ![Live Detection](docs/screenshots/live_detection.webp) |
 | **Network Replay** | **Results** |
-| ![Network Replay](docs/screenshots/network_replay.png) | ![Results](docs/screenshots/results.png) |
+| ![Network Replay](docs/screenshots/network_replay.webp) | ![Results](docs/screenshots/results.webp) |
 
 ---
 
