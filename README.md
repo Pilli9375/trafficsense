@@ -311,11 +311,23 @@ pip install torch==2.14.1 torchvision==0.29.1 --index-url https://download.pytor
 pip install -e ".[dev,dashboard,perception]" -c requirements-lock.txt
 ```
 
-The trained weights (`best.pt`, sha256 `af7f77cc…683d`) are not in git. Put them at
-`data/external/detector_runs/detector/yolov8n_idd/weights/best.pt` (or link the folder, below)
-or train them with `scripts/train_detector.py --full`. To evaluate the detector or make the
-Live Detection sample clip you also need IDD Detection from
-[idd.insaan.iiit.ac.in](https://idd.insaan.iiit.ac.in) (free registration).
+**The trained weights are shared privately, not published.** They were trained on IDD, whose
+terms of use are shown only to registered users, so the model is not put on GitHub or anywhere
+public; ask the authors for a copy (or train your own with `scripts/train_detector.py --full`).
+Place the file here, or link the folder that holds it ([below](#large-files)):
+
+```bash
+mkdir -p data/external/detector_runs/detector/yolov8n_idd/weights
+cp /path/to/best.pt data/external/detector_runs/detector/yolov8n_idd/weights/best.pt
+sha256sum data/external/detector_runs/detector/yolov8n_idd/weights/best.pt
+# expected: af7f77cc14d5fec51ac54cdb9d17bdb9108f75eed3eab37e223462dd8e3a683d
+```
+
+The expected hash is recorded in `outputs/perception/detector_train.json`. `eval_detector.py`
+refuses to run on a file with a different hash, and the Live Detection page shows whether the
+weights match the evaluated ones. To evaluate the detector or make the Live Detection sample
+clip you also need IDD Detection from [idd.insaan.iiit.ac.in](https://idd.insaan.iiit.ac.in)
+(free registration).
 
 <a id="large-files"></a>
 
