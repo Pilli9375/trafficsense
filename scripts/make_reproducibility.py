@@ -172,13 +172,24 @@ def sizes_table(r):
                                      for k, v in r["sizes_gb"].items()])
 
 
+def second_laptop_tables(r):
+    s = r["second_laptop"]
+    t = s["llm_trial"]
+    trial = table(["LLM trial", "Length", "Calls", "Failures", "p95 latency (s)"],
+                  [("600 s trial, second laptop", f"{t['seconds']} s", t["calls"], t["failures"],
+                    f"{t['latency_p95_s']:.2f}")])
+    return "\n\n".join([table(["", ""], s["hardware"]), table(["What was run", "Result"], s["worked"]), trial,
+                         table(["Gap found (a stranger would hit it)", "Fix"], s["gaps"])])
+
+
 def build() -> dict:
     r = json.loads(RECORD.read_text())
     return {"repro_env": env_table(r), "repro_summary": summary_table(r), "repro_steps": steps_table(r),
             "repro_runs": runs_table(r), "repro_validation": validation_table(r),
             "repro_lanechange": lane_change_table(r), "repro_cityflow": cityflow_table(r),
             "repro_llm": llm_table(r), "repro_detector": detector_table(r),
-            "repro_dashboard": dashboard_table(r), "repro_sizes": sizes_table(r)}
+            "repro_dashboard": dashboard_table(r), "repro_sizes": sizes_table(r),
+            "repro_second": second_laptop_tables(r)}
 
 
 def main():

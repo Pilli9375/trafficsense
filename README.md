@@ -10,7 +10,7 @@
 <img alt="Vision: YOLOv8n" src="https://img.shields.io/badge/vision-YOLOv8n-111F68">
 <img alt="LLM: Ollama, local" src="https://img.shields.io/badge/LLM-Ollama%20(local)-000000?logo=ollama&logoColor=white">
 <img alt="Dashboard: Streamlit" src="https://img.shields.io/badge/dashboard-Streamlit-FF4B4B?logo=streamlit&logoColor=white">
-<img alt="Tests: 280 passing" src="https://img.shields.io/badge/tests-280%20passing-2ea44f">
+<img alt="Tests: 283 passing" src="https://img.shields.io/badge/tests-283%20passing-2ea44f">
 <!-- END:readme_badges -->
 
 </div>
@@ -231,8 +231,21 @@ Leave `TMPDIR` on the Linux disk: pytest fails when it points at a Windows drive
 
 ### 1. Install and run one simulation
 
+Install **Ubuntu 22.04 explicitly** from a Windows terminal: `wsl --install -d Ubuntu-22.04`. Plain
+`wsl --install -d Ubuntu` now installs Ubuntu `26.04`, which has no `python3.10-venv` and breaks the
+CityFlow build. Inside Ubuntu, `lsb_release -a` must say `22.04`.
+
+Every time you reopen Ubuntu, go back to the clone and activate the environment before running
+anything; otherwise `python`, `pytest` and `streamlit` give "command not found":
+
 ```bash
-sudo apt install -y python3.10-venv build-essential cmake git
+cd ~/trafficsense && source .venv/bin/activate
+```
+
+The first time:
+
+```bash
+sudo apt install -y python3.10-venv python3.10-dev build-essential cmake git
 git clone https://github.com/Pilli9375/trafficsense.git && cd trafficsense
 python3.10 -m venv .venv && source .venv/bin/activate
 pip install -U pip
@@ -269,7 +282,17 @@ streamlit run src/trafficsense/dashboard/app.py
 |---|---|
 | Overview, Results | work at once |
 | Network Replay | works after `scripts/build_replays.py`; before, it says so |
-| Live Detection | needs the detector weights and a sample clip made from IDD test images (step 4); until then it names the missing file and how to make it |
+| Live Detection | needs the detector weights (step 4); without them it names the missing file. The sample clip is optional: without it the page says so, offers only "Upload", and works on an uploaded video |
+
+The Live Detection sample clip is two files, `idd_test_sample.mp4` and `idd_test_sample.json`, in
+`data/external/dashboard_media/`. They are made from IDD test images (`scripts/make_sample_clip.py`,
+step 4); if you were given them, copy the folder somewhere and link it in, like this (or put the two
+files in a plain `data/external/dashboard_media/` folder):
+
+```bash
+cp -r /path/to/dashboard_media ~/trafficsense_media     # holds both sample files
+ln -s ~/trafficsense_media data/external/dashboard_media
+```
 
 <a id="ollama"></a>
 

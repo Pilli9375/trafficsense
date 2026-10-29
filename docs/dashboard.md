@@ -113,8 +113,12 @@ python scripts/make_sample_clip.py    # needs the IDD symlink (paths.idd_root)
 ([`reproducibility.md`](reproducibility.md)) it rebuilt all nine replays from the committed
 runs, and the files were byte-identical to the originals.
 
-Without them the Overview and Results pages still work; the other two pages say which file is
-missing and which command makes it.
+Without them the Overview and Results pages still work; Network Replay says which file is
+missing and which command makes it. Live Detection needs the detector weights (and refuses weights
+whose sha256 differs from the evaluated ones). The sample clip is optional there: if
+`idd_test_sample.mp4` or `idd_test_sample.json` is missing, the page shows a notice naming the
+file and `make_sample_clip.py`, disables the "Sample clip" choice and keeps "Upload"
+working (tests: `test_detection_page_without_the_sample_clip_still_offers_upload`).
 
 ## Pages in detail
 

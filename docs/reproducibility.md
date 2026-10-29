@@ -342,6 +342,46 @@ missing-data hints were reworded (same files reported missing, older wording).
 | IDD resized copy (640 px) | 3.8 GB |
 <!-- END:repro_sizes -->
 
+## A second laptop
+
+After the checks above, the README was followed on a different machine, as a stranger would:
+a second laptop with its own Windows, WSL2 and GPU. Everything below was **reported by the project
+owner** from that install; these runs are not re-measured by this repository's scripts, and the
+LLM trial's run folder is not part of this repository, so these figures are as reported. The only
+LLM figures recorded are those in the table (calls, failures, p95 latency): there is no mean
+latency or ATT for it, and its model and prompt are not recorded, so it is not compared with the
+project laptop's latency: the two machines' GPUs, drivers and Ollama versions differ and a single
+run each says nothing about which is faster.
+
+<!-- BEGIN:repro_second -->
+|  |  |
+|---|---|
+| Windows | Windows 11, WSL2, Ubuntu 22.04 |
+| CPU, RAM | AMD Ryzen 9 5900HS, 16 GB |
+| GPU | NVIDIA RTX 3050 Ti, 4 GB |
+
+| What was run | Result |
+|---|---|
+| pytest | passed; the tests that need IDD skip |
+| Detector weights sha256 | matched |
+| scripts/build_replays.py | ran |
+| Dashboard | all 4 pages worked |
+| Live Detection | worked with an uploaded video |
+
+| LLM trial | Length | Calls | Failures | p95 latency (s) |
+|---|---|---|---|---|
+| 600 s trial, second laptop | 600 s | 120 | 0 | 0.57 |
+
+| Gap found (a stranger would hit it) | Fix |
+|---|---|
+| `wsl --install -d Ubuntu` installs Ubuntu 26.04, which has no `python3.10-venv` and breaks the CityFlow build. | README says to install `Ubuntu-22.04` explicitly and to check `lsb_release -a`. |
+| CityFlow's build failed without `python3.10-dev`. | Added to the README's `apt install` line. |
+| The Live Detection sample clip needs the `dashboard_media` folder, and the README did not say which files or how to link them; the page also stopped completely when the sample file was missing. | README names the two sample files and the link step; the page now shows a notice, disables the sample option and still works with an uploaded video (test added). |
+| After reopening Ubuntu, `python`, `pytest` and `streamlit` gave "command not found" (the environment was not active). | README reminds: `cd ~/trafficsense && source .venv/bin/activate`. |
+<!-- END:repro_second -->
+
+All four gaps are fixed in the README or the code in the same commit as this section.
+
 ## Not repeatable, and why
 
 * **LLM answers** (Ollama on a GPU). Not guaranteed to repeat at temperature 0; every

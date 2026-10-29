@@ -26,6 +26,7 @@ from trafficsense.dashboard import data, theme, ui
 DET_TEST = "outputs/perception/detector_test.json"
 DET_VAL = "outputs/perception/detector_val.json"
 FILMSTRIP = 8
+SAMPLE_HINT = "Make it with `python scripts/make_sample_clip.py` (needs the IDD test images, README step 4)."
 
 
 def weights_rel(cfg: dict) -> str:
@@ -164,13 +165,20 @@ def render() -> None:
             raise data.MissingData(wrel, "The detector weights are not in git. Put best.pt there (README, Quick start, "
                                          "step 4: the detector), link data/external/detector_runs to the folder that "
                                          "holds it, or train it (scripts/train_detector.py).")
-        media = data.config_path("dashboard_media")
-        clip_rel = f"{media}/{dcfg['sample_clip']['file']}"
-        meta_rel = f"{media}/{Path(dcfg['sample_clip']['file']).stem}.json"
-        clip_meta = data.read_json(meta_rel, "Make it with `python scripts/make_sample_clip.py` (needs the IDD test images, README step 4).")
     except data.MissingData as e:
         ui.missing(e)
         return
+    # The sample clip is optional: without it the page still works on an uploaded video.
+    media = data.config_path("dashboard_media")
+    clip_rel = f"{media}/{dcfg['sample_clip']['file']}"
+    meta_rel = f"{media}/{Path(dcfg['sample_clip']['file']).stem}.json"
+    clip_meta, sample_missing = None, None
+    try:
+        clip_meta = data.read_json(meta_rel, SAMPLE_HINT)
+        if not data.path(clip_rel).is_file():
+            raise data.MissingData(clip_rel, SAMPLE_HINT)
+    except data.MissingData as e:
+        clip_meta, sample_missing = None, e
     sha = file_sha256(str(wpath), wpath.stat().st_mtime)
     if sha != test["weights"]["sha256"]:
         st.error(f"`{wrel}` is not the evaluated model: its sha256 differs from the one in `{DET_TEST}`. "
@@ -180,7 +188,16 @@ def render() -> None:
     left, right = st.columns([1, 2.65], gap="medium")
     with left:
         with st.container(key="panel-det"):
-            src = st.segmented_control("Video", ["Sample clip", "Upload"], default="Sample clip", key="det_src") or "Sample clip"
+            if sample_missing is None:
+                src = st.segmented_control("Video", ["Sample clip", "Upload"], default="Sample clip",
+                                           key="det_src") or "Sample clip"
+            else:
+                # The sample option is not offered (a segmented control cannot disable one option); say why.
+                st.segmented_control("Video", ["Sample clip", "Upload"], default="Upload", key="det_src_off",
+                                     disabled=True, help="The sample clip is not available on this machine.")
+                src = "Upload"
+                st.info(f"Sample clip not available: `{sample_missing.path}` is missing. {SAMPLE_HINT} "
+                        "You can still upload a video.", icon=":material/info:")
             up = None
             if src == "Upload":
                 up = st.file_uploader("Video file", type=["mp4", "avi", "mov", "mkv"], key="det_upload")
@@ -207,9 +224,6 @@ def render() -> None:
             model = load_model(str(wpath), device)
             if src == "Sample clip":
                 video, label = str(data.path(clip_rel)), "IDD test-split sample"
-                if not Path(video).is_file():
-                    ui.missing(data.MissingData(clip_rel, "Make it with `python scripts/make_sample_clip.py` (needs the IDD test images, README step 4)."))
-                    return
             else:
                 tmp = tempfile.NamedTemporaryFile(suffix=Path(up.name).suffix, delete=False)
                 tmp.write(up.getbuffer())
@@ -232,9 +246,6 @@ def render() -> None:
         else:
             if src == "Sample clip":
                 p = data.path(clip_rel)
-                if not p.is_file():
-                    ui.missing(data.MissingData(clip_rel, "Make it with `python scripts/make_sample_clip.py` (needs the IDD test images, README step 4)."))
-                    return
                 first, thumbs, n = clip_preview(str(p), p.stat().st_mtime)
                 cap = (f'<span class="ts-pill">Sample · IDD test split</span><span class="ts-pill">'
                        f'{data.derived(len(clip_meta["frames"]))} frames · {clip_meta["fps"]} fps</span>')
@@ -246,8 +257,10 @@ def render() -> None:
 
     ui.why(
         "<p><b>Dashcam caveat.</b> IDD is filmed from a moving vehicle, not from a camera on a pole at a junction; "
-        "viewpoint, distance and occlusion differ. The sample clip is IDD's sampled frames played in order "
-        f"(every {clip_meta['frame_step_in_recording']}th recorded frame), so it is a time-lapse.</p>"
+        "viewpoint, distance and occlusion differ. "
+        + (f"The sample clip is IDD's sampled frames played in order (every {clip_meta['frame_step_in_recording']}th "
+           "recorded frame), so it is a time-lapse." if clip_meta else "An uploaded video is read frame by frame as it is.")
+        + "</p>"
         "<p><b>Counts.</b> Boxes per frame; there is no tracking, so one vehicle is counted in every frame it "
         "appears in.</p>"
         "<p><b>Speed.</b> Detector speed is pre-processing, inference and NMS per frame, as Ultralytics reports it; "

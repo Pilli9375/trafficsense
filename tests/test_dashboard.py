@@ -19,6 +19,7 @@ reason when those are absent.
 from __future__ import annotations
 
 import base64
+import hashlib
 import html
 import json
 import re
@@ -361,6 +362,48 @@ def test_detection_page_numbers_traceable_before_a_run():
     bad, read = untraceable(at)
     assert "outputs/perception/detector_val.json" in read
     assert not bad, f"live_detection: numbers not found in {sorted(read)}: {bad}"
+
+
+def _detection_root(tmp_path: Path, sample_json: bool = False) -> Path:
+    """A copy of just what Live Detection reads, with a dummy weights file (test fake: only hashed,
+    never loaded, since no detection is run) and no sample clip."""
+    cfg = load_config("configs/default.yaml")
+    (tmp_path / "configs").mkdir()
+    shutil.copy(repo_root() / "configs/default.yaml", tmp_path / "configs/default.yaml")
+    wdir = tmp_path / data.config_path("detector_runs") / "detector" / cfg["perception"]["train"]["run_name"] / "weights"
+    wdir.mkdir(parents=True)
+    weights = wdir / "best.pt"
+    weights.write_bytes(b"not a model")
+    (tmp_path / "outputs/perception").mkdir(parents=True)
+    test = json.loads((repo_root() / "outputs/perception/detector_test.json").read_text())
+    test["weights"]["sha256"] = hashlib.sha256(weights.read_bytes()).hexdigest()
+    (tmp_path / "outputs/perception/detector_test.json").write_text(json.dumps(test))
+    shutil.copy(repo_root() / "outputs/perception/detector_val.json", tmp_path / "outputs/perception/detector_val.json")
+    if sample_json:
+        media = tmp_path / data.config_path("dashboard_media")
+        media.mkdir(parents=True)
+        (media / "idd_test_sample.json").write_text(json.dumps({"frames": [], "fps": 4, "frame_step_in_recording": 1}))
+    return tmp_path
+
+
+@pytest.mark.parametrize("sample_json", [False, True], ids=["no sample files", "sample json but no mp4"])
+def test_detection_page_without_the_sample_clip_still_offers_upload(tmp_path, sample_json):
+    pytest.importorskip("cv2")
+    at = render("live_detection", root=_detection_root(tmp_path, sample_json))
+    assert not at.error, [e.value for e in at.error]          # the page is not stopped by an error box
+    assert any("Sample clip not available" in i.value and "make_sample_clip.py" in i.value for i in at.info)
+    assert len(at.get("file_uploader")) == 1                  # upload mode renders
+    assert at.button[0].label == "Run detector" and at.button[0].disabled   # until a file is uploaded
+
+
+def test_detection_page_keeps_the_weights_hash_check(tmp_path):
+    root = _detection_root(tmp_path)
+    test = json.loads((root / "outputs/perception/detector_test.json").read_text())
+    test["weights"]["sha256"] = "0" * 64
+    (root / "outputs/perception/detector_test.json").write_text(json.dumps(test))
+    at = render("live_detection", root=root)
+    assert any("not the evaluated model" in e.value for e in at.error)
+    assert not at.get("file_uploader")
 
 
 def _perturb(o, path=""):
