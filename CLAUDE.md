@@ -80,7 +80,7 @@ streamlit run src/trafficsense/dashboard/app.py
 python scripts/screenshot_dashboard.py             # screenshots of every page into docs/screenshots/
 python scripts/make_report.py --check             # every number in README + docs/report vs outputs/
 python scripts/build_report.py                    # docs/report -> report.docx + report.pdf (pandoc, tectonic in ~/.local/bin)
-python scripts/make_paper.py --check              # IEEE paper (docs/paper) vs outputs/, <= 6 pages; without --check: build PDF + Overleaf zip
+python scripts/make_paper.py --check              # IEEE paper (docs/paper) vs outputs/, <= 8 pages incl. references; without --check: build PDF + Overleaf zip
 ```
 
 Numbers in README.md and docs/report/*.md are tagged, `88.1<!--=f.off.mp.att-->`. The key is

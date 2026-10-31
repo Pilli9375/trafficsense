@@ -14,7 +14,8 @@ The paper uses the report's tag system (scripts/make_report.py) in LaTeX form,
 * a citation missing from refs.bib, an unused entry, or an entry not among the report's
   verified references;
 * an abstract outside 150-250 words;
-* a PDF or Overleaf zip that is not built from the current sources, or a PDF over 6 pages.
+* a PDF or Overleaf zip that is not built from the current sources, or a PDF over 8 pages
+  (references included).
 
 The build runs tectonic (on PATH or in ~/.local/bin) and fails on overfull lines, undefined
 references or citations.
@@ -46,7 +47,7 @@ def tool(name: str) -> str:
 def text_errors(fs, dt, write: bool) -> list[str]:
     path = ROOT / paper.TEX
     text = path.read_text()
-    new = paper.render_blocks(text, paper.blocks(fs))
+    new = paper.render_blocks(text, paper.blocks(fs, ROOT))
     probs, n = paper.check_tags(new, fs, dt)
     errors = [f"{paper.TEX}: {p}" for p in probs]
     if write and not errors:

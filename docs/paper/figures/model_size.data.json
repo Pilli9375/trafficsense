@@ -1,0 +1,57 @@
+{
+ "models": {
+  "gemma4:e4b": {
+   "amb_travel": 82.241,
+   "att_vs_mp_pct": [
+    -1.545,
+    -2.249,
+    -0.531
+   ],
+   "follows_pct": 80.02,
+   "size_b": 7.5
+  },
+  "llama3.1:8b": {
+   "amb_travel": 96.966,
+   "att_vs_mp_pct": [
+    1.355,
+    -1.406,
+    4.27
+   ],
+   "follows_pct": 61.71,
+   "size_b": 8.0
+  },
+  "llama3.2:3b": {
+   "amb_travel": 161.793,
+   "att_vs_mp_pct": [
+    81.366,
+    74.084,
+    86.059
+   ],
+   "follows_pct": 2.08,
+   "size_b": 3.2
+  },
+  "nvidia/nemotron-3-ultra-550b-a55b": {
+   "amb_travel": 83.448,
+   "att_vs_mp_pct": [
+    -0.582,
+    -3.093,
+    3.936
+   ],
+   "follows_pct": 99.22,
+   "size_b": 550
+  },
+  "qwen2.5:3b": {
+   "amb_travel": 148.483,
+   "att_vs_mp_pct": [
+    50.982,
+    47.565,
+    53.482
+   ],
+   "follows_pct": 17.37,
+   "size_b": 3.1
+  }
+ },
+ "mp_amb": 130.103,
+ "pre_amb": 81.172,
+ "source": "outputs/model_size/model_size.json"
+}

@@ -16,9 +16,13 @@
 \usepackage{newtxtext,newtxmath}
 \usepackage{graphicx}
 \usepackage{booktabs}
+\usepackage{array}
 \usepackage{amsmath}
 \usepackage{cite}
 \usepackage{url}
+
+% Leftover space goes to the foot of a column, not between headings and paragraphs.
+\raggedbottom
 
 \newcommand{\V}[2]{\ensuremath{#2}}
 \newcommand{\EmailA}{\texttt{bhargav.23bce8195@vitapstudent.ac.in}}
@@ -36,21 +40,22 @@
 Registration numbers: C Bhargav Kumar 23BCE8195, Achalla Akul Lakhan 23BCE8015,
 Darsi Amit 23BCE8288, Mylapalli Abhishek Raj 23BCE9470.}}
 
-\newcommand{\authorbox}[3]{\begin{minipage}[t]{#1}\centering
-{\normalsize #2}\\
+\newcommand{\authorbox}[4]{\begin{minipage}[t]{#1}\centering
+{\normalsize #2}#3\\
 \textit{\small School of Computer Science}\\
 \textit{\small and Engineering, VIT-AP University}\\
-{\small Amaravati, India}#3
+{\small Amaravati, India}#4
 \end{minipage}}
 \newcommand{\emailline}[1]{\\{\footnotesize #1}}
+\newcommand{\regno}[1]{\\{\small Reg.\ No.\ #1}}
 
 \author{
 \IEEEauthorblockA{%
-\authorbox{0.31\textwidth}{C Bhargav Kumar}{\emailline{\EmailA}}\hfill
-\authorbox{0.31\textwidth}{Achalla Akul Lakhan}{\emailline{\EmailB}}\hfill
-\authorbox{0.31\textwidth}{Darsi Amit}{\emailline{\EmailC}}\\[1.5ex]
-\authorbox{0.38\textwidth}{Mylapalli Abhishek Raj}{\emailline{\EmailD}}\hspace{0.08\textwidth}
-\authorbox{0.38\textwidth}{Dr.\ Mohd Irfan (Guide)}{}}
+\authorbox{0.31\textwidth}{C Bhargav Kumar}{\regno{23BCE8195}}{\emailline{\EmailA}}\hfill
+\authorbox{0.31\textwidth}{Achalla Akul Lakhan}{\regno{23BCE8015}}{\emailline{\EmailB}}\hfill
+\authorbox{0.31\textwidth}{Darsi Amit}{\regno{23BCE8288}}{\emailline{\EmailC}}\\[1.5ex]
+\authorbox{0.38\textwidth}{Mylapalli Abhishek Raj}{\regno{23BCE9470}}{\emailline{\EmailD}}\hspace{0.08\textwidth}
+\authorbox{0.38\textwidth}{Dr.\ Mohd Irfan (Guide)}{}{}}
 }
 
 \maketitle
@@ -207,6 +212,55 @@ probabilities from the confusion matrix, and a Poisson number of phantom stopped
 road and snapshot. The \emph{junction} level uses detection rates of medium and large objects
 (queued vehicles near a pole camera); the \emph{crowded / far} level uses all objects. A fresh
 snapshot is drawn at every observation, while the simulator stays exact.
+
+\section{Implementation}\label{sec:impl}
+
+\subsection{Tools}
+Table~\ref{tab:tools} lists the software and hardware. The versions are those pinned in the
+repository's lock file and recorded by the runs; the controllers, the observation layer and
+the experiment scripts are our own Python code.
+
+\begin{table}[t]
+\caption{Implementation and tools.}
+\label{tab:tools}
+\centering
+\footnotesize
+% BEGIN:tab_tools
+\begin{tabular}{@{}l>{\raggedright\arraybackslash}p{0.73\columnwidth}@{}}
+\toprule
+Component & Tool and version \\
+\midrule
+Simulator & CityFlow, built from source (commit \texttt{81ee0f4}) \\
+Controllers & FixedTime, Webster plan, MaxPressure, MP + preemption, LLM arms (own Python code) \\
+LLM runtime & Ollama 0.40.3, \texttt{/api/chat} with a JSON schema \\
+Models & \texttt{llama3.2:3b} (selected), \texttt{qwen2.5:3b}, \texttt{gemma4:e4b}; \texttt{llama3.1:8b} and a hosted 550\,B model in the model-size study only \\
+Detector & YOLOv8n; Ultralytics 8.4.183, PyTorch 2.14.1+cu126 \\
+Dataset & India Driving Dataset (IDD), 7 classes \\
+Dashboard & Streamlit 1.65.0 \\
+Language & Python 3.10.12; NumPy 2.2.6, pandas 2.3.3, Matplotlib 3.10.9 \\
+Hardware & AMD Ryzen 5 4600H, 16 GB RAM; NVIDIA GTX 1650, 4 GB (WSL2, Ubuntu 22.04) \\
+\bottomrule
+\end{tabular}
+% END:tab_tools
+\end{table}
+
+\subsection{Software and dashboard}
+A Streamlit dashboard presents the results (Fig.~\ref{fig:dash}). It reads only files in
+\texttt{outputs/} (and the detector weights), and every chart and number carries a source chip
+naming the file it came from. It has four pages. \emph{Overview} shows the headline result,
+with exploratory numbers labelled as such. \emph{Live Detection} runs the trained detector on
+video. \emph{Network Replay} replays two controllers side by side on the same traffic; replays
+re-drive the simulator with each run's logged decisions and are kept only if they reproduce
+the run's metrics exactly. \emph{Results} gives the result tables. A test renders every page
+and fails if any number shown does not appear in the files the page read.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.74\textwidth]{figures/dashboard.pdf}
+\caption{Dashboard, Network Replay page (sidebar cropped): MaxPressure (left) and the
+pre-registered LLM arm (right) on the same traffic, following one ambulance's trip.}
+\label{fig:dash}
+\end{figure*}
 
 \section{Experimental Setup}
 
@@ -365,14 +419,54 @@ than MaxPressure on every seed (\V{m.peak.qwen.vs_mp}{+51.0}\% and
 hosted \V{m.size.nemo}{550}~B mixture-of-experts model~\cite{nemotron3ultra} were within seed
 noise of MaxPressure (the hosted API throttled heavily; \V{m.peak.nemo.fail}{1.8}\% of its calls failed
 and fell back to MaxPressure's choice); they chose the highest-pressure option in \V{m.peak.gem.follows}{80},
-\V{m.peak.llama8b.follows}{62} and \V{m.peak.nemo.follows}{99}\% of calls.
+\V{m.peak.llama8b.follows}{62} and \V{m.peak.nemo.follows}{99}\% of calls (Fig.~\ref{fig:size}).
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/model_size.pdf}
+\caption{Exploratory model-size study: peak ATT of the unguarded hybrid arm relative to
+MaxPressure on the same seeds, per model (total parameters in brackets).}
+\label{fig:size}
+\end{figure}
+
+\subsection{Detector}\label{sec:res-det}
+On the test split (IDD's official validation set, \V{d.test.images}{10225} images, used once)
+the detector reaches mAP50 \V{d.test.map50}{0.563} and mAP50-95 \V{d.test.map5095}{0.375}
+(Table~\ref{tab:det}), with high precision and moderate recall; it misses
+\V{d.size.motorcycle.small}{59}--\V{d.size.person.small}{76}\% of small objects but only
+\V{d.size.autorickshaw.large}{1}--\V{d.size.bicycle.large}{22}\% of large ones. Bicycles and
+persons are the weakest classes. These are dash-camera images, not views from a junction
+camera, so the numbers describe the detector on Indian street scenes, not at a junction.
+
+\begin{table}[t]
+\caption{YOLOv8n on the IDD test split, per class (Ultralytics AP).}
+\label{tab:det}
+\centering
+\footnotesize
+% BEGIN:tab_detector
+\begin{tabular}{@{}lrcc@{}}
+\toprule
+Class & Boxes & AP50 & AP50-95 \\
+\midrule
+car & 24,843 & $0.637$ & $0.442$ \\
+motorcycle & 25,489 & $0.630$ & $0.373$ \\
+auto-rickshaw & 7,782 & $0.652$ & $0.461$ \\
+bus & 4,915 & $0.664$ & $0.502$ \\
+truck & 7,077 & $0.576$ & $0.412$ \\
+bicycle & 569 & $0.339$ & $0.193$ \\
+person & 18,078 & $0.444$ & $0.241$ \\
+\midrule
+all (mAP) & 88,753 & $\mathbf{0.563}$ & $\mathbf{0.375}$ \\
+\bottomrule
+\end{tabular}
+% END:tab_detector
+\par\vspace{2pt}
+\parbox{\columnwidth}{\scriptsize Boxes: ground-truth boxes. Dash-camera images, not a
+junction camera; \V{cfg.imgsz}{640}~px input.}
+\end{table}
 
 \subsection{Camera errors}\label{sec:res-cam}
-The detector reaches mAP50 \V{d.test.map50}{0.563} and mAP50-95 \V{d.test.map5095}{0.375} on
-the test split, with high precision and moderate recall; it misses
-\V{d.size.motorcycle.small}{59}--\V{d.size.person.small}{76}\% of small objects but only
-\V{d.size.autorickshaw.large}{1}--\V{d.size.bicycle.large}{22}\% of large ones.
-With its errors in the counts (Table~\ref{tab:cam}), MaxPressure's ATT rises by
+With the detector's errors in the counts (Table~\ref{tab:cam}), MaxPressure's ATT rises by
 \V{c.off.mp.junction.pct}{4.8}\% off-peak and \V{c.peak.mp.junction.pct}{2.3}\% at peak with
 the junction camera, worse on every seed; the LLM arm degrades about as much, since its guard
 reads the same counts; the Webster plan, which reads no counts, is unaffected. At peak,
@@ -471,8 +565,8 @@ whose open code made it possible to validate our simulator against theirs; to th
 developers; and to IIIT Hyderabad and Intel for the India Driving Dataset.
 
 % Balances the last page's columns (column break before this reference); adjust if the
-% reference list changes.
-\IEEEtriggeratref{26}
+% reference list or the layout changes.
+\IEEEtriggeratref{23}
 \bibliographystyle{IEEEtran}
 \bibliography{refs}
 

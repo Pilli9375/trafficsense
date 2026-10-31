@@ -9,7 +9,9 @@ first:
 The key is a fact from `trafficsense.report.facts` or a `doc | block | row | column` cell of a
 checked doc, exactly as in the report; the shown number must equal the data rounded to the
 decimals shown. Generated tables sit between `% BEGIN:name` and `% END:name` comment lines and
-are written from facts by TABLES below.
+are written from facts by TABLES below; the tools table (ROOT_TABLES) reads the package
+versions from requirements-lock.txt, the Ollama version from the run records and the hardware
+from the fresh-clone record, so a changed version also fails the check.
 
 `lint()` fails on numbers in the document body that carry no tag. Allowed untagged: numbers in
 generated tables, comments, \\cite / \\ref / \\label / \\texttt arguments, lengths (3.5in,
@@ -36,7 +38,7 @@ PDF = PAPER_DIR / "paper.pdf"
 BUILD_RECORD = PAPER_DIR / "paper.build.json"
 ZIP = PAPER_DIR / "paper_overleaf.zip"
 REPORT_BIB = Path("docs/report/references.bib")
-MAX_PAGES = 6
+MAX_PAGES = 8
 ABSTRACT_WORDS = (150, 250)
 
 # Identifiers, not results (from the capstone project diary). Each must appear exactly as here.
@@ -308,8 +310,89 @@ def tab_camera(fs) -> str:
                       r"\bottomrule", r"\end{tabular}"])
 
 
-TABLES = {"tab_main": tab_main, "tab_ambulance": tab_ambulance, "tab_camera": tab_camera}
+DET_CLASSES = [("car", "car"), ("motorcycle", "motorcycle"), ("autorickshaw", "auto-rickshaw"), ("bus", "bus"),
+               ("truck", "truck"), ("bicycle", "bicycle"), ("person", "person")]
 
 
-def blocks(fs) -> dict[str, str]:
-    return {k: f(fs) for k, f in TABLES.items()}
+def tab_detector(fs) -> str:
+    rows = [f"{name} & {fs[f'd.test.{c}.gt'].value:,.0f} & ${fs[f'd.test.{c}.map50'].value:.3f}$ & "
+            f"${fs[f'd.test.{c}.map5095'].value:.3f}$" + r" \\" for c, name in DET_CLASSES]
+    return "\n".join([r"\begin{tabular}{@{}lrcc@{}}", r"\toprule",
+                      r"Class & Boxes & AP50 & AP50-95 \\", r"\midrule", *rows, r"\midrule",
+                      f"all (mAP) & {fs['d.test.gt'].value:,.0f} & $\\mathbf{{{fs['d.test.map50'].value:.3f}}}$ & "
+                      f"$\\mathbf{{{fs['d.test.map5095'].value:.3f}}}$" + r" \\",
+                      r"\bottomrule", r"\end{tabular}"])
+
+
+# --- implementation and tools: versions read from the lock file and the run records ----------
+
+LOCK = Path("requirements-lock.txt")
+FRESH_CLONE = Path("outputs/reproducibility/fresh_clone.json")
+OLLAMA_RUNS = ["outputs/full/runs", "outputs/camera_error/runs", "outputs/llm_benchmark/runs"]
+
+
+def lock_versions(root: Path) -> dict[str, str]:
+    """Pinned versions from requirements-lock.txt, plus `python` and `cityflow` (source commit)
+    from its header comment."""
+    text = (root / LOCK).read_text()
+    out = {m[1].lower(): m[2] for m in re.finditer(r"^([A-Za-z0-9_.\-]+)==(\S+)$", text, re.M)}
+    py = re.search(r"Python (\d+\.\d+\.\d+)", text)
+    cf = re.search(r"CityFlow is built from source at commit (\w+)", text)
+    if not py or not cf:
+        raise ValueError(f"{LOCK}: header no longer names the Python version or the CityFlow commit")
+    return {**out, "python": py[1], "cityflow": cf[1]}
+
+
+def ollama_version(root: Path) -> str:
+    """The Ollama server version recorded by every local LLM run; it must be one value."""
+    seen = set()
+    for d in OLLAMA_RUNS:
+        for f in sorted((root / d).glob("*/summary.json")):
+            prov = json.loads(f.read_text()).get("provenance", {})
+            if prov.get("provider") == "ollama" and "llm" in prov:
+                seen.add(prov["llm"]["server_version"])
+    if len(seen) != 1:
+        raise ValueError(f"expected one Ollama version across {OLLAMA_RUNS}, found {sorted(seen)}")
+    return seen.pop()
+
+
+def hardware(root: Path) -> tuple[str, str]:
+    """(CPU and RAM, GPU) as recorded by the fresh-clone check."""
+    env = dict(json.loads((root / FRESH_CLONE).read_text())["environment"])
+    cpu_row, gpu_row = env["CPU, RAM"], env["GPU"]
+    ram = re.search(r"\), (\d+ GB)", cpu_row)
+    if not ram:
+        raise ValueError(f"{FRESH_CLONE}: cannot read the RAM from {cpu_row!r}")
+    return f"{cpu_row.split(' (')[0]}, {ram[1]} RAM", ", ".join(gpu_row.split(", ")[:2])
+
+
+def tab_tools(fs, root: Path) -> str:
+    v = lock_versions(root)
+    cpu, gpu = hardware(root)
+    tt = lambda s: f"\\texttt{{{s}}}"
+    rows = [
+        ("Simulator", f"CityFlow, built from source (commit {tt(v['cityflow'])})"),
+        ("Controllers", "FixedTime, Webster plan, MaxPressure, MP + preemption, LLM arms (own Python code)"),
+        ("LLM runtime", f"Ollama {ollama_version(root)}, {tt('/api/chat')} with a JSON schema"),
+        ("Models", f"{tt('llama3.2:3b')} (selected), {tt('qwen2.5:3b')}, {tt('gemma4:e4b')}; "
+                   f"{tt('llama3.1:8b')} and a hosted {fs['m.size.nemo'].value:.0f}\\,B model "
+                   "in the model-size study only"),
+        ("Detector", f"YOLOv8n; Ultralytics {v['ultralytics']}, PyTorch {v['torch']}"),
+        ("Dataset", f"India Driving Dataset (IDD), {len(DET_CLASSES)} classes"),
+        ("Dashboard", f"Streamlit {v['streamlit']}"),
+        ("Language", f"Python {v['python']}; NumPy {v['numpy']}, pandas {v['pandas']}, "
+                     f"Matplotlib {v['matplotlib']}"),
+        ("Hardware", f"{cpu}; {gpu} (WSL2, Ubuntu 22.04)"),
+    ]
+    return "\n".join([r"\begin{tabular}{@{}l>{\raggedright\arraybackslash}p{0.73\columnwidth}@{}}", r"\toprule",
+                      r"Component & Tool and version \\", r"\midrule",
+                      *[f"{a} & {b}" + r" \\" for a, b in rows], r"\bottomrule", r"\end{tabular}"])
+
+
+TABLES = {"tab_main": tab_main, "tab_ambulance": tab_ambulance, "tab_camera": tab_camera,
+          "tab_detector": tab_detector}
+ROOT_TABLES = {"tab_tools": tab_tools}                      # also read files outside the facts
+
+
+def blocks(fs, root: Path) -> dict[str, str]:
+    return {**{k: f(fs) for k, f in TABLES.items()}, **{k: f(fs, root) for k, f in ROOT_TABLES.items()}}

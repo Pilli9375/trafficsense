@@ -158,7 +158,53 @@ def fig_camera(root, fs):
     return data, draw
 
 
-FIGURES = {"overview": fig_overview, "paired": fig_paired, "ambulance": fig_ambulance, "camera": fig_camera}
+def fig_model_size(root, fs):
+    data, _ = rf.fig_model_size(root, fs)
+
+    def draw(path):
+        plt = _plt()
+        fig, ax = plt.subplots(figsize=(W, 1.75), layout="constrained")
+        order = [m for _, m in rf.MS_ORDER]
+        for i, m in enumerate(order):
+            mean, lo, hi = data["models"][m]["att_vs_mp_pct"]
+            col = SLOT["gem"] if i >= 2 else MUTED
+            ax.errorbar(mean, i, xerr=[[mean - lo], [hi - mean]], fmt="o", color=col, ms=4, capsize=2, mec="white",
+                        mew=0.5, lw=0.9)
+            ax.text(hi + 2, i, f"{mean:+.1f}%", va="center", fontsize=6.4, color=INK)
+        ax.axvline(0, color=SLOT["mp"], lw=1.0)
+        ax.text(1.5, -0.75, "MaxPressure", fontsize=6.2, color=SLOT["mp"], va="center")
+        ax.set_yticks(range(len(order)),
+                      [f"{m.split('/')[-1].replace('-a55b', '')} ({data['models'][m]['size_b']:g} B)" for m in order])
+        ax.set_ylim(len(order) - 0.5, -1.1)
+        ax.grid(axis="y", visible=False)
+        ax.set_xlim(min(v["att_vs_mp_pct"][1] for v in data["models"].values()) - 6,
+                    max(v["att_vs_mp_pct"][2] for v in data["models"].values()) + 16)
+        ax.set_xlabel("peak ATT vs MaxPressure (%)\n(dot: mean; bar: range over seeds)")
+        fig.suptitle("EXPLORATORY: unguarded hybrid, only the model changes", x=0.01, ha="left", fontsize=7,
+                     fontweight="bold", color=INK2)
+        _save(fig, path)
+    return data, draw
+
+
+SCREEN = "docs/screenshots/network_replay_viewport.webp"
+SCREEN_CROP = (296, 76, 1366, 768)          # main area of the 1366 x 768 viewport, sidebar dropped
+
+
+def fig_dashboard(root, fs):
+    import hashlib
+    src = root / SCREEN
+    data = {"kind": "screenshot", "source": SCREEN, "sha256": hashlib.sha256(src.read_bytes()).hexdigest(),
+            "crop": list(SCREEN_CROP)}
+
+    def draw(path):
+        from PIL import Image
+        im = Image.open(src).convert("RGB").crop(SCREEN_CROP)
+        im.save(path, "PDF", resolution=im.width / W, quality=92)
+    return data, draw
+
+
+FIGURES = {"overview": fig_overview, "paired": fig_paired, "ambulance": fig_ambulance, "camera": fig_camera,
+           "model_size": fig_model_size, "dashboard": fig_dashboard}
 
 
 def make_all(root: Path, check: bool) -> list[str]:

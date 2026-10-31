@@ -65,6 +65,36 @@ def test_citations_must_be_report_references(tmp_path):
     assert any("c3" in e and "verified references" in e for e in errs)
 
 
-def test_paper_matches_outputs_and_fits_six_pages():
+def test_paper_matches_outputs_and_fits_eight_pages():
     r = subprocess.run([sys.executable, "scripts/make_paper.py", "--check"], cwd=ROOT, capture_output=True, text=True)
     assert r.returncode == 0, r.stdout + r.stderr
+
+
+def test_tools_table_reads_versions_from_the_lock_file(tmp_path):
+    v = paper.lock_versions(ROOT)
+    table = paper.tab_tools({"m.size.nemo": Fact(550, "x.json")}, ROOT)
+    for pkg in ("streamlit", "ultralytics", "torch", "python", "cityflow"):
+        assert v[pkg] in table
+    (tmp_path / "requirements-lock.txt").write_text("# no header\nstreamlit==1.0\n")
+    try:
+        paper.lock_versions(tmp_path)
+    except ValueError as e:
+        assert "header" in str(e)
+    else:
+        raise AssertionError("a lock file without the Python / CityFlow header must fail")
+
+
+def test_ollama_version_must_be_one_value(tmp_path):
+    for i, ver in enumerate(("0.40.3", "0.41.0")):
+        d = tmp_path / "outputs/full/runs" / f"r{i}"
+        d.mkdir(parents=True)
+        (d / "summary.json").write_text(
+            '{"provenance": {"provider": "ollama", "llm": {"server_version": "%s"}}}' % ver)
+    for d in paper.OLLAMA_RUNS[1:]:
+        (tmp_path / d).mkdir(parents=True)
+    try:
+        paper.ollama_version(tmp_path)
+    except ValueError as e:
+        assert "0.40.3" in str(e) and "0.41.0" in str(e)
+    else:
+        raise AssertionError("two Ollama versions must fail")
