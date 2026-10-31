@@ -46,10 +46,9 @@ IDENTIFIERS = {
     "Reg. No. of Darsi Amit": "23BCE8288",
     "Reg. No. of Mylapalli Abhishek Raj": "23BCE9470",
     "Capstone term": "Fall 2026-27",
+    "Capstone ID": "3328F4C8",
 }
-# Allowed if present, not required: the capstone ID is kept as a placeholder until the
-# authors confirm it (the diary's handwriting is unclear).
-OPTIONAL_IDENTIFIERS = {"Capstone ID": "3328F4C8"}
+OPTIONAL_IDENTIFIERS: dict[str, str] = {}
 REG_NO = re.compile(r"\b\d{2}[A-Z]{3}\d{4}\b")
 PLACEHOLDER = re.compile(r"\\\{\\\{[A-Z0-9_\\]+\\\}\\\}")
 

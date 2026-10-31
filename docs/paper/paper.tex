@@ -7,7 +7,6 @@
 %   python scripts/make_paper.py --check   # fail if anything differs from outputs/
 % Do not type a result number without a tag: the check fails on it.
 %
-% Fill in before submission: the four e-mail addresses and the capstone ID below.
 \documentclass[conference]{IEEEtran}
 \IEEEoverridecommandlockouts
 \usepackage{iftex}
@@ -22,11 +21,11 @@
 \usepackage{url}
 
 \newcommand{\V}[2]{\ensuremath{#2}}
-\newcommand{\EmailA}{\{\{EMAIL1\}\}}
-\newcommand{\EmailB}{\{\{EMAIL2\}\}}
-\newcommand{\EmailC}{\{\{EMAIL3\}\}}
-\newcommand{\EmailD}{\{\{EMAIL4\}\}}
-\newcommand{\CapstoneID}{\{\{CAPSTONE\_ID\}\}}
+\newcommand{\EmailA}{\texttt{bhargav.23bce8195@vitapstudent.ac.in}}
+\newcommand{\EmailB}{\texttt{akul.23bce8015@vitapstudent.ac.in}}
+\newcommand{\EmailC}{\texttt{amit.23bce8288@vitapstudent.ac.in}}
+\newcommand{\EmailD}{\texttt{abhishek.23bce9470@vitapstudent.ac.in}}
+\newcommand{\CapstoneID}{3328F4C8}
 \newcommand{\model}[1]{\texttt{#1}}
 
 \begin{document}
@@ -37,35 +36,21 @@
 Registration numbers: C Bhargav Kumar 23BCE8195, Achalla Akul Lakhan 23BCE8015,
 Darsi Amit 23BCE8288, Mylapalli Abhishek Raj 23BCE9470.}}
 
+\newcommand{\authorbox}[3]{\begin{minipage}[t]{#1}\centering
+{\normalsize #2}\\
+\textit{\small School of Computer Science}\\
+\textit{\small and Engineering, VIT-AP University}\\
+{\small Amaravati, India}#3
+\end{minipage}}
+\newcommand{\emailline}[1]{\\{\footnotesize #1}}
+
 \author{
-\IEEEauthorblockN{C Bhargav Kumar}
-\IEEEauthorblockA{\textit{School of Computer Science}\\
-\textit{and Engineering, VIT-AP University}\\
-Amaravati, India\\
-\EmailA}
-\and
-\IEEEauthorblockN{Achalla Akul Lakhan}
-\IEEEauthorblockA{\textit{School of Computer Science}\\
-\textit{and Engineering, VIT-AP University}\\
-Amaravati, India\\
-\EmailB}
-\and
-\IEEEauthorblockN{Darsi Amit}
-\IEEEauthorblockA{\textit{School of Computer Science}\\
-\textit{and Engineering, VIT-AP University}\\
-Amaravati, India\\
-\EmailC}
-\and
-\IEEEauthorblockN{Mylapalli Abhishek Raj}
-\IEEEauthorblockA{\textit{School of Computer Science}\\
-\textit{and Engineering, VIT-AP University}\\
-Amaravati, India\\
-\EmailD}
-\and
-\IEEEauthorblockN{Dr.\ Mohd Irfan (Guide)}
-\IEEEauthorblockA{\textit{School of Computer Science}\\
-\textit{and Engineering, VIT-AP University}\\
-Amaravati, India}
+\IEEEauthorblockA{%
+\authorbox{0.31\textwidth}{C Bhargav Kumar}{\emailline{\EmailA}}\hfill
+\authorbox{0.31\textwidth}{Achalla Akul Lakhan}{\emailline{\EmailB}}\hfill
+\authorbox{0.31\textwidth}{Darsi Amit}{\emailline{\EmailC}}\\[1.5ex]
+\authorbox{0.38\textwidth}{Mylapalli Abhishek Raj}{\emailline{\EmailD}}\hspace{0.08\textwidth}
+\authorbox{0.38\textwidth}{Dr.\ Mohd Irfan (Guide)}{}}
 }
 
 \maketitle
