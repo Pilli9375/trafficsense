@@ -10,7 +10,7 @@
 <img alt="Vision: YOLOv8n" src="https://img.shields.io/badge/vision-YOLOv8n-111F68">
 <img alt="LLM: Ollama, local" src="https://img.shields.io/badge/LLM-Ollama%20(local)-000000?logo=ollama&logoColor=white">
 <img alt="Dashboard: Streamlit" src="https://img.shields.io/badge/dashboard-Streamlit-FF4B4B?logo=streamlit&logoColor=white">
-<img alt="Tests: 283 passing" src="https://img.shields.io/badge/tests-283%20passing-2ea44f">
+<img alt="Tests: 292 passing" src="https://img.shields.io/badge/tests-292%20passing-2ea44f">
 <!-- END:readme_badges -->
 
 </div>
