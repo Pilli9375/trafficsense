@@ -1,0 +1,12 @@
+{
+ "pages": 6,
+ "pdf_sha256": "4679a7cea71147eafca2e5f7168939d5b56948414e8ecd4ff22f87fe8bebbbc3",
+ "sources": {
+  "figures/ambulance.pdf": "240ecb7161aafdcb7f28a4fd17272ba93e878770f177c364be315e4bd50c92f3",
+  "figures/camera.pdf": "3c0e511b57c234253b5051dc6eff2dbb26efd55bbced477dfc00641bdac8c9e5",
+  "figures/overview.pdf": "975e7983f0ef66b7cfb8616cd86617d30cf68eaa4d044ac5d8b4a426f4336e49",
+  "figures/paired.pdf": "d910a66dd868cdec9d36834cf0cdf526a7ced80067e432d5c3c44c464d172e49",
+  "paper.tex": "6ac0124b48c115dbd37768a1def6e0917fde4afcb3d76cf22aec1cd329c6e932",
+  "refs.bib": "f1c8886e82923502938bae0c88c4d733cccd2b620328a5a21221d0dfb01b7c33"
+ }
+}

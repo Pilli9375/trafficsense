@@ -1,0 +1,105 @@
+{
+ "decomposition": {
+  "all": {
+   "indian_2x2_offpeak": [
+    4.847,
+    3.655,
+    4.73
+   ],
+   "indian_2x2_peak": [
+    2.3,
+    1.164,
+    4.333
+   ]
+  },
+  "confusion": {
+   "indian_2x2_offpeak": [
+    0.173,
+    -1.094,
+    0.968
+   ],
+   "indian_2x2_peak": [
+    0.062,
+    -1.557,
+    1.417
+   ]
+  },
+  "false": {
+   "indian_2x2_offpeak": [
+    3.836,
+    2.813,
+    3.723
+   ],
+   "indian_2x2_peak": [
+    -0.298,
+    -1.819,
+    0.982
+   ]
+  },
+  "misses": {
+   "indian_2x2_offpeak": [
+    0.828,
+    -0.574,
+    1.674
+   ],
+   "indian_2x2_peak": [
+    0.6,
+    0.289,
+    1.188
+   ]
+  }
+ },
+ "mp_levels": {
+  "indian_2x2_offpeak": {
+   "crowded": [
+    8.242,
+    7.328,
+    9.931
+   ],
+   "junction": [
+    4.847,
+    4.103,
+    5.427
+   ]
+  },
+  "indian_2x2_peak": {
+   "crowded": [
+    4.383,
+    3.041,
+    6.73
+   ],
+   "junction": [
+    2.3,
+    1.003,
+    3.736
+   ]
+  }
+ },
+ "source": "outputs/camera_error/results.json",
+ "sweep": {
+  "indian_2x2_offpeak": {
+   "uniform_p0.50": 2.984,
+   "uniform_p0.60": 2.361,
+   "uniform_p0.70": 1.638,
+   "uniform_p0.80": 1.777,
+   "uniform_p0.90": -0.012,
+   "uniform_p1.00": 0.0
+  },
+  "indian_2x2_offpeak_peff": {
+   "crowded": 0.5731,
+   "junction": 0.9216
+  },
+  "indian_2x2_peak": {
+   "uniform_p0.50": 2.414,
+   "uniform_p0.60": 2.533,
+   "uniform_p0.70": 1.726,
+   "uniform_p0.80": 0.942,
+   "uniform_p0.90": 1.845,
+   "uniform_p1.00": 0.0
+  },
+  "indian_2x2_peak_peff": {
+   "crowded": 0.5714,
+   "junction": 0.9213
+  }
+ }
+}
