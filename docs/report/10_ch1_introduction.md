@@ -281,10 +281,9 @@ the project are given only in the later chapters, from the result files.
 |                   |             | and machine     |   on the 4 GB GPU (batch size from a probe run, mixed   |
 |                   |             | learning lead   |   precision off): `scripts/train_detector.py`.          |
 |                   |             |                 | - Defined the mapping of IDD's labels to our seven      |
-|                   |             |                 |   classes: `perception/idd.py`.                         |
-|                   |             |                 | - Built the inference pipeline used by the evaluation   |
-|                   |             |                 |   and the Live Detection page:                          |
-|                   |             |                 |   `perception/detector.py`.                             |
+|                   |             |                 |   classes (`perception/idd.py`) and built the           |
+|                   |             |                 |   inference pipeline used by the evaluation and the     |
+|                   |             |                 |   Live Detection page (`perception/detector.py`).       |
 |                   |             |                 | - Ran the detector evaluation whose measured errors are |
 |                   |             |                 |   the inputs of the camera error model:                 |
 |                   |             |                 |   `scripts/eval_detector.py`, `outputs/perception/`.    |
