@@ -351,6 +351,9 @@ def _write(path: Path, parts: dict[str, bytes]) -> None:
     tmp.replace(path)
 
 
+LONG_TABLE_CHARS = 1500     # text characters above which a table may break across pages (about a third of a page)
+
+
 def postprocess(docx: Path, authors: list[str], title: str) -> None:
     parts = _read(docx)
     doc = parts["word/document.xml"].decode("utf-8")
@@ -381,14 +384,23 @@ def postprocess(docx: Path, authors: list[str], title: str) -> None:
                 return x.replace("<w:trPr>", "<w:trPr><w:cantSplit/>", 1)
             return x.replace("<w:tr>", "<w:tr><w:trPr><w:cantSplit/></w:trPr>", 1)
         t = re.sub(r"<w:tr>.*?</w:tr>", row, t, flags=re.S)
-        # a table of up to 20 rows stays on one page with its caption: every row but the last
-        # keeps with the next
+        # a short table (up to 20 rows and LONG_TABLE_CHARS characters of text) stays on one page
+        # with its caption: every row but the last keeps with the next. A longer one may break
+        # between rows (rows never split; the header row repeats; the caption, the header row and
+        # the first row stay together because the caption and the header style keep with next)
         rows = re.findall(r"<w:tr>.*?</w:tr>", t, re.S)
-        if len(rows) <= 20:
+        if len(rows) <= 20 and len(re.sub(r"<[^>]+>", "", t)) <= LONG_TABLE_CHARS:
             for r in rows[:-1]:
                 t = t.replace(r, r.replace('<w:pStyle w:val="TableText"/>', '<w:pStyle w:val="TableText"/><w:keepNext/>'), 1)
         return t + '<w:p><w:pPr><w:pStyle w:val="TableSpacer"/></w:pPr></w:p>'
     doc = re.sub(r"<w:tbl>.*?</w:tbl>", table, doc, flags=re.S)
+    # a lead-in paragraph (text ends with a colon) that is followed by a list keeps with the list
+    def lead_in(m):
+        x = m[0]
+        if not re.sub(r"<[^>]+>", "", x).rstrip().endswith(":") or "<w:keepNext" in x:
+            return x
+        return re.sub(r"(<w:pStyle [^>]*/>)", r"\1<w:keepNext/>", x, count=1)
+    doc = re.sub(r"<w:p>(?:(?!</w:p>).)*?</w:p>(?=\s*<w:p><w:pPr><w:pStyle [^>]*/><w:numPr>)", lead_in, doc, flags=re.S)
     # inline images: no wrap distance (LibreOffice otherwise shifts them 0.125 in to the right)
     doc = doc.replace("<wp:inline>", '<wp:inline distT="0" distB="0" distL="0" distR="0">')
     parts["word/document.xml"] = doc.encode("utf-8")
