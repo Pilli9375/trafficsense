@@ -29,7 +29,7 @@ chapter is estimated.
 | `llama3.2:3b`, `llama3.1:8b` | LLM agents | Llama Community License | free download, not redistributed |
 | `gemma4:e4b`, `gemma3:4b` | LLM agents | Gemma terms of use | free download, not redistributed |
 | `qwen2.5:3b` | LLM agent (benchmark) | Qwen licence | free download, not redistributed |
-| `nvidia/nemotron-3-ultra-550b-a55b` | exploratory model-size study only | NVIDIA's API terms | not recorded by the project |
+| `nvidia/nemotron-3-ultra-550b-a55b` | exploratory model-size study only | NVIDIA's API terms | free tier (no charge incurred, as confirmed by the team); usage and credit amounts were not recorded by the project |
 | India Driving Dataset (IDD) | detector training and testing | IDD terms of use, after registration | free for research, not redistributed |
 | CoLLMLight code and data | validation of the simulator | no licence file (checked at commit `ce204a9`) | free download; run unmodified, not copied |
 | Geist and Geist Mono fonts | dashboard | SIL Open Font License 1.1 | free (open source) |

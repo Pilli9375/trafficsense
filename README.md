@@ -510,7 +510,7 @@ docs/                  one document per study, screenshots, and the project repo
 * **Ultralytics YOLOv8** (AGPL-3.0) for detection; **Ollama** for local inference; the models
   `llama3.2:3b` and `llama3.1:8b` (Llama Community License), `gemma4:e4b` (Gemma terms),
   `qwen2.5:3b` (Qwen licence) are used under their own licences and not redistributed.
-  Nemotron 3 Ultra was called through NVIDIA's hosted API (exploratory study only).
+  Nemotron 3 Ultra was called through NVIDIA's hosted API (exploratory study only), under NVIDIA's free tier: no charge incurred, as confirmed by the team; usage amounts were not recorded.
 * **Geist and Geist Mono** fonts (SIL Open Font License 1.1), bundled in
   `src/trafficsense/dashboard/static/fonts/` with the licence text.
 * Vehicle mix and dimensions: Arasan et al. (2008) via the iTrans/IIT Delhi report for

@@ -68,9 +68,9 @@ Please confirm this wording with the guide, Dr. Mohd Irfan, and change it in
 * **Table number.** The table is **Table 1.2**, not Table 1.1: the literature survey's comparison
   of controller families (Section 1.2.9) is Chapter 1's first table. If it must be Table 1.1,
   that comparison table has to move out of Chapter 1 or lose its number; say which.
-* **Hosted model cost.** Chapter 3 says the cost of the NVIDIA API used for the exploratory
-  model-size study was "not recorded by the project". If the team knows it (for example, free
-  developer credits), give the fact and it will be stated.
+* **Hosted model cost.** Confirmed by the team: the NVIDIA API used for the exploratory
+  model-size study was used under NVIDIA's free tier and no money was spent. Chapter 3 and the
+  README state this; usage and credit amounts were not recorded by the project.
 * **By hand after printing:** examiners' signatures, the Program Chair's and Dean's names and
   signatures (certificate), each student's mobile number, permanent address and photo
   (biodata). These are blank lines in the Word file; never commit the real values.
