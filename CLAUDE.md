@@ -79,7 +79,8 @@ python scripts/make_sample_clip.py                 # Live Detection sample clip 
 streamlit run src/trafficsense/dashboard/app.py
 python scripts/screenshot_dashboard.py             # screenshots of every page into docs/screenshots/
 python scripts/make_report.py --check             # every number in README + docs/report vs outputs/
-python scripts/build_report.py                    # docs/report -> report.docx + report.pdf (pandoc, tectonic in ~/.local/bin)
+python scripts/build_report.py                    # thesis format: docs/report -> report.docx (master) + report.pdf (LibreOffice)
+python scripts/check_report_format.py             # report.docx/pdf vs docs/report/format_spec.md (college capstone format)
 python scripts/make_paper.py --check              # IEEE paper (docs/paper) vs outputs/, <= 8 pages incl. references; without --check: build PDF + Overleaf zip
 ```
 

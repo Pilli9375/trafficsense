@@ -86,38 +86,87 @@ def test_refresh_keeps_the_text_format_of_a_cell_reference(tmp_path):
                                                   "45.1<!--=d.md | t | car | Share-->%")
 
 
-def _build_module():
-    import importlib.util
-    spec = importlib.util.spec_from_file_location("build_report", ROOT / "scripts/build_report.py")
-    m = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(m)
-    return m
-
-
-def test_short_captions_use_the_first_sentence():
-    b = _build_module()
-    tex = r"\caption{System architecture. The {simulator} holds it.}\label{fig:a} \caption{One sentence only.}"
-    assert b.short_captions(tex) == (r"\caption[System architecture.]{System architecture. The {simulator} holds it.}"
-                                     r"\label{fig:a} \caption{One sentence only.}")
-
-
-def test_filter_numbers_figures_tables_and_appendices(tmp_path):
-    import json
+def _pandoc():
     import shutil
     pandoc = shutil.which("pandoc") or str(Path.home() / ".local/bin/pandoc")
     if not Path(pandoc).is_file():
         pytest.skip("pandoc not installed")
-    md = ("# Front {.unnumbered}\n\n# One {#sec:one}\n\n## Part {#sec:part}\n\n![a](x.png){#fig:a}\n\n"
-          "::: {#tbl:t}\n| a | b |\n|---|---|\n| 1 | 2 |\n\n: cap\n:::\n\n# Two\n\n![b](x.png){#fig:b}\n\n"
-          "# Extra {.appendix #sec:app}\n\n![c](x.png){#fig:c}\n\nSee @fig:b, @tbl:t, @sec:part and @sec:app.\n")
+    return pandoc
+
+
+def _filter(tmp_path, md, to="plain"):
+    import json
+    import os
     src = tmp_path / "t.md"
     src.write_text(md)
     out = tmp_path / "n.json"
-    r = subprocess.run([pandoc, str(src), "--lua-filter", str(ROOT / "docs/report/template/report.lua"),
-                        "-t", "plain"], capture_output=True, text=True,
-                       env={**__import__("os").environ, "REPORT_NUMBERS_JSON": str(out)})
+    r = subprocess.run([_pandoc(), str(src), "--lua-filter", str(ROOT / "docs/report/template/thesis.lua"),
+                        "-M", "logo=x.png", "-t", to], capture_output=True, text=True,
+                       env={**os.environ, "REPORT_NUMBERS_JSON": str(out)})
     assert r.returncode == 0, r.stderr
-    nums = {k: v["num"] for k, v in json.loads(out.read_text()).items()}
-    assert nums == {"sec:one": "1", "sec:part": "1.1", "fig:a": "1.1", "tbl:t": "1.1", "fig:b": "2.1",
-                    "sec:app": "A", "fig:c": "A.1", "two": "2"}
-    assert "See Figure 2.1, Table 1.1, Section 1.1 and Appendix A." in r.stdout
+    return {k: v["num"] for k, v in json.loads(out.read_text()).items()}, r.stdout
+
+
+def test_filter_numbers_figures_continuously_and_tables_per_chapter(tmp_path):
+    md = ("# Front {.unnumbered}\n\n# One {#sec:one}\n\n## Part {#sec:part}\n\n#### Minor {#sec:minor}\n\n"
+          "![a. More.](x.png){#fig:a}\n\n::: {#tbl:t}\n| a | b |\n|---|---|\n| 1 | 2 |\n\n: cap\n:::\n\n"
+          "# Two\n\n![b](x.png){#fig:b}\n\n::: {#tbl:u}\n| a |\n|---|\n| 1 |\n\n: cap\n:::\n\n"
+          "See @fig:b, @tbl:u, @sec:part, @sec:minor and @sec:one.\n")
+    nums, out = _filter(tmp_path, md)
+    assert nums == {"sec:one": "1", "sec:part": "1.1", "sec:minor": "1.1", "fig:a": "1", "tbl:t": "1.1",
+                    "fig:b": "2", "tbl:u": "2.1", "two": "2"}
+    assert "See Figure 2, Table 2.1, Section 1.1, Section 1.1 and Chapter 1." in out.replace("\u00a0", " ")
+
+
+def test_filter_captions_carry_seq_fields_and_keep_all_text(tmp_path):
+    md = ("# One\n\n![Short title. The long explanation stays.](x.png){#fig:a}\n\n"
+          "![Whole caption kept, e.g. this.](x.png){#fig:b short=\"Given title\"}\n\n"
+          "::: {#tbl:t}\n| a |\n|---|\n| 1 |\n\n: First table. Note.\n:::\n\n"
+          "::: {#tbl:u}\n| a |\n|---|\n| 1 |\n\n: Second.\n:::\n")
+    _, xml = _filter(tmp_path, md, to="native")
+    assert "SEQ Figure \\\\* ARABIC" in xml
+    assert xml.count("SEQ Table \\\\* ARABIC \\\\r 1") == 1          # only the chapter's first table restarts
+    assert '"Short"' in xml and '"title"' in xml and '"explanation"' in xml
+    assert '"Given"' in xml and '"Whole"' in xml                       # short= title, whole caption as the note
+
+
+def test_merged_styles_take_the_spec_values():
+    from trafficsense.report import thesis
+    college = ('<w:styles><w:docDefaults><w:rPrDefault/></w:docDefaults>'
+               '<w:style w:type="paragraph" w:styleId="Heading1"><w:name w:val="heading 1"/>'
+               '<w:rPr><w:rFonts w:ascii="Calibri Light"/></w:rPr></w:style>'
+               '<w:style w:type="paragraph" w:styleId="Header"><w:name w:val="header"/></w:style></w:styles>')
+    pandoc = '<w:styles><w:style w:type="paragraph" w:styleId="Definition"><w:name w:val="Definition"/></w:style></w:styles>'
+    out = thesis.merged_styles(college, pandoc)
+    assert "Calibri Light" not in out and 'w:styleId="Header"' in out and 'w:styleId="Definition"' in out
+    h1 = out[out.index('w:styleId="Heading1"'):]
+    assert '<w:sz w:val="28"/>' in h1[:900] and "<w:pageBreakBefore/>" in h1[:900]
+    assert "Times New Roman" in out[:out.index("</w:docDefaults>")]
+
+
+def test_page_numbers_roman_front_matter_and_arabic_body():
+    from trafficsense.report import thesis
+    doc = ('<w:p><w:r><w:instrText> TC "Abstract" \\l 1 </w:instrText></w:r><w:r><w:t>Abstract</w:t></w:r></w:p>'
+           '<w:p><w:r><w:t>CHAPTER 1</w:t></w:r><w:r><w:instrText> TC "1\u2003Intro" \\l 1 </w:instrText></w:r></w:p>'
+           '<w:p><w:r><w:t>1.1\u2003Aims</w:t></w:r><w:r><w:instrText> TC "1.1\u2003Aims" \\l 2 </w:instrText></w:r></w:p>'
+           '<w:p><w:pPr><w:pStyle w:val="Caption"/></w:pPr><w:r><w:t>Figure 1 A plot</w:t></w:r>'
+           '<w:r><w:instrText> SEQ Figure </w:instrText></w:r></w:p>')
+    es = thesis.entries(doc)
+    pages = ["title", "ABSTRACT\ntext", "contents: Abstract iii\n1.1 Aims 1", "CHAPTER 1\nINTRO", "1.1 Aims\nFigure 1 A plot"]
+    thesis.page_numbers(es, pages)
+    assert [(e.kind, e.text, e.page) for e in es] == [("toc", "Abstract", "ii"), ("toc", "1  Intro", "1"),
+                                                     ("toc", "1.1  Aims", "2"), ("lof", "Figure 1 A plot", "2")]
+
+
+def test_thesis_identifiers_are_allowed_but_nothing_else():
+    assert numbers.lint("MYLAPALLI ABHISHEK RAJ (23BCE9470), AMARAVATI- 522237, Fall Semester 2026-27, "
+                        "abhishek.23bce9470@vitapstudent.ac.in, Capstone Project ID: 3328F4C8") == []
+    assert numbers.lint("PIN 522238") != []
+
+
+def test_built_report_follows_the_college_format():
+    """The committed report.docx / report.pdf against docs/report/format_spec.md."""
+    if not (ROOT / "docs/report/report.docx").is_file():
+        pytest.skip("report not built")
+    r = subprocess.run([sys.executable, "scripts/check_report_format.py"], cwd=ROOT, capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout + r.stderr
