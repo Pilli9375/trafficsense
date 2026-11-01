@@ -29,4 +29,3 @@ use, not as its replacement.
 **Keywords:** traffic signal control, large language models, multi-agent systems, MaxPressure,
 emergency vehicle priority, YOLOv8, India Driving Dataset, CityFlow, pre-registration.
 
-\newpage

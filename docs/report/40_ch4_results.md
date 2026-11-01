@@ -1,12 +1,84 @@
-# Results {#sec:results}
+# Results and Discussions {#sec:results}
 
-This chapter reports the results in the order the experiments were run: the LLM benchmark that
-selected the controller, the full experiments, the ambulance experiment, the exploratory
-model-size study, and the camera-error experiment. The baselines' tuning and their results on the
-Indian network are in @sec:baselines; the detector's evaluation is in @sec:det-eval. Every table
-in this chapter is generated from the result files.
+This chapter reports the results in the order the experiments were run: the tuning of the
+classical baselines, the LLM benchmark that selected the controller, the full experiments, the
+ambulance experiment, the exploratory model-size study and the camera-error experiment. It then
+gives the detector's evaluation and the dashboard, and discusses what the results mean and what
+limits them. Every table in this chapter is generated from the result files.
 
-## LLM benchmark and the design rounds {#sec:res-bench}
+## Baselines and Their Tuning {#sec:baselines}
+
+An LLM controller should be compared with baselines that are as good as they can reasonably be,
+and those must be fixed before the comparison, not after. Three classical controllers were used.
+
+* **FixedTime**: the 4 paired phases (each pair of opposing approaches together), 30<!--=cfg.ft.green--> s of green
+  each. This is the naive plan.
+* **Webster fixed time**: the same 4 phases with a cycle and splits computed per intersection by
+  Webster's method. Saturation flows and start-up lost times are measured on the network with the
+  run's vehicle mix (mean of 30<!--=cfg.web.reps--> random-order queues), and lane demand is read from the run's own
+  flow file, i.e. a perfect count of the simulated hour. This favours Webster: a real plan is built
+  from older counts.
+* **MaxPressure**: all 8 green phases, ties keep the current phase.
+
+MaxPressure's timing was tuned in two sweeps on four scenarios (Jinan, Hangzhou, Indian off-peak
+and peak; 3 seeds each), with selection rules committed before the runs: rank the settings by
+mean travel time in each scenario, choose the lowest mean rank, break ties by the lowest mean
+ratio to the best. The first sweep varied the decision interval and showed that what really
+changed was the shortest possible green. The second sweep therefore fixed the interval at 5 s and
+varied the minimum green (@tbl:mg-selection). A minimum green of
+15<!--=mg.chosen--> s was chosen, through the tie-break: the 10 s setting is best on three
+scenarios but last at Indian peak.
+
+::: {#tbl:mg-selection short="Pre-registered selection of MaxPressure's minimum green"}
+<!-- BEGIN:tab_mg_selection -->
+| Min green | Jinan | Hangzhou | Off-peak | Peak | Mean rank | Mean ATT / best | Chosen |
+|------------|-----------:|--------------:|--------------:|----------:|----------:|-----------:|-------------|
+| 10 s | 1 | 1 | 1 | 4 | 1.75 | 1.058 |  |
+| 15 s | 2 | 2 | 2 | 1 | 1.75 | 1.026 | chosen |
+| 20 s | 3 | 3 | 3 | 2 | 2.75 | 1.072 |  |
+| 25 s | 4 | 4 | 4 | 3 | 3.75 | 1.139 |  |
+<!-- END:tab_mg_selection -->
+
+: Pre-registered selection of MaxPressure's minimum green (decision interval 5 s): rank of each
+setting by mean travel time per scenario, mean rank, and the tie-break.
+:::
+
+The minimum green matters because of the transition. With a 10 s minimum green MaxPressure
+switches so often that 32.4<!--=i.peak.maxpressure_5s.transition-->% of each intersection's time
+at peak is transition, against 24.7<!--=i.peak.maxpressure.transition-->% with 15<!--=cfg.mp.min_green--> s. In light
+traffic reacting quickly wins; near capacity the green lost to transitions costs more. No
+setting is best at both levels, and the pre-registered rule chose the compromise.
+
+@tbl:baselines-indian gives all baselines on the Indian network. Off-peak, MaxPressure is clearly
+best. At peak, the tuned MaxPressure and the Webster plan are effectively tied
+(115.5<!--=i.peak.maxpressure.att--> s and 116.3<!--=i.peak.fixedtime_webster.att--> s), and the
+30<!--=cfg.ft.green--> s FixedTime no longer drains: about 308<!--=i.peak.fixedtime.backlog--> vehicles are still waiting to enter at the end of the
+hour. This tie matters for reading the LLM results: at peak, "as good as MaxPressure" is also
+"as good as a well-timed fixed plan".
+
+::: {#tbl:baselines-indian short="All baselines on the Indian 2x2 network"}
+<!-- BEGIN:tab_baselines_indian -->
+| Level | Controller | ATT (s) | Queue / int. (veh) | Finished trips | Waiting to enter at end | Share of time in transition |
+|-----------|--------------------|-------------:|-------------:|-----------:|-------------:|--------------:|
+| off-peak | FixedTime, 4 paired phases, 30 s | 121.5 ± 0.2 | 10.58 ± 0.17 | 2316 ± 28 | 0.0 ± 0.0 | 0.142 ± 0.000 |
+| off-peak | FixedTime, all 8 phases, 30 s | 129.3 ± 1.3 | 11.88 ± 0.42 | 2298 ± 28 | 0.0 ± 0.0 | 0.142 ± 0.000 |
+| off-peak | FixedTime, 4 paired phases, Webster plan | 100.4 ± 4.1 | 6.82 ± 0.52 | 2320 ± 36 | 0.0 ± 0.0 | 0.326 ± 0.006 |
+| off-peak | MaxPressure (8 phases, 5 s, min 15 / max 60) | 88.1 ± 1.0 | 4.94 ± 0.23 | 2332 ± 36 | 0.0 ± 0.0 | 0.246 ± 0.001 |
+| off-peak | MaxPressure (8 phases, 15 s, min 10 / max 60) | 81.3 ± 0.3 | 3.80 ± 0.07 | 2332 ± 38 | 0.0 ± 0.0 | 0.314 ± 0.003 |
+| off-peak | MaxPressure (8 phases, 5 s, min 10 / max 60) | 82.0 ± 0.8 | 3.91 ± 0.17 | 2332 ± 37 | 0.0 ± 0.0 | 0.319 ± 0.003 |
+| peak | FixedTime, 4 paired phases, 30 s | 279.9 ± 9.9 | 44.44 ± 0.75 | 4166 ± 93 | 307.7 ± 20.5 | 0.142 ± 0.000 |
+| peak | FixedTime, all 8 phases, 30 s | 291.9 ± 7.3 | 47.67 ± 0.62 | 4113 ± 88 | 331.0 ± 18.3 | 0.142 ± 0.000 |
+| peak | FixedTime, 4 paired phases, Webster plan | 116.3 ± 4.6 | 18.27 ± 1.28 | 4577 ± 87 | 0.3 ± 0.6 | 0.227 ± 0.004 |
+| peak | MaxPressure (8 phases, 5 s, min 15 / max 60) | 115.5 ± 0.9 | 17.83 ± 0.32 | 4576 ± 68 | 0.3 ± 0.6 | 0.247 ± 0.001 |
+| peak | MaxPressure (8 phases, 15 s, min 10 / max 60) | 133.8 ± 15.9 | 23.24 ± 4.60 | 4540 ± 116 | 0.3 ± 0.6 | 0.321 ± 0.002 |
+| peak | MaxPressure (8 phases, 5 s, min 10 / max 60) | 142.4 ± 18.3 | 25.84 ± 5.22 | 4516 ± 131 | 0.3 ± 0.6 | 0.324 ± 0.001 |
+<!-- END:tab_baselines_indian -->
+
+: All baselines on the Indian 2x2 network, mean ± std over seeds 0–2, 3600<!--=cfg.steps--> s. The
+default MaxPressure is the tuned one (5 s interval, 15<!--=cfg.mp.min_green--> s minimum green).
+:::
+
+## LLM Benchmark and the Design Rounds {#sec:res-bench}
 
 Each LLM arm was benchmarked on the same 600<!--=b.steps--> s of Indian peak traffic (seed 0) with
 up to four local models (`llama3.2:3b` from the Llama 3 family [@grattafiori2024llama3], `qwen2.5:3b`
@@ -14,7 +86,7 @@ up to four local models (`llama3.2:3b` from the Llama 3 family [@grattafiori2024
 @tbl:bench summarise all rounds; @tbl:bench-selection gives what the rule chose.
 
 ![Mean queue per intersection over the first 600<!--=b.steps--> s of Indian peak traffic for every arm and
-model, against MaxPressure (blue line). gemma3:4b, run only in v1, is in @tbl:bench.](figures/bench.png){#fig:bench width=100%}
+model, against MaxPressure (blue line). gemma3:4b, run only in v1, is in @tbl:bench.](figures/bench.png){#fig:bench short="LLM benchmark: mean queue of every arm and model" width=100%}
 
 **Round 1 (prompt v1).** No model met the rule. `qwen2.5:3b` was just too slow
 (95th-percentile latency 3.34<!--=b.v1.qwen2.5:3b.p95--> s against the
@@ -44,7 +116,7 @@ were tested with this prompt: plain v3, hybrid_v3, and guarded_v3, which adds th
 of its calls. It did not change the two 3 B models, which still kept the current phase in most
 calls.
 
-::: {#tbl:bench}
+::: {#tbl:bench short="LLM benchmark, all rounds"}
 <!-- BEGIN:tab_bench -->
 | Arm | Model | Failures | Latency p95 (s) | Queue / int. (veh) | ATT at 600 s (s) | Eligible |
 |--------------|--------------------|----------------------|-----------:|---------:|---------:|------------|
@@ -85,7 +157,7 @@ controller went to the full experiments whatever its benchmark result, and desig
 controller stopped. The best-performing LLM-led controller, `gemma4:e4b`, was not eligible because
 of its latency (95th percentile 4.80<!--=b.hybrid_v3.gemma4:e4b.p95--> s).
 
-::: {#tbl:bench-selection}
+::: {#tbl:bench-selection short="What the pre-registered rule selected in each round"}
 <!-- BEGIN:tab_bench_selection -->
 | Applied to | Eligible | Chosen | Decision interval |
 |-------------------------|-------------------------|-------------------------|-------------------------|
@@ -102,15 +174,15 @@ of its latency (95th percentile 4.80<!--=b.hybrid_v3.gemma4:e4b.p95--> s).
 : What the pre-registered rule selected in each round and in the final decision.
 :::
 
-## Full experiments {#sec:res-main}
+## Full Experiments {#sec:res-main}
 
 @tbl:full-off, @tbl:full-peak and @tbl:full-jinan give the results of the full experiments, and
 @fig:att shows the travel times side by side.
 
 ![Average travel time of every controller in the three scenarios (mean ± std over three seeds).
-The two LLM arms are close to MaxPressure everywhere; FixedTime fails at peak.](figures/att.png){#fig:att width=100%}
+The two LLM arms are close to MaxPressure everywhere; FixedTime fails at peak.](figures/att.png){#fig:att short="Average travel time of every controller" width=100%}
 
-::: {#tbl:full-off}
+::: {#tbl:full-off short="Full experiments, Indian 2x2 off-peak"}
 <!-- BEGIN:tab_full_off -->
 | Controller | Seeds | ATT (s) | Queue / int. (veh) | Waiting / vehicle (s) | Finished trips | ATT vs MaxPressure |
 |---------------------|--------:|-------------:|--------------:|------------:|------------:|-------------:|
@@ -124,7 +196,7 @@ The two LLM arms are close to MaxPressure everywhere; FixedTime fails at peak.](
 : Indian 2x2, off-peak (2375<!--=cal.offpeak--> veh/h), 3600<!--=cfg.steps--> s, mean ± std over seeds 0–2.
 :::
 
-::: {#tbl:full-peak}
+::: {#tbl:full-peak short="Full experiments, Indian 2x2 peak"}
 <!-- BEGIN:tab_full_peak -->
 | Controller | Seeds | ATT (s) | Queue / int. (veh) | Waiting / vehicle (s) | Finished trips | ATT vs MaxPressure |
 |---------------------|--------:|-------------:|--------------:|-------------:|-----------:|-------------:|
@@ -138,7 +210,7 @@ The two LLM arms are close to MaxPressure everywhere; FixedTime fails at peak.](
 : Indian 2x2, peak (4750<!--=cal.peak--> veh/h), 3600<!--=cfg.steps--> s, mean ± std over seeds 0–2.
 :::
 
-::: {#tbl:full-jinan}
+::: {#tbl:full-jinan short="Full experiments, Jinan 3x4"}
 <!-- BEGIN:tab_full_jinan -->
 | Controller | Seeds | ATT (s) | Queue / int. (veh) | Waiting / vehicle (s) | Finished trips | ATT vs MaxPressure |
 |---------------------|--------:|-------------:|--------------:|-------------:|-----------:|-------------:|
@@ -160,9 +232,9 @@ deterministic baselines are identical on every seed.
 0.2<!--=p.off.llm.s2-->–3.5<!--=p.jinan.llm.s0--> s.
 
 ![ATT minus MaxPressure's ATT on the same seed, for the two LLM arms. Each dot is one seed; left of
-zero is faster than MaxPressure.](figures/paired.png){#fig:paired width=100%}
+zero is faster than MaxPressure.](figures/paired.png){#fig:paired short="Paired ATT difference of the LLM arms from MaxPressure" width=100%}
 
-::: {#tbl:paired}
+::: {#tbl:paired short="Paired comparison with MaxPressure"}
 <!-- BEGIN:tab_paired -->
 | Scenario | Controller | ATT minus MaxPressure, per seed (s) | Seeds lower / higher than MaxPressure |
 |-----------------------|--------------------------|--------------------------|--------------------------|
@@ -200,7 +272,7 @@ a demonstrated improvement. The arm is also not real-time on this GPU: 4.54<!--=
 per call on average, so an hour of traffic took 3.2<!--=l.peak.gem.wall_h--> hours over three seeds,
 against 0.6<!--=l.peak.llm.wall_h--> hours for the main arm.
 
-::: {#tbl:llm-stats}
+::: {#tbl:llm-stats short="LLM decision statistics"}
 <!-- BEGIN:tab_llm_stats -->
 | Scenario | Arm | Calls | Failures | Latency mean (s) | p95 per run (s) | Answer differs from MaxPressure | Guard replaced it | Applied phase differs |
 |--------------|----------------|------:|----------------|-------:|--------:|----------:|----------:|-------:|
@@ -223,7 +295,7 @@ successful calls; "applied phase differs" over all calls.
 ambulances, seeds 0–4, with the primary metric the mean travel time of the
 29<!--=e.mp.amb_n--> signal-relevant ambulances.
 
-::: {#tbl:emergency}
+::: {#tbl:emergency short="Emergency scenario, normal traffic"}
 <!-- BEGIN:tab_emergency -->
 | Controller | ATT (s) | Queue / int. (veh) | Finished trips |
 |----------------------------------|----------------------:|-----------------------:|-------------------:|
@@ -264,20 +336,20 @@ main arm's benefit is by design: a phase serving a listed ambulance is exempt fr
 when the model picks it, it is applied.
 
 ![Mean travel time of the signal-relevant ambulances, split into time stopped (solid) and time
-moving (light).](figures/ambulance.png){#fig:ambulance width=100%}
+moving (light).](figures/ambulance.png){#fig:ambulance short="Travel time of the signal-relevant ambulances" width=100%}
 
 **Normal traffic does not pay for the priority.** Network ATT under the main arm is
 116.4<!--=e.llm.att--> s against MaxPressure's 115.7<!--=e.mp.att--> s, a difference well inside
 the seed-to-seed spread (±2.3<!--=e.mp.att_sd--> s).
 
-## Model size (exploratory) {#sec:res-size}
+## Model Size (Exploratory) {#sec:res-size}
 
 *Exploratory, planned after the main results.* With the controller fixed to the unguarded hybrid
 (hybrid_v3), only the model was changed, from 3 B local models to a hosted 550<!--=m.size.nemo--> B
 mixture-of-experts model (Nemotron 3 Ultra [@nemotron3ultra], 55<!--=m.active.nemo--> B parameters active per token).
 @tbl:model-size and @fig:model-size give the results.
 
-::: {#tbl:model-size}
+::: {#tbl:model-size short="Exploratory model-size study"}
 <!-- BEGIN:tab_model_size -->
 | Model | Total params (B) | ATT (s), mean ± std | ATT vs MaxPressure, mean (range over seeds) | Seeds worse than MaxPressure | Follows pressure | Answer differs from MaxPressure | Failed calls |
 |------------------|-------:|----------:|----------------|----------:|--------:|----------:|----------------|
@@ -295,7 +367,7 @@ that are the highest-pressure option. Failed calls apply MaxPressure's choice.
 
 ![Exploratory: the same hybrid controller with five models. Left: ATT relative to MaxPressure at
 peak (dot: mean; bar: range over seeds). Right: mean travel time of the 29<!--=e.mp.amb_n--> signal-relevant
-ambulances. Grey: models worse than MaxPressure on every seed.](figures/model_size.png){#fig:model-size width=100%}
+ambulances. Grey: models worse than MaxPressure on every seed.](figures/model_size.png){#fig:model-size short="Exploratory: one hybrid controller with five models" width=100%}
 
 1. **Below some size the LLM makes the hybrid controller worse.** With either 3 B model the hybrid
    is far behind MaxPressure on every seed (ATT +51.0<!--=m.peak.qwen.vs_mp-->% and
@@ -312,7 +384,7 @@ ambulances. Grey: models worse than MaxPressure on every seed.](figures/model_si
    hosted model bring the signal-relevant ambulances through about as fast as preemption, without
    preempting: when an ambulance is in view they leave MaxPressure's choice and give it green.
 
-::: {#tbl:model-size-amb}
+::: {#tbl:model-size-amb short="Exploratory: ambulances under each model"}
 <!-- BEGIN:tab_model_size_amb -->
 | Controller / model | Signal-relevant ambulances finished | Travel time, mean (s) | Stopped time, mean (s) | vs MaxPressure, paired | vs MaxPressure + preemption, paired |
 |----------------------|----------------:|---------:|----------:|--------------------|--------------------|
@@ -331,10 +403,10 @@ with MaxPressure and with preemption.
 
 The hosted model's runs depended on an API that throttled the account heavily during the full
 runs: many calls were retried several times, and calls that ran out of retries were counted as
-failures and fell back to MaxPressure's choice (Appendix E). Its prompts also leave the machine,
+failures and fell back to MaxPressure's choice (@sec:app-tables). Its prompts also leave the machine,
 so it is not an on-device option.
 
-## Camera errors {#sec:res-camera}
+## Camera Errors {#sec:res-camera}
 
 The camera-error experiment repeated the main comparisons with the controllers' counts degraded by
 the detector's measured errors (@sec:error-model), while the simulator stayed exact. Ambulance
@@ -381,7 +453,7 @@ same seed.
 ![Left and centre: paired change in ATT against perfect counts for each controller and camera
 level (bar: range over seeds). Right: MaxPressure with only missed vehicles (uniform detection
 probability, line) and with the camera levels (markers) at their effective detection
-rates.](figures/camera.png){#fig:camera width=100%}
+rates.](figures/camera.png){#fig:camera short="Paired ATT change under camera errors" width=100%}
 
 * **Every count-based controller gets slower.** With the junction camera MaxPressure's ATT rises
   by 4.8<!--=c.off.mp.junction.pct-->% off-peak and 2.3<!--=c.peak.mp.junction.pct-->% at peak, and
@@ -406,7 +478,7 @@ whereas detecting 90<!--=c.sweep.off.p90.level_pct-->% of vehicles with nothing 
 the camera adds are phantom vehicles: about 0.7<!--=c.phantoms_per_road--> per road and snapshot,
 all counted as stopped.
 
-::: {#tbl:camera-sweep}
+::: {#tbl:camera-sweep short="MaxPressure with uniform detection and no false detections"}
 <!-- BEGIN:tab_camera_sweep -->
 | p_detect (all classes, no false detections) | Off-peak: MaxPressure ATT (s) | Peak: MaxPressure ATT (s) |
 |---------------------------|------------------------------------:|-----------------------------------|
@@ -431,7 +503,7 @@ components sum to only +0.4<!--=c.dec.sum.peak.pct-->%, so either they interact 
 part of the peak effect is chance; three seeds cannot tell which. Class confusion alone has no
 measurable effect because these controllers read class-free counts.
 
-::: {#tbl:decomposition}
+::: {#tbl:decomposition short="Post-hoc decomposition of the junction-camera errors"}
 <!-- BEGIN:tab_decomposition -->
 | junction-camera errors | Off-peak: ATT vs perfect, paired (s; range; %) | Peak: ATT vs perfect, paired (s; range; %) | realised detection rate | phantoms per road and snapshot |
 |------------------------|------------------------|------------------------|-------------:|------------:|
@@ -447,7 +519,7 @@ switched on at a time. Each component draws its own random numbers, so they need
 :::
 
 ![Post-hoc decomposition: MaxPressure's ATT change with one junction-camera error component at a
-time.](figures/decomposition.png){#fig:decomposition width=100%}
+time.](figures/decomposition.png){#fig:decomposition short="Post-hoc decomposition of MaxPressure's ATT change" width=100%}
 
 **Ambulances under camera errors** (@tbl:camera-emergency). Preemption keeps its advantage
 (81.2<!--=c.amb.pre.perfect.amb--> s → 84.5<!--=c.amb.pre.junction.amb--> s) because it reads
@@ -456,7 +528,7 @@ ambulance positions from the separate channel. The LLM arm's ambulances are
 ambulances move by tens of seconds in either direction between paired runs, so this is not
 distinguishable from zero with 29<!--=e.mp.amb_n--> ambulances.
 
-::: {#tbl:camera-emergency}
+::: {#tbl:camera-emergency short="Emergency scenario under junction-camera counts"}
 <!-- BEGIN:tab_camera_emergency -->
 | controller | level | ATT (s) | ATT vs perfect, paired (s; range; %) | ambulances finished | ambulance travel time (s) | ambulance vs perfect, paired (s) |
 |------------------|----------|-----------:|------------------|-----------:|----------:|------------------|
@@ -475,10 +547,201 @@ distinguishable from zero with 29<!--=e.mp.amb_n--> ambulances.
 
 ## Detector {#sec:res-detector}
 
-The detector results are given in full in @sec:det-eval. In summary, YOLOv8n trained on IDD
-reaches mAP50 0.563<!--=d.test.map50--> and mAP50-95 0.375<!--=d.test.map5095--> on held-out drives,
-with high precision and moderate recall; its errors are dominated by small, distant objects. The
-dashboard runs the same weights on video (@fig:screen-detection).
+**Operating point.** A detector outputs boxes with confidence scores; a controller needs a yes/no
+decision per box. The confidence threshold was chosen on the validation split as the one that
+maximises the mean F1 score over the 7 classes: 0.3<!--=d.conf--> (mean F1
+0.620<!--=d.f1-->). The F1 curve is flat around this value, so the exact choice matters little.
+
+**Matching.** On each test image, detections (sorted by confidence) are matched greedily to the
+unmatched ground-truth box with the highest IoU of at least 0.5<!--=d.match_iou-->, ignoring the
+class. A match with the same class is a true positive; a match with another class is a
+**confusion**; an unmatched detection is a **false detection**; an unmatched ground-truth box is a
+**miss**. Confidence intervals come from 1,000<!--=d.bootstrap_reps--> bootstrap resamples of
+whole drives, not frames, so that correlated frames do not make them look tighter than they are.
+
+**Results.** On the test split the detector reaches mAP50 0.563<!--=d.test.map50--> and mAP50-95
+0.375<!--=d.test.map5095--> (validation: 0.602<!--=d.val.map50--> and
+0.403<!--=d.val.map5095-->). @tbl:det-classes gives the per-class numbers. Precision is high
+(few false detections) and recall is moderate: the detector undercounts.
+
+::: {#tbl:det-classes short="Detector on the test split, per class"}
+<!-- BEGIN:tab_det_classes -->
+| Class | Boxes | mAP50 | mAP50-95 | Precision | Recall | Miss rate | False det. / image |
+|-----------------|-----------:|----------:|------------:|-------------:|-----------:|----------:|----------:|
+| car | 24,843 | 0.637 | 0.442 | 83.9% | 54.9% | 43.2% | 0.222 |
+| motorcycle | 25,489 | 0.630 | 0.373 | 81.9% | 56.2% | 43.4% | 0.271 |
+| autorickshaw | 7,782 | 0.652 | 0.461 | 82.0% | 56.0% | 40.2% | 0.070 |
+| bus | 4,915 | 0.664 | 0.502 | 82.3% | 56.9% | 36.8% | 0.039 |
+| truck | 7,077 | 0.576 | 0.412 | 72.9% | 48.3% | 46.3% | 0.079 |
+| bicycle | 569 | 0.339 | 0.193 | 61.0% | 24.8% | 55.4% | 0.006 |
+| person | 18,078 | 0.444 | 0.241 | 79.1% | 35.5% | 63.6% | 0.149 |
+| all | 88,753 | 0.563 | 0.375 |  |  |  |  |
+<!-- END:tab_det_classes -->
+
+: Detector on the test split (official IDD validation set), per class. mAP from Ultralytics;
+precision, recall, miss rate and false detections from our matching at confidence ≥ 0.3<!--=d.conf-->.
+Recall = 1 − miss rate − confusion rate.
+:::
+
+**Most misses are small, distant objects** (@fig:det-size, @tbl:det-sizes). Small boxes are most
+of the ground truth, and the detector misses
+59<!--=d.size.motorcycle.small-->–76<!--=d.size.person.small-->% of them, against
+1<!--=d.size.autorickshaw.large-->–22<!--=d.size.bicycle.large-->% of large boxes. This is the
+cost of running at 640<!--=cfg.imgsz--> pixels named above. One camera group dominates the test set: the
+`highquality_16k` camera supplies 3,633<!--=d.camera.hq.images--> images but
+64,381<!--=d.camera.hq.gt--> of the boxes, 74<!--=d.camera.hq.small-->% of them small. The
+overall per-class rates therefore mostly describe crowded scenes with distant objects. Confusions
+are few and plausible: bicycles are labelled motorcycles, and buses, trucks and auto-rickshaws are
+confused with each other and with cars. `person` has the highest miss rate, partly because
+pedestrians are small and possibly because the model was taught not to fire on riders.
+
+![Miss rate by object size on the test split. Sizes are COCO's buckets measured in the
+640<!--=cfg.imgsz-->-pixel image.](figures/det_size.png){#fig:det-size width=100%}
+
+::: {#tbl:det-sizes short="Miss rate by object size"}
+<!-- BEGIN:tab_det_sizes -->
+| class | Small: miss rate (boxes) | Medium | Large |
+|-------------------------|-------------------------:|------------------------:|------------------------:|
+| car | 65.4% (15,489) | 9.1% (6,065) | 1.3% (3,289) |
+| motorcycle | 59.0% (17,565) | 10.1% (6,250) | 3.8% (1,674) |
+| autorickshaw | 63.6% (4,646) | 7.8% (2,106) | 1.1% (1,030) |
+| bus | 70.8% (2,199) | 19.2% (1,141) | 2.1% (1,575) |
+| truck | 73.0% (3,712) | 22.4% (1,820) | 10.2% (1,545) |
+| bicycle | 71.9% (334) | 33.8% (198) | 21.6% (37) |
+| person | 75.7% (14,180) | 20.7% (3,288) | 12.0% (610) |
+<!-- END:tab_det_sizes -->
+
+: Miss rate by object size (number of ground-truth boxes in brackets), test split.
+:::
+
+## Dashboard {#sec:res-dashboard}
+
+The dashboard (@sec:dashboard) presents these results; its four pages are shown in
+@fig:screen-overview, @fig:screen-detection, @fig:screen-replay and @fig:screen-results. The
+screenshots were taken by a script with the dashboard reading the committed result files
+(`docs/screenshots/`).
+
+![Dashboard, Overview page. The headline is the pre-registered arm's ambulance
+result; exploratory numbers are labelled as such.](figures/screen_overview.png){#fig:screen-overview short="Dashboard, Overview page" width=92%}
 
 ![Dashboard, Live Detection page: the trained detector on a clip of IDD test frames, with boxes,
-per-class counts and the measured speed on the GTX 1650.](figures/screen_detection.png){#fig:screen-detection width=92%}
+per-class counts and the measured speed on the GTX 1650.](figures/screen_detection.png){#fig:screen-detection short="Dashboard, Live Detection page" width=92%}
+
+![Dashboard, Network Replay page: MaxPressure (left) and the pre-registered LLM arm (right) on
+the same traffic, one ambulance's trip. Replays re-drive the simulator with each run's logged
+decisions and are kept only if they reproduce the run's metrics exactly.](figures/screen_replay.png){#fig:screen-replay short="Dashboard, Network Replay page" width=92%}
+
+![Dashboard, Results page, Signal control tab (Indian 2x2 peak). Average travel time of each
+controller and the paired comparison by seed, labelled as pre-registered and without a
+significance test; the other tabs show the ambulance, model-size (exploratory), camera-error and
+detector results.](figures/screen_results.png){#fig:screen-results short="Dashboard, Results page" width=92%}
+
+## Discussion {#sec:discussion}
+
+### Why the LLM Agents Match MaxPressure but Do Not Beat It {#sec:disc-why}
+
+Three observations together explain the main result.
+
+**First, an LLM that reads pressure correctly becomes MaxPressure.** In the hybrid controllers the
+LLM is shown each option's pressure and queue, the same information MaxPressure uses. The largest
+model tested, the hosted Nemotron 3 Ultra, chose the highest-pressure option in
+99<!--=m.peak.nemo.follows-->% of its calls, and its ATT is within seed noise of MaxPressure's
+(@sec:res-size). This is the expected end point: for steady demand on a small grid, serving the
+largest pressure is close to the best a one-step rule can do, and the extra information in the
+prompt, the neighbours' queues, rarely points to a better phase. To beat MaxPressure an agent
+must use information MaxPressure does not have, or plan over more than one decision. Neither was
+asked of the agents in the pre-registered design.
+
+**Second, small models misread the task.** With prompts v2 and guided, the 3 B models treated low
+pressure as good and kept the current phase most of the time, and their reasons said so in words
+(@sec:res-bench). The v3 fix, which states which direction of pressure is better, changed
+`gemma4:e4b` but not the 3 B models. A model of this size follows the surface of the prompt
+("keep", "low queue") more than its stated rule. Without a guard their choices are applied and
+the controller is far worse than MaxPressure (@tbl:model-size).
+
+**Third, the guard converts a poor model into MaxPressure with noise.** The pre-registered
+controller's answers differ from MaxPressure's in about nine of ten calls, but the guard replaces
+most of them, and the applied phase differs in about one in ten. What remains are choices within
+20<!--=cfg.guard.margin-->% of the top pressure. Off-peak, when queues are short, such a choice
+gives green to a slightly smaller queue and costs a little; this is the small, consistent
+deficit seen on every off-peak seed. The guard therefore made the LLM safe to deploy, not useful.
+
+The exploratory `gemma4:e4b` arm follows pressure in most calls and departs from MaxPressure in
+about one call in five at peak, where it was faster on every seed. We have not identified the
+mechanism. One hypothesis is that its departures more often keep a phase that is still discharging
+a long queue, avoiding a transition; this was not tested, and with three seeds the gain itself
+needs confirmation.
+
+### Why the LLM Agents Help Ambulances {#sec:disc-amb}
+
+The ambulance experiment is the one case where the agent has information MaxPressure lacks:
+the prompt lists each approaching ambulance, its distance and the phases that serve it. A
+one-sentence instruction was enough for the pre-registered arm to cut ambulance travel time by
+31.7<!--=e.llm.amb_cut_vs_mp-->% compared with MaxPressure, mostly by removing time stopped at a
+red. Two design choices helped: the phase that serves the ambulance is always among the options,
+and it is exempt from the guard. Normal traffic was not measurably slowed, because ambulances are
+rare and each priority decision affects one intersection for a short time.
+
+A hand-written preemption rule did slightly better. This is the honest comparison for a
+deployment decision: for a single, well-defined rule like "give green to the ambulance", a rule
+is simpler, faster and verifiable. The case for an LLM agent is flexibility, not performance. The
+same mechanism, a sentence in the system prompt and a line in the observation, can carry rules
+that are awkward to hard-code: a road closure, a school zone at certain hours, a police
+instruction, priority for a bus that is late. This project tested only the ambulance case.
+
+### What the Camera Study Means {#sec:disc-camera}
+
+Adaptive control is only as good as its counts. With counts degraded by the errors of a real
+detector, every count-based controller lost a few percent of travel time, and at peak its
+advantage over a well-timed fixed plan, already small with exact counts, disappeared. Three
+lessons follow for a deployment.
+
+1. **False detections hurt more than misses.** Missing vehicles uniformly scales every pressure
+   down and barely changes the ranking. A phantom vehicle adds pressure where there is none and
+   changes the decision directly. For signal control a detector's precision matters more than
+   its recall, the opposite of the usual emphasis, and temporal smoothing or tracking that rejects
+   one-frame detections should help (each snapshot here is independent, the worst case).
+2. **Camera placement matters.** The junction level, which assumes queued vehicles are close
+   enough to be medium or large in the image, costs about half as much as the crowded / far
+   level.
+3. **A fixed plan is a robust fallback.** Webster's plan does not depend on counts at all. Where
+   detection is unreliable, at night or in heavy rain, a controller should fall back to a good
+   fixed plan rather than act on bad counts.
+
+These conclusions rest on a proxy: the detector's errors on dash-camera images. The same detector
+on a pole-mounted camera could be better (closer, less occlusion) or worse (unfamiliar viewpoint).
+
+### Relation to the Base Paper {#sec:disc-collmlight}
+
+CoLLMLight reports that cooperative LLM agents outperform existing methods. Our results neither
+confirm nor contradict that claim, because the settings differ in ways that matter: CoLLMLight
+fine-tunes its model in several stages and uses an asynchronous reasoning architecture, while we
+used small models as released; we compared against MaxPressure and Webster tuned on the test
+networks; and we found that CoLLMLight's own fixed-time baseline does not serve north–south
+traffic. Its metric definitions also differ from CityFlow's, so numbers cannot be compared
+directly. What our results do show is that, without fine-tuning, a 3–4 B model is not enough to
+improve on a tuned MaxPressure, and that the clearest value of an LLM agent appears when it is
+given information a classical controller cannot use.
+
+## Threats to Validity {#sec:threats}
+
+**Internal validity.** Three seeds per scenario (five with ambulances) are few, and no significance
+test was pre-registered; differences of one or two percent are within seed noise and are reported
+as such. LLM runs are not bit-for-bit repeatable on the GPU, although every decision is logged
+and replayable. Prompt v3 was a post-hoc fix, the `gemma4:e4b` arm and the model-size study were
+added after the plans were fixed, and the camera decomposition was post-hoc; all are labelled. The
+hosted model's runs were affected by heavy API throttling, which turned some decisions into
+MaxPressure fallbacks.
+
+**Construct validity.** ATT counts time spent waiting to enter the network, which penalises
+controllers that block entries; this is intended but makes ATT differ from definitions used
+elsewhere, including CoLLMLight's (@sec:validation). The ambulance metric assumes that nobody yields
+and that ambulances cannot overtake, so it measures only what the signal can do. The camera layer
+draws independent snapshots and does not model occlusion between lanes or ambulance detection.
+
+**External validity.** CityFlow is lane-based and cannot represent lane-free Indian driving
+(@sec:sim-limits). The Indian network is a 2 × 2 grid with synthetic, steady demand; its vehicle
+mix comes from one city in one year; and the turning shares are assumptions. Jinan provides one
+real-world flow. Latencies are specific to a GTX 1650. The results show what a small local
+model does on this network; they do not show how a deployed system would perform on a real
+junction.

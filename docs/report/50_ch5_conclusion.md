@@ -34,7 +34,7 @@ small local LLM does not yet beat a well-tuned classical controller on routine t
 guarded layer on top of one it is safe, and it adds value where the situation is described in
 words rather than in queue counts.
 
-## Future work {#sec:future}
+## Future Work {#sec:future}
 
 * **Memory and tool-using agents.** The agents here see one snapshot and answer once. An agent that
   remembers its recent decisions and their effects, and can call tools (MaxPressure's ranking, a
