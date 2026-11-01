@@ -21,6 +21,14 @@ paths:
   #   ln -s /mnt/d/trafficsense/dashboard_media data/external/dashboard_media
   replays: data/external/replays                 # scripts/make_replays.py (Network Replay page)
   dashboard_media: data/external/dashboard_media # scripts/make_sample_clip.py (Live Detection page)
+  # Project report (scripts/build_report.py). The college's example thesis gives the Word
+  # styles; it is not ours to publish, so it stays on D, out of git. The PDF embeds the real
+  # Times New Roman and Consolas from the Windows font folder (read in place, not copied).
+  # Create the symlinks once:
+  #   ln -s /mnt/d/trafficsense/CAPSTONE_THESIS_Format.docx data/external/thesis_format.docx
+  #   ln -s /mnt/c/Windows/Fonts data/external/report_fonts
+  thesis_format: data/external/thesis_format.docx
+  report_fonts: data/external/report_fonts
 
 scenarios:
   synthetic_4x4:
