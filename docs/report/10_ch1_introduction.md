@@ -330,7 +330,7 @@ the project are given only in the later chapters, from the result files.
 |                   |             |                 |   `requirements-lock.txt`.                              |
 +-------------------+-------------+-----------------+---------------------------------------------------------+
 
-: Team contributions. Paths are under `src/trafficsense/` unless they start with `scripts/`,
+: Team contributions. Paths are under `src/trafficsense/` unless prefixed `scripts/`,
 `tests/`, `configs/` or `outputs/`.
 :::
 
