@@ -460,6 +460,78 @@ def code_decision(fs, dt):
     raise ValueError("no decision of the required kind in " + DECISION_RUN)
 
 
+# --- thesis: software and hardware (Section 2.4) ---------------------------------------------
+
+BUILD_TOOLS = Path("docs/report/build_tools.json")   # written by scripts/build_report.py
+
+
+def tab_software(fs, dt):
+    """Versions from requirements-lock.txt, the Ollama version every local LLM run recorded, the
+    environment of the fresh-clone check, and the report tools recorded by the last report build."""
+    import json
+    from trafficsense.report.paper import FRESH_CLONE, lock_versions, ollama_version
+    root = ROOT_CACHE["root"]
+    v = lock_versions(root)
+    env = dict(json.loads((root / FRESH_CLONE).read_text())["environment"])
+    ubuntu = re.search(r"Ubuntu (\d+\.\d+(?:\.\d+)?)", env["Linux"])
+    if not ubuntu:
+        raise ValueError(f"{FRESH_CLONE}: no Ubuntu version in {env['Linux']!r}")
+    tools = json.loads((root / BUILD_TOOLS).read_text())
+    rows = [
+        ("Operating system", "Ubuntu in WSL2 on Windows 11", ubuntu[1], "everything below"),
+        ("Language", "Python", v["python"], "all project code"),
+        ("Simulator", "CityFlow, built from source", f"commit `{v['cityflow']}`", "traffic simulation"),
+        ("LLM server", "Ollama, native `/api/chat` with a JSON schema", ollama_version(root), "local LLM agents"),
+        ("Local LLMs", "`llama3.2:3b` (selected), `qwen2.5:3b`, `gemma4:e4b`; `gemma3:4b` (round 1 only); `llama3.1:8b` (model-size study)",
+         "4-bit quantised Ollama builds", "signal-control agents"),
+        ("Hosted LLM", "`nvidia/nemotron-3-ultra-550b-a55b`, NVIDIA's API", "as served", "exploratory model-size study"),
+        ("Detector", "Ultralytics (YOLOv8n)", v["ultralytics"], "training and inference"),
+        ("Deep learning", "PyTorch, torchvision (CUDA build)", f"{v['torch']}, {v['torchvision']}", "detector"),
+        ("Images and video", "OpenCV, Pillow", f"{v['opencv-python']}, {v['pillow']}", "detector input, dashboard"),
+        ("Numerics", "NumPy", v["numpy"], "metrics, statistics"),
+        ("Configuration", "PyYAML", v["pyyaml"], "`configs/*.yaml`"),
+        ("HTTP", "requests", v["requests"], "Ollama and NVIDIA API calls"),
+        ("Charts", "Matplotlib, Plotly", f"{v['matplotlib']}, {v['plotly']}", "report figures, dashboard charts"),
+        ("Dashboard", "Streamlit", v["streamlit"], "the four dashboard pages"),
+        ("Tests", "pytest, Playwright (Chromium)", f"{v['pytest']}, {v['playwright']}", "test suite, dashboard layout tests"),
+        ("Report", "pandoc, LibreOffice, pypdfium2", f"{tools['pandoc']}, {tools['libreoffice']}, {v['pypdfium2']}",
+         "this report (Word file and PDF)"),
+    ]
+    return md(["Component", "Software", "Version", "Used for"], rows, align=["l", "l", "l", "l"])
+
+
+def tab_hardware(fs, dt):
+    """The project laptop from the fresh-clone record; the second laptop from the table in
+    docs/reproducibility.md (as reported by the project owner)."""
+    import json
+    from trafficsense.report.paper import FRESH_CLONE
+    root = ROOT_CACHE["root"]
+    env = dict(json.loads((root / FRESH_CLONE).read_text())["environment"])
+    body = {m["name"]: m["body"] for m in __import__("trafficsense.report.numbers", fromlist=["BLOCK"]).BLOCK.finditer(
+        (root / "docs/reproducibility.md").read_text())}["repro_second"]
+    second = {}
+    for ln in body.splitlines():
+        cells = [c.strip() for c in ln.strip().strip("|").split("|")]
+        if len(cells) == 2 and cells[0] in ("Windows", "CPU, RAM", "GPU"):
+            second.setdefault(cells[0], cells[1])
+    if set(second) != {"Windows", "CPU, RAM", "GPU"}:
+        raise ValueError("docs/reproducibility.md repro_second: Windows, CPU/RAM and GPU rows not found")
+    cpu = env["CPU, RAM"].split(" (")[0]
+    ram = re.search(r"\), (\d+ GB)", env["CPU, RAM"])
+    gpu = ", ".join(env["GPU"].split(", ")[:2])
+    if not ram:
+        raise ValueError(f"{FRESH_CLONE}: no RAM in {env['CPU, RAM']!r}")
+    rows = [
+        ("Used for", "every experiment, the detector training and this report",
+         "a reproduction check only (tests, detector weights, dashboard, one short LLM trial)"),
+        ("CPU", cpu, second["CPU, RAM"].split(",")[0]),
+        ("Memory", ram[1], second["CPU, RAM"].split(", ")[1]),
+        ("GPU", gpu, second["GPU"]),
+        ("Operating system", env["Windows"].split(" (")[0] + ", WSL2, " + env["Linux"].split(",")[0], second["Windows"]),
+    ]
+    return md(["", "Project laptop", "Second laptop"], rows, align=["l", "l", "l"])
+
+
 TABLES = {
     "readme_headline": readme_headline, "readme_badges": readme_badges,
     "tab_validation": tab_validation, "tab_fixedtime_bug": tab_fixedtime_bug, "tab_network": tab_network,
@@ -481,6 +553,7 @@ TABLES = {
     "code_prompt_v2": _code_prompt("v2"), "code_prompt_v3": _code_prompt("v3"),
     "code_prompt_guided": _code_prompt("guided"), "code_prompt_guided_v3": _code_prompt("guided_v3"),
     "code_prompt_guided_v3_amb": _code_prompt("guided_v3, emergency scenario"),
+    "tab_software": tab_software, "tab_hardware": tab_hardware,
     "code_prompt_user": code_prompt_user, "code_example_time": code_example_time, "code_decision": code_decision,
 }
 

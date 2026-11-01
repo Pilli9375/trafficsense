@@ -22,7 +22,8 @@ rewritten by the script that owns the document.
 `lint()` finds numbers that carry no tag. Allowed untagged: numbers inside code, inside
 generated blocks, link targets and comments; years; chapter / section / figure / table /
 appendix references; reference numbers in square brackets; list numbering; small counts
-(0-12); and the phrases in ALLOWED_PHRASES (product names and versions, not measurements).
+(0-12); the phrases in ALLOWED_PHRASES (product names and versions, not measurements); and
+the thesis identifiers in THESIS_IDENTIFIERS (register numbers, Capstone ID, date, e-mails).
 """
 from __future__ import annotations
 
@@ -44,9 +45,19 @@ ALLOWED_PHRASES = [
     r"Apache-2\.0", r"Apache License 2\.0", r"CC BY(?:-NC)?(?:-SA)? \d\.\d", r"Tectonic 0\.\d+(?:\.\d+)?",
     r"IEEE 802\.\d+\w*", r"Llama 3\.\d", r"Gemma \d", r"Qwen ?2\.5", r"MIT", r"IRC:\s?\d+",
     r"pybind11", r"ISO \d+", r"ID\d+", r"COCO", r"sm_75", r"A4", r"\d+(?:st|nd|rd|th)",
-    r"Nemotron 3 Ultra", r"Nemotron 3 Super", r"DeepSeek V\d(?:\.\d)?", r"v\d(?:\.\d)*",
+    r"Nemotron 3 Ultra", r"Nemotron 3 Super", r"DeepSeek V\d(?:\.\d)?", r"v\d(?:\.\d)*", r"RFC \d{4}",
 ]
 
+
+# Identifiers on the thesis title page, certificate and biodata (not measurements). Matched
+# literally: the register numbers, the Capstone ID, the submission month, the academic term, the
+# university's PIN code and the four student e-mail addresses.
+THESIS_IDENTIFIERS = [
+    "23BCE8195", "23BCE8015", "23BCE8288", "23BCE9470", "3328F4C8", "NOVEMBER 2026",
+    "Fall Semester 2026-27", "AMARAVATI- 522237",
+    "bhargav.23bce8195@vitapstudent.ac.in", "akul.23bce8015@vitapstudent.ac.in",
+    "amit.23bce8288@vitapstudent.ac.in", "abhishek.23bce9470@vitapstudent.ac.in",
+]
 
 @dataclass
 class Problem:
@@ -225,7 +236,8 @@ def lint(text: str, small: int = 12) -> list[Problem]:
     t = text
     for p in _STRIP:
         t = _blank(t, p)
-    for p in [re.compile(x) for x in ALLOWED_PHRASES] + [_CONTEXT, _YEAR, _CITE, _LIST]:
+    for p in [re.compile(re.escape(x)) for x in THESIS_IDENTIFIERS] + [re.compile(x) for x in ALLOWED_PHRASES] + [
+            _CONTEXT, _YEAR, _CITE, _LIST]:
         t = _blank(t, p)
     probs = []
     for m in _STANDALONE.finditer(t):
