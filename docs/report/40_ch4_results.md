@@ -113,7 +113,7 @@ format no longer contains a placeholder that one model had copied into its answe
 were tested with this prompt: plain v3, hybrid_v3, and guarded_v3, which adds the pressure guard
 (@sec:arms). The fix changed `gemma4:e4b`, which in hybrid_v3 chose the highest-pressure option in
 78<!--=docs/llm_benchmark.md | llm_decisions | hybrid_v3 (guided_v3) & gemma4 | highest-pressure-->%
-of its calls. It did not change the two 3 B models, which still kept the current phase in most
+of its calls. It did not change the two 3B models, which still kept the current phase in most
 calls.
 
 ::: {#tbl:bench short="LLM benchmark, all rounds"}
@@ -345,7 +345,7 @@ the seed-to-seed spread (±2.3<!--=e.mp.att_sd--> s).
 ## Model Size (Exploratory) {#sec:res-size}
 
 *Exploratory, planned after the main results.* With the controller fixed to the unguarded hybrid
-(hybrid_v3), only the model was changed, from 3 B local models to a hosted 550<!--=m.size.nemo--> B
+(hybrid_v3), only the model was changed, from 3B local models to a hosted 550<!--=m.size.nemo--> B
 mixture-of-experts model (Nemotron 3 Ultra [@nemotron3ultra], 55<!--=m.active.nemo--> B parameters active per token).
 @tbl:model-size and @fig:model-size give the results.
 
@@ -369,7 +369,7 @@ that are the highest-pressure option. Failed calls apply MaxPressure's choice.
 peak (dot: mean; bar: range over seeds). Right: mean travel time of the 29<!--=e.mp.amb_n--> signal-relevant
 ambulances. Grey: models worse than MaxPressure on every seed.](figures/model_size.png){#fig:model-size short="Exploratory: one hybrid controller with five models" width=100%}
 
-1. **Below some size the LLM makes the hybrid controller worse.** With either 3 B model the hybrid
+1. **Below some size the LLM makes the hybrid controller worse.** With either 3B model the hybrid
    is far behind MaxPressure on every seed (ATT +51.0<!--=m.peak.qwen.vs_mp-->% and
    +81.4<!--=m.peak.llama3b.vs_mp-->% at peak). Without the guard, their preference for keeping
    the current phase is applied.
@@ -652,10 +652,10 @@ prompt, the neighbours' queues, rarely points to a better phase. To beat MaxPres
 must use information MaxPressure does not have, or plan over more than one decision. Neither was
 asked of the agents in the pre-registered design.
 
-**Second, small models misread the task.** With prompts v2 and guided, the 3 B models treated low
+**Second, small models misread the task.** With prompts v2 and guided, the 3B models treated low
 pressure as good and kept the current phase most of the time, and their reasons said so in words
 (@sec:res-bench). The v3 fix, which states which direction of pressure is better, changed
-`gemma4:e4b` but not the 3 B models. A model of this size follows the surface of the prompt
+`gemma4:e4b` but not the 3B models. A model of this size follows the surface of the prompt
 ("keep", "low queue") more than its stated rule. Without a guard their choices are applied and
 the controller is far worse than MaxPressure (@tbl:model-size).
 

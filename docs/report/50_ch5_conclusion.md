@@ -41,7 +41,7 @@ words rather than in queue counts.
   short look-ahead simulation, the queue history of an approach), could plan over several
   decisions, which is where an agent might beat a one-step rule.
 * **Fine-tuning small models.** CoLLMLight's training stages (reasoning refinement and policy
-  refinement with simulation feedback) were not reproduced. Fine-tuning a 3 B model on decisions
+  refinement with simulation feedback) were not reproduced. Fine-tuning a 3B model on decisions
   scored by the simulator may fix the pressure misreading that prompting could not.
 * **Real junction camera footage.** Collecting and labelling video from a fixed camera at an Indian
   junction would replace the dash-camera proxy with the true error, and would allow tracking-based

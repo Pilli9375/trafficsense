@@ -134,7 +134,7 @@ keeps the current phase, and a guard applies the LLM's pick only if its pressure
 MaxPressure at peak on all 3 seeds (−1.5%<!--=f.peak.gem.vs_mp-->). Off-peak it is
 worse (+2.7%<!--=f.off.gem.vs_mp-->). It needs 4.54<!--=l.peak.gem.lat--> s per call on this
 GPU, so it is not real-time. A model-size study ([`docs/model_size.md`](docs/model_size.md))
-finds that with 3 B models the same hybrid is far worse than MaxPressure (ATT
+finds that with 3B models the same hybrid is far worse than MaxPressure (ATT
 +51.0%<!--=m.peak.qwen.vs_mp--> and +81.4%<!--=m.peak.llama3b.vs_mp--> at peak). From
 `gemma4:e4b` up to a hosted 550<!--=m.size.nemo--> B model, ATT stays within seed noise of MaxPressure.
 

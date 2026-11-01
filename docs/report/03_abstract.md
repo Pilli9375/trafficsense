@@ -21,7 +21,7 @@ improve on it. With ambulances listed in its prompt, their mean travel time fell
 India Driving Dataset reached mAP50 0.563<!--=d.test.map50--> on held-out drives. Feeding its
 measured errors into the controllers' counts raised MaxPressure's travel time by
 2.3<!--=c.peak.mp.junction.pct-->–4.8<!--=c.off.mp.junction.pct-->%, mainly through false
-detections, while the fixed-time plan was unaffected. An exploratory study found that 3 B models
+detections, while the fixed-time plan was unaffected. An exploratory study found that 3B models
 make the guided controller much worse, and larger models only bring it back to MaxPressure's
 level. An LLM agent is therefore best used as a safe layer that adds context MaxPressure cannot
 use, not as its replacement.
