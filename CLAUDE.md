@@ -81,7 +81,7 @@ python scripts/screenshot_dashboard.py             # screenshots of every page i
 python scripts/make_report.py --check             # every number in README + docs/report vs outputs/
 python scripts/build_report.py                    # thesis format: docs/report -> report.docx (master) + report.pdf (LibreOffice)
 python scripts/check_report_format.py             # report.docx/pdf vs docs/report/format_spec.md (college capstone format)
-python scripts/make_paper.py --check              # IEEE paper (docs/paper) vs outputs/, <= 8 pages incl. references; without --check: build PDF + Overleaf zip
+python scripts/make_paper.py --check              # IEEE paper (docs/paper) vs outputs/, <= 8 pages incl. references; without --check: build PDF + Overleaf zip + paper.docx (IEEE Word template) and its PDF
 ```
 
 Numbers in README.md and docs/report/*.md are tagged, `88.1<!--=f.off.mp.att-->`. The key is

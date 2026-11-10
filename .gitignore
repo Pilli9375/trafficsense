@@ -68,3 +68,6 @@ docs/report/build/
 
 # IEEE paper build: tectonic logs and page images (scripts/make_paper.py)
 docs/paper/build/
+
+# Windows "downloaded from the internet" marker next to files saved from a browser
+*:Zone.Identifier

@@ -32,6 +32,38 @@ undefined references or citations. The source is plain ASCII and loads only stan
 (`newtxtext`/`newtxmath`, `booktabs`, `graphicx`, `amsmath`, `cite`, `url`, `iftex`), so it should
 also compile with pdfLaTeX, Overleaf's default; it has only been built locally with Tectonic.
 
+## Word version (`paper.docx`)
+
+`paper.docx` is the same paper in IEEE's own Word template
+(`conference-template-letter.docx`, the "US letter" file from IEEE's
+[conference template page](https://www.ieee.org/conferences/publishing/templates.html), kept here
+unchanged). `python scripts/make_paper.py` builds it after the LaTeX (module
+`src/trafficsense/report/paper_docx.py`), and `paper_docx.pdf` is what LibreOffice makes from it.
+Nothing is typed again: the converter reads the refreshed `paper.tex`, so every number is the one the
+LaTeX build tied to `outputs/`, and `make_paper.py --check` also verifies the Word file (Letter size,
+two-column body, no placeholder or template text, every tagged number present, identifiers as listed,
+references numbered 1..n, at most 8 pages, built from the current sources).
+
+* **From the template:** page size and margins, the two-column body, Times 10 pt, the title, author,
+  abstract, heading, caption, table and reference styles and their automatic numbering
+  (I., A., Fig. 1., TABLE I., [1]) are IEEE's. `styles.xml` and `numbering.xml` in `paper.docx` are the
+  template's, byte for byte.
+* **Equations** are native Word equations (OMML). Figures are 300 dpi PNG renderings of
+  `figures/*.pdf` (Word cannot embed a PDF page). References come from `refs.bib` through pandoc's
+  citeproc with the IEEE CSL style used by the report (`docs/report/template/ieee.csl`).
+* **What differs from the LaTeX PDF:** Word has no floats, so figures and tables sit where the source
+  puts them; `FLOAT_SHIFT` in `paper_docx.py` moves a few of them by whole paragraphs (never across a
+  heading, never reordering) to avoid gaps, tuned on LibreOffice's layout, so Word's own pagination may
+  leave different gaps. Figures are raster PNGs, not vector. References use the CSL "IEEE" formatting
+  rather than `IEEEtran.bst`. The Word file says "Keywords" (the template's word) where IEEEtran says
+  "Index Terms", the title footnote is numbered 1 rather than a symbol, and equations are Word
+  equations (rendered by LibreOffice with a substitute for Cambria Math). Table captions are in the
+  template's small caps ("YOLOv8n" shows as small capitals). Page counts come from LibreOffice and can
+  differ from Word's by a line or two. The package is Strict Open XML, as IEEE's template is; it was
+  checked in LibreOffice and by the script, not in Word itself.
+* The first-page footer text of the template (an ISBN / copyright line) is conference-assigned and is
+  left empty.
+
 ## Before submitting: fill in the placeholders
 
 At the top of `paper.tex`:

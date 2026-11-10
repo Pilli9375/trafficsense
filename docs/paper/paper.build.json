@@ -1,6 +1,23 @@
 {
+ "docx": {
+  "docx_sha256": "ea3907f5a7446713bd7b5e5cf54c413f14fe6f4d91170b7cbe66cde282fbc1c8",
+  "pdf_pages": 7,
+  "pdf_sha256": "50eb6dd42a367436f8c4032d6a86679785eb4f78b5be48826412c433eaaf0040",
+  "sources": {
+   "docs/paper/conference-template-letter.docx": "4589779a1a74782dc5a7a657a9907f243c9dd54510cb6c154acaf24cc9079852",
+   "docs/paper/figures/ambulance.pdf": "240ecb7161aafdcb7f28a4fd17272ba93e878770f177c364be315e4bd50c92f3",
+   "docs/paper/figures/camera.pdf": "3c0e511b57c234253b5051dc6eff2dbb26efd55bbced477dfc00641bdac8c9e5",
+   "docs/paper/figures/dashboard.pdf": "36fbf909375a253aefacd8d50692b994b54f2930db358f1e8666b36c1c439bda",
+   "docs/paper/figures/model_size.pdf": "61387563fda49030532a16f12cd8ffdfb96489e96c85b4f48dba48086a697cfe",
+   "docs/paper/figures/overview.pdf": "975e7983f0ef66b7cfb8616cd86617d30cf68eaa4d044ac5d8b4a426f4336e49",
+   "docs/paper/figures/paired.pdf": "d910a66dd868cdec9d36834cf0cdf526a7ced80067e432d5c3c44c464d172e49",
+   "docs/paper/paper.tex": "ac95ee8401fad966191a6deba1b913da2b33a5b4fe93307e534cf106b95d43bf",
+   "docs/paper/refs.bib": "f1c8886e82923502938bae0c88c4d733cccd2b620328a5a21221d0dfb01b7c33",
+   "docs/report/template/ieee.csl": "b4c7619fc16c45a31e4cc3271eab94ffe83192d3b4c7fc729470a3b459448de3"
+  }
+ },
  "pages": 7,
- "pdf_sha256": "e47824d9fa55fdabc518a9906143d5eaaec30f8ee23d758127072a91db2d4c29",
+ "pdf_sha256": "e65b210748592dcff98860f92e2f6b18c1e8f8e05a46c218a21e27b2b9d43f67",
  "sources": {
   "figures/ambulance.pdf": "240ecb7161aafdcb7f28a4fd17272ba93e878770f177c364be315e4bd50c92f3",
   "figures/camera.pdf": "3c0e511b57c234253b5051dc6eff2dbb26efd55bbced477dfc00641bdac8c9e5",
