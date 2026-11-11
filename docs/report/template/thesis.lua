@@ -29,7 +29,9 @@ Blocks
 * div .lists: TABLE OF CONTENTS, LIST OF TABLES, LIST OF FIGURES. div .frontmatter-end: the
   section break that ends the roman-numbered front matter (the build adds the footers).
 * div .thesis-logo: the university logo (path in metadata `logo`, taken from the college format
-  file at build time). div .biodata name= reg= email=: one biodata page. div .note-page: the
+  file at build time). div .biodata name= reg= email= [mobile= address= photo=]: one biodata page (the optional attributes are
+  the private details of a personal build, see src/trafficsense/report/biodata.py; without them the page has
+  blank lines and an empty photo box, which is what the public report shows). div .note-page: the
   closing NOTE page. span .tab: a tab (to the right tab stop of the paragraph style).
 * div .code-listings is replaced by the build with generated listings before pandoc runs.
 ]]
@@ -254,13 +256,26 @@ local function biodata(attrs)
     '<w:bottom w:val="single" w:sz="8" w:space="0" w:color="000000"/>' ..
     '<w:right w:val="single" w:sz="8" w:space="0" w:color="000000"/>'
   local none = '<w:top w:val="nil"/><w:left w:val="nil"/><w:bottom w:val="nil"/><w:right w:val="nil"/>'
+  -- personal build: the photo replaces the word "Photo" later (biodata.insert_photos), so the cell needs
+  -- no side margins and centres it; the address is one paragraph that wraps under its own text
+  local has_photo = attrs["photo"] and attrs["photo"] ~= ""
+  local photo_text = has_photo and ("[[photo:" .. attrs["photo"] .. "]]") or "Photo"
+  local photo_cell = has_photo and '<w:tcMar><w:left w:w="0" w:type="dxa"/><w:right w:w="0" w:type="dxa"/></w:tcMar><w:vAlign w:val="center"/>' or ""
+  local mobile = (attrs["mobile"] and attrs["mobile"] ~= "") and attrs["mobile"] or BLANK
+  local address
+  if attrs["address"] and attrs["address"] ~= "" then
+    address = '<w:p><w:pPr><w:pStyle w:val="BiodataLine"/><w:ind w:left="2200" w:hanging="2080"/></w:pPr>' ..
+      run("Permanent Address", "<w:b/>") .. "<w:r><w:tab/></w:r>" .. run(":\u{00A0}" .. attrs["address"]) .. "</w:p>"
+  else
+    address = line("Permanent Address", BLANK) .. cont(BLANK) .. cont(BLANK)
+  end
   -- photo box 3.5 x 4.5 cm (a passport photo) in its own fixed-height cell; the details to its right
   local nogrid = '<w:tblBorders>' .. none .. '<w:insideH w:val="nil"/><w:insideV w:val="nil"/></w:tblBorders>'
   local photo = '<w:tbl><w:tblPr><w:tblW w:w="1984" w:type="dxa"/><w:tblLayout w:type="fixed"/>' .. nogrid ..
     '<w:tblLook w:val="0000" w:firstRow="0" w:lastRow="0" w:firstColumn="0" w:lastColumn="0" w:noHBand="1" w:noVBand="1"/></w:tblPr>' ..
     '<w:tblGrid><w:gridCol w:w="1984"/></w:tblGrid><w:tr><w:trPr><w:trHeight w:val="2552" w:hRule="exact"/><w:cantSplit/></w:trPr>' ..
-    '<w:tc><w:tcPr><w:tcW w:w="1984" w:type="dxa"/><w:tcBorders>' .. border .. '</w:tcBorders></w:tcPr>' ..
-    '<w:p><w:pPr><w:pStyle w:val="BiodataPhoto"/></w:pPr>' .. run("Photo") .. "</w:p></w:tc></w:tr></w:tbl><w:p/>"
+    '<w:tc><w:tcPr><w:tcW w:w="1984" w:type="dxa"/><w:tcBorders>' .. border .. '</w:tcBorders>' .. photo_cell .. '</w:tcPr>' ..
+    '<w:p><w:pPr><w:pStyle w:val="BiodataPhoto"/></w:pPr>' .. run(photo_text) .. "</w:p></w:tc></w:tr></w:tbl><w:p/>"
   local xml = '<w:tbl><w:tblPr><w:tblW w:w="8640" w:type="dxa"/><w:tblLayout w:type="fixed"/>' .. nogrid ..
     '<w:tblCellMar><w:left w:w="0" w:type="dxa"/><w:right w:w="0" w:type="dxa"/></w:tblCellMar>' ..
     '<w:tblLook w:val="0000" w:firstRow="0" w:lastRow="0" w:firstColumn="0" w:lastColumn="0" w:noHBand="1" w:noVBand="1"/></w:tblPr>' ..
@@ -270,8 +285,7 @@ local function biodata(attrs)
     '<w:tc><w:tcPr><w:tcW w:w="227" w:type="dxa"/><w:tcBorders>' .. none .. '</w:tcBorders></w:tcPr><w:p/></w:tc>' ..
     '<w:tc><w:tcPr><w:tcW w:w="6429" w:type="dxa"/><w:tcBorders>' .. none .. '</w:tcBorders></w:tcPr>' ..
     line("Name", attrs["name"]) .. line("Register No.", attrs["reg"]) ..
-    line("Mobile Number", BLANK) .. line("E-mail", attrs["email"]) ..
-    line("Permanent Address", BLANK) .. cont(BLANK) .. cont(BLANK) ..
+    line("Mobile Number", mobile) .. line("E-mail", attrs["email"]) .. address ..
     "</w:tc></w:tr></w:tbl>"
   return pandoc.RawBlock("openxml", xml)
 end

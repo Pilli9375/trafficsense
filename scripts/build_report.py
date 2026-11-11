@@ -4,11 +4,21 @@
     python scripts/build_report.py                 # check numbers, build, fill lists, check
     python scripts/build_report.py --pages 1-8,40  # also render those PDF pages to PNG
     python scripts/build_report.py --skip-check    # build even if make_report.py --check fails
+    python scripts/build_report.py --variant public    # only the tracked report (blank biodata lines)
+    python scripts/build_report.py --variant personal  # only the local copy with the private biodata
 
 Inputs: docs/report/NN_*.md in file-name order; the format is docs/report/format_spec.md. The
 college's example thesis (configs/default.yaml `paths.thesis_format`, kept on D, not in git)
 supplies the base styles and the logo; Times New Roman and Consolas for the PDF are read from
 `paths.report_fonts` (the Windows font folder, linked, not copied).
+
+Biodata: the tracked docs/report/report.docx and report.pdf always have the blank lines and the
+empty photo box of docs/report/80_biodata.md, so they hold no personal data (the repository is
+public). If the private file `paths.biodata` exists (gitignored; see src/trafficsense/report/biodata.py)
+a second build with the students' mobile numbers, e-mail addresses, addresses and photos is written
+to `paths.report_private` (docs/report/build_private/report_personal.docx and .pdf, gitignored).
+The build prints which of the two it used; a missing file only skips the personal copy, a malformed
+file stops the build, and a missing photo leaves that photo box empty (printed).
 
 Tools: pandoc >= 3.8 (PATH or ~/.local/bin) with the Lua filter docs/report/template/thesis.lua and
 citeproc (references.bib, IEEE CSL); LibreOffice (PATH, $SOFFICE, or the AppImage extracted in
@@ -35,7 +45,7 @@ import tempfile
 from pathlib import Path
 
 from trafficsense.config import load_config, repo_root, resolve_path
-from trafficsense.report import thesis
+from trafficsense.report import biodata, thesis
 
 ROOT = repo_root()
 REP = ROOT / "docs/report"
@@ -59,8 +69,10 @@ def chapters() -> list[Path]:
     return files
 
 
-def combined(tmp: Path) -> Path:
+def combined(tmp: Path, students: list[biodata.Student] | None = None) -> Path:
     text = "\n\n".join(p.read_text() for p in chapters())
+    if students:
+        text = biodata.personalise(text, students)
     marker = "::: code-listings\n:::"
     if text.count(marker) != 1:
         raise SystemExit("expected one '::: code-listings' block in the appendix")
@@ -118,8 +130,9 @@ def record_tools():
         raise SystemExit(f"report tools changed ({old} -> {now}): run scripts/make_report.py, then build again")
 
 
-def build(work: Path) -> tuple[Path, Path]:
-    record_tools()
+def build(work: Path, dest: Path, stem: str, students: list[biodata.Student] | None = None) -> tuple[Path, Path]:
+    """Build <dest>/<stem>.docx and .pdf. With `students` the biodata pages carry their private
+    details and photos (dest must then be the gitignored private folder)."""
     cfg = load_config("configs/default.yaml")
     college = resolve_path(cfg, "thesis_format")
     fonts = resolve_path(cfg, "report_fonts")
@@ -128,10 +141,13 @@ def build(work: Path) -> tuple[Path, Path]:
     logo = thesis.extract_logo(college, work)
     raw = work / "raw.docx"
     numbers_json = work / "numbers.json"
-    pandoc(combined(work), ref, logo, raw, numbers_json)
+    pandoc(combined(work, students), ref, logo, raw, numbers_json)
     thesis.postprocess(raw, AUTHORS, TITLE)
+    if students:
+        n = biodata.insert_photos(raw, students)
+        print(f"biodata: {n} photo(s) inserted")
 
-    docx, pdf_dir = REP / "report.docx", work / "pdf"
+    docx, pdf_dir = work / f"{stem}.docx", work / "pdf"
     pdf_dir.mkdir()
     pages, last = None, None
     for n in range(1, MAX_PASSES + 1):
@@ -147,35 +163,81 @@ def build(work: Path) -> tuple[Path, Path]:
     else:
         raise SystemExit(f"page numbers still changing after {MAX_PASSES} passes")
     # the .docx written in the last loop iteration is the one the last PDF was made from
-    shutil.copyfile(pdf, REP / "report.pdf")
-    fonts_used = thesis.pdf_fonts(REP / "report.pdf")
+    fonts_used = thesis.pdf_fonts(pdf)
     if not any(f.startswith("TimesNewRoman") for f in fonts_used):
         raise SystemExit(f"the PDF does not embed Times New Roman: {sorted(fonts_used)}")
-    print(f"wrote {docx.relative_to(ROOT)} and report.pdf ({len(pages)} pages); fonts: {', '.join(sorted(fonts_used))}")
-    return docx, REP / "report.pdf"
+    dest.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(docx, dest / f"{stem}.docx")
+    shutil.copyfile(pdf, dest / f"{stem}.pdf")
+    print(f"wrote {(dest / f'{stem}.docx').relative_to(ROOT)} and {stem}.pdf ({len(pages)} pages); "
+          f"fonts: {', '.join(sorted(fonts_used))}")
+    return dest / f"{stem}.docx", dest / f"{stem}.pdf"
+
+
+def private_students(cfg) -> tuple[list[biodata.Student] | None, Path]:
+    """The students of the private file (None if the file does not exist) and the folder for the
+    personal build. Prints which biodata the build will use."""
+    src = resolve_path(cfg, "biodata")
+    students, why = biodata.load_optional(src, resolve_path(cfg, "biodata_photos"))
+    private = resolve_path(cfg, "report_private")
+    if students is None:
+        print(f"biodata: {why}: no personal copy is built")
+        return None, private
+    missing = [s.reg for s in students if s.photo_path is None]
+    print(f"biodata: private file {src.relative_to(ROOT)} read ({len(students)} students, "
+          f"{len(students) - len(missing)} photos)")
+    if missing:
+        print(f"biodata: WARNING photo file missing for {missing}: their photo boxes stay empty")
+    return students, private
+
+
+def run_check(*args) -> bool:
+    return subprocess.run([sys.executable, *map(str, args)], cwd=ROOT).returncode == 0
 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--skip-check", action="store_true", help="build even if make_report.py --check fails")
-    ap.add_argument("--pages", default="", help="render these PDF pages to PNG, e.g. 1-8,40")
+    ap.add_argument("--variant", choices=["both", "public", "personal"], default="both",
+                    help="public: the tracked report with blank biodata lines; personal: the local copy with the "
+                         "private biodata (needs the private file); both (default): the personal one only if the "
+                         "private file exists")
+    ap.add_argument("--pages", default="", help="render these PDF pages to PNG, e.g. 1-8,40 (personal: into the "
+                                                "private folder, never into a tracked one)")
     ap.add_argument("--png-dir", default=str(REP / "build/pages"))
-    ap.add_argument("--keep", help="keep the intermediate files in this folder")
+    ap.add_argument("--keep", help="keep the intermediate files of the public build in this folder")
     args = ap.parse_args()
     if not args.skip_check:
-        r = subprocess.run([sys.executable, str(ROOT / "scripts/make_report.py"), "--check"], cwd=ROOT)
-        if r.returncode:
+        if not run_check(ROOT / "scripts/make_report.py", "--check"):
             raise SystemExit("make_report.py --check failed: the report's numbers do not match outputs/")
+    cfg = load_config("configs/default.yaml")
+    students, private = None, resolve_path(cfg, "report_private")
+    if args.variant != "public":
+        students, private = private_students(cfg)
+        if students is None and args.variant == "personal":
+            raise SystemExit("--variant personal needs the private biodata file (see src/trafficsense/report/biodata.py)")
     (REP / "build").mkdir(exist_ok=True)
-    with tempfile.TemporaryDirectory(dir=REP / "build") as t:
-        work = Path(t)
-        docx, pdf = build(work)
-        if args.keep:
-            shutil.copytree(work, args.keep, dirs_exist_ok=True, ignore=shutil.ignore_patterns("lo-profile"))
-    if args.pages:
-        render_pages(pdf, args.pages, Path(args.png_dir))
-    r = subprocess.run([sys.executable, str(ROOT / "scripts/check_report_format.py")], cwd=ROOT)
-    if r.returncode:
+    record_tools()
+    ok = True
+    if args.variant != "personal":
+        print("biodata: tracked report.docx/pdf are built with blank lines (no personal data)")
+        with tempfile.TemporaryDirectory(dir=REP / "build") as t:
+            work = Path(t)
+            docx, pdf = build(work, REP, "report")
+            if args.keep:
+                shutil.copytree(work, args.keep, dirs_exist_ok=True, ignore=shutil.ignore_patterns("lo-profile"))
+        if args.pages:
+            render_pages(pdf, args.pages, Path(args.png_dir))
+        ok = run_check(ROOT / "scripts/check_report_format.py")
+    if students:
+        print("biodata: building the personal copy from the private file")
+        with tempfile.TemporaryDirectory(dir=REP / "build") as t:
+            docx, pdf = build(Path(t), private, "report_personal", students)
+        if args.pages:
+            render_pages(pdf, args.pages, private / "pages")
+        ok &= run_check(ROOT / "scripts/check_report_format.py", "--docx", docx, "--pdf", pdf, "--personal")
+        ok &= run_check(ROOT / "scripts/check_biodata.py", "--personal")
+    if not ok:
         sys.exit(1)
 
 

@@ -3,6 +3,7 @@ docs/report/format_spec.md.
 
     python scripts/check_report_format.py            # exit 1 on any problem
     python scripts/check_report_format.py --docx X.docx --pdf X.pdf
+    python scripts/check_report_format.py --docx X.docx --pdf X.pdf --personal   # the local copy with private biodata
 
 Checks (each failure is printed):
 * the spec still states the values checked here (page, margins, body font and spacing);
@@ -16,7 +17,9 @@ Checks (each failure is printed):
   figure; "Table c.n Title" above the table, c = chapter, n from 1 in each chapter;
 * contents and both lists: live fields whose entries all carry a page number;
 * biodata: four pages, each with the student's name, register number and e-mail, and blank lines
-  for mobile number and permanent address; the NOTE about the CD is present;
+  for mobile number and permanent address; the NOTE about the CD is present. With --personal
+  (the local copy built from the private file) the blank lines and the e-mail are not checked here
+  (scripts/check_biodata.py checks those pages against the private file); everything else is;
 * no leftover placeholder ({{...}}, TBD, TODO, [fill in], XXXX, build markers) and none of the
   outdated claims of the old contribution sheets, in the Word file or the PDF;
 * PDF: every page US Letter, Times New Roman embedded, nothing printed outside the side margins,
@@ -115,7 +118,7 @@ def style_xml(styles: str, sid: str) -> str:
     return m[0] if m else ""
 
 
-def check_docx(docx: Path, spec: str) -> tuple[list[str], dict]:
+def check_docx(docx: Path, spec: str, personal: bool = False) -> tuple[list[str], dict]:
     errors = []
     for ph in SPEC_PHRASES:
         if ph not in spec:
@@ -278,8 +281,12 @@ def check_docx(docx: Path, spec: str) -> tuple[list[str], dict]:
         lines = [norm(text_of(p)) for p in re.findall(r"<w:p\b.*?</w:p>", tbl[1], re.S)] if tbl[0] == "tbl" else []
         joined = " | ".join(lines)
         for label, value in (("Name", name), ("Register No.", reg), ("E-mail", email)):
+            if personal and label == "E-mail":
+                continue
             if f"{label} : {value}" not in joined:
                 errors.append(f"biodata of {name}: '{label} : {value}' missing")
+        if personal:
+            continue
         for label in ("Mobile Number", "Permanent Address"):
             if not re.search(re.escape(label) + r" : _{10,}", joined):
                 errors.append(f"biodata of {name}: {label} must be a blank line (underscores)")
@@ -308,7 +315,7 @@ def check_docx(docx: Path, spec: str) -> tuple[list[str], dict]:
     return errors, {"lists": lists, "headings": [norm(text_of(x)) for i, x in paras if style_of(x) in ("Heading2", "Heading3")]}
 
 
-def check_pdf(pdf: Path, info: dict) -> list[str]:
+def check_pdf(pdf: Path, info: dict, docx: Path) -> list[str]:
     import ctypes
     import pypdfium2 as pdfium
     import pypdfium2.raw as raw
@@ -367,7 +374,7 @@ def check_pdf(pdf: Path, info: dict) -> list[str]:
             errors.append(f"placeholder in the PDF: {prose[max(0, m.start() - 40):m.end() + 40]!r}")
     # the contents' page numbers are those the PDF shows
     from trafficsense.report.thesis import entries, page_numbers
-    with zipfile.ZipFile(REP / "report.docx") as z:
+    with zipfile.ZipFile(docx) as z:
         es = entries(z.read("word/document.xml").decode("utf-8"))
     try:
         page_numbers(es, texts)
@@ -386,15 +393,17 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--docx", default=str(REP / "report.docx"))
     ap.add_argument("--pdf", default=str(REP / "report.pdf"))
+    ap.add_argument("--personal", action="store_true",
+                    help="the local copy built from the private biodata file: no blank-line checks on the biodata pages")
     args = ap.parse_args()
     spec = (REP / "format_spec.md").read_text()
-    errors, info = check_docx(Path(args.docx), spec)
-    errors += check_pdf(Path(args.pdf), info)
+    errors, info = check_docx(Path(args.docx), spec, args.personal)
+    errors += check_pdf(Path(args.pdf), info, Path(args.docx))
     if errors:
         print("\n".join(errors))
         print(f"{len(errors)} problem(s)")
         sys.exit(1)
-    print(f"report.docx and report.pdf follow format_spec.md "
+    print(f"{Path(args.docx).name} and {Path(args.pdf).name} follow format_spec.md "
           f"({len(info['lists'].get('contents', []))} contents entries, "
           f"{len(info['lists'].get('list of tables', []))} tables, {len(info['lists'].get('list of figures', []))} figures)")
 

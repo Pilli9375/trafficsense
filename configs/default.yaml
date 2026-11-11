@@ -29,6 +29,11 @@ paths:
   #   ln -s /mnt/c/Windows/Fonts data/external/report_fonts
   thesis_format: data/external/thesis_format.docx
   report_fonts: data/external/report_fonts
+  # Biodata pages of the report: personal details (private, gitignored) and the photos they name
+  # (symlinks to the files on D, in a gitignored folder). Missing -> the build keeps the blank lines.
+  biodata: data/external/biodata.yaml
+  biodata_photos: data/external/biodata_photos
+  report_private: docs/report/build_private      # report_personal.docx/.pdf (gitignored)
 
 scenarios:
   synthetic_4x4:

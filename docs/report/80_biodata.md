@@ -1,5 +1,6 @@
-<!-- One page per student. Mobile number and permanent address are blank lines that the students
-fill in by hand after printing; they are never stored in the repository. -->
+<!-- One page per student. In this tracked file (and the tracked report.docx/pdf) the mobile number and
+permanent address are blank lines and the photo an empty box: the repository is public. The local build
+(scripts/build_report.py) adds the real values from a private, gitignored file; see docs/report/README.md. -->
 
 ::: {.biodata name="C Bhargav Kumar" reg="23BCE8195" email="bhargav.23bce8195@vitapstudent.ac.in"}
 :::

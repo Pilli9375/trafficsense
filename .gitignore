@@ -66,6 +66,9 @@ outputs/camera_error/decomposition/runs/*/metrics.csv
 # Report build: page images rendered for the layout check (scripts/build_report.py --pages)
 docs/report/build/
 
+# Report build with the students' private biodata (phone, e-mail, address, photo): never tracked
+docs/report/build_private/
+
 # IEEE paper build: tectonic logs and page images (scripts/make_paper.py)
 docs/paper/build/
 

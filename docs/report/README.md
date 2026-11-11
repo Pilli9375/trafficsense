@@ -44,10 +44,16 @@ safe. The code listings of the appendix are generated from the files at the curr
 build refuses if they have uncommitted changes).
 
 **By hand after printing.** The certificate's examiner signatures and the Program Chair's and
-Dean's names and signatures, and each student's mobile number, permanent address and photo
-(biodata), are blank lines or boxes in the Word file, to be filled by hand or typed over in Word
-for the printed copy. Never commit real phone numbers or addresses. Points for the team to
-confirm are in `CONTRIBUTIONS_TO_CONFIRM.md`.
+Dean's names and signatures are blank lines in the Word file. Each student's mobile number,
+permanent address and photo (biodata) are blank lines and an empty box in the tracked
+`report.docx` / `report.pdf`, because the repository is public: never commit real phone numbers,
+addresses, personal e-mail addresses or photos. For the printed copy, `scripts/build_report.py`
+fills them from a private file outside git (`paths.biodata` in `configs/default.yaml`, under
+the gitignored `data/external/`; the photos are read from the files it names in `paths.biodata_photos`)
+and writes `docs/report/build_private/report_personal.docx` and `.pdf` (gitignored). Without the
+private file only the blank version is built, and the build says so.
+`scripts/check_biodata.py` checks the personal copy and that no tracked file holds any of the private details.
+Points for the team to confirm are in `CONTRIBUTIONS_TO_CONFIRM.md`.
 
 ## References to verify
 
