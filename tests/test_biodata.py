@@ -324,3 +324,16 @@ def test_filter_writes_blank_lines_without_details_and_values_with_them(tmp_path
     assert "9000000001" in personal and "1 Test Road, Testville" in personal and "[[photo:23XXX0001]]" in personal
     assert personal.count("[[photo:") == 1 and personal.count("Photo</w:t>") == 1     # student two: no photo, empty box
     assert "_" * 30 not in personal
+
+
+def test_list_comparison_ignores_the_commit_hash_but_not_page_numbers(tmp_path):
+    def docx(name, hash_, page):
+        p = tmp_path / name
+        para = ('<w:p><w:pPr><w:pStyle w:val="TableofFigures"/></w:pPr><w:r><w:t xml:space="preserve">Table 6.7 Files in commit '
+                f'{hash_}</w:t></w:r><w:r><w:tab/></w:r><w:r><w:t>{page}</w:t></w:r></w:p>')
+        with zipfile.ZipFile(p, "w") as z:
+            z.writestr("word/document.xml", f"<w:document><w:body>{para}</w:body></w:document>")
+        return p
+    a, b, c = docx("a.docx", "f23b673ace", 111), docx("b.docx", "59dcfcf0ca", 111), docx("c.docx", "59dcfcf0ca", 112)
+    assert biodata.list_pages(a) == biodata.list_pages(b)
+    assert biodata.list_pages(a) != biodata.list_pages(c)

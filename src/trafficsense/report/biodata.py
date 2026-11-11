@@ -426,7 +426,9 @@ def list_pages(docx: Path) -> list[str]:
     """The contents, list of tables and list of figures as printed (text and page number per line)."""
     with zipfile.ZipFile(docx) as z:
         doc = z.read("word/document.xml").decode("utf-8")
-    return [_norm(_text(p)) for p in re.findall(r"<w:p\b.*?</w:p>", doc, re.S)
+    # the appendix table caption names the commit the report was built at: not a page-number matter
+    return [re.sub(r"\bcommit [0-9a-f]{7,40}\b", "commit <hash>", _norm(_text(p)))
+            for p in re.findall(r"<w:p\b.*?</w:p>", doc, re.S)
             if re.search(r'<w:pStyle w:val="(?:TOC\d|TableofFigures)"', p[:200])]
 
 
