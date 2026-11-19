@@ -11,8 +11,8 @@ from trafficsense.report.figures import INK, INK2, MUTED, SLOT
 
 OUT = Path("docs/ppt/figures/architecture_slide.png")
 OUT_LOOP = Path("docs/ppt/figures/agent_loop_slide.png")
-W, H = 9.45, 4.0          # inches: the picture area on the slide (8.64 M x 3.65 M EMU)
-FS = 12.5
+W, H = 9.78, 4.05         # inches: the picture area on the slide (8.94 M x 3.70 M EMU), drawn at 1:1
+FS = 15
 
 
 def _box(ax, x, y, w, h, text, fc="#f4f3f0", ec=MUTED, bold=False):
@@ -34,33 +34,34 @@ def draw(path: Path):
     fig = plt.figure(figsize=(W, H))
     ax = fig.add_axes([0, 0, 1, 1])
     ax.set_xlim(0, W); ax.set_ylim(0, H); ax.axis("off")
-    lab = dict(fontsize=FS + 0.5, fontweight="bold", color=INK2)
-    ax.text(0.05, 3.82, "Perception (offline)", **lab)
-    ax.text(5.85, 3.82, "Extra inputs to the agent", **lab)
-    _box(ax, 0.05, 2.85, 1.7, 0.8, "IDD images\n(dash camera,\nIndia)")
-    _box(ax, 2.05, 2.85, 1.6, 0.8, "Detector\nYOLOv8n,\n640 px")
-    _box(ax, 3.95, 2.85, 1.6, 0.8, "Error model\np_detect, labels,\nfalse detections")
-    _box(ax, 5.85, 2.85, 1.7, 0.8, "Neighbours:\nphase, queues\ntowards us")
-    _box(ax, 7.75, 2.85, 1.65, 0.8, "Ambulances\n≤ 150 m (GPS/\nV2X, exact)")
-    _arrow(ax, (1.75, 3.25), (2.05, 3.25)); _arrow(ax, (3.65, 3.25), (3.95, 3.25))
-    _box(ax, 0.05, 1.35, 1.7, 0.95, "CityFlow\nengine (exact\nstate; metrics)", fc="#e8f1fb", ec=SLOT["mp"])
-    _box(ax, 2.05, 1.35, 1.6, 0.95, "Observation\nlayer: exact or\nnoised counts")
-    _box(ax, 3.95, 1.35, 1.6, 0.95, "MaxPressure\nranking: offers\ntop 2 + keep")
-    _box(ax, 5.85, 1.35, 3.55, 0.95, "LLM agent per intersection\nobserve → reason → act\n(Ollama, JSON schema)",
+    lab = dict(fontsize=FS - 0.5, fontweight="bold", color=INK2)
+    ax.text(0.04, 3.86, "Perception (offline)", **lab)
+    ax.text(5.99, 3.86, "Extra inputs to the agent", **lab)
+    bw = 1.75
+    xs = [0.04, 1.99, 3.94, 5.99, 7.94]
+    texts = ["IDD images\n(dash camera,\nIndia)", "Detector\nYOLOv8n,\n640 px", "Error model\nmisses, false\ndetections",
+             "Neighbours:\nphase, queues\nto us", "Ambulances\n≤ 150 m\n(GPS/V2X)"]
+    for x, t in zip(xs, texts):
+        _box(ax, x, 2.8, bw, 0.95, t)
+    _arrow(ax, (xs[0] + bw, 3.27), (xs[1], 3.27)); _arrow(ax, (xs[1] + bw, 3.27), (xs[2], 3.27))
+    _box(ax, 0.04, 1.4, bw, 1.0, "CityFlow\nengine\n(exact state)", fc="#e8f1fb", ec=SLOT["mp"])
+    _box(ax, 1.99, 1.4, bw, 1.0, "Observation\nlayer: exact\nor noised", )
+    _box(ax, 3.94, 1.4, bw, 1.0, "MaxPressure\nranking: top 2\n+ keep")
+    _box(ax, 5.99, 1.4, 3.7, 1.0, "LLM agent per intersection\nobserve → reason → act\n(Ollama, JSON schema)",
          fc="#e6f6ef", ec=SLOT["llm"], bold=True)
-    for a, b in [(1.75, 2.05), (3.65, 3.95), (5.55, 5.85)]:
-        _arrow(ax, (a, 1.82), (b, 1.82))
-    _arrow(ax, (6.7, 2.85), (6.7, 2.30)); _arrow(ax, (8.57, 2.85), (8.57, 2.30))
-    _arrow(ax, (4.75, 2.85), (3.0, 2.30))
-    ax.text(4.95, 2.45, "noise parameters", fontsize=FS - 1, color=INK2, ha="left")
-    _box(ax, 5.85, 0.1, 3.55, 0.85, "Guard + signal timing\npressure ≥ 0.8 × top; min/max\ngreen; 5 s transition")
-    _arrow(ax, (7.62, 1.35), (7.62, 0.95))
-    ax.plot([5.85, 4.8, 4.8, 0.9], [0.52, 0.52, 1.13, 1.13], color=INK2, lw=1.4)
-    _arrow(ax, (0.9, 1.13), (0.9, 1.35))
-    ax.text(2.85, 1.17, "applied phase", fontsize=FS - 1, color=INK2, ha="center", va="bottom")
-    _box(ax, 0.05, 0.1, 1.7, 0.85, "outputs/\nsummary, metrics,\ndecisions")
-    _box(ax, 2.05, 0.1, 1.6, 0.85, "Dashboard,\ndocs, report")
-    _arrow(ax, (0.4, 1.35), (0.4, 0.95)); _arrow(ax, (1.75, 0.52), (2.05, 0.52))
+    for a, b in [(0.04 + bw, 1.99), (1.99 + bw, 3.94), (3.94 + bw, 5.99)]:
+        _arrow(ax, (a, 1.9), (b, 1.9))
+    _arrow(ax, (6.865, 2.8), (6.865, 2.4)); _arrow(ax, (8.815, 2.8), (8.815, 2.4))
+    _arrow(ax, (4.3, 2.8), (2.9, 2.4))
+    ax.text(4.45, 2.52, "noise parameters", fontsize=FS - 2, color=INK2, ha="left", va="center")
+    _box(ax, 5.99, 0.08, 3.7, 1.0, "Guard + signal timing\npressure ≥ 0.8 × top;\nmin/max green; 5 s transition")
+    _arrow(ax, (7.84, 1.4), (7.84, 1.08))
+    ax.plot([5.99, 5.15, 5.15, 0.91], [0.58, 0.58, 1.2, 1.2], color=INK2, lw=1.6)
+    _arrow(ax, (0.91, 1.2), (0.91, 1.4))
+    ax.text(3.2, 1.225, "applied phase", fontsize=FS - 2, color=INK2, ha="center", va="bottom")
+    _box(ax, 0.04, 0.08, 2.05, 1.0, "outputs/\nsummary, metrics,\ndecisions")
+    _box(ax, 2.5, 0.08, 1.75, 1.0, "Dashboard,\ndocs, report")
+    _arrow(ax, (0.5, 1.4), (0.5, 1.08)); _arrow(ax, (2.09, 0.58), (2.5, 0.58))
     path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(path, dpi=220, facecolor="white", metadata={"Software": None})
     plt.close(fig)
@@ -90,13 +91,13 @@ def draw_loop(path: Path):
         x = 0.04 + i * (bw + gap)
         ax.add_patch(FancyBboxPatch((x, 0.5), bw, 1.15, boxstyle="round,pad=0.01,rounding_size=0.06",
                                     fc="#e6f6ef" if i == 1 else "#f4f3f0", ec=SLOT["llm"] if i == 1 else MUTED, lw=1.2))
-        ax.text(x + bw / 2, 1.5, head, ha="center", va="center", fontsize=FS, fontweight="bold", color=INK)
-        ax.text(x + bw / 2, 0.97, textwrap.fill(body, 17), ha="center", va="center", fontsize=FS - 2, color=INK,
+        ax.text(x + bw / 2, 1.5, head, ha="center", va="center", fontsize=13, fontweight="bold", color=INK)
+        ax.text(x + bw / 2, 0.97, textwrap.fill(body, 17), ha="center", va="center", fontsize=11.5, color=INK,
                 linespacing=1.15)
         if i < 4:
             _arrow(ax, (x + bw, 1.05), (x + bw + gap, 1.05))
     ax.text(w / 2, 1.82, "every 5 s per intersection, once its minimum green is met", ha="center", va="center",
-            fontsize=FS - 1, color=INK2)
+            fontsize=12, color=INK2)
     ax.annotate("", xy=(1.0, 0.46), xytext=(w - 1.0, 0.46),
                 arrowprops=dict(arrowstyle="-|>", color=MUTED, lw=1.4, connectionstyle="arc3,rad=-0.08"))
     path.parent.mkdir(parents=True, exist_ok=True)

@@ -448,8 +448,8 @@ def fill_content(slide, key, spec: C.Slide):
     if L == "text":
         add_bullets(slide, spec.bullets, LM, top + 60000, CW, H, 20, before=12)
     elif L == "text_image":
-        add_bullets(slide, spec.bullets, LM, top + 40000, 5050000, H, 18, before=10)
-        pic(spec.image, spec.alt, 5450000, top, 3400000, 3400000)
+        add_bullets(slide, spec.bullets, LM, top + 40000, 4850000, H, 18, before=10)
+        pic(spec.image, spec.alt, 5200000, top - 20000, 3700000, 3690000)
     elif L == "text_table":
         add_bullets(slide, spec.bullets, LM, top + 40000, 4350000, H, 16, before=9)
         x = 4750000
@@ -462,7 +462,7 @@ def fill_content(slide, key, spec: C.Slide):
     elif L == "table":
         tab(spec.tables[0], LM, top + 60000, CW, 18, [5, 6], row_h=520000)
     elif L == "image":
-        pic(spec.image, spec.alt, LM, top, CW, H)
+        pic(spec.image, spec.alt, 95000, top - 20000, SW - 190000, H + 20000)
     elif L == "text_image_bottom":
         add_bullets(slide, spec.bullets, LM, top, CW, 1820000, 16, before=5)
         pic(spec.image, spec.alt, LM, top + 1900000, CW, H - 1900000)
@@ -479,12 +479,14 @@ def fill_content(slide, key, spec: C.Slide):
         add_label(slide, spec.table_labels[1], LM, top + 1830000, CW, size=16, h=280000)
         tab(spec.tables[1], LM, top + 2110000, CW, 16, [2, 3, 3], row_h=300000)
     elif L == "text_two_images":
-        add_bullets(slide, spec.bullets, LM, top - 20000, CW, 1000000, 16, before=4)
-        ih = 1950000
+        add_bullets(slide, spec.bullets, LM, top - 20000, CW, 830000, 16, before=2)
+        ih = 2200000
         iw = int(ih * 16 / 9)
-        for (rel, alt, cap), x in zip(spec.images, (LM + 150000, LM + 150000 + iw + 500000)):
-            pic(rel, alt, x, top + 1000000, iw, ih, align="left")
-            add_label(slide, cap, x, top + 1000000 + ih + 30000, iw, size=16, color=TEAL, h=290000)
+        gap = 330000
+        x0 = LM + (CW - 2 * iw - gap) // 2
+        for (rel, alt, cap), x in zip(spec.images, (x0, x0 + iw + gap)):
+            pic(rel, alt, x, top + 830000, iw, ih, align="left")
+            add_label(slide, cap, x, top + 830000 + ih + 10000, iw, size=16, color=TEAL, h=290000)
     elif L == "summary":
         y = top - 40000
         for i, (h, items) in enumerate(spec.columns):
@@ -523,12 +525,6 @@ def fill_bibliography(slide, spec):
 
 
 def fill_closing(slide, spec):
-    t = shape_by_name(slide, "TextShape 1")
-    t.left, t.top, t.width, t.height = Emu(1435680), Emu(206010), Emu(7497720), Emu(700000)
-    body = t.text_frame._txBody
-    for p in body.findall(qn("a:p")):
-        body.remove(p)
-    add_par(body, "Thank You", 32, bullet=False, bold_all=True, color=BROWN, before=0, font=SERIF, align="ctr")
     tb, b2 = add_textbox(slide, 800000, 4130000, 7500000, 420000, "GitHub link")
     p = add_par(b2, f"GitHub: {C.GITHUB}", 20, bullet=False, bold_all=True, color="000000", before=0, align="ctr")
     r = p.findall(qn("a:r"))[0]
@@ -706,7 +702,7 @@ def par_height(text: str, size: float, width: int) -> int:
 TEMPLATE_TITLES = ["Capstone Final Review", "Presentation Outline", "Introduction", "Introduction", "Introduction",
                    "Background & Related Work", "Background & Related Work", "Proposed Solution", "Proposed Solution",
                    "Proposed Solution", "Implementation and Results", "Implementation and Results",
-                   "Implementation and Results", "Summary", "Bibliography", "Thank You"]
+                   "Implementation and Results", "Summary", "Bibliography", ""]
 # the deck's slide order: template slides 1-12, 13 once to three times, then 14-16
 PHONE = re.compile(r"(?<![\w.])\+?\d[\d ()\-]{8,}\d(?![\w])")
 ADDRESS = re.compile(r"\b(?:Street|Plot No|Door No|H\.? ?No|Pincode|PIN code)\b|\b\d{6}\b|@", re.I)
@@ -908,11 +904,28 @@ def check(pptx: Path | None = None) -> list[str]:
     # closing slide
     last = sl[-1]
     lt = "\n".join(slide_texts(last))
-    if "Thank You" not in lt:
-        probs.append("last slide: no 'Thank You'")
+    if not any(sh.shape_type == 13 and (sh._element.nvPicPr.cNvPr.get("descr") or "").startswith("Thank you")
+               for sh in last.shapes):
+        probs.append("last slide: the template's 'Thank you' picture is missing")
     if C.GITHUB not in lt:
         probs.append("last slide: GitHub link missing")
     links = [r.target_ref for r in last.part.rels.values() if r.is_external]
     if C.GITHUB not in links:
         probs.append("last slide: the GitHub link is not a hyperlink")
     return probs
+
+
+def font_sizes(pptx: Path | None = None) -> list[tuple[int, float | None, str]]:
+    """(slide number, smallest explicit text size in pt, where) per slide, page numbers excepted."""
+    prs = Presentation(str(pptx or paths()[2]))
+    out = []
+    for i, s in enumerate(prs.slides, 1):
+        low = (None, "")
+        for sh in s.shapes:
+            if any(f.get("type") == "slidenum" for f in sh._element.iter(qn("a:fld"))):
+                continue
+            for r in sh._element.iter(qn("a:rPr")):
+                if r.get("sz") and (low[0] is None or int(r.get("sz")) < low[0]):
+                    low = (int(r.get("sz")), sh.name)
+        out.append((i, low[0] / 100 if low[0] else None, low[1]))
+    return out

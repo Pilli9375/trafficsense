@@ -1,6 +1,6 @@
 """Check the capstone final-review deck (docs/ppt/TrafficSense_Capstone_Final_Review.pptx).
 
-    python scripts/check_slides.py
+    python scripts/check_slides.py [--sizes]
 
 Verifies: slide titles and order match the university template, at most 18 slides, every number on a
 slide (and in its notes) appears in the report sources, no template placeholder text left, no phone
@@ -15,6 +15,9 @@ from trafficsense.report import slides
 
 
 def main():
+    if "--sizes" in sys.argv:       # smallest text size on each slide
+        for n, pt, where in slides.font_sizes():
+            print(f"slide {n:2d}: smallest text {pt if pt else '-'} pt ({where})")
     probs = slides.check()
     for p in probs:
         print("FAIL", p)
