@@ -16,7 +16,7 @@ files in `outputs/` by `scripts/make_report.py --check`. The project runs in WSL
 Python 3.10; the batch scripts are resumable, and @tbl:repro lists the commands, run from the
 repository root, that reproduce the results.
 
-::: {#tbl:repro short="Commands that reproduce the results"}
+::: {#tbl:repro}
 | Command | Reproduces |
 |:----------------------------------------|:----------------------------|
 | `pip install -e ".[dev]" -c requirements-lock.txt`, then `pytest -q` | the environment (setup steps: README) and the test suite |
@@ -25,7 +25,7 @@ repository root, that reproduce the results.
 | `python scripts/train_detector.py --full`, then `python scripts/eval_detector.py --stage val` and `--stage test` | the detector and its error model |
 | `python scripts/make_report.py --check`, `python scripts/build_report.py` | the checks of every number, and this report |
 
-: The commands that reproduce the results. The full command list is in the extended material.
+: Commands that reproduce the results. The full list is in the extended material.
 :::
 
 To test these steps, the repository was cloned into an empty folder and set up from the README alone, and

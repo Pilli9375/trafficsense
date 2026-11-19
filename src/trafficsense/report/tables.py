@@ -589,8 +589,7 @@ def tab_hardware(fs, dt):
     if not ram:
         raise ValueError(f"{FRESH_CLONE}: no RAM in {env['CPU, RAM']!r}")
     rows = [
-        ("CPU", cpu, second["CPU, RAM"].split(",")[0]),
-        ("Memory", ram[1], second["CPU, RAM"].split(", ")[1]),
+        ("CPU, memory", f"{cpu}, {ram[1]}", ", ".join(second["CPU, RAM"].split(", ")[:2]).replace(",", ", ", 0)),
         ("GPU", gpu, second["GPU"]),
         ("Operating system", env["Windows"].split(" (")[0] + ", WSL2, " + env["Linux"].split(",")[0], second["Windows"]),
     ]

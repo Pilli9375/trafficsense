@@ -390,12 +390,10 @@ slow for real-time control of four intersections, and the LLM and the detector n
 <!-- BEGIN:tab_hardware -->
 |  | Project laptop | Second laptop |
 |----------------------------|------------------------------------|------------------------------------|
-| CPU | AMD Ryzen 5 4600H | AMD Ryzen 9 5900HS |
-| Memory | 16 GB | 16 GB |
+| CPU, memory | AMD Ryzen 5 4600H, 16 GB | AMD Ryzen 9 5900HS, 16 GB |
 | GPU | NVIDIA GTX 1650, 4 GB | NVIDIA RTX 3050 Ti, 4 GB |
 | Operating system | Windows 11 Home, WSL2, Ubuntu 22.04.5 LTS | Windows 11, WSL2, Ubuntu 22.04 |
 <!-- END:tab_hardware -->
 
-: Hardware. The project laptop's values are from the fresh-clone record; the second laptop's
-are as reported by the project owner.
+: Hardware. The second laptop's values are as reported by the project owner.
 :::

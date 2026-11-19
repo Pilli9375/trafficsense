@@ -1,5 +1,9 @@
 # Page budget (report.pdf, at most 57 pages, everything counted)
 
+*Update after the first plan:* the faculty also dropped the final NOTE page, and the biodata is one page for
+all four students (2 x 2 grid), so those two parts are now 0 and 1 pages. The plan below adds up to 52;
+the built report has 53 (see the map at the end).
+
 The faculty asked for a professional report of at most 57 pages: no source code in the report,
 only the important content (objectives, method, progress, results, discussion, references), and
 the code reached through the GitHub repository (<https://github.com/Pilli9375/trafficsense>).
@@ -7,8 +11,9 @@ The report was 131 pages. This file is the plan; the last column is filled in fr
 
 **What is not allowed to change** to reach the limit: page size, margins, Times New Roman 12,
 1.5 line spacing, justification, heading and caption styles, chapter order and chapter-opening
-pages, roman front matter / Arabic body, the contents and the lists, biodata, the NOTE page
-(`format_spec.md`). Only the content is cut.
+pages, roman front matter / Arabic body, the contents and the lists, the biodata layout of one student's
+block (`format_spec.md`). Only the content is cut. (The NOTE page and the one-page biodata are the
+faculty's later instructions and are recorded in `format_spec.md`.)
 
 **Nothing is thrown away.** Cut material (full per-run tables, prompt versions v1 to v3, the
 configuration files, long derivations, literature detail, the validation walk-through) is moved
@@ -25,14 +30,15 @@ to `docs/report/extended/` as Markdown, with its numbers tagged and checked by
 | Ch 5 Conclusion and Future Work | 2 | 2 | all | (nothing) |
 | Ch 6 Appendix | 49 | 3 | source code and reproducibility (GitHub link, commit hash, 5 commands), one configuration table, abbreviations, pointer to `extended/` | configuration files, all prompts, reproducibility detail, full tables |
 | References | 3 | 3 | only the entries cited, numbered in citation order | (nothing) |
-| Biodata | 4 | 4 | one page per student | (nothing) |
-| NOTE page | 1 | 1 | as is | (nothing) |
-| **Total** | **131** | **57** | | |
+| Biodata | 4 | 1 | one page, four blocks in a 2 x 2 grid (name, register number, e-mail; mobile and address blank in the public copy) | (nothing) |
+| NOTE page | 1 | 0 | removed at the faculty's request | (nothing) |
+| **Total** | **131** | **52** (limit 57) | | |
 
 **Removed outright:** every source-code listing (Section "Source Code", Table 6.7). Short
 file and function names in the text stay.
 
-**Justification of the budget.** It is the one suggested, unchanged. The reductions are large in
+**Justification of the budget.** It is the one suggested, with the NOTE page and the four biodata pages
+replaced by the single biodata page. The reductions are large in
 Ch 2 (23 to 12) and Ch 4 (26 to 16), but those chapters are where most of the repeated
 explanation sits (the same pre-registration rule and the same scenario facts are explained in
 Ch 1, Ch 2, Ch 4 and the appendix), so the cut is mostly de-duplication. Front matter is 8 pages
@@ -45,4 +51,24 @@ is shortened or moved, never made stronger.
 
 ## Final page map
 
-Filled in at the end of the work from the built PDFs (public and personal).
+Both builds (public, with blank biodata lines, and personal, with the private biodata and photos) are
+**53 pages**: 8 roman-numbered front-matter pages and 45 Arabic-numbered pages, so the limit of 57 is met
+with 4 pages to spare. `scripts/check_report_format.py` fails above 60 and warns above 57.
+
+| Part | Starts on report page (PDF page) | Pages | Budget |
+|---|---:|---:|---:|
+| Front matter (title i, certificate, acknowledgements, abstract, contents v to vi, lists vii and viii) | i (1) | 8 | 8 |
+| Chapter 1 Introduction | 1 (9) | 6 | 6 |
+| Chapter 2 Proposed System and Methodology | 7 (15) | 13 | 12 |
+| Chapter 3 Cost Analysis | 20 (28) | 2 | 2 |
+| Chapter 4 Results and Discussions | 22 (30) | 15 | 16 |
+| Chapter 5 Conclusion and Future Work | 37 (45) | 2 | 2 |
+| Chapter 6 Appendix | 39 (47) | 3 | 3 |
+| References | 42 (50) | 3 | 3 |
+| Biodata (one page, last page) | 45 (53) | 1 | 1 |
+| **Total** | | **53** | **52** |
+
+Chapter 2 is one page over its budget and Chapter 4 one under; the total is one over the plan and four under
+the limit. Tables of up to 20 rows stay on one page with their caption (`format_spec.md`), so a table that
+does not fit the rest of a page moves to the next one and leaves white space; reordering text around tables
+could save another page or two, but nothing more was cut to chase the plan's 52.
