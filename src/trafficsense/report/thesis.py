@@ -5,7 +5,7 @@ The format is described in docs/report/format_spec.md; the college's example the
 
     reference_docx()  a cleaned copy of the college styles, plus the styles pandoc and the filter
                       use, with every value from the spec (page, fonts, spacing, headings, captions)
-    code_listings()   the appendix listings, generated from the repository files at HEAD
+    repo_commit()     the commit hash the appendix names (refuses to build from uncommitted code)
     postprocess()     footers, page-number sections, table text style, update-fields flag
     fill_lists()      contents, list of tables and list of figures with the page numbers measured
                       in the PDF (LibreOffice renders the cached field results as they are)
@@ -35,22 +35,6 @@ FOOTER_REL = "http://schemas.openxmlformats.org/officeDocument/2006/relationship
 FOOTER_CT = "application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml"
 
 MARKERS = {"@@TOC@@": "toc", "@@LOT@@": "lot", "@@LOF@@": "lof"}
-
-# Key source files listed in full in the appendix (Section "Source Code"); every other Python
-# file is listed by path. The text is read from the repository at build time, never retyped.
-LISTINGS = [
-    "src/trafficsense/control/base.py",
-    "src/trafficsense/control/maxpressure.py",
-    "src/trafficsense/control/llm.py",
-    "src/trafficsense/control/guided.py",
-    "src/trafficsense/control/preemption.py",
-    "src/trafficsense/llm/client.py",
-    "src/trafficsense/llm/prompt.py",
-    "src/trafficsense/sim/env.py",
-    "src/trafficsense/sim/observation.py",
-    "src/trafficsense/perception/errors.py",
-]
-
 
 # --- styles ---------------------------------------------------------------------------------
 
@@ -146,10 +130,6 @@ def our_styles() -> dict[str, str]:
                         '<w:basedOn w:val="Normal"/><w:pPr><w:spacing w:before="0" w:after="0" w:line="240" w:lineRule="exact"/>'
                         '</w:pPr><w:rPr><w:sz w:val="16"/></w:rPr></w:style>'),
         "FigureImage": _pstyle("FigureImage", "Figure Image", _ppr("center", 120, 60, 240, keep_next=True), ""),
-        "SourceCode": _pstyle("SourceCode", "Source Code", _ppr("left", 0, 120, 240, widow=False),
-                              _rpr(8, font="Consolas")),
-        "CodeLine": _pstyle("CodeLine", "Code Line", _ppr("left", 0, 0, 240, left=567, hanging=567, widow=False),
-                            _rpr(8, font="Consolas")),
         "TOC1": _pstyle("TOC1", "toc 1", _ppr("left", 120, 0, 276, tabs=[("right", TEXT_W - 10, "dot")]),
                         _rpr(12, bold=True), custom=False, nxt="BodyText"),
         "TOC2": _pstyle("TOC2", "toc 2", _ppr("left", 0, 0, 276, left=440, tabs=[("right", TEXT_W - 10, "dot")]),
@@ -174,12 +154,10 @@ def our_styles() -> dict[str, str]:
         "SignRight": _pstyle("SignRight", "Sign Right", _ppr("right", 720, 0, BODY_LINE), _rpr(12)),
         "SignCentre": _pstyle("SignCentre", "Sign Centre", _ppr("center", 480, 0, BODY_LINE), _rpr(12)),
         "SignRow": _pstyle("SignRow", "Sign Row", _ppr("left", 720, 0, BODY_LINE, tabs=TAB_RIGHT), _rpr(12)),
-        "BiodataLine": _pstyle("BiodataLine", "Biodata Line", _ppr("left", 0, 60, BODY_LINE, left=120,
-                                                                   tabs=[("left", 2200, None)]), _rpr(12)),
+        "BiodataLine": _pstyle("BiodataLine", "Biodata Line", _ppr("left", 0, 70, 252, left=0), _rpr(11)),
         "BiodataPhoto": _pstyle("BiodataPhoto", "Biodata Photo", _ppr("left", 60, 0, 240), _rpr(10)),
-        "NoteText": _pstyle("NoteText", "Note Text", _ppr("both", 1440, 0, 276, page_break=True), _rpr(18, bold=True)),
+        "BiodataGap": _pstyle("BiodataGap", "Biodata Gap", _ppr("left", 0, 100, 240), _rpr(1)),
         # character styles
-        "NoteRed": _cstyle("NoteRed", "Note Red", '<w:color w:val="FF0000"/>'),
         "VerbatimChar": _cstyle("VerbatimChar", "Verbatim Char",
                                 '<w:rFonts w:ascii="Consolas" w:hAnsi="Consolas" w:cs="Consolas"/><w:sz w:val="21"/>'
                                 '<w:szCs w:val="21"/>'),
@@ -274,57 +252,20 @@ def extract_logo(college: Path, out_dir: Path) -> Path:
     return out
 
 
-# --- code listings ----------------------------------------------------------------------------
+# --- the repository commit the report names ----------------------------------------------------
 
 def _git(root: Path, *args) -> str:
     return subprocess.run(["git", *args], cwd=root, capture_output=True, text=True, check=True).stdout.strip()
 
 
-def _docline(path: Path) -> str:
-    """First line of the module docstring, or '' if there is none."""
-    m = re.match(r'\s*(?:#[^\n]*\n\s*)*[rub]*("""|\'\'\')\s*(.*?)(?:\n|\1)', path.read_text(), re.S)
-    return m[2].strip() if m else ""
-
-
-def code_listings(root: Path) -> str:
-    """Markdown (with raw OpenXML) for the appendix: each key file in full, numbered lines, then a
-    table of every other Python file. Refuses to build from files that differ from HEAD."""
-    # the listings and the file table name a commit: every source file must be as in that commit
-    dirty = _git(root, "status", "--porcelain", "--untracked-files=all", "--", "src", "scripts")
+def repo_commit(root: Path) -> str:
+    """The short hash of HEAD, for the appendix ("the code of this report is commit ..."). Refuses to
+    build when the code (src/, scripts/, configs/) differs from that commit, so the hash is honest."""
+    dirty = _git(root, "status", "--porcelain", "--untracked-files=all", "--", "src", "scripts", "configs")
     dirty = "\n".join(ln for ln in dirty.splitlines() if "__pycache__" not in ln)
     if dirty:
-        raise RuntimeError(f"commit these files first; the code listings must match a commit:\n{dirty}")
-    commit = _git(root, "rev-parse", "--short=10", "HEAD")
-    out = [f"Every listing below is the file as it is in commit `{commit}` of the project repository, "
-           "printed by the report build (line numbers on the left); none is retyped. Long lines wrap.\n"]
-    for rel in LISTINGS:
-        p = root / rel
-        lines = p.read_text().expandtabs(4).split("\n")
-        if lines and lines[-1] == "":
-            lines.pop()
-        out.append(f"### `{rel}`\n\n{_docline(p) or 'No module docstring.'} {len(lines)} lines.\n")
-        width = len(str(len(lines)))
-        paras = []
-        for i, ln in enumerate(lines, 1):
-            text = html.escape(f"{i:>{width}}  {ln}", quote=False)
-            paras.append(f'<w:p><w:pPr><w:pStyle w:val="CodeLine"/></w:pPr><w:r><w:t xml:space="preserve">{text}'
-                         "</w:t></w:r></w:p>")
-        out.append("```{=openxml}\n" + "\n".join(paras) + "\n```\n")
-    tracked = _git(root, "ls-files", "src/*.py", "scripts/*.py", "scripts/*.sh").split("\n")
-    rows = []
-    for rel in sorted(t for t in tracked if t and t not in LISTINGS and "/_vendor/" not in t and not t.endswith("__init__.py")):
-        p = root / rel
-        n = len(p.read_text().splitlines())
-        desc = _docline(p) if rel.endswith(".py") else (p.read_text().splitlines()[1].lstrip("# ") if n > 1 else "")
-        desc = desc.replace("|", "/").rstrip(".") or "(no description)"
-        rows.append(f"| `{rel}` | {n} | {desc} |")
-    out.append("### Other source files\n\nThe remaining source files, by path, with their length and the first "
-               "line of their own description (module docstring or header comment). Tests are in `tests/`, "
-               "configuration in `configs/`.\n")
-    out.append("::: {#tbl:other-files}\n| File | Lines | Description |\n|:---------------------------|-----:|:"
-               "-------------------------------------------|\n" + "\n".join(rows)
-               + f"\n\n: Source files not listed in full, in commit `{commit}`.\n:::\n")
-    return "\n".join(out)
+        raise RuntimeError(f"commit these files first; the report names the commit of the code:\n{dirty}")
+    return _git(root, "rev-parse", "--short=10", "HEAD")
 
 
 # --- post-processing --------------------------------------------------------------------------
@@ -354,6 +295,22 @@ def _write(path: Path, parts: dict[str, bytes]) -> None:
 LONG_TABLE_CHARS = 1500     # text characters above which a table may break across pages (about a third of a page)
 
 
+def _map_top_level_tables(doc: str, fn) -> str:
+    """`doc` with every top-level <w:tbl>...</w:tbl> (nested ones stay inside) replaced by fn(table)."""
+    out, depth, start, last = [], 0, 0, 0
+    for m in re.finditer(r"<w:tbl>|</w:tbl>", doc):
+        if m[0] == "<w:tbl>":
+            if depth == 0:
+                start = m.start()
+            depth += 1
+        else:
+            depth -= 1
+            if depth == 0:
+                out += [doc[last:start], fn(doc[start:m.end()])]
+                last = m.end()
+    return "".join(out) + doc[last:]
+
+
 def postprocess(docx: Path, authors: list[str], title: str) -> None:
     parts = _read(docx)
     doc = parts["word/document.xml"].decode("utf-8")
@@ -367,9 +324,8 @@ def postprocess(docx: Path, authors: list[str], title: str) -> None:
         raise ValueError("could not replace the final section properties")
     # tables: cell paragraphs in the table text style (pandoc writes "Compact"), and a 12 pt
     # spacer after each table so the next paragraph does not touch it
-    def table(m):
-        t = m[0]
-        if "BiodataLine" in t:
+    def table(t):
+        if "BiodataLine" in t:      # the Biodata page: a table of tables, laid out by thesis.lua
             return t
         # grid-table cells hold Body Text / First Paragraph paragraphs (first-line indent): those too
         t = re.sub(r'<w:pStyle w:val="(?:Compact|BodyText|FirstParagraph)"\s*/>', '<w:pStyle w:val="TableText"/>', t)
@@ -393,7 +349,7 @@ def postprocess(docx: Path, authors: list[str], title: str) -> None:
             for r in rows[:-1]:
                 t = t.replace(r, r.replace('<w:pStyle w:val="TableText"/>', '<w:pStyle w:val="TableText"/><w:keepNext/>'), 1)
         return t + '<w:p><w:pPr><w:pStyle w:val="TableSpacer"/></w:pPr></w:p>'
-    doc = re.sub(r"<w:tbl>.*?</w:tbl>", table, doc, flags=re.S)
+    doc = _map_top_level_tables(doc, table)
     # a lead-in paragraph (text ends with a colon) that is followed by a list keeps with the list
     def lead_in(m):
         x = m[0]

@@ -1,4 +1,5 @@
-"""Keep every number in README.md and the report (docs/report/*.md) equal to the data.
+"""Keep every number in README.md, the report (docs/report/*.md) and its extended material
+(docs/report/extended/*.md) equal to the data.
 
     python scripts/make_report.py            # regenerate tables, figures and tagged numbers
     python scripts/make_report.py --check    # exit 1 if anything differs from outputs/
@@ -34,7 +35,8 @@ REPORT = Path("docs/report")
 
 def documents() -> list[Path]:
     chapters = sorted((ROOT / REPORT).glob("[0-9][0-9]_*.md"))
-    return [Path("README.md")] + [c.relative_to(ROOT) for c in chapters]
+    extended = sorted((ROOT / REPORT / "extended").glob("[0-9][0-9]_*.md"))    # the material the report links to
+    return [Path("README.md")] + [c.relative_to(ROOT) for c in chapters + extended]
 
 
 def process(path: Path, fs, dt, blocks: dict, write: bool) -> list[str]:

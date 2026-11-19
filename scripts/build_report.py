@@ -29,7 +29,7 @@ Steps
 1. make_report.py --check (every number equals outputs/), unless --skip-check.
 2. Reference .docx = a cleaned copy of the college styles with the spec's values; the logo is
    taken from the college file's title page.
-3. pandoc -> docx; the appendix code listings are generated from the files at HEAD.
+3. pandoc -> docx; the appendix names the commit hash of the code (HEAD).
 4. Post-process: footers, roman front matter / Arabic body, table text, update-fields flag.
 5. Fill the contents and lists (Word fields) with the page numbers LibreOffice's PDF shows, and
    convert again until the page numbers no longer change; the last PDF is the published one.
@@ -53,6 +53,7 @@ TPL = REP / "template"
 TITLE = "TrafficSense: An AI-Based Smart Traffic Management System"
 AUTHORS = ["C Bhargav Kumar", "Achalla Akul Lakhan", "Darsi Amit", "Mylapalli Abhishek Raj"]
 MAX_PASSES = 4
+COMMIT_MARKER = "@@COMMIT@@"
 
 
 def tool(name: str) -> str:
@@ -73,10 +74,10 @@ def combined(tmp: Path, students: list[biodata.Student] | None = None) -> Path:
     text = "\n\n".join(p.read_text() for p in chapters())
     if students:
         text = biodata.personalise(text, students)
-    marker = "::: code-listings\n:::"
-    if text.count(marker) != 1:
-        raise SystemExit("expected one '::: code-listings' block in the appendix")
-    text = text.replace(marker, thesis.code_listings(ROOT))
+    # the appendix names the commit of the code (refuses to build from uncommitted code)
+    if text.count(COMMIT_MARKER) < 1:
+        raise SystemExit(f"the appendix must name the commit of the code: {COMMIT_MARKER} not found")
+    text = text.replace(COMMIT_MARKER, thesis.repo_commit(ROOT))
     # generated-block markers would separate tables from their captions
     import re
     text = re.sub(r"^<!-- (?:BEGIN|END):[\w.\-]+ -->\n", "", text, flags=re.M)

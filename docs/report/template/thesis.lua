@@ -29,11 +29,12 @@ Blocks
 * div .lists: TABLE OF CONTENTS, LIST OF TABLES, LIST OF FIGURES. div .frontmatter-end: the
   section break that ends the roman-numbered front matter (the build adds the footers).
 * div .thesis-logo: the university logo (path in metadata `logo`, taken from the college format
-  file at build time). div .biodata name= reg= email= [mobile= address= photo=]: one biodata page (the optional attributes are
-  the private details of a personal build, see src/trafficsense/report/biodata.py; without them the page has
-  blank lines and an empty photo box, which is what the public report shows). div .note-page: the
-  closing NOTE page. span .tab: a tab (to the right tab stop of the paragraph style).
-* div .code-listings is replaced by the build with generated listings before pandoc runs.
+  file at build time). div .biodata-page: the single BIODATA page; it holds four div .biodata name= reg= email=
+  [mobile= address= photo=] (the optional attributes are the private details of a personal build, see
+  src/trafficsense/report/biodata.py; without them the blocks have blank lines and an empty photo
+  box, which is what the public report shows), laid out as a 2 x 2 grid. span .tab: a tab (to the
+  right tab stop of the paragraph style).
+* div .code-listings is gone: the report prints no source code (the appendix links the repository).
 ]]
 
 local stringify = pandoc.utils.stringify
@@ -238,55 +239,77 @@ local function run(text, rpr)
 end
 local BLANK = string.rep("_", 30)
 
-local function biodata(attrs)
+-- One biodata block (a student): the photo box, then the labelled lines. The label is bold and the value
+-- follows on the same line, so a long address or e-mail address wraps inside the block. A zero-width space
+-- after "@" lets an e-mail address wrap there instead of in the middle of a word.
+local function biodata_block(attrs)
   for _, k in ipairs({"name", "reg", "email"}) do
     if not attrs[k] or attrs[k] == "" then
       io.stderr:write("thesis.lua: biodata needs name, reg and email\n"); os.exit(1)
     end
   end
-  local function line(label, value)
+  local function line(label, value, last)
     return '<w:p><w:pPr><w:pStyle w:val="BiodataLine"/></w:pPr>' .. run(label, "<w:b/>") ..
-      "<w:r><w:tab/></w:r>" .. run(":\u{00A0}" .. value) .. "</w:p>"
+      run(" :\u{00A0}" .. value) .. "</w:p>"
   end
   local function cont(value)
-    return '<w:p><w:pPr><w:pStyle w:val="BiodataLine"/></w:pPr><w:r><w:tab/></w:r>' .. run("  " .. value) .. "</w:p>"
+    return '<w:p><w:pPr><w:pStyle w:val="BiodataLine"/></w:pPr>' .. run(value) .. "</w:p>"
   end
   local border = '<w:top w:val="single" w:sz="8" w:space="0" w:color="000000"/>' ..
     '<w:left w:val="single" w:sz="8" w:space="0" w:color="000000"/>' ..
     '<w:bottom w:val="single" w:sz="8" w:space="0" w:color="000000"/>' ..
     '<w:right w:val="single" w:sz="8" w:space="0" w:color="000000"/>'
   local none = '<w:top w:val="nil"/><w:left w:val="nil"/><w:bottom w:val="nil"/><w:right w:val="nil"/>'
+  local nogrid = '<w:tblBorders>' .. none .. '<w:insideH w:val="nil"/><w:insideV w:val="nil"/></w:tblBorders>'
   -- personal build: the photo replaces the word "Photo" later (biodata.insert_photos), so the cell needs
-  -- no side margins and centres it; the address is one paragraph that wraps under its own text
+  -- no side margins and centres it
   local has_photo = attrs["photo"] and attrs["photo"] ~= ""
   local photo_text = has_photo and ("[[photo:" .. attrs["photo"] .. "]]") or "Photo"
   local photo_cell = has_photo and '<w:tcMar><w:left w:w="0" w:type="dxa"/><w:right w:w="0" w:type="dxa"/></w:tcMar><w:vAlign w:val="center"/>' or ""
-  local mobile = (attrs["mobile"] and attrs["mobile"] ~= "") and attrs["mobile"] or BLANK
+  local mobile = (attrs["mobile"] and attrs["mobile"] ~= "") and attrs["mobile"] or string.rep("_", 18)
+  local email = attrs["email"]:gsub("@", "@\u{200B}")
   local address
   if attrs["address"] and attrs["address"] ~= "" then
-    address = '<w:p><w:pPr><w:pStyle w:val="BiodataLine"/><w:ind w:left="2200" w:hanging="2080"/></w:pPr>' ..
-      run("Permanent Address", "<w:b/>") .. "<w:r><w:tab/></w:r>" .. run(":\u{00A0}" .. attrs["address"]) .. "</w:p>"
+    address = line("Permanent Address", attrs["address"])
   else
-    address = line("Permanent Address", BLANK) .. cont(BLANK) .. cont(BLANK)
+    address = line("Permanent Address", string.rep("_", 12)) .. cont(string.rep("_", 36)) .. cont(string.rep("_", 36))
   end
-  -- photo box 3.5 x 4.5 cm (a passport photo) in its own fixed-height cell; the details to its right
-  local nogrid = '<w:tblBorders>' .. none .. '<w:insideH w:val="nil"/><w:insideV w:val="nil"/></w:tblBorders>'
-  local photo = '<w:tbl><w:tblPr><w:tblW w:w="1984" w:type="dxa"/><w:tblLayout w:type="fixed"/>' .. nogrid ..
+  -- photo box 3.0 x 3.8 cm (1701 x 2155 twips), a passport-style photo
+  local photo = '<w:tbl><w:tblPr><w:tblW w:w="1701" w:type="dxa"/><w:tblLayout w:type="fixed"/>' .. nogrid ..
     '<w:tblLook w:val="0000" w:firstRow="0" w:lastRow="0" w:firstColumn="0" w:lastColumn="0" w:noHBand="1" w:noVBand="1"/></w:tblPr>' ..
-    '<w:tblGrid><w:gridCol w:w="1984"/></w:tblGrid><w:tr><w:trPr><w:trHeight w:val="2552" w:hRule="exact"/><w:cantSplit/></w:trPr>' ..
-    '<w:tc><w:tcPr><w:tcW w:w="1984" w:type="dxa"/><w:tcBorders>' .. border .. '</w:tcBorders>' .. photo_cell .. '</w:tcPr>' ..
-    '<w:p><w:pPr><w:pStyle w:val="BiodataPhoto"/></w:pPr>' .. run(photo_text) .. "</w:p></w:tc></w:tr></w:tbl><w:p/>"
-  local xml = '<w:tbl><w:tblPr><w:tblW w:w="8640" w:type="dxa"/><w:tblLayout w:type="fixed"/>' .. nogrid ..
+    '<w:tblGrid><w:gridCol w:w="1701"/></w:tblGrid><w:tr><w:trPr><w:trHeight w:val="2155" w:hRule="exact"/><w:cantSplit/></w:trPr>' ..
+    '<w:tc><w:tcPr><w:tcW w:w="1701" w:type="dxa"/><w:tcBorders>' .. border .. '</w:tcBorders>' .. photo_cell .. '</w:tcPr>' ..
+    '<w:p><w:pPr><w:pStyle w:val="BiodataPhoto"/></w:pPr>' .. run(photo_text) .. "</w:p></w:tc></w:tr></w:tbl>"
+  return photo .. '<w:p><w:pPr><w:pStyle w:val="BiodataGap"/></w:pPr></w:p>' ..
+    line("Name", attrs["name"]) .. line("Register No.", attrs["reg"]) ..
+    line("Mobile Number", mobile) .. line("E-mail", email) .. address
+end
+
+-- The whole Biodata page: one heading, the four blocks in a 2 x 2 grid (in the order of the divs).
+local function biodata_page(divs)
+  local none = '<w:top w:val="nil"/><w:left w:val="nil"/><w:bottom w:val="nil"/><w:right w:val="nil"/>'
+  local function cell(d, left, top)
+    local mar = '<w:tcMar><w:top w:w="' .. (top and 360 or 0) .. '" w:type="dxa"/><w:left w:w="' .. (left and 0 or 200) ..
+      '" w:type="dxa"/><w:right w:w="' .. (left and 200 or 0) .. '" w:type="dxa"/></w:tcMar>'
+    return '<w:tc><w:tcPr><w:tcW w:w="4320" w:type="dxa"/><w:tcBorders>' .. none .. '</w:tcBorders>' .. mar ..
+      '</w:tcPr>' .. biodata_block(d.attributes) .. '</w:tc>'
+  end
+  if #divs ~= 4 then
+    io.stderr:write("thesis.lua: the biodata page needs exactly four .biodata divs\n"); os.exit(1)
+  end
+  local rows = ""
+  for r = 0, 1 do
+    rows = rows .. '<w:tr><w:trPr><w:cantSplit/></w:trPr>' .. cell(divs[2 * r + 1], true, r == 1) ..
+      cell(divs[2 * r + 2], false, r == 1) .. '</w:tr>'
+  end
+  local xml = '<w:tbl><w:tblPr><w:tblW w:w="8640" w:type="dxa"/><w:tblLayout w:type="fixed"/><w:tblBorders>' .. none ..
+    '<w:insideH w:val="nil"/><w:insideV w:val="nil"/></w:tblBorders>' ..
     '<w:tblCellMar><w:left w:w="0" w:type="dxa"/><w:right w:w="0" w:type="dxa"/></w:tblCellMar>' ..
     '<w:tblLook w:val="0000" w:firstRow="0" w:lastRow="0" w:firstColumn="0" w:lastColumn="0" w:noHBand="1" w:noVBand="1"/></w:tblPr>' ..
-    '<w:tblGrid><w:gridCol w:w="1984"/><w:gridCol w:w="227"/><w:gridCol w:w="6429"/></w:tblGrid>' ..
-    '<w:tr><w:trPr><w:cantSplit/></w:trPr>' ..
-    '<w:tc><w:tcPr><w:tcW w:w="1984" w:type="dxa"/><w:tcBorders>' .. none .. '</w:tcBorders></w:tcPr>' .. photo .. "</w:tc>" ..
-    '<w:tc><w:tcPr><w:tcW w:w="227" w:type="dxa"/><w:tcBorders>' .. none .. '</w:tcBorders></w:tcPr><w:p/></w:tc>' ..
-    '<w:tc><w:tcPr><w:tcW w:w="6429" w:type="dxa"/><w:tcBorders>' .. none .. '</w:tcBorders></w:tcPr>' ..
-    line("Name", attrs["name"]) .. line("Register No.", attrs["reg"]) ..
-    line("Mobile Number", mobile) .. line("E-mail", attrs["email"]) .. address ..
-    "</w:tc></w:tr></w:tbl>"
+    '<w:tblGrid><w:gridCol w:w="4320"/><w:gridCol w:w="4320"/></w:tblGrid>' .. rows .. '</w:tbl>' ..
+    -- the last paragraph of the document: Word needs one after a table; it is one point high so that it
+    -- can never start a page of its own
+    '<w:p><w:pPr><w:pStyle w:val="BiodataGap"/></w:pPr></w:p>'
   return pandoc.RawBlock("openxml", xml)
 end
 
@@ -308,8 +331,6 @@ function Pandoc(doc)
     end
     return res
   end
-
-  local biodata_seen = false
 
   -- the Front Heading style starts a new page (pageBreakBefore), as Heading 1 does
   local function front_heading(inlines, toc_text, toc)
@@ -406,14 +427,14 @@ function Pandoc(doc)
       if not logo then io.stderr:write("thesis.lua: metadata 'logo' (the college logo) is missing\n"); os.exit(1) end
       return styled("TP Logo", {pandoc.Para({pandoc.Image({}, logo, "", pandoc.Attr("", {}, {width = "6.93cm"}))})})
     end
-    if d.classes:includes("biodata") then
-      local out = front_heading({pandoc.Str("Biodata")}, "Biodata", not biodata_seen)
-      biodata_seen = true
-      out:insert(biodata(d.attributes))
+    if d.classes:includes("biodata-page") then
+      local divs = pandoc.List()
+      for _, b in ipairs(d.content) do
+        if b.t == "Div" and b.classes:includes("biodata") then divs:insert(b) end
+      end
+      local out = front_heading({pandoc.Str("Biodata")}, "Biodata", true)
+      out:insert(biodata_page(divs))
       return out
-    end
-    if d.classes:includes("note-page") then
-      return styled("Note Text", d.content)      -- the style starts a new page
     end
     return nil
   end

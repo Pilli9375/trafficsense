@@ -332,6 +332,75 @@ def tab_decomposition(fs, dt):
                                                           "phantoms"])
 
 
+# --- summary tables of the condensed report (the full tables stay in docs/report/extended/) ----------
+
+def tab_full_summary(fs, dt):
+    """One row per controller: ATT (mean ± std over seeds) and its change against MaxPressure in the
+    three scenarios, copied from the three full-experiment tables."""
+    cols = ["Controller", "ATT (s)", "vs MaxPressure"]
+    per = {}
+    for sc in ("indian_2x2_offpeak", "indian_2x2_peak", "jinan_3x4"):
+        _, rows = doc(dt, R, f"results_{sc}", cols=cols)
+        per[sc] = {r[0]: f"{r[1]} ({r[2]})" for r in rows}
+    order = [r[0] for r in doc(dt, R, "results_indian_2x2_offpeak", cols=cols)[1]]
+    rows = [[c] + [per[sc].get(c, "not run") for sc in per] for c in order]
+    return md(["Controller", "Off-peak: ATT (s) (vs MaxPressure)", "Peak: ATT (s) (vs MaxPressure)",
+               "Jinan 3x4: ATT (s) (vs MaxPressure)"], rows, align=["l", "r", "r", "r"])
+
+
+def tab_bench_final(fs, dt):
+    """The pre-registered final round of the LLM benchmark (v3, hybrid_v3, guarded_v3)."""
+    return from_doc(dt, L, "llm_benchmark", cols=["Arm", "Model", "Failures", "Latency p95", "Queue", "ATT at 600",
+                                                   "Eligible"],
+                    rows=lambda d: d["Arm"] in ("v3", "hybrid_v3", "guarded_v3"))
+
+
+def tab_camera_summary(fs, dt):
+    """Camera errors in one table: ATT and its paired change against perfect counts, per controller
+    and camera level, off-peak and peak (copied from the two main camera-error tables)."""
+    per = {}
+    for sc in ("indian_2x2_offpeak", "indian_2x2_peak"):
+        _, body = doc(dt, C, f"camera_main_{sc}", cols=["controller", "level", "ATT (s)", "ATT vs perfect"])
+        ctrl, d = "", {}
+        for c, lvl, att, vs in body:
+            ctrl = c or ctrl
+            m = re.match(r"([+\-−]\d+\.\d) \(.*?\); ([+\-−][\d.]+%)", vs)
+            d[(ctrl, lvl)] = (att, f"{m[1]} s ({m[2]})" if m else "–")
+        per[sc] = d
+    rows = []
+    for key in per["indian_2x2_offpeak"]:
+        rows.append([key[0] if key[1] == "perfect" else "", key[1]] + [x for sc in per for x in per[sc][key]])
+    return md(["Controller", "Counts", "Off-peak: ATT (s)", "Off-peak: change vs perfect", "Peak: ATT (s)",
+               "Peak: change vs perfect"], rows, align=["l", "l", "r", "r", "r", "r"])
+
+
+def tab_config_summary(fs, dt):
+    """The main settings of the experiments, read from configs/*.yaml (never typed)."""
+    v = lambda k, f="{:g}": f.format(fs[k].value)
+    rows = [
+        ["Run length", f"{v('cfg.steps')} s", "configs/default.yaml"],
+        ["Decision interval (MaxPressure, preemption, LLM arms)", f"{v('cfg.mp.interval')} s", "configs/default.yaml"],
+        ["Minimum / maximum green, every controller", f"{v('cfg.signal.min_green')} s / {v('cfg.signal.max_green')} s",
+         "configs/default.yaml"],
+        ["Minimum green of MaxPressure and the LLM arms", f"{v('cfg.mp.min_green')} s", "configs/default.yaml"],
+        ["FixedTime green per phase", f"{v('cfg.ft.green')} s", "configs/default.yaml"],
+        ["Webster cycle length, allowed range", f"{v('cfg.web.cycle_min')} to {v('cfg.web.cycle_max')} s",
+         "configs/default.yaml"],
+        ["LLM sampling: temperature, context, answer tokens, timeout",
+         f"{v('cfg.llm.temperature')}, {v('cfg.llm.num_ctx')} tokens, {v('cfg.llm.num_predict')} tokens, "
+         f"{v('cfg.llm.timeout_s')} s", "configs/default.yaml"],
+        ["Guard: a phase is accepted at this share of the top pressure", f"{v('cfg.guard.ratio')}", "configs/default.yaml"],
+        ["Ambulance detection range", f"{v('cfg.amb.range')} m", "configs/default.yaml"],
+        ["Demand, off-peak / peak", f"{v('scn.demand_levels.offpeak.veh_per_hour')} / "
+                                    f"{v('scn.demand_levels.peak.veh_per_hour')} veh/h", "configs/scenarios/indian_2x2.yaml"],
+        ["Ambulances", f"{v('scn.emergency.veh_per_hour')} per hour over the network", "configs/scenarios/indian_2x2.yaml"],
+        ["Detector: image size, batch, epochs (early-stopping patience)",
+         f"{v('cfg.imgsz')} px, {v('cfg.det.batch')}, {v('cfg.det.epochs')} ({v('cfg.det.patience')})",
+         "configs/default.yaml"],
+    ]
+    return md(["Setting", "Value", "Read from"], rows, align=["l", "l", "l"])
+
+
 # --- appendix ---------------------------------------------------------------------------------
 
 def tab_app_per_seed(fs, dt):
@@ -545,7 +614,8 @@ TABLES = {
     "tab_ambulances": tab_ambulances, "tab_model_size": tab_model_size, "tab_model_size_amb": tab_model_size_amb,
     "tab_camera_off": _camera("indian_2x2_offpeak"), "tab_camera_peak": _camera("indian_2x2_peak"),
     "tab_camera_sweep": tab_camera_sweep, "tab_camera_emergency": tab_camera_emergency,
-    "tab_decomposition": tab_decomposition,
+    "tab_decomposition": tab_decomposition, "tab_full_summary": tab_full_summary,
+    "tab_bench_final": tab_bench_final, "tab_config_summary": tab_config_summary, "tab_camera_summary": tab_camera_summary,
     "tab_app_per_seed": tab_app_per_seed, "tab_app_mp_selection": tab_app_mp_selection,
     "tab_app_hosted": tab_app_hosted, "tab_app_camera_llm": tab_app_camera_llm,
     "tab_app_crosscheck": tab_app_crosscheck, "tab_app_bench_full": tab_app_bench_full,

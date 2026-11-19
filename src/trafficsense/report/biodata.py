@@ -1,4 +1,4 @@
-"""The report's Biodata pages from a private, gitignored file.
+"""The report's Biodata page (one page, four blocks) from a private, gitignored file.
 
 The repository is public, so the students' mobile numbers, e-mail addresses, home addresses and
 photos are never committed. They live in `paths.biodata` (YAML, under the gitignored
@@ -7,9 +7,9 @@ build reads them from there:
 
     load_optional()   the private file -> Student list, or None with the reason (file missing)
     personalise()     the biodata divs of docs/report/80_biodata.md with the private details added
-    process_photo()   a photo cropped (only as much as needed) to the 3.5 x 4.5 cm box, as JPEG
+    process_photo()   a photo cropped (only as much as needed) to the 3.0 x 3.8 cm box, as JPEG
     insert_photos()   the photos into the built .docx, in the photo box of each page
-    check_personal()  the personal .docx/.pdf: four pages, each complete, nothing blank
+    check_personal()  the personal .docx/.pdf: one page with four complete blocks, nothing blank
     check_no_leaks()  no tracked file (text, inside .docx/.zip, PDF text, image) holds any of it
 
 Fails loudly: a malformed private file, a name or register number that differs from the report,
@@ -28,11 +28,11 @@ from pathlib import Path
 
 import yaml
 
-BOX_RATIO = 3.5 / 4.5               # photo box, width / height (a passport photo)
-IMG_W_CM = 3.3                      # the picture inside the 3.5 x 4.5 cm box, clear of its border
+BOX_RATIO = 3.0 / 3.8               # photo box, width / height (a passport-style photo)
+IMG_W_CM = 2.8                      # the picture inside the 3.0 x 3.8 cm box, clear of its border
 IMG_H_CM = IMG_W_CM / BOX_RATIO
 EMU_PER_CM = 360000
-MAX_PX = (620, 797)                 # about 180 dpi at 3.5 x 4.5 cm: enough for print, small in the .docx
+MAX_PX = (540, 684)                 # about 190 dpi at 3.0 x 3.8 cm: enough for print, small in the .docx
 PHOTO_MARKER = "[[photo:{reg}]]"    # written by thesis.lua where a photo goes, replaced by insert_photos()
 FIELDS = ("reg", "name", "mobile", "email", "address", "photo")
 DHASH_MAX_DIST = 10                 # of 64 bits: a tracked image this close to a photo counts as the photo
@@ -151,7 +151,7 @@ def _trim_frame(im):
 
 
 def process_photo(path: Path) -> bytes:
-    """The photo as JPEG bytes in the box's 7:9 shape. Nothing is stretched: the picture is cropped
+    """The photo as JPEG bytes in the box's 30:38 shape. Nothing is stretched: the picture is cropped
     only as much as the shape needs (the sides evenly; from the bottom first, so heads stay) and
     scaled down (never up) to MAX_PX. Same input, same bytes."""
     from PIL import Image, ImageOps
@@ -229,14 +229,17 @@ def insert_photos(docx: Path, students: list[Student]) -> int:
 
 # --- check of the personal build ------------------------------------------------------------------
 
+ZWSP = "\u200b"        # the e-mail address may wrap after "@" (a zero-width space): not part of the text
+
+
 def _text(xml: str) -> str:
     import html
     xml = re.sub(r"<w:tab\s*/>", "<w:t> </w:t>", xml)
-    return html.unescape("".join(re.findall(r"<w:t(?:\s[^>]*)?>([^<]*)</w:t>", xml)))
+    return html.unescape("".join(re.findall(r"<w:t(?:\s[^>]*)?>([^<]*)</w:t>", xml))).replace(ZWSP, "")
 
 
 def _norm(s: str) -> str:
-    return re.sub(r"[\s   ]+", " ", s).strip()
+    return re.sub(r"[\s\u00a0\u202f\u2007]+", " ", s.replace(ZWSP, "")).strip()
 
 
 def top_level_tables(doc: str) -> list[str]:
@@ -253,19 +256,38 @@ def top_level_tables(doc: str) -> list[str]:
     return out
 
 
+def biodata_cells(doc: str) -> list[str]:
+    """The four blocks (cell XML, in reading order: row by row) of the Biodata page's grid, [] if the
+    document has no such grid. The photo box is a table nested in each cell."""
+    tabs = [t for t in top_level_tables(doc) if "BiodataLine" in t]
+    if len(tabs) != 1:
+        return []
+    cells, depth, start = [], 0, 0
+    for m in re.finditer(r"<w:tc>|</w:tc>", tabs[0]):
+        if m[0] == "<w:tc>":
+            depth += 1
+            if depth == 1:
+                start = m.start()
+        else:
+            if depth == 1:
+                cells.append(tabs[0][start:m.end()])
+            depth -= 1
+    return cells
+
+
 def check_personal(docx: Path, pdf: Path, students: list[Student]) -> list[str]:
-    """Problems with the personal build (empty list = fine): four biodata pages in the Word file
-    and in the PDF, each with the student's name, register number, 10-digit phone, e-mail, address
-    and photo, nothing left blank, in the order of the title page."""
+    """Problems with the personal build (empty list = fine): one Biodata page, in the Word file and
+    in the PDF, with one block per student in the order of the title page (2 x 2 grid, row by row),
+    each with name, register number, 10-digit phone, e-mail, address and photo, nothing left blank."""
     errors: list[str] = []
     with zipfile.ZipFile(docx) as z:
         doc = z.read("word/document.xml").decode("utf-8")
         rels = z.read("word/_rels/document.xml.rels").decode("utf-8")
         media = {n: z.read(n) for n in z.namelist() if n.startswith("word/media/")}
-    tables = [t for t in top_level_tables(doc) if "BiodataLine" in t]
-    if len(tables) != len(students):
-        errors.append(f"Word file: {len(students)} biodata pages expected, found {len(tables)}")
-    for s, t in zip(students, tables):
+    cells = biodata_cells(doc)
+    if len(cells) != len(students):
+        errors.append(f"Word file: one Biodata grid with {len(students)} blocks expected, found {len(cells)} blocks")
+    for s, t in zip(students, cells):
         lines = [_norm(_text(p)) for p in re.findall(r"<w:p\b.*?</w:p>", t, re.S) if "BiodataLine" in p]
         txt = " | ".join(x for x in lines if x)
         for label, value in (("Name", s.name), ("Register No.", s.reg), ("Mobile Number", s.mobile),
@@ -295,31 +317,78 @@ def check_personal(docx: Path, pdf: Path, students: list[Student]) -> list[str]:
     return errors
 
 
-def _check_pdf_pages(pdf: Path, students: list[Student]) -> list[str]:
+def check_page_layout(pdf: Path, names: list[str]) -> list[str]:
+    """Layout problems of the Biodata page in the PDF (public or personal): exactly one page with
+    'Register No.', it is the last page, the four names are in the grid's reading order (two columns,
+    two rows), and no text or picture crosses the gap between the two columns or the page's text area."""
     import pypdfium2 as pdfium
     import pypdfium2.raw as raw
     errors = []
     doc = pdfium.PdfDocument(str(pdf))
     try:
         pages = [i for i in range(len(doc)) if "Register No." in doc[i].get_textpage().get_text_range()]
-        if len(pages) != len(students):
-            errors.append(f"PDF: {len(students)} biodata pages expected, found {len(pages)}")
-        for s, i in zip(students, pages):
-            pg = doc[i]
-            text = _norm(pg.get_textpage().get_text_range())
+        if len(pages) != 1:
+            return [f"PDF: the Biodata must be one page, 'Register No.' is on {len(pages)} pages"]
+        i = pages[0]
+        if i != len(doc) - 1:
+            errors.append(f"PDF: the Biodata (page {i + 1}) must be the last page, the report has {len(doc)}")
+        pg = doc[i]
+        w, _ = pg.get_size()
+        left, right = 90.0, w - 90.0        # the text area: 3.175 cm margins
+        mid = w / 2
+        for obj in pg.get_objects():
+            if obj.type not in (raw.FPDF_PAGEOBJ_TEXT, raw.FPDF_PAGEOBJ_IMAGE):
+                continue
+            l, b, r, t = obj.get_bounds()
+            # the heading and the page number are centred on the page; everything else sits in one column
+            if l < mid - 1 < r and abs((l + r) / 2 - mid) > 20:
+                errors.append(f"PDF Biodata page: an object (x {l:.0f} to {r:.0f} pt) crosses the gap between the columns")
+            if l < left - 3 or r > right + 3:
+                errors.append(f"PDF Biodata page: an object (x {l:.0f} to {r:.0f} pt) is outside the text area")
+        tp = pg.get_textpage()
+        pos = []
+        for n in names:
+            found = tp.search(n.split()[0] if n.split()[0] != "C" else n.split()[1])
+            hit = found.get_next()
+            if hit is None:
+                errors.append(f"PDF Biodata page: the name {n!r} is not on the page")
+                continue
+            l, b, r, t = tp.get_charbox(hit[0])
+            pos.append((n, l, t))
+        if len(pos) == len(names) == 4:
+            (_, x0, y0), (_, x1, y1), (_, x2, y2), (_, x3, y3) = pos
+            if not (x0 < mid <= x1 and x2 < mid <= x3 and min(y0, y1) > max(y2, y3)):
+                errors.append("PDF Biodata page: the four blocks are not in a 2 x 2 grid in the order of the title page")
+    finally:
+        doc.close()
+    return errors
+
+
+def _check_pdf_pages(pdf: Path, students: list[Student]) -> list[str]:
+    import pypdfium2 as pdfium
+    import pypdfium2.raw as raw
+    errors = check_page_layout(pdf, [s.name for s in students])
+    doc = pdfium.PdfDocument(str(pdf))
+    try:
+        pages = [i for i in range(len(doc)) if "Register No." in doc[i].get_textpage().get_text_range()]
+        if len(pages) != 1:
+            return errors
+        pg = doc[pages[0]]
+        text = _norm(pg.get_textpage().get_text_range())
+        for s in students:
             for label, value in (("name", s.name), ("register number", s.reg), ("phone", s.mobile),
                                  ("e-mail", s.email), ("address", s.address)):
                 if value not in text:
-                    errors.append(f"PDF page {i + 1} ({s.reg}): {label} not on the page")
-            if "___" in text:
-                errors.append(f"PDF page {i + 1} ({s.reg}): a blank line is left on the page")
-            imgs = [o for o in pg.get_objects() if o.type == raw.FPDF_PAGEOBJ_IMAGE]
-            if len(imgs) != 1:
-                errors.append(f"PDF page {i + 1} ({s.reg}): {len(imgs)} images on the page, expected the 1 photo")
-            else:
-                l, b, r, t = imgs[0].get_bounds()
-                if r - l < 60 or t - b < 80:
-                    errors.append(f"PDF page {i + 1} ({s.reg}): the photo is only {r - l:.0f} x {t - b:.0f} pt")
+                    errors.append(f"PDF Biodata page ({s.reg}): {label} not on the page")
+        if "___" in text:
+            errors.append("PDF Biodata page: a blank line is left on the page")
+        imgs = [o for o in pg.get_objects() if o.type == raw.FPDF_PAGEOBJ_IMAGE]
+        if len(imgs) != len(students):
+            errors.append(f"PDF Biodata page: {len(imgs)} images, expected the {len(students)} photos")
+        for o in imgs:
+            l, b, r, t = o.get_bounds()
+            if r - l < 60 or t - b < 70:
+                errors.append(f"PDF Biodata page: a photo is only {r - l:.0f} x {t - b:.0f} pt")
     finally:
         doc.close()
     return errors
