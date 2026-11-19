@@ -240,7 +240,8 @@ end
 local BLANK = string.rep("_", 30)
 
 -- One biodata block (a student): the photo box, then the labelled lines. The label is bold and the value
--- follows on the same line, so a long address or e-mail address wraps inside the block. A zero-width space
+-- follows on the same line (a value too long for the rest of the line starts on the next one), so a long
+-- address or e-mail address wraps inside the block. A zero-width space
 -- after "@" lets an e-mail address wrap there instead of in the middle of a word.
 local function biodata_block(attrs)
   for _, k in ipairs({"name", "reg", "email"}) do
@@ -250,7 +251,7 @@ local function biodata_block(attrs)
   end
   local function line(label, value, last)
     return '<w:p><w:pPr><w:pStyle w:val="BiodataLine"/></w:pPr>' .. run(label, "<w:b/>") ..
-      run(" :\u{00A0}" .. value) .. "</w:p>"
+      run("\u{00A0}: " .. value) .. "</w:p>"
   end
   local function cont(value)
     return '<w:p><w:pPr><w:pStyle w:val="BiodataLine"/></w:pPr>' .. run(value) .. "</w:p>"
