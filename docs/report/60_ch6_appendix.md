@@ -39,10 +39,11 @@ detector weights and the hosted model's API key are not in the repository.
 ## Main Configuration {#sec:app-config}
 
 Every setting used in the experiments is read from YAML files in `configs/`; no setting is typed into
-code. @tbl:config summarises the main ones, copied from those files by the report's script; the files
-themselves are in `docs/report/extended/05_configuration.md`.
+code. @tbl:config summarises the main ones, copied from those files by the report's script. The files themselves are
+reproduced in full in the extended material of the repository, in the folder
+`docs/report/extended/` (file `05_configuration.md`).
 
-::: {#tbl:config short="Main configuration of the experiments"}
+::: {#tbl:config}
 <!-- BEGIN:tab_config_summary -->
 | Setting | Value | Read from |
 |---------------------------------|---------------------------------|---------------------------------|

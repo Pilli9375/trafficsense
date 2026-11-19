@@ -7,8 +7,8 @@ was written because the results will be examined, shaped the design: **no invent
 path**; **fail loudly** (a server that is down, an unparseable answer or an invalid setting stops the run,
 and a fallback that is part of the design is counted and reported); and **every result records where it
 came from** (controller, model, seed, scenario, run length, git commit, and for LLM runs the calls,
-failures and latency). The full text of every section condensed here is in `docs/report/extended/` of
-<https://github.com/Pilli9375/trafficsense>.
+failures and latency). The full text of every section condensed here is in the repository
+<https://github.com/Pilli9375/trafficsense>, in the folder `docs/report/extended/`.
 
 ## Proposed System {#sec:architecture}
 
@@ -331,7 +331,7 @@ TrafficSense is a simulation and software study that controls no signal in the f
 for traffic-signal equipment applies. @tbl:standards lists the formats and practices it does follow;
 each is used by the code itself, so a departure would break a run, a test or a check.
 
-::: {#tbl:standards short="Standards, formats and conventions followed"}
+::: {#tbl:standards}
 | Area | Standard or convention | Where and how it is used |
 |:---------------|:--------------------------------|:------------------------------------------------|
 | Road network and demand | CityFlow's road-network and flow file formats (JSON) | The Indian 2x2 network and its flows are generated in these formats and run by the unmodified engine |
@@ -340,7 +340,7 @@ each is used by the code itself, so a departure would break a run, a test or a c
 | Experiment design | Pre-registration [@nosek2018prereg] | Every study (@sec:prereg) |
 | Licences | The licences and terms of use of every tool, dataset and model | Chapter 3; the dataset and the model weights are not redistributed |
 
-: Standards, formats and conventions the project follows.
+: Standards, formats and conventions followed.
 :::
 
 ## System Details {#sec:system-details}
