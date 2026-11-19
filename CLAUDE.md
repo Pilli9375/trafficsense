@@ -82,6 +82,8 @@ python scripts/make_report.py --check             # every number in README + doc
 python scripts/build_report.py                    # thesis format: docs/report -> report.docx (master) + report.pdf (LibreOffice)
 python scripts/check_report_format.py             # report.docx/pdf vs docs/report/format_spec.md (college capstone format)
 python scripts/make_paper.py --check              # IEEE paper (docs/paper) vs outputs/, <= 8 pages incl. references; without --check: build PDF + Overleaf zip + paper.docx (IEEE Word template) and its PDF
+python scripts/build_slides.py               # capstone final-review deck: university template (untracked copy) -> docs/ppt/*.pptx + .pdf (--png renders slides)
+python scripts/check_slides.py               # deck vs template order/titles, numbers vs the report, fonts, overflow, notes, GitHub link
 ```
 
 Numbers in README.md and docs/report/*.md are tagged, `88.1<!--=f.off.mp.att-->`. The key is

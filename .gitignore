@@ -74,3 +74,7 @@ docs/paper/build/
 
 # Windows "downloaded from the internet" marker next to files saved from a browser
 *:Zone.Identifier
+
+# Final-review deck: the university template and the build scratch folder
+docs/ppt/template/
+docs/ppt/build/

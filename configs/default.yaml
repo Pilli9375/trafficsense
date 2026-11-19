@@ -34,6 +34,11 @@ paths:
   biodata: data/external/biodata.yaml
   biodata_photos: data/external/biodata_photos
   report_private: docs/report/build_private      # report_personal.docx/.pdf (gitignored)
+  # Capstone final-review deck (scripts/build_slides.py). The university's template is mandatory
+  # and not ours to publish: it stays untracked; the build edits a copy in slides_work (gitignored).
+  slides_template: docs/ppt/template/Capstone_PPT_Template.pptx
+  slides_work: docs/ppt/build
+  slides_out: docs/ppt/TrafficSense_Capstone_Final_Review.pptx
 
 scenarios:
   synthetic_4x4:
