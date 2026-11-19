@@ -2,7 +2,7 @@
 
 *Update after the first plan:* the faculty also dropped the final NOTE page, and the biodata is one page for
 all four students (2 x 2 grid), so those two parts are now 0 and 1 pages. The plan below adds up to 52;
-the built report has 53 (see the map at the end).
+the built report has 52 (see the map at the end).
 
 The faculty asked for a professional report of at most 57 pages: no source code in the report,
 only the important content (objectives, method, progress, results, discussion, references), and
@@ -52,23 +52,23 @@ is shortened or moved, never made stronger.
 ## Final page map
 
 Both builds (public, with blank biodata lines, and personal, with the private biodata and photos) are
-**53 pages**: 8 roman-numbered front-matter pages and 45 Arabic-numbered pages, so the limit of 57 is met
-with 4 pages to spare. `scripts/check_report_format.py` fails above 60 and warns above 57.
+**52 pages**: 8 roman-numbered front-matter pages and 44 Arabic-numbered pages, so the limit of 57 is met
+with 5 pages to spare, and the plan above (52) is met exactly. `scripts/check_report_format.py` fails above
+60 pages and warns above 57.
 
 | Part | Starts on report page (PDF page) | Pages | Budget |
 |---|---:|---:|---:|
 | Front matter (title i, certificate, acknowledgements, abstract, contents v to vi, lists vii and viii) | i (1) | 8 | 8 |
 | Chapter 1 Introduction | 1 (9) | 6 | 6 |
-| Chapter 2 Proposed System and Methodology | 7 (15) | 13 | 12 |
-| Chapter 3 Cost Analysis | 20 (28) | 2 | 2 |
-| Chapter 4 Results and Discussions | 22 (30) | 15 | 16 |
-| Chapter 5 Conclusion and Future Work | 37 (45) | 2 | 2 |
-| Chapter 6 Appendix | 39 (47) | 3 | 3 |
-| References | 42 (50) | 3 | 3 |
-| Biodata (one page, last page) | 45 (53) | 1 | 1 |
-| **Total** | | **53** | **52** |
+| Chapter 2 Proposed System and Methodology | 7 (15) | 12 | 12 |
+| Chapter 3 Cost Analysis | 19 (27) | 2 | 2 |
+| Chapter 4 Results and Discussions | 21 (29) | 15 | 16 |
+| Chapter 5 Conclusion and Future Work | 36 (44) | 2 | 2 |
+| Chapter 6 Appendix | 38 (46) | 3 | 3 |
+| References | 41 (49) | 3 | 3 |
+| Biodata (one page, last page) | 44 (52) | 1 | 1 |
+| **Total** | | **52** | **52** |
 
-Chapter 2 is one page over its budget and Chapter 4 one under; the total is one over the plan and four under
-the limit. Tables of up to 20 rows stay on one page with their caption (`format_spec.md`), so a table that
-does not fit the rest of a page moves to the next one and leaves white space; reordering text around tables
-could save another page or two, but nothing more was cut to chase the plan's 52.
+Chapter 4 is one page under its budget. Tables of up to 20 rows stay on one page with their caption
+(`format_spec.md`), so a table that does not fit the rest of a page moves to the next one and leaves white
+space; reordering text around tables could save a little more, but nothing more was cut.

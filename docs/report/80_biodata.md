@@ -1,7 +1,9 @@
-<!-- One page per student. In this tracked file (and the tracked report.docx/pdf) the mobile number and
-permanent address are blank lines and the photo an empty box: the repository is public. The local build
-(scripts/build_report.py) adds the real values from a private, gitignored file; see docs/report/README.md. -->
+<!-- One page, four blocks in a 2 x 2 grid (Bhargav, Akul / Amit, Abhishek). In this tracked file (and the
+tracked report.docx/pdf) the mobile number and permanent address are blank lines and the photo an empty box:
+the repository is public. The local build (scripts/build_report.py) adds the real values from a private,
+gitignored file; see docs/report/README.md. -->
 
+::::: biodata-page
 ::: {.biodata name="C Bhargav Kumar" reg="23BCE8195" email="bhargav.23bce8195@vitapstudent.ac.in"}
 :::
 
@@ -13,3 +15,4 @@ permanent address are blank lines and the photo an empty box: the repository is 
 
 ::: {.biodata name="Mylapalli Abhishek Raj" reg="23BCE9470" email="abhishek.23bce9470@vitapstudent.ac.in"}
 :::
+:::::
