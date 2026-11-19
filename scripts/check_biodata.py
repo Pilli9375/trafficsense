@@ -5,9 +5,10 @@
     python scripts/check_biodata.py --leaks      # the tracked-files search only
     python scripts/check_biodata.py --require    # a missing private file is an error, not a skip
 
---personal: docs/report/build_private/report_personal.docx and .pdf have four biodata pages in
-  the order of the title page, each with the student's name, register number, 10-digit phone,
-  e-mail, address and the right photo, nothing blank; and the same page count and the same
+--personal: docs/report/build_private/report_personal.docx and .pdf have ONE biodata page, the last
+  page, with four blocks in a 2 x 2 grid in the order of the title page (Bhargav, Akul / Amit, Abhishek),
+  each with the student's name, register number, 10-digit phone, e-mail, address and the right photo,
+  nothing blank and nothing crossing into the neighbouring block; and the same page count and the same
   contents/list page numbers as the public docs/report/report.docx and .pdf.
 --leaks: no git-tracked file contains any student's phone number, e-mail address, home address or
   photo (searched as text, inside .docx/.zip files, in the text of PDFs, and among tracked images).
@@ -47,8 +48,8 @@ def main():
             errors += biodata.check_personal(*pair, students)
             errors += biodata.compare_with_public(pair, (ROOT / "docs/report/report.docx", ROOT / "docs/report/report.pdf"))
             if not errors:
-                print(f"personal build: {len(students)} biodata pages complete (name, register number, 10-digit phone, "
-                      f"e-mail, address, photo); page count and contents/lists match the public report "
+                print(f"personal build: one biodata page with {len(students)} complete blocks (name, register number, 10-digit "
+                      f"phone, e-mail, address, photo); page count and contents/lists match the public report "
                       f"({biodata.pdf_page_count(pair[1])} pages)")
     if args.leaks or both:
         leaks, n = biodata.check_no_leaks(ROOT, students)
