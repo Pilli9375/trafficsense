@@ -13,6 +13,10 @@
    biodata file exists, none of the students' private details (searched in the Markdown and in the
    PDF's text).
 4. Placeholders. No TODO / TBD / FIXME / XXX / lorem / `{{...}}` / `[placeholder]` left over.
+5. Member speaking guides (docs/handbook/members/<Name>.md and .pdf): all four exist, each PDF has
+   3 to 4 pages, each has the eight parts and the same "project in 30 seconds" text, the numbers,
+   privacy and placeholder checks above, and none of the outdated claims of the old pre-restart
+   contribution sheets (BANNED).
 
 Exit 1 on any problem.
 """
@@ -40,6 +44,15 @@ HANDBOOK_CONTEXT = [
     # definitions, not results: the IoU thresholds of mAP, a percentile, the browser zoom
     re.compile(r"IoU (?:is )?(?:at least )?0\.5|from 0\.5 to 0\.95|\b95% of|zoom at 100%"),
 ]
+
+
+MEMBERS = HB / "members"
+MEMBER_NAMES = ["Bhargav_Kumar", "Akul_Lakhan", "Darsi_Amit", "Abhishek_Raj"]
+MEMBER_PARTS = ["The Project in 30 Seconds", "My Part in Plain Words", "What to Say", "My Slides and Dashboard Pages",
+                "My Key Numbers", "Likely Questions About My Part", "Do Not Claim", "Five Terms I Must Explain Simply"]
+# Outdated claims of the old individual contribution sheets, written before the project restart.
+BANNED = re.compile(r"YOLOv8[ms]\b|70\.5\s*%|RTX\s*4050|random[- ]baseline|\b360[- ]?(?:step|s\b)|mock\s+(?:Ollama|LLM|server)",
+                    re.I)
 
 
 def squash(s: str) -> str:
@@ -137,12 +150,55 @@ def private_details(text: str, where: str) -> list[str]:
     return errs
 
 
-def pdf_text() -> str | None:
-    if not PDF.is_file():
+def pdf_text(pdf: Path = PDF) -> str | None:
+    if not pdf.is_file():
         return None
     import pypdfium2 as pdfium
-    doc = pdfium.PdfDocument(str(PDF))
+    doc = pdfium.PdfDocument(str(pdf))
     return "\n".join(doc[i].get_textpage().get_text_range() for i in range(len(doc)))
+
+
+def check_members(fs, dt, corpus: set[str]) -> tuple[list[str], int]:
+    import pypdfium2 as pdfium
+    errs, ntags, intros = [], 0, {}
+    for name in MEMBER_NAMES:
+        md, pdf = MEMBERS / f"{name}.md", MEMBERS / f"{name}.pdf"
+        rel = str(md.relative_to(ROOT))
+        if not md.is_file():
+            errs.append(f"{rel} is missing")
+            continue
+        text = md.read_text()
+        ntags += len(numbers.TAG.findall(text))
+        clean = numbers.TAG.sub(lambda m: m["num"], text)
+        errs += check_numbers(text, rel, fs, dt, corpus)
+        errs += check_privacy(clean, rel) + private_details(clean, rel)
+        errs += [f"{rel}: leftover placeholder {m.group(0)!r}" for m in PLACEHOLDER.finditer(text)]
+        errs += [f"{rel}: claim from the old contribution sheets: {m.group(0)!r}" for m in BANNED.finditer(clean)]
+        heads = [" ".join(h.split()) for h in re.findall(r"^#\s+(.*?)\s*$", text, re.M)]
+        if heads != MEMBER_PARTS:
+            errs.append(f"{rel}: parts are {heads}, expected {MEMBER_PARTS}")
+        m = re.search(r"^# The Project in 30 Seconds\n(.*?)\n# ", text, re.S | re.M)
+        intros[name] = " ".join(m.group(1).split()) if m else ""
+        pt = pdf_text(pdf)
+        if pt is None:
+            errs.append(f"{pdf.relative_to(ROOT)} is missing (python scripts/build_handbook.py --members)")
+            continue
+        n = len(pdfium.PdfDocument(str(pdf)))
+        if not 3 <= n <= 4:
+            errs.append(f"{pdf.name}: {n} pages, expected 3 to 4")
+        errs += check_privacy(pt, pdf.name) + private_details(pt, pdf.name)
+        errs += [f"{pdf.name}: claim from the old contribution sheets: {m.group(0)!r}" for m in BANNED.finditer(pt)]
+        errs += [f"{pdf.name}: leftover placeholder {m.group(0)!r}" for m in PLACEHOLDER.finditer(pt)]
+        if "<!--" in pt:
+            errs.append(f"{pdf.name}: a number tag leaked into the PDF")
+        if md.stat().st_mtime > pdf.stat().st_mtime:
+            errs.append(f"{pdf.name} is older than {md.name}: rebuild it")
+    if len(set(intros.values())) > 1:
+        errs.append("the 'project in 30 seconds' text differs between the member guides")
+    extra = MEMBERS / "TO_CONFIRM.md"
+    if extra.is_file():
+        errs += check_privacy(extra.read_text(), str(extra.relative_to(ROOT)))
+    return errs, ntags
 
 
 def main() -> None:
@@ -192,10 +248,15 @@ def main() -> None:
         if "<!--" in pt:
             errs.append(f"{PDF.name}: a number tag leaked into the PDF")
 
+    merrs, mtags = check_members(fs, dt, corpus)
+    errs += merrs
+
     if errs:
         print("\n".join(errs))
         print(f"{len(errs)} problem(s)")
         sys.exit(1)
+    print(f"member guides OK: {len(MEMBER_NAMES)} guides, {mtags} tagged numbers match outputs/, 3-4 pages each, "
+          "no old-sheet claims")
     print(f"handbook OK: {len(files)} chapters, {ntags} tagged numbers match outputs/, "
           f"{len(slides)} slides and {len(pages)} dashboard pages covered, no private data or placeholders")
 
