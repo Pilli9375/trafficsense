@@ -84,6 +84,8 @@ python scripts/check_report_format.py             # report.docx/pdf vs docs/repo
 python scripts/make_paper.py --check              # IEEE paper (docs/paper) vs outputs/, <= 8 pages incl. references; without --check: build PDF + Overleaf zip + paper.docx (IEEE Word template) and its PDF
 python scripts/build_slides.py               # capstone final-review deck: university template (untracked copy) -> docs/ppt/*.pptx + .pdf (--png renders slides)
 python scripts/check_slides.py               # deck vs template order/titles, numbers vs the report, fonts, overflow, notes, GitHub link
+python scripts/build_handbook.py            # team study handbook: docs/handbook/*.md -> TrafficSense_Study_Handbook.pdf (--pages 1,2 renders)
+python scripts/check_handbook.py            # handbook numbers vs outputs/, all slides and dashboard pages covered, no private data
 ```
 
 Numbers in README.md and docs/report/*.md are tagged, `88.1<!--=f.off.mp.att-->`. The key is
