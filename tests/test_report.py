@@ -170,3 +170,67 @@ def test_built_report_follows_the_college_format():
         pytest.skip("report not built")
     r = subprocess.run([sys.executable, "scripts/check_report_format.py"], cwd=ROOT, capture_output=True, text=True)
     assert r.returncode == 0, r.stdout + r.stderr
+
+
+# --- the page-limited report: no code, no NOTE page, one biodata page, extended material ---------------------
+
+REP = ROOT / "docs/report"
+
+
+def test_the_report_sources_have_no_code_listings_and_no_note_page():
+    chapters = sorted(REP.glob("[0-9][0-9]_*.md"))
+    assert [c.name for c in chapters][-1] == "80_biodata.md"            # the report ends with the biodata
+    text = "\n".join(c.read_text() for c in chapters)
+    assert "code-listings" not in text and "note-page" not in text and "CodeLine" not in text
+    assert "```" not in text                                            # no fenced code block anywhere in the report
+    assert text.count("biodata-page") == 1 and text.count("{.biodata ") == 4
+
+
+def test_the_repository_link_is_in_the_three_places_the_faculty_asked_for():
+    url = "https://github.com/Pilli9375/trafficsense"
+    ch1, ch2, ch6 = [(REP / f).read_text() for f in ("10_ch1_introduction.md", "20_ch2_system.md", "60_ch6_appendix.md")]
+    org = ch1[ch1.index("## Organization of the Report"):ch1.index("## Team Contributions")]
+    sysd = ch2[ch2.index("## System Details"):]
+    assert url in org and url in sysd and url in ch6
+    assert "@@COMMIT@@" in ch6                                          # the build puts the commit hash here
+
+
+def test_extended_material_is_checked_like_the_chapters_and_linked_from_its_index():
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import make_report
+    docs = [str(p) for p in make_report.documents()]
+    ext = sorted((REP / "extended").glob("[0-9][0-9]_*.md"))
+    assert ext and all(str(p.relative_to(ROOT)) in docs for p in ext)
+    index = (REP / "extended/README.md").read_text()
+    assert all(p.name in index for p in ext)                            # nothing in extended/ is unlisted
+
+
+def test_page_budget_states_the_limit_and_the_checker_enforces_it():
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import check_report_format as c
+    assert (c.WARN_PAGES, c.MAX_PAGES) == (57, 60)
+    assert "57" in (REP / "page_budget.md").read_text()
+    assert c.CODE_LINE.match("def run(self):") and c.CODE_LINE.match("import numpy as np")
+    assert not c.CODE_LINE.match("The controllers are the project's own Python code.")
+
+
+def test_nested_tables_are_mapped_as_one_table():
+    from trafficsense.report import thesis
+    doc = "<p/><w:tbl>A<w:tbl>inner</w:tbl>B</w:tbl><p/><w:tbl>C</w:tbl>"
+    assert thesis._map_top_level_tables(doc, lambda t: f"[{t}]") == "<p/>[<w:tbl>A<w:tbl>inner</w:tbl>B</w:tbl>]<p/>[<w:tbl>C</w:tbl>]"
+
+
+def test_the_report_names_the_commit_of_its_code_and_refuses_uncommitted_code(tmp_path):
+    from trafficsense.report import thesis
+    r = tmp_path / "r"
+    (r / "src").mkdir(parents=True)
+    for args in (["init", "-q"], ["config", "user.email", "t@example.invalid"], ["config", "user.name", "t"]):
+        subprocess.run(["git", *args], cwd=r, check=True)
+    (r / "src/a.py").write_text("x = 1\n")
+    subprocess.run(["git", "add", "-A"], cwd=r, check=True)
+    subprocess.run(["git", "commit", "-q", "-m", "c"], cwd=r, check=True)
+    head = subprocess.run(["git", "rev-parse", "--short=10", "HEAD"], cwd=r, capture_output=True, text=True).stdout.strip()
+    assert thesis.repo_commit(r) == head
+    (r / "src/a.py").write_text("x = 2\n")
+    with pytest.raises(RuntimeError, match="commit these files first"):
+        thesis.repo_commit(r)

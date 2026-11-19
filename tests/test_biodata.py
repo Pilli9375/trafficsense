@@ -1,4 +1,5 @@
-"""The report's private Biodata pages (trafficsense.report.biodata). Everything here is a test fake:
+"""The report's private Biodata page (trafficsense.report.biodata): one page, four blocks in a 2 x 2 grid.
+Everything here is a test fake:
 made-up students, made-up numbers, synthetic pictures; nothing real is in the repository."""
 import io
 import shutil
@@ -19,6 +20,10 @@ FAKE = [
          address="1 Test Road, Testville", photo="one.png"),
     dict(reg="23XXX0002", name="Test Student Two", mobile="6000000002", email="two@example.invalid",
          address="2 Sample Street Exampleton Testland", photo="two.png"),
+    dict(reg="23XXX0003", name="Test Student Three", mobile="7000000003", email="three@example.invalid",
+         address="3 Another Lane Sampletown", photo="three.png"),
+    dict(reg="23XXX0004", name="Test Student Four", mobile="8000000004", email="four@example.invalid",
+         address="4 Last Avenue Demoville Testland Longaddressville", photo="four.png"),
 ]
 
 
@@ -42,13 +47,15 @@ def private(tmp_path):
     photos.mkdir()
     picture(photos / "one.png", (400, 520), frame=True)
     picture(photos / "two.png", (600, 500))
+    picture(photos / "three.png", (500, 650))
+    picture(photos / "four.png", (480, 620), frame=True)
     f = tmp_path / "biodata.yaml"
     f.write_text(yaml.safe_dump({"students": FAKE}))
     return f, photos
 
 
-DIVS = ('::: {.biodata name="Test Student One" reg="23XXX0001" email="one@univ.invalid"}\n:::\n\n'
-        '::: {.biodata name="Test Student Two" reg="23XXX0002" email="two@univ.invalid"}\n:::\n')
+DIV_LIST = [f'::: {{.biodata name="{f["name"]}" reg="{f["reg"]}" email="{f["reg"][-1]}@univ.invalid"}}\n:::\n' for f in FAKE]
+DIVS = "::::: biodata-page\n" + "\n".join(DIV_LIST) + ":::::\n"
 
 
 # --- the file --------------------------------------------------------------------------------
@@ -56,7 +63,7 @@ DIVS = ('::: {.biodata name="Test Student One" reg="23XXX0001" email="one@univ.i
 def test_load_reads_students_and_photo_paths(private):
     f, photos = private
     st = biodata.load(f, photos)
-    assert [s.reg for s in st] == ["23XXX0001", "23XXX0002"]
+    assert [s.reg for s in st] == ["23XXX0001", "23XXX0002", "23XXX0003", "23XXX0004"]
     assert st[0].photo_path == photos / "one.png"
 
 
@@ -68,7 +75,7 @@ def test_missing_file_is_reported_not_raised(tmp_path):
 def test_missing_photo_leaves_the_path_empty(private):
     f, photos = private
     (photos / "two.png").unlink()
-    assert [s.photo_path is None for s in biodata.load(f, photos)] == [False, True]
+    assert [s.photo_path is None for s in biodata.load(f, photos)] == [False, True, False, False]
 
 
 @pytest.mark.parametrize("field,value,msg", [
@@ -106,6 +113,7 @@ def test_personalise_adds_details_and_replaces_the_email(private):
     st = biodata.load(*private)
     out = biodata.personalise(DIVS, st)
     assert 'email="one@example.invalid" mobile="9000000001" address="1 Test Road, Testville" photo="23XXX0001"' in out
+    assert out.count("::: {.biodata ") == 4 and out.count("::::: biodata-page") == 1
     assert "univ.invalid" not in out
 
 
@@ -113,7 +121,7 @@ def test_personalise_without_a_photo_has_no_photo_attribute(private):
     f, photos = private
     (photos / "two.png").unlink()
     out = biodata.personalise(DIVS, biodata.load(f, photos))
-    assert out.count("photo=") == 1
+    assert out.count("photo=") == 3
 
 
 def test_personalise_checks_names_and_students(private):
@@ -121,9 +129,9 @@ def test_personalise_checks_names_and_students(private):
     with pytest.raises(biodata.BiodataError, match="private file says"):
         biodata.personalise(DIVS.replace("Test Student Two", "Somebody Else"), st)
     with pytest.raises(biodata.BiodataError, match="not in the report"):
-        biodata.personalise(DIVS.split("\n\n")[0] + "\n", st)
+        biodata.personalise(DIV_LIST[0], st)
     with pytest.raises(biodata.BiodataError, match="no such student"):
-        biodata.personalise(DIVS.replace("23XXX0002", "23XXX0003"), st)
+        biodata.personalise(DIVS.replace("23XXX0004", "23XXX0009"), st)
     with pytest.raises(biodata.BiodataError, match="no biodata divs"):
         biodata.personalise("nothing here", st)
 
@@ -137,11 +145,11 @@ def shape(data: bytes):
 def test_photos_get_the_box_shape_without_stretching(tmp_path):
     wide = picture(tmp_path / "w.png", (1200, 900))
     tall = picture(tmp_path / "t.png", (800, 2000))
-    exact = picture(tmp_path / "e.png", (350, 450))
+    exact = picture(tmp_path / "e.png", (300, 380))
     for p in (wide, tall, exact):
         w, h = shape(biodata.process_photo(p))
         assert abs(w / h - biodata.BOX_RATIO) < 0.005
-    assert shape(biodata.process_photo(exact)) == (350, 450)         # nothing to crop, never scaled up
+    assert shape(biodata.process_photo(exact)) == (300, 380)         # nothing to crop, never scaled up
     assert shape(biodata.process_photo(wide))[0] <= biodata.MAX_PX[0]
 
 
@@ -174,19 +182,24 @@ def line(label, value):
             f'<w:r><w:tab/></w:r><w:r><w:t xml:space="preserve">: {value}</w:t></w:r></w:p>')
 
 
-def page(s, marker=None, blank=False):
-    mobile = "_" * 30 if blank else s["mobile"]
-    return ('<w:tbl><w:tblPr/><w:tr><w:tc><w:tbl><w:tr><w:tc><w:p><w:pPr><w:pStyle w:val="BiodataPhoto"/></w:pPr>'
-            f'<w:r><w:t xml:space="preserve">{marker or "Photo"}</w:t></w:r></w:p></w:tc></w:tr></w:tbl><w:p/></w:tc><w:tc>'
+def block(s, marker=None, blank=False):
+    """One student's block: the photo box (a table nested in the cell), then the labelled lines."""
+    mobile = "_" * 18 if blank else s["mobile"]
+    return ('<w:tc><w:tbl><w:tr><w:tc><w:p><w:pPr><w:pStyle w:val="BiodataPhoto"/></w:pPr>'
+            f'<w:r><w:t xml:space="preserve">{marker or "Photo"}</w:t></w:r></w:p></w:tc></w:tr></w:tbl>'
             + line("Name", s["name"]) + line("Register No.", s["reg"]) + line("Mobile Number", mobile)
-            + line("E-mail", s["email"]) + line("Permanent Address", s["address"]) + "</w:tc></w:tr></w:tbl>")
+            + line("E-mail", s["email"].replace("@", "@" + biodata.ZWSP)) + line("Permanent Address", s["address"])
+            + "</w:tc>")
 
 
 def make_docx(path: Path, students, blank=False, no_photo=()):
-    """What pandoc + thesis.lua write: a photo marker in each box, or the word 'Photo' for a student in no_photo."""
+    """What pandoc + thesis.lua write: one grid (two cells per row), a photo marker in each box, or the
+    word 'Photo' for a student in no_photo."""
+    cells = [block(s, None if s["reg"] in no_photo else biodata.PHOTO_MARKER.format(reg=s["reg"]), blank)
+             for s in students]
+    rows = "".join("<w:tr>" + "".join(cells[i:i + 2]) + "</w:tr>" for i in range(0, len(cells), 2))
     doc = ('<?xml version="1.0"?><w:document xmlns:w="w" xmlns:r="r" xmlns:wp="wp" xmlns:a="a" xmlns:pic="pic"><w:body>'
-           + "".join(page(s, None if s["reg"] in no_photo else biodata.PHOTO_MARKER.format(reg=s["reg"]), blank)
-                     for s in students) + "</w:body></w:document>")
+           f"<w:tbl><w:tblPr/>{rows}</w:tbl></w:body></w:document>")
     with zipfile.ZipFile(path, "w") as z:
         z.writestr("word/document.xml", doc)
         z.writestr("word/_rels/document.xml.rels", '<?xml version="1.0"?><Relationships xmlns="r"></Relationships>')
@@ -197,11 +210,11 @@ def make_docx(path: Path, students, blank=False, no_photo=()):
 def test_insert_photos_puts_the_processed_photo_in_each_box(private, tmp_path, monkeypatch):
     st = biodata.load(*private)
     docx = make_docx(tmp_path / "r.docx", FAKE)
-    assert biodata.insert_photos(docx, st) == 2
+    assert biodata.insert_photos(docx, st) == 4
     with zipfile.ZipFile(docx) as z:
         assert z.read("word/media/biodata_1.jpg") == biodata.process_photo(st[0].photo_path)
         doc = z.read("word/document.xml").decode()
-        assert doc.count("<w:drawing>") == 2 and "[[photo:" not in doc
+        assert doc.count("<w:drawing>") == 4 and "[[photo:" not in doc
         assert 'Extension="jpg"' in z.read("[Content_Types].xml").decode()
     monkeypatch.setattr(biodata, "_check_pdf_pages", lambda pdf, students: [])
     assert biodata.check_personal(docx, tmp_path / "x.pdf", st) == []
@@ -212,7 +225,7 @@ def test_a_missing_photo_leaves_the_box_and_the_check_says_so(private, tmp_path,
     (photos / "two.png").unlink()
     st = biodata.load(f, photos)
     docx = make_docx(tmp_path / "r.docx", FAKE, no_photo=["23XXX0002"])
-    assert biodata.insert_photos(docx, st) == 1
+    assert biodata.insert_photos(docx, st) == 3
     monkeypatch.setattr(biodata, "_check_pdf_pages", lambda pdf, students: [])
     errs = biodata.check_personal(docx, tmp_path / "x.pdf", st)
     assert errs and all("23XXX0002" in e for e in errs)
@@ -226,12 +239,12 @@ def test_check_personal_finds_blank_lines_wrong_values_and_missing_photos(privat
     errs = biodata.check_personal(blank, tmp_path / "x.pdf", st)
     assert any("Mobile Number" in e for e in errs) and any("blank line" in e for e in errs)
     assert any("no photo" in e for e in errs)
-    wrong = make_docx(tmp_path / "w.docx", [dict(FAKE[0], email="other@example.invalid"), FAKE[1]])
+    wrong = make_docx(tmp_path / "w.docx", [dict(FAKE[0], email="other@example.invalid"), *FAKE[1:]])
     biodata.insert_photos(wrong, st)
     errs = biodata.check_personal(wrong, tmp_path / "x.pdf", st)
     assert len(errs) == 1 and "E-mail" in errs[0]
     only_one = make_docx(tmp_path / "o.docx", FAKE[:1])
-    assert any("2 biodata pages expected, found 1" in e for e in biodata.check_personal(only_one, tmp_path / "x.pdf", st))
+    assert any("4 blocks expected, found 1" in e for e in biodata.check_personal(only_one, tmp_path / "x.pdf", st))
 
 
 # --- no personal data in tracked files -----------------------------------------------------------------
@@ -317,13 +330,24 @@ def test_filter_writes_blank_lines_without_details_and_values_with_them(tmp_path
             return z.read("word/document.xml").decode()
 
     public = run(DIVS)
-    assert public.count("_" * 30) == 2 * 4 and "Photo</w:t>" in public and "9000000001" not in public
+    assert public.count("Photo</w:t>") == 4 and "9000000001" not in public and "_" * 36 in public
+    assert public.count('w:val="FrontHeading"') == 1                       # one BIODATA heading for the four blocks
+    assert public.count("<w:tc>") >= 4 + 4 and public.count("@\u200b") == 4  # a 2 x 2 grid (+ the photo boxes); e-mails may wrap after @
     st = biodata.personalise(DIVS, [biodata.Student(**{k: v for k, v in FAKE[0].items()}, photo_path=Path("x")),
-                                    biodata.Student(**{k: v for k, v in FAKE[1].items()}, photo_path=None)])
+                                    *[biodata.Student(**{k: v for k, v in f.items()}, photo_path=None) for f in FAKE[1:]]])
     personal = run(st)
     assert "9000000001" in personal and "1 Test Road, Testville" in personal and "[[photo:23XXX0001]]" in personal
-    assert personal.count("[[photo:") == 1 and personal.count("Photo</w:t>") == 1     # student two: no photo, empty box
-    assert "_" * 30 not in personal
+    assert personal.count("[[photo:") == 1 and personal.count("Photo</w:t>") == 3     # three students: no photo, empty box
+    assert "_" * 10 not in personal
+
+
+@pytest.mark.skipif(not Path(pandoc).is_file(), reason="pandoc not installed")
+def test_the_grid_needs_exactly_four_blocks(tmp_path):
+    src, out = tmp_path / "t.md", tmp_path / "t.docx"
+    src.write_text("::::: biodata-page\n" + "\n".join(DIV_LIST[:3]) + ":::::\n")
+    r = subprocess.run([pandoc, str(src), "--from", "markdown+fenced_divs", "--lua-filter",
+                        str(ROOT / "docs/report/template/thesis.lua"), "-o", str(out)], capture_output=True, text=True)
+    assert r.returncode != 0 and "exactly four" in r.stderr
 
 
 def test_list_comparison_ignores_the_commit_hash_but_not_page_numbers(tmp_path):

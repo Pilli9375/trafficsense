@@ -16,10 +16,15 @@ Checks (each failure is printed):
 * captions: "Figure n Title" with SEQ fields numbered 1, 2, ... through the report, below the
   figure; "Table c.n Title" above the table, c = chapter, n from 1 in each chapter;
 * contents and both lists: live fields whose entries all carry a page number;
-* biodata: four pages, each with the student's name, register number and e-mail, and blank lines
-  for mobile number and permanent address; the NOTE about the CD is present. With --personal
-  (the local copy built from the private file) the blank lines and the e-mail are not checked here
-  (scripts/check_biodata.py checks those pages against the private file); everything else is;
+* biodata: ONE page, the last page of the report, headed BIODATA once, with the four students in a
+  2 x 2 grid (Bhargav, Akul / Amit, Abhishek), each block with a photo box, name, register number,
+  e-mail, and blank lines for mobile number and permanent address; no NOTE page after it, no empty page
+  anywhere. With --personal (the local copy built from the private file) the blank lines and the e-mail
+  are not checked here (scripts/check_biodata.py checks the page against the private file);
+* no source code in the report: no code-listing paragraph styles, no code-looking lines in the PDF, and
+  the repository link https://github.com/Pilli9375/trafficsense in Section 1.3, Section 2.4 and Chapter 6;
+* length: the PDF has at most MAX_PAGES (60) pages, with a warning above WARN_PAGES (57), counting
+  everything (front matter, references, biodata);
 * no leftover placeholder ({{...}}, TBD, TODO, [fill in], XXXX, build markers) and none of the
   outdated claims of the old contribution sheets, in the Word file or the PDF;
 * PDF: every page US Letter, Times New Roman embedded, nothing printed outside the side margins,
@@ -46,13 +51,19 @@ SPEC_PHRASES = ["US Letter, 21.59 x 27.94 cm", "top 2.54 cm, bottom 1.50 cm, lef
 PAGE = (12240, 15840)
 MARGINS = {"top": 1440, "right": 1800, "bottom": 851, "left": 1800}
 
+MAX_PAGES, WARN_PAGES = 60, 57           # the faculty's limit is 57 pages, everything counted
+REPO_URL = "https://github.com/Pilli9375/trafficsense"
+CODE_STYLES = ("CodeLine", "SourceCode", "Verbatim", "VerbatimChar")
+CODE_LINE = re.compile(r"^\s*(?:def \w+\(|class \w+[(:]|import \w+|from [\w.]+ import |return\b|if __name__|for \w+ in .*:$)")
 CHAPTERS = ["INTRODUCTION", "PROPOSED SYSTEM AND METHODOLOGY", "COST ANALYSIS", "RESULTS AND DISCUSSIONS",
             "CONCLUSION AND FUTURE WORK", "APPENDIX"]
 FRONT = ["Certificate", "Acknowledgements", "Abstract", "Table of Contents", "List of Tables", "List of Figures"]
 REQUIRED_SECTIONS = ["1.1 Objectives", "1.2 Background and Literature Survey", "1.3 Organization of the Report",
                      "1.4 Team Contributions", "2.1 Proposed System", "2.2 Working Methodology", "2.3 Standards",
                      "2.4 System Details", "2.4.1 Software Details", "2.4.2 Hardware Details",
-                     "3.1 List of Components and Their Cost", "5.1 Conclusion", "5.2 Future Work"]
+                     "3.1 List of Components and Their Cost", "5.1 Conclusion", "5.2 Future Work",
+                     "6.1 Source Code and Reproducibility", "6.2 Main Configuration", "6.3 Abbreviations"]
+URL_SECTIONS = ["1.3 Organization of the Report", "2.4 System Details", "CHAPTER 6"]    # each must name REPO_URL
 STUDENTS = [("C Bhargav Kumar", "23BCE8195", "bhargav.23bce8195@vitapstudent.ac.in"),
             ("Achalla Akul Lakhan", "23BCE8015", "akul.23bce8015@vitapstudent.ac.in"),
             ("Darsi Amit", "23BCE8288", "amit.23bce8288@vitapstudent.ac.in"),
@@ -192,18 +203,20 @@ def check_docx(docx: Path, spec: str, personal: bool = False) -> tuple[list[str]
         elif st == "Heading1":
             seq.append(("chapter", norm(text_of(x)), i))
     want = ([("front", f) for f in FRONT] + [("chapter", f"CHAPTER {n}{t}") for n, t in enumerate(CHAPTERS, 1)]
-            + [("front", "References")] + [("front", "Biodata")] * 4)
+            + [("front", "References")] + [("front", "Biodata")])
     got = [(k, t) for k, t, _ in seq]
     # chapter headings read "CHAPTER 1" + line break + title; the text has no space in between
     def key(seq_):    # headings are shown in capitals by their style: compare without case and spaces
         return [(k, t.replace(" ", "").upper()) for k, t in seq_]
     if key(got) != key(want):
         errors.append(f"order of front headings and chapters differs from the spec:\n  got  {got}\n  want {want}")
-    note = [x for i, x in paras if style_of(x) == "NoteText"]
-    if len(note) != 1 or "It is MANDATORY" not in text_of(note[0]) or "Compact Disk (CD)" not in text_of(note[0]):
-        errors.append("the NOTE about the CD (It is MANDATORY ... Compact Disk (CD) ...) is missing")
-    elif paras[-1][1] != note[0] and not all(style_of(x) == "" and not text_of(x) for i, x in paras if i > blocks.index(("p", note[0]))):
-        errors.append("the NOTE must be the last page")
+    # the report ends with the Biodata page: no NOTE page (the faculty dropped it) and nothing after the grid
+    if "MANDATORY" in "\n".join(text_of(x) for i, x in paras) or any(style_of(x) == "NoteText" for i, x in paras):
+        errors.append("the NOTE page about the CD must not be in the report")
+    last_tbl = max(i for i, (k, x) in enumerate(blocks) if k == "tbl")
+    tail = [text_of(x).strip() for k, x in blocks[last_tbl + 1:] if k == "p"]
+    if any(t for t in tail) or len(tail) > 1:
+        errors.append(f"the Biodata grid must be the last thing in the report, found after it: {tail[:3]}")
 
     # required sections
     heads = [norm(text_of(x)) for i, x in paras if style_of(x) in ("Heading2", "Heading3")]
@@ -274,11 +287,16 @@ def check_docx(docx: Path, spec: str, personal: bool = False) -> tuple[list[str]
     if len(lists.get("list of tables", [])) != sum(tbl_n.values()):
         errors.append(f"list of tables has {len(lists.get('list of tables', []))} entries, captions {sum(tbl_n.values())}")
 
-    # biodata
+    # biodata: one heading, one grid of four blocks (Bhargav, Akul / Amit, Abhishek)
+    from trafficsense.report.biodata import biodata_cells, ZWSP
     bio = [i for k, t, i in seq if t == "Biodata"]
-    for (name, reg, email), i in zip(STUDENTS, bio):
-        tbl = blocks[i + 1] if i + 1 < len(blocks) else ("", "")
-        lines = [norm(text_of(p)) for p in re.findall(r"<w:p\b.*?</w:p>", tbl[1], re.S)] if tbl[0] == "tbl" else []
+    if len(bio) != 1:
+        errors.append(f"expected one Biodata heading, found {len(bio)}")
+    cells = biodata_cells(doc)
+    if len(cells) != len(STUDENTS):
+        errors.append(f"the Biodata page must be one grid of {len(STUDENTS)} blocks, found {len(cells)}")
+    for (name, reg, email), cell in zip(STUDENTS, cells):
+        lines = [norm(text_of(p).replace(ZWSP, "")) for p in re.findall(r"<w:p\b.*?</w:p>", cell, re.S)]
         joined = " | ".join(lines)
         for label, value in (("Name", name), ("Register No.", reg), ("E-mail", email)):
             if personal and label == "E-mail":
@@ -294,12 +312,38 @@ def check_docx(docx: Path, spec: str, personal: bool = False) -> tuple[list[str]
             errors.append(f"biodata of {name}: the photo box is missing")
         if re.search(r"(?<!\d)(?:\+91[\s-]?)?[6-9]\d{9}(?!\d)", joined):
             errors.append(f"biodata of {name}: contains what looks like a phone number")
-    if len(bio) != len(STUDENTS):
-        errors.append(f"expected {len(STUDENTS)} biodata pages, found {len(bio)}")
 
-    # placeholders and banned claims, anywhere in the Word file. Code listings are left out of the
-    # placeholder scan only: Python's "{{" (a literal brace in an f-string) is code, not a placeholder.
-    code = ("CodeLine", "SourceCode")
+    # no source code in the report; the repository link where the faculty asked for it
+    for k, x in paras:
+        if style_of(x) in CODE_STYLES:
+            errors.append(f"a code-listing paragraph ({style_of(x)}) is in the report: {text_of(x)[:50]!r}")
+    heads_all = [(style_of(x), norm(text_of(x))) for i, x in paras if style_of(x) in ("Heading1", "Heading2", "Heading3")]
+    if any(h == "Source Code" or h.endswith(" Source Code") for _, h in heads_all):
+        errors.append("a 'Source Code' section is in the report: the code is linked, not printed")
+    for sec in URL_SECTIONS:
+        i0 = next((n for n, (st, h) in enumerate(heads_all) if h.startswith(sec.replace(" ", "")) or h.startswith(sec)
+                   or h.replace(" ", "").upper().startswith(sec.replace(" ", ""))), None)
+        if i0 is None:
+            errors.append(f"cannot find {sec!r} to look for the repository link")
+            continue
+        stop = ("Heading1",) if sec.startswith("CHAPTER") else ("Heading1", "Heading2")
+        txt, on = [], False
+        for i, x in paras:
+            st = style_of(x)
+            if st in ("Heading1", "Heading2", "Heading3") and norm(text_of(x)).replace(" ", "").upper() == heads_all[i0][1].replace(" ", "").upper():
+                on = True
+                continue
+            if on and (st in stop or st == "FrontHeading"):
+                break
+            if on:
+                txt.append(text_of(x))
+        if REPO_URL not in "\n".join(txt):
+            errors.append(f"the repository link {REPO_URL} is missing in {sec}")
+    if REPO_URL not in para_text(doc):
+        errors.append(f"the repository link {REPO_URL} is not in the report")
+
+    # placeholders and banned claims, anywhere in the Word file
+    code = CODE_STYLES
     alltext = para_text(doc) + "\n" + para_text(others) + "\n" + " ".join(re.findall(r"<dc:\w+>([^<]*)<", others))
     prose = para_text(doc, code) + "\n" + para_text(others)
     instr_text = " ".join(re.findall(r"<w:instrText[^>]*>([^<]*)<", doc))
@@ -358,6 +402,29 @@ def check_pdf(pdf: Path, info: dict, docx: Path) -> list[str]:
             last = lines[-2] if re.fullmatch(r"[ivxlc]+|\d+", lines[-1]) else lines[-1]
             if last in heads:
                 errors.append(f"PDF page {i + 1}: heading {last!r} alone at the foot of the page")
+    # length: the faculty's limit counts every page of the PDF
+    n = len(doc)
+    if n > MAX_PAGES:
+        errors.append(f"the PDF has {n} pages, the limit is {MAX_PAGES}")
+    elif n > WARN_PAGES:
+        print(f"WARNING: the PDF has {n} pages, the faculty's limit is {WARN_PAGES}")
+    # no empty page: every page has text besides its page number, or a picture
+    for i, t in enumerate(texts):
+        body = [x for x in (norm(l) for l in t.splitlines()) if x and not re.fullmatch(r"[ivxlc]+|\d+", x)]
+        if not body and not any(o.type == raw.FPDF_PAGEOBJ_IMAGE for o in doc[i].get_objects()):
+            errors.append(f"PDF page {i + 1} is empty")
+    # no source code in the report
+    for i, t in enumerate(texts):
+        for line in t.splitlines():
+            if CODE_LINE.match(line):
+                errors.append(f"PDF page {i + 1}: a line that looks like source code: {line.strip()[:60]!r}")
+                break
+    pages_with_url = [i + 1 for i, t in enumerate(texts) if REPO_URL.replace("https://", "") in re.sub(r"\s+", "", t)]
+    if len(pages_with_url) < 3:
+        errors.append(f"the repository link {REPO_URL} appears on {len(pages_with_url)} PDF page(s), expected at least 3")
+    # the Biodata page: the last page, four blocks in a 2 x 2 grid, nothing across the gap between the columns
+    from trafficsense.report.biodata import check_page_layout
+    errors += check_page_layout(pdf, [name for name, _, _ in STUDENTS])
     fonts = pdf_fonts(pdf)
     if not any(f.startswith("TimesNewRoman") for f in fonts):
         errors.append(f"PDF does not embed Times New Roman: {sorted(fonts)}")
@@ -366,7 +433,7 @@ def check_pdf(pdf: Path, info: dict, docx: Path) -> list[str]:
         m = re.search(pat, joined)
         if m:
             errors.append(f"outdated claim in the PDF: {joined[max(0, m.start() - 40):m.end() + 40]!r}")
-    # placeholders: in all text except code (set in Consolas), which prints Python's "{{" literally
+    # placeholders, in the text that is not set in Consolas (inline file names)
     prose = " ".join(prose_parts)
     for pat in PLACEHOLDERS:
         m = re.search(pat, prose)

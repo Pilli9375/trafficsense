@@ -15,7 +15,13 @@ python scripts/check_report_format.py         # the built files against format_s
 
 **Order.** `00_title_page.md` (title page and certificate), `02_acknowledgements.md`,
 `03_abstract.md`, `04_lists.md` (contents and lists; the roman-numbered front matter ends here),
-Chapters 1 to 6 (`10_` to `60_`), `70_references.md`, `80_biodata.md`, `90_note.md`.
+Chapters 1 to 6 (`10_` to `60_`), `70_references.md`, `80_biodata.md` (one page, four students in a 2 x 2 grid). There is no NOTE page and no source-code
+listing: the report ends with the Biodata page, and the code is reached through the repository link
+(<https://github.com/Pilli9375/trafficsense>).
+
+**Length.** At most 57 pages, everything counted (`page_budget.md`, `format_spec.md`, "Length"). What did
+not fit is kept in `extended/` (full tables, prompts, configuration, derivations, the full literature
+survey and methodology), as Markdown that `make_report.py --check` verifies like the chapters.
 
 **Tools.** pandoc 3 (`~/.local/bin`), LibreOffice (the AppImage extracted in
 `~/.local/opt/libreoffice`; see the docstring of `scripts/build_report.py`) and `pypdfium2`. The
@@ -40,8 +46,8 @@ numbered by the filter; captions carry Word `SEQ` fields, and the contents and b
 Word fields. The build converts the Word file to PDF, reads the page of every entry and writes the
 page numbers into the fields, and converts again until nothing changes, so the lists are right
 before Word updates them. Word asks to update fields when the file is opened: answering *Yes* is
-safe. The code listings of the appendix are generated from the files at the current commit (the
-build refuses if they have uncommitted changes).
+safe. The appendix names the commit of the code (`@@COMMIT@@` is replaced by the hash of HEAD; the build
+refuses to run if `src/`, `scripts/` or `configs/` have uncommitted changes).
 
 **By hand after printing.** The certificate's examiner signatures and the Program Chair's and
 Dean's names and signatures are blank lines in the Word file. Each student's mobile number,

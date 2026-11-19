@@ -38,7 +38,7 @@ landscape page (same margins rotated). [ours]
 | Bulleted / numbered lists | 1.5 spacing, justified, indent 0.5 in, hanging 0.25 in, no first-line indent | [format] objectives list |
 | Tables | Table Grid (single 0.5 pt black borders), Times New Roman 10 pt, single spacing, header row bold and repeated on each page | [format] `TableGrid` style (10 pt) and the cost table |
 | Table breaks | no row splits across pages; a table of up to 20 rows stays on one page with its caption; 12 pt of space after every table | [ours] |
-| Code listings | Consolas 8.5 pt, single spacing, left aligned, no indent, light border | [ours]: the example sets its code in Times New Roman 12 (code columns do not line up); you asked for monospaced |
+| Code | **none**: the report prints no source code (the faculty asked for the code to be reached through the repository link). Short file and function names in the text are inline code, Consolas 10.5 pt | [ours] |
 | Footnotes | not used | [format] none |
 | Every other text | Times New Roman | [ours]: the example mixes in Verdana on the certificate page; treated as an artefact |
 
@@ -88,7 +88,7 @@ format.
 
 Deviation from the example, as you asked: in the example only the title page is roman; the
 certificate onwards is Arabic from 1, so Chapter 1 starts on page 7. We use roman for all the
-front matter and Arabic from Chapter 1. Biodata and the NOTE page continue the Arabic numbering
+front matter and Arabic from Chapter 1. The Biodata page continues the Arabic numbering
 [format].
 
 ## Section order
@@ -129,22 +129,36 @@ Arabic-numbered body:
 10. **Chapter 3 Cost Analysis**: 3.1 List of Components and Their Cost (Table 3.1).
 11. **Chapter 4 Results and Discussions**
 12. **Chapter 5 Conclusion and Future Work**
-13. **Chapter 6 Appendix**
+13. **Chapter 6 Appendix**: 6.1 Source Code and Reproducibility (the repository link and the commit of the code, the commands that reproduce the results), 6.2 Main Configuration, 6.3 Abbreviations
 14. **References**: unnumbered heading, entries `[1] ...` in order of first citation, IEEE style,
     hanging indent [format].
-15. **Biodata**: one page per student [format layout]: centred bold 14 pt `BIODATA`; a bordered
-    3.5 x 4.5 cm box (a passport photo; the example's box is 3.3 x 2.8 cm) labelled `Photo` at the
-    left; to its right `Name :`, `Register No. :`,
-    `Mobile Number :`, `E-mail :`, `Permanent Address :` (the example spells it "Permanaent";
-    corrected). Mobile number and address are blank underlined lines to be filled by hand.
-16. **NOTE page**: the example's NOTE, bold 18 pt, with `MANDATORY` in red as in the example; the
-    typo "Its" is corrected to "It is": "NOTE: It is MANDATORY for a student to attach all the PPT's, Sample
-    Materials, Specification Sheets, Programming Codes and a 5-10 minutes demo Video of the
-    Project Digitally In CD. Stick the Compact Disk (CD) in the final page of the Thesis after
-    binding it."
+15. **Biodata**: ONE page, the last page of the report, headed `BIODATA` once (centred bold 14 pt).
+    The four students are in a 2 x 2 grid in the order of the title page (Bhargav, Akul / Amit, Abhishek).
+    Each block has a bordered 3.0 x 3.8 cm box labelled `Photo` (a passport-style photo; the example's box
+    is 3.3 x 2.8 cm), then, in Times New Roman 11 pt, `Name :`, `Register No. :`, `Mobile Number :`,
+    `E-mail :`, `Permanent Address :` (the example spells it "Permanaent"; corrected), the value following
+    the bold label on the same line so that a long address or e-mail address wraps inside the block (an
+    e-mail address may wrap after the `@`). In the tracked (public) report the name, register number and
+    the university e-mail address are filled in and the mobile number and the address are blank lines
+    (Section "Blank lines"); the personal copy has the real values and the photos. [format] one page per
+    student; **[ours] since the faculty's page limit: one page for all four** (the layout of one student's
+    block is the example's).
+16. ~~NOTE page~~ **removed** at the faculty's request (the page limit): the report ends with the Biodata
+    page, with no NOTE page and no empty page after it. The example's NOTE (it is MANDATORY to attach the
+    PPT's, sample materials, specification sheets, programming codes and a demo video, on a CD) is a
+    submission instruction, not a part of the report.
 
 Not in the format, so not in the report: the Declaration page and the List of Abbreviations as
-front matter (the abbreviations move into the appendix).
+front matter (the abbreviations move into the appendix), and printed source code.
+
+## Length (the faculty's page limit)
+
+The faculty asked for a professional report of **at most 57 pages in the PDF, counting everything** (front
+matter, references, biodata). `docs/report/page_budget.md` has the budget per part and the pages the built
+report has. The limit is met by cutting content only: page, margins, fonts, spacing, headings, captions,
+the contents and the lists stay exactly as specified above. What was cut is in `docs/report/extended/`
+(Markdown, in the repository) and the report links to it. `scripts/check_report_format.py` fails above 60
+pages and warns above 57.
 
 ## Blank lines (for handwriting)
 
