@@ -292,6 +292,41 @@ def test_hero_cells_line_up(browser, app):
             assert max(bottoms) - min(bottoms) <= 1, (w, cells)
 
 
+# Overview architecture: which form is shown, where the drawing sits in its card and its smallest text in px.
+ARCH_JS = r"""() => {
+  const a = document.querySelector('.ts-arch'), svg = a.querySelector('svg'), flow = a.querySelector('.ts-arch-flow');
+  const cs = getComputedStyle(a), r = a.getBoundingClientRect(), s = svg.getBoundingClientRect();
+  const k = s.width / svg.viewBox.baseVal.width;
+  const fonts = Array.from(svg.querySelectorAll('text')).map(t => parseFloat(getComputedStyle(t).fontSize) * k);
+  return {svg: getComputedStyle(svg).display !== 'none', flow: getComputedStyle(flow).display !== 'none',
+          left: s.left - r.left - parseFloat(cs.borderLeftWidth) - parseFloat(cs.paddingLeft),
+          right: r.right - s.right - parseFloat(cs.borderRightWidth) - parseFloat(cs.paddingRight),
+          min_px: s.width ? Math.min(...fonts) : 0};
+}"""
+
+
+def test_architecture_keeps_one_layout_on_laptops(browser, app):
+    """The architecture drawing scales with its card instead of switching to the stacked boxes on a laptop
+    (it once stacked below a ~940 px column, i.e. at 1280 px with the sidebar open, leaving the boxes off to one
+    side): from 1280 to 1920 px the horizontal drawing fills its card edge to edge with readable text; on a phone
+    the stacked form is shown instead."""
+    for w in (1280, 1366, 1440, 1536, 1920):
+        page = browser.new_page(viewport={"width": w, "height": 900})
+        page.goto(app)
+        _settle(page, 1000)
+        a = page.evaluate(ARCH_JS)
+        page.close()
+        assert a["svg"] and not a["flow"], (w, a)
+        assert abs(a["left"]) <= 1 and abs(a["right"]) <= 1, (w, a)
+        assert a["min_px"] >= 9.5, (w, a)
+    page = browser.new_page(viewport={"width": 390, "height": 900})
+    page.goto(app)
+    _settle(page, 1000)
+    a = page.evaluate(ARCH_JS)
+    page.close()
+    assert a["flow"] and not a["svg"], a
+
+
 def test_replay_labels_never_covered_or_clipped(browser, app):
     """In both views, the grid and the follow camera, at every zoom level: every label the canvas drew lies
     inside the canvas, no two labels overlap, and no panel element overlaps the canvas."""
